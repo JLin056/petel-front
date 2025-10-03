@@ -1,0 +1,10 @@
+html, body {
+  height: 100%; /* 確保 html 和 body 佔滿視窗高度 */
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex-grow: 1; /* 讓 main 區域佔據所有剩餘空間 */
+}
