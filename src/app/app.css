@@ -1,10 +1,16 @@
 html, body {
   height: 100%; /* 確保 html 和 body 佔滿視窗高度 */
 }
-body {
+/* body {
   display: flex;
   flex-direction: column;
-}
+} */
 main {
   flex-grow: 1; /* 讓 main 區域佔據所有剩餘空間 */
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 讓畫面至少撐滿整個視窗高度 */
 }
