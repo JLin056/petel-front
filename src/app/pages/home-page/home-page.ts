@@ -15,9 +15,9 @@ import { Carousel, CarouselModule } from 'primeng/carousel';
   styleUrl: './home-page.css'
 })
 export class HomePage implements OnInit {
-    cities: City[] | undefined;
+    cities: Option[] | undefined;
     date: Date | undefined;
-    types: petType[] | undefined;
+    types: Option[] | undefined;
     dogHotels: Hotel[] = [];
     catHotels: Hotel[] = [];
 
@@ -36,30 +36,31 @@ export class HomePage implements OnInit {
 
     ngOnInit() {
         this.cities = [
-            { name: '臺北市', code: 'TPE' },
-            { name: '基隆市', code: 'KEE' },
-            { name: '新北市', code: 'NWT' },
-            { name: '宜蘭縣', code: 'ILA' },
-            { name: '新竹市', code: 'HSZ' },
-            { name: '新竹縣', code: 'HSQ' },
-            { name: '桃園市', code: 'TAO' },
-            { name: '苗栗縣', code: 'MIA' },
-            { name: '臺中市', code: 'TXG' },
-            { name: '彰化縣', code: 'CHA' },
-            { name: '南投縣', code: 'NAN' },
-            { name: '嘉義市', code: 'CYI' },
-            { name: '嘉義縣', code: 'CYQ' },
-            { name: '雲林縣', code: 'YUN' },
-            { name: '臺南市', code: 'TNN' },
-            { name: '高雄市', code: 'KHH' },
-            { name: '屏東縣', code: 'PIF' },
-            { name: '臺東縣', code: 'TTT' },
-            { name: '花蓮縣', code: 'HUA' }
+            { id: 'TPE', name: '臺北市' },
+            { id: 'KEE', name: '基隆市' },
+            { id: 'NWT', name: '新北市' },
+            { id: 'ILA', name: '宜蘭縣' },
+            { id: 'HSZ', name: '新竹市' },
+            { id: 'HSQ', name: '新竹縣' },
+            { id: 'TAO', name: '桃園市' },
+            { id: 'MIA', name: '苗栗縣' },
+            { id: 'TXG', name: '臺中市' },
+            { id: 'CHA', name: '彰化縣' },
+            { id: 'NAN', name: '南投縣' },
+            { id: 'CYI', name: '嘉義市' },
+            { id: 'CYQ', name: '嘉義縣' },
+            { id: 'YUN', name: '雲林縣' },
+            { id: 'TNN', name: '臺南市' },
+            { id: 'KHH', name: '高雄市' },
+            { id: 'PIF', name: '屏東縣' },
+            { id: 'TTT', name: '臺東縣' },
+            { id: 'HUA', name: '花蓮縣' }
         ];
 
+
         this.types = [
-            { typeId: 'W001', typeName: '貓貓' },
-            { typeId: 'W002', typeName: '狗狗' }
+            { id: 'W001', name: '貓貓' },
+            { id: 'W002', name: '狗狗' }
         ];
 
         this.dogHotels = [
