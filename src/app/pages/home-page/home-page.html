@@ -1,0 +1,90 @@
+<div class="wrap">
+    <div class="banner">
+        <img src="img/homePageLogo.png" alt="Petel 廣告圖">
+        <div class="search-container">
+            <div class="search-bar">
+                <p-floatlabel variant="in" class="search-label">
+                    <p-select [options]="cities" optionLabel="name" class="search-item"/>
+                    <label class="search-label">縣市</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <label class="search-label">入住日</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <label class="search-label">退房日</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-select class="search-item" [options]="types" optionLabel="typeName" />
+                    <label class="search-label">寵物種類</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" />
+                    <label class="search-label">寵物數量</label>
+                </p-floatlabel>
+                <p-button label="搜尋" styleClass="petel-search-btn"></p-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="recommend-container">
+        <div class="recommend-container-dog" >
+            <h3>狗狗旅館 精選店家</h3>
+            <div class="hotel-carousel-dog" (wheel)="onWheel($event, dogCarousel)">
+                <p-carousel
+                    #dogCarousel
+                    [value]="dogHotels"
+                    [numVisible]="4"
+                    [numScroll]="1"
+                    [circular]="true"
+                    [responsiveOptions]="responsiveOptions"
+                >
+                    <ng-template pTemplate="item" let-hotel>
+                        <div class="item">
+                            <img [src]="hotel.image" [alt]="hotel.name" class="hotel-img">
+                            <p class="hotel-caption">{{hotel.name}}</p>
+                        </div>
+                    </ng-template>
+
+                </p-carousel>
+            </div>
+        </div>
+
+         <div class="recommend-container-cat" >
+            <h3>貓貓旅館 精選店家</h3>
+            <div class="hotel-carousel-cat" (wheel)="onWheel($event, catCarousel)">
+                <p-carousel
+                    #catCarousel
+                    [value]="catHotels"
+                    [numVisible]="4"
+                    [numScroll]="1"
+                    [circular]="true"
+                    [responsiveOptions]="responsiveOptions"
+                >
+                    <ng-template pTemplate="item" let-hotel>
+                        <div class="item">
+                            <img [src]="hotel.image" [alt]="hotel.name" class="hotel-img">
+                            <p class="hotel-caption">{{hotel.name}}</p>
+                        </div>
+                    </ng-template>
+
+                </p-carousel>
+            </div>
+        </div>
+    </div>
+
+    <div class="choose-pet-container">
+        <h3>寵物種類</h3>
+        <div class="choose-pet-items">
+            <div class="choose-pet">
+                <img src="img/dog.png" alt="狗狗">
+                <button class="choose-pet-btn">狗狗</button>
+            </div>
+            <div class="choose-pet">
+                <img src="img/cat.png" alt="">
+                <button class="choose-pet-btn">貓貓</button>
+            </div>
+        </div>
+    </div>
+</div>
