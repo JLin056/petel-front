@@ -86,7 +86,7 @@
     color: #A24522;
     margin: 15px;
 }
-::ng-deep .p-listbox {
+.select-search ::ng-deep .p-listbox {
     border: none;
 }
 /* 評價框 */
