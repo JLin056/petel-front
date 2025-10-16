@@ -1,0 +1,203 @@
+<div class="wrap">
+    <div class="banner-background"></div>
+    <div class="banner">
+        <div class="search-container">
+            <div class="search-bar">
+                <p-floatlabel variant="in" class="search-label">
+                    <p-select [options]="cities" optionLabel="name" class="search-item"/>
+                    <label class="search-label">縣市</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <label class="search-label">入住日</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <label class="search-label">退房日</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-select class="search-item" [options]="types" optionLabel="name" />
+                    <label class="search-label">寵物種類</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" />
+                    <label class="search-label">寵物數量</label>
+                </p-floatlabel>
+                <p-button label="搜尋" styleClass="petel-search-btn"></p-button>
+            </div>
+        </div>
+    </div>
+    <div class="list-container">
+        <!-- 左側搜尋 -->
+        <div class="search-select-container">
+            <!-- 旅館名稱搜尋 -->
+            <div class="hotel-name-search">
+                <p>搜尋</p>
+                <p-inputgroup>
+                    <input pInputText placeholder="e.g. 熊讚寵物窩" />
+                    <p-inputgroup-addon>
+                        <p-button icon="pi pi-search" severity="secondary" />
+                    </p-inputgroup-addon>
+                </p-inputgroup>
+            </div>
+            <!-- 價格選擇框 -->
+            <div class="select-search">
+                <div class="select-search-title">
+                   <p>您的口袋有多深</p>
+                </div>
+                <p-listbox
+                    [options]="priceRanges"
+                    [multiple]="true"
+                    [metaKeySelection]="false"
+                    class="price-listbox"
+                >
+                    <ng-template let-opt pTemplate="item">
+                        <div class="price-item">
+                            <span class="price-text">
+                                $ {{ opt.min | number:'1.0-0' }} - $ {{ opt.max | number:'1.0-0' }}
+                            </span>
+                        </div>
+                    </ng-template>
+                </p-listbox>
+            </div>
+            <!-- 評價選擇框 -->
+            <div class="select-search">
+                <div class="select-search-title">
+                   <p>評價以上我才要</p>
+                </div>
+                <div class="rating-select-search">
+                    <p-rating />
+                </div>
+            </div>
+            <!-- 熱門搜尋條件 -->
+            <div class="select-search">
+                <div class="select-search-title">
+                    <p>熱門搜尋條件</p>
+                </div>
+                <p-listbox
+                    [options]="hotFilters"
+                    [multiple]="true"
+                    [metaKeySelection]="false"
+                    optionLabel="name"
+                    class="filter-listbox"
+                >
+                </p-listbox>
+            </div>
+        </div>
+        <!-- 右側列表 -->
+        <div class="hotel-container">
+            <div class="tab-container">
+                <h4>中山區：12 個搜尋結果</h4>
+                <div class="sort-items">
+                    <p-floatlabel variant="in" class="sort-label">
+                        <p-select [options]="sortSelect" optionLabel="name" class="sort-selectbox"/>
+                        <label class="sort-label">排序</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <!-- 旅館列表 -->
+            <div class="hotel-list-container">
+                <!-- 單個旅館列表 -->
+                <div class="hotel-list-item">
+                    <img src="img/hotelImg.png" alt="旅館照片">
+                    <div class="hotel-list-text">
+                        <div class="hotel-list-info">
+                            <h4>萌寵大冒險</h4>
+                            <div class="hotel-list-review">
+                                <p-rating [(ngModel)]="value" [readonly]="true" />
+                                <span>4.5</span>
+                                <span> （1200 則評論）</span>
+                            </div>
+                            <p class="hotel-list-content">
+                                Live a little and celbrate with champagne<br>
+                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
+                            </p>
+                        </div>
+                        <div class="hotel-list-price">
+                            <div class="hotel-list-price-detail">
+                                <h4>$240</h4>
+                                <p>（已含稅）</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 單個旅館列表 -->
+                <div class="hotel-list-item">
+                    <img src="img/hotelImg.png" alt="旅館照片">
+                    <div class="hotel-list-text">
+                        <div class="hotel-list-info">
+                            <h4>萌寵大冒險</h4>
+                            <div class="hotel-list-review">
+                                <p-rating [(ngModel)]="value" [readonly]="true" />
+                                <span>4.5</span>
+                                <span> （1200 則評論）</span>
+                            </div>
+                            <p class="hotel-list-content">
+                                Live a little and celbrate with champagne<br>
+                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
+                            </p>
+                        </div>
+                        <div class="hotel-list-price">
+                            <div class="hotel-list-price-detail">
+                                <h4>$240</h4>
+                                <p>（已含稅）</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 單個旅館列表 -->
+                <div class="hotel-list-item">
+                    <img src="img/hotelImg.png" alt="旅館照片">
+                    <div class="hotel-list-text">
+                        <div class="hotel-list-info">
+                            <h4>萌寵大冒險</h4>
+                            <div class="hotel-list-review">
+                                <p-rating [(ngModel)]="value" [readonly]="true" />
+                                <span>4.5</span>
+                                <span> （1200 則評論）</span>
+                            </div>
+                            <p class="hotel-list-content">
+                                Live a little and celbrate with champagne<br>
+                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
+                            </p>
+                        </div>
+                        <div class="hotel-list-price">
+                            <div class="hotel-list-price-detail">
+                                <h4>$240</h4>
+                                <p>（已含稅）</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 單個旅館列表 -->
+                <div class="hotel-list-item">
+                    <img src="img/hotelImg.png" alt="旅館照片">
+                    <div class="hotel-list-text">
+                        <div class="hotel-list-info">
+                            <h4>萌寵大冒險</h4>
+                            <div class="hotel-list-review">
+                                <p-rating [(ngModel)]="value" [readonly]="true" />
+                                <span>4.5</span>
+                                <span> （1200 則評論）</span>
+                            </div>
+                            <p class="hotel-list-content">
+                                Live a little and celbrate with champagne<br>
+                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
+                            </p>
+                        </div>
+                        <div class="hotel-list-price">
+                            <div class="hotel-list-price-detail">
+                                <h4>$240</h4>
+                                <p>（已含稅）</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- 分頁器 -->
+    <div class="card flex justify-center">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120" [rowsPerPageOptions]="[10, 20, 30]" />
+    </div>
+</div>
