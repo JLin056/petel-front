@@ -67,6 +67,14 @@ export class HomePage implements OnInit {
             { name: '熊讚寵物窩', image: 'img/hotelImg.png' },
             { name: '喵喵旅館',   image: 'img/hotelImg.png' },
             { name: '汪星驛站',   image: 'img/hotelImg.png' },
+            { name: '毛孩假期',   image: 'img/hotelImg.png' },
+            { name: '熊讚寵物窩', image: 'img/hotelImg.png' },
+            { name: '喵喵旅館',   image: 'img/hotelImg.png' },
+            { name: '汪星驛站',   image: 'img/hotelImg.png' },
+            { name: '毛孩假期',   image: 'img/hotelImg.png' },
+            { name: '熊讚寵物窩', image: 'img/hotelImg.png' },
+            { name: '喵喵旅館',   image: 'img/hotelImg.png' },
+            { name: '汪星驛站',   image: 'img/hotelImg.png' },
             { name: '毛孩假期',   image: 'img/hotelImg.png' }
         ];
 

@@ -31,7 +31,7 @@
     <div class="recommend-container">
         <div class="recommend-container-dog" >
             <h3>狗狗旅館 精選店家</h3>
-            <div class="hotel-carousel-dog" (wheel)="onWheel($event, dogCarousel)">
+            <div class="hotel-carousel-dog">
                 <p-carousel
                     #dogCarousel
                     [value]="dogHotels"
@@ -53,7 +53,7 @@
 
          <div class="recommend-container-cat" >
             <h3>貓貓旅館 精選店家</h3>
-            <div class="hotel-carousel-cat" (wheel)="onWheel($event, catCarousel)">
+            <div class="hotel-carousel-cat">
                 <p-carousel
                     #catCarousel
                     [value]="catHotels"
