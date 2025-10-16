@@ -1,0 +1,38 @@
+.wrap {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.dialog {
+    background-color: #F0E4D8;
+    padding: 50px;
+}
+.Logo-container {
+    display: flex;
+    justify-content: start;
+    margin-bottom: 10px;
+}
+.img-title {
+    display: flex;
+    gap: 10px;
+}
+.img-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px
+}
+.card {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.submit-btn {
+    background-color: #fff;
+    padding: 5px 20px;
+    border: none;
+}
