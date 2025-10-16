@@ -1,0 +1,31 @@
+<div class="wrap">
+    <div class="dialog">
+        <div class="Logo-container">
+            <div class="Logo">
+                <img src="img/Logo.png" alt="">
+            </div>
+        </div>
+        <div class="img-container">
+            <h3>新增圖片</h3>
+            <div class="img-title">
+                <p>標題：</p>
+                <input type="text">
+                <p>順序：</p>
+                <input type="text">
+            </div>
+            <div class="card" (click)="fileInput.click()">
+                <p>上傳圖片</p>
+                <small>點擊選擇你想要的檔案</small>
+            </div>
+            <!-- 隱藏 input 框 -->
+            <input
+                #fileInput
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+            />
+            <button class="submit-btn">送出</button>
+        </div>
+    </div>
+</div>
