@@ -6,14 +6,18 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
+import { LoginDialog } from '../login-dialog/login-dialog';
 
 @Component({
   selector: 'app-header',
-  imports: [FormsModule, ButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule],
+  imports: [FormsModule, ButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, LoginDialog],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-
+    loginDialogVisible = false;
+    showDialog() {
+        this.loginDialogVisible = true;
+    }
 
 }

@@ -4,6 +4,7 @@ import { routes } from './app.routes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { providePrimeNG } from 'primeng/config';
 import PetelTheme from './petel-theme';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +17,8 @@ export const appConfig: ApplicationConfig = {
         preset: PetelTheme
       },
       ripple: true // 需要水波特效就開
-    })
+    }),
+    provideHttpClient()
   ]
 };
 

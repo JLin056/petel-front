@@ -15,6 +15,8 @@
 
     <div class="account">
         <i class="pi pi-comments" style="color: #2e2424; font-size: 1.5rem;"></i>
-        <i class="pi pi-user" style="color: #2e2424; font-size: 1.5rem;"></i>
+        <i class="pi pi-user" style="color: #2e2424; font-size: 1.5rem;" (click)="showDialog()"></i>
     </div>
 </div>
+
+<app-login-dialog [(visible)]="loginDialogVisible"></app-login-dialog>

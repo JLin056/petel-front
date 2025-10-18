@@ -1,0 +1,22 @@
+<p-dialog
+    header="會員登入"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{width: '350px'}"
+>
+    <div class="container">
+        <div class="input-container">
+            <label for="email">Email</label>
+            <input pInputText id="email" class="email-input" [(ngModel)]="email" />
+        </div>
+
+        <div class="input-container">
+            <label for="password">Password</label>
+        <p-password [(ngModel)]="password" />
+        </div>
+    </div>
+    <div class="button-container">
+        <p-button label="Cancel" severity="secondary" (click)="visible = false"></p-button>
+        <p-button label="Login" (click)="onLogin()" />
+    </div>
+</p-dialog>
