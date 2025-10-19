@@ -3,31 +3,24 @@
     [modal]="true"
     [(visible)]="visible"
     (onHide)="onHideDialog()"
-    [style]="{width: '450px'}"
+    [style]="{width: '400px'}"
     styleClass = "petel-auth-dialog"
 >
     <div class="container">
         <div class="input-container">
-            <label for="email">Email</label>
+            <label for="email">信箱</label>
             <input pInputText id="email" class="email-input" [(ngModel)]="email" />
         </div>
 
         <div class="input-container">
-            <label for="password">Password</label>
+            <label for="password">密碼</label>
             <p-password [(ngModel)]="password" />
         </div>
 
         <div class="input-container">
-            <label for="confirm">Confirm Password</label>
-            <p-password [(ngModel)]="confirm">
-                <!-- <ng-template pTemplate="footer" *ngIf="confirm && password !== confirm">
-                    <small class="pw-hint-error">密碼不一致</small>
-                </ng-template> -->
-            </p-password>
+            <label for="confirm">確認密碼</label>
+            <p-password [(ngModel)]="confirm"></p-password>
         </div>
-        <!-- <div class="hint" *ngIf="confirm && password !== confirm">
-            <span class="p-text-secondary block mb-8">密碼不一致 </span>
-        </div> -->
     </div>
     <div class="button-container">
         <p-button label="Cancel" severity="secondary" (click)="onHideDialog()"></p-button>
