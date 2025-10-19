@@ -1,0 +1,109 @@
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.in_out_dates {
+    width: 80%;
+    padding-top: 60px;
+    margin: 0 auto;
+    display: flex;
+    /* 啟用 flexbox 水平排列 */
+    justify-content: space-between;
+    /* 三個區塊左右平均分布，有間距 */
+    align-items: center;
+    /* 垂直置中對齊 */
+    gap: 10px;
+    /* 子元素之間間距（可選） */
+}
+
+.in_out_dates>div {
+    flex: 1;
+    /* 三個子 div 平均分寬 */
+    min-width: 0;
+    /* 防止內容溢出 */
+}
+
+.hotel_infos {
+    display: flex;
+    width: 80%;
+    margin: 0 auto;
+    background-color: #F0E4D8;
+}
+
+.hotel_infos_photo {
+    flex: 1;
+    /* 左邊占一半 */
+}
+
+.hotel_infos_text {
+    flex: 1;
+    /* 右邊占一半 */
+    display: flex;
+    flex-direction: column;
+    /* 直向排列 */
+}
+
+.order_infos {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #F0E4D8;
+}
+
+.additional_infos {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #F0E4D8;
+}
+
+.guest_infos {
+    padding: 10px;
+    width: 80%;
+    margin: 0 auto;
+    background-color: #F0E4D8;
+}
+
+.guest_infos_diff {
+    padding: 10px;
+    /* width: 80%;
+    margin: 0 auto; */
+    background-color: #F0E4D8;
+}
+
+.order_note {
+    padding: 10px;
+    width: 80%;
+    margin: 0 auto;
+    background-color: #F0E4D8;
+}
+
+.payment_options {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #F0E4D8;
+}
+
+.submit_button {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #824d28;
+    color: #ffe8c4;
+    margin-bottom: 60px;
+}
+
+.input_square_frame {
+    padding: 10px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100px;
+}
+
+img {
+    display: block;
+    /* 確保圖片能正確填滿容器 */
+    max-width: 80%;
+    /* 圖片的最大寬度為父容器的 100% */
+    display: flex;
+    align-items: center;
+}
