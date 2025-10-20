@@ -1,0 +1,35 @@
+<p-dialog
+    header="會員註冊"
+    [modal]="true"
+    [(visible)]="visible"
+    (onHide)="onHideDialog()"
+    [style]="{width: '600px'}"
+    styleClass = "petel-auth-dialog"
+>
+    <div class="container">
+        <div class="input-container">
+            <label for="email">信箱</label>
+            <input pInputText id="email" class="email-input" [(ngModel)]="email" />
+        </div>
+
+        <div class="input-container">
+            <label for="password">密碼</label>
+            <p-password [(ngModel)]="password" />
+        </div>
+
+        <div class="input-container">
+            <label for="confirm">確認密碼</label>
+            <p-password [(ngModel)]="confirm"></p-password>
+        </div>
+    </div>
+    <div class="button-container">
+        <p-button label="取消" severity="secondary" (click)="onHideDialog()"></p-button>
+        <p-button label="註冊" (click)="onRegister()" />
+    </div>
+
+    <div class="auth-footer">
+        <span class="p-text-secondary block mb-8">已有帳號？ </span>
+        <a class="auth-link" (click)="onGoLogin()">立刻登入</a>
+    </div>
+</p-dialog>
+

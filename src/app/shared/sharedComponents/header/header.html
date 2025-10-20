@@ -15,6 +15,32 @@
 
     <div class="account">
         <i class="pi pi-comments" style="color: #2e2424; font-size: 1.5rem;"></i>
-        <i class="pi pi-user" style="color: #2e2424; font-size: 1.5rem;"></i>
+        <i class="pi pi-user" style="color: #2e2424; font-size: 1.5rem;" (click)="showLogin()"></i>
     </div>
 </div>
+
+<!-- 登入 dialog -->
+<app-login-dialog
+    *ngIf="loginDialogVisible"
+    [(visible)]="loginDialogVisible"
+    (goRegister)="openRegister()"
+    (forgot)="openForgot()"
+>
+</app-login-dialog>
+
+<!-- 註冊 dialog -->
+<app-register-dialog
+  *ngIf="registerDialogVisible"
+  [(visible)]="registerDialogVisible"
+  (goLogin)="openLogin()"
+>
+</app-register-dialog>
+
+<!-- 忘記密碼 -->
+<app-forgot-password
+  *ngIf="forgotDialogVisible"
+  [(visible)]="forgotDialogVisible"
+  (visibleChange)="forgotDialogVisible = $event"
+  (sent)="openLogin()"
+>
+</app-forgot-password>
