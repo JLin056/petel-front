@@ -1,0 +1,107 @@
+.section-label {
+  font-size: 28px; /* 原本沒有設定，補上 */
+}
+
+.btn-save,
+.btn-cancel,
+.btn-upload {
+  font-size: 16px; /* 讓按鈕字更顯眼 */
+}
+
+
+.room-form-container {
+  background-color: #f8f1e9;
+  width: 100%;       /* 全寬 */
+  height: 100%;      
+  margin: 0;         /* 移除自動置中 */
+  padding: 20px;     /* 內距可以保留 */
+  box-sizing: border-box; /* 讓 padding 不影響總寬高 */
+}
+
+
+.page-title {
+  font-size: 35px;
+  font-weight: bold;
+  color: #3a1f0b;
+  border-bottom: 3px solid #3a1f0b;
+  padding-bottom: 9px;
+  margin-bottom: 25px;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-label {
+  display: block;
+  font-weight: bold;
+  color: #3a1f0b;
+  margin-bottom: 7px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background-color: #fffdf8;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.btn-upload {
+  background-color: #974B2C;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-upload:hover {
+  background-color: #a4642b;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center; 
+  gap: 300px; /* 調整按鈕間距 */
+  margin-top: 15px;
+}
+
+
+.btn-save {
+  background-color: #974B2C;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background-color: #a4642b;
+}
+
+.btn-cancel {
+  background-color: #974B2C;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background-color: #c5b09b;
+}
+
+.merchant-container {
+  display: flex;
+  height: 100vh;
+}

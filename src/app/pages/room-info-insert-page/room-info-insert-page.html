@@ -1,0 +1,39 @@
+<div class="room-form-container">
+    <h2 class="page-title">房型資訊</h2>
+    <form [formGroup]="roomForm" class="form-body">
+        <!-- 房型圖片 -->
+        <div class="form-section">
+            <label class="section-label">房型圖片</label>
+            <button type="button" class="btn-upload">新增圖片</button>
+        </div>
+
+        <!-- 房型名稱 -->
+        <div class="form-section">
+            <label class="section-label">房型名稱</label>
+            <input formControlName="name" type="text" placeholder="請輸入房型名稱" class="input" />
+        </div>
+
+        <!-- 房型說明 -->
+        <div class="form-section">
+            <label class="section-label">空間大小</label>
+            <textarea formControlName="description" rows="5" placeholder="請輸入房型說明" class="textarea"></textarea>
+        </div>
+
+        <!-- 房間設備 -->
+        <div class="form-section">
+            <label class="section-label">房間說明</label>
+            <textarea formControlName="equipment" rows="6" placeholder="請輸入房間設備" class="textarea"></textarea>
+        </div>
+        <!-- 價格 -->
+        <div class="form-section">
+            <label class="section-label">價格 NT$ / 天</label>
+            <input formControlName="price" type="text" placeholder="請輸入房間價格" class="input" />
+        </div>
+        <!-- 按鈕 -->
+        <div class="form-buttons">
+            <button type="button" class="btn-save">確 認 新 增</button>
+            <button type="reset" class="btn-cancel">取 消 新 增</button>
+        </div>
+
+    </form>
+</div>
