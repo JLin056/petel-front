@@ -1,0 +1,88 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 2rem;
+}
+
+.main-card {
+  width: 60%;
+  background: #fff;
+}
+
+.payment-panel {
+  background: #fffbea;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.card-form {
+  padding: 1rem 0;
+}
+
+.card-icons {
+  margin-bottom: 1rem;
+}
+
+.icon {
+  width: 32px;
+  margin-right: 8px;
+}
+
+.p-field,
+.p-field-group {
+  margin-bottom: 1rem;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 1rem;
+  background-color: #265ed7;
+  color: #fff;
+}
+
+.notify-email {
+  display: block;
+  margin: 1rem 0;
+  color: #757575;
+  font-size: 0.9rem;
+}
+
+.warn-section {
+  background: #fff3cd;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 2rem;
+  color: #d9534f;
+  font-size: 0.95rem;
+}
+
+.sidebar {
+  width: 35%;
+  margin-left: 2rem;
+}
+
+.hotel-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.hotel-img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.order-summary {
+  background: #eafaf6;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.benefit-info {
+  font-size: 0.95rem;
+  color: #465829;
+}

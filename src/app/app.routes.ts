@@ -4,6 +4,7 @@ import { HotelListPage } from './pages/hotel-list-page/hotel-list-page';
 import { UploadImg } from './shared/sharedComponents/upload-img/upload-img';
 import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
+import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
 
 
 export const routes: Routes = [
@@ -26,5 +27,9 @@ export const routes: Routes = [
     {
         path: 'merchants/homepage',
         component: MerchantHomePage
+    },
+    {
+        path: 'book/authorize',
+        component: AuthorizingPage
     }
 ];
