@@ -1,0 +1,32 @@
+<div class="reviews-page">
+    <h2 class="page-title">評價</h2>
+
+    @for (review of reviews; track review.orderNo) {
+    <div class="review-card">
+        <div class="review-header">
+            <div class="order-number">訂單編號：{{ review.orderNo }}</div>
+        </div>
+
+        <div class="review">
+            <div class="review-text-content">
+                <p class="review-content">{{ review.comment }}</p>
+            </div>
+
+            <div class="stars-rating">
+                <span>價格：{{ review.price }}⭐</span><br>
+                <span>環境：{{ review.environment }}⭐</span><br>
+                <span>服務：{{ review.service }}⭐</span><br>
+            </div>
+        </div>
+
+        <button class="btn-detail">詳細資料</button>
+    </div>
+    } @empty {
+    <div class="no-reviews">目前沒有任何評價資料。</div>
+    }
+
+         <!-- 分頁器 -->
+    <div class="card flex justify-center">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120" [rowsPerPageOptions]="[10, 20, 30]" />
+    </div>
+</div>
