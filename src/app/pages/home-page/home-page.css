@@ -56,6 +56,7 @@
 
 .recommend-container-dog h3,
 .recommend-container-cat h3 {
+    font-size: 30px;
     padding: 50px;
 }
 .hotel-carousel {
@@ -67,6 +68,7 @@
 .item p{
     margin-top: 20px;
     font-weight: 500;
+    font-size: 25px;
 }
 .item img{
     border-radius: 10px;

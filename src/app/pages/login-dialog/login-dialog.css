@@ -1,10 +1,14 @@
 :host ::ng-deep .petel-auth-dialog .p-dialog-header {
   padding-left: 30px;
 }
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+  font-size: 1.75rem;
+}
 .container {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    font-size: 2rem;
 }
 .input-container {
     display: flex;
@@ -12,16 +16,36 @@
     align-items: center;
     justify-content: space-between;
 }
+.input-container input {
+    width: 70%;
+}
+:host ::ng-deep .input-container p-password {
+    width: 70%;
+}
+:host ::ng-deep .input-container p-password .p-password {
+    width: 100%;
+}
+:host ::ng-deep .input-container p-password input {
+    width: 100%;
+}
 .button-container {
     margin-top: 10px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 40px;
+    font-size: 2rem;
+}
+:host ::ng-deep .button-container .p-button {
+  font-size: 1.25rem;
+}
+
+:host ::ng-deep .button-container .p-button .p-button-label {
+  font-size: 1.25rem;
 }
 .aux-row {
     text-align: right;
     margin-top: 10px;
-    font-size: 0.9rem;
+    font-size: 1.25rem;
 }
 .auth-link {
     text-decoration: none;
@@ -29,7 +53,7 @@
     cursor: pointer;
 }
 .auth-link:hover {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 .auth-footer {
     display: flex;
@@ -37,5 +61,5 @@
     align-items: center;
     margin-top: 14px;
     gap: 6px;
-    font-size: 0.9rem;
+    font-size: 1.25rem;
 }
