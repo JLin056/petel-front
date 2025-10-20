@@ -1,23 +1,17 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-    <div class="in_out_dates">
-        <div class="in_out_dates_1">
-            <p-floatlabel class="search-label">
-                <p-datepicker formControlName="checkIn" class="search-item" dateFormat="yy.mm.dd" showIcon
-                    iconDisplay="input"></p-datepicker>
-                <label>入住日期</label>
-            </p-floatlabel>
+    <div class="dates">
+        <div class="in_out_dates">
+            <p-iftalabel>
+                <p-datepicker formControlName="rangeDates" selectionMode="range" dateFormat="yy.mm.dd" inputId="date"
+                    showIcon iconDisplay="input" [readonlyInput]="true" />
+                <label for="date"> 請選取您的入住日期和退房日期 </label>
+            </p-iftalabel>
         </div>
-        <div class="in_out_dates_2">
-            <p-floatlabel class="search-label">
-                <p-datepicker formControlName="checkOut" class="search-item" dateFormat="yy.mm.dd" showIcon
-                    iconDisplay="input"></p-datepicker>
-                <label>退房日期</label>
-            </p-floatlabel>
-        </div>
-        <div class="in_out_dates_3">
+        <div class="between_in_out">
             <p-floatlabel>
-                <input pInputText id="lengthOfStay" formControlName="lengthOfStay" autocomplete="off" [disabled]="true" />
+                <input pInputText id="lengthOfStay" formControlName="lengthOfStay" autocomplete="off"
+                    [disabled]="true" />
                 <label for="lengthOfStay"> 晚數 </label>
             </p-floatlabel>
         </div>
@@ -25,13 +19,14 @@
 
     <div class="hotel_infos">
         <div class="hotel_infos_photo">
-            <img
+            <img class="hotel_photo"
                 src="https://blog-static.kkday.com/zh-tw/blog/wp-content/uploads/2025/03/Snapinst.app_278024614_170723668634791_2379235125175504030_n_1080.jpg" />
         </div>
         <div class="hotel_infos_text">
 
-            <p> 您的住宿資訊 </p>
-            <table>
+            <p class="hotel_infos_text_title"> 您的住宿資訊： </p>
+
+            <table class="hotel_infos_text_table">
                 <tr>
                     <td> 旅館名稱 </td>
                     <td> {{ propertyName }} </td>
@@ -57,7 +52,7 @@
             <i class="pi pi-info-circle"></i> 您的訂單資訊
         </div>
         <div class="order_infos_detail">
-            <table>
+            <table class="order_infos_detail_table">
                 <tr>
                     <td> 房型名稱 </td>
                     <td> {{ roomName }} </td>
@@ -80,7 +75,7 @@
             <i class="pi pi-info-circle"></i> 其它重要資訊
         </div>
         <div class="additional_infos_text">
-            <table>
+            <table class="additional_infos_text_table">
                 <tr>
                     <td> 入住時間 </td>
                     <td> {{ checkNotice }} </td>
@@ -97,41 +92,49 @@
         </div>
     </div>
 
-    <div class="guest_infos" [formGroup]="guestFormGroup">
+    <div class="guest_infos">
 
         <div class="guest_infos_title">
             <i class="pi pi-info-circle"></i> 訂購人資訊
         </div>
 
         <div class="guest_infos_same">
-            <p-radiobutton formControlName="guestType" name="guest" value="y" inputId="ingredient1" />
-            <label for="ingredient1" class="ml-2">同會員資料</label>
 
+            <p-radiobutton formControlName="guestType" name="guest" value="y" inputId="ingredient1" />
+            <label for="ingredient1" class="guestType"> 同會員資料：使用該帳號註冊紀錄之姓名、Email、手機號碼 </label>
+
+            @if (form.controls.guestType.value === 'y') {
             <div class="member_data">
-                <p> 使用該帳號註冊紀錄之姓名、Email、手機號碼： </p>
-                <p> 訂購人姓名：{{ memberName }} </p>
-                <p> 訂購人Email：{{ memberEmail }} </p>
-                <p> 訂購人手機號碼：{{ memberPhone }} </p>
+                <p class="member_data_p"> 訂購人姓名：{{ memberName }} </p>
+                <p class="member_data_p"> 訂購人Email：{{ memberEmail }} </p>
+                <p class="member_data_p"> 訂購人手機號碼：{{ memberPhone }} </p>
             </div>
+            }
+
         </div>
 
         <div class="guest_infos_diff">
+
             <p-radiobutton formControlName="guestType" name="guest" value="n" inputId="ingredient2" />
-            <label for="ingredient2" class="ml-2">自行輸入</label>
+            <label for="ingredient2" class="guestType">自行輸入</label>
 
-            <p-inputgroup>
-                <p-inputgroup-addon>
-                    <i class="pi pi-user"></i>
-                </p-inputgroup-addon>
-                <input pInputText placeholder="請輸入訂購人的姓名" formControlName="guestName" [disabled]="isSameGuest" />
-            </p-inputgroup>
+            @if (form.controls.guestType.value === 'n') {
+            <div class="guest_infos_diff_input">
+                <p-inputgroup>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-user"></i>
+                    </p-inputgroup-addon>
+                    <input pInputText placeholder="請輸入訂購人的姓名" formControlName="guestName" />
+                </p-inputgroup>
+                <p-inputgroup>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-phone"></i>
+                    </p-inputgroup-addon>
+                    <input pInputText placeholder="請輸入訂購人的手機號碼" formControlName="guestPhone" />
+                </p-inputgroup>
+            </div>
+            }
 
-            <p-inputgroup>
-                <p-inputgroup-addon>
-                    <i class="pi pi-phone"></i>
-                </p-inputgroup-addon>
-                <input pInputText placeholder="請輸入訂購人的手機號碼" formControlName="guestPhone" [disabled]="isSameGuest" />
-            </p-inputgroup>
         </div>
 
     </div>
@@ -141,10 +144,16 @@
             <i class="pi pi-info-circle"></i> 其餘需求
         </div>
         <div class="order_note_text">
-            <p-inputgroup>
-                <input class="input_square_frame" placeholder="例如：客製化飲食、餵藥照顧、即時狀態回報、預計抵達時間、其他需求等"
-                    formControlName="note" />
-            </p-inputgroup>
+            <p-editor class="input_square_frame" placeholder="例如：客製化飲食、餵藥照顧、即時狀態回報、預計抵達時間、其他需求等" formControlName="note"
+                [style]="{ height: '320px' }">
+                <ng-template #header>
+                    <span class="ql-formats">
+                        <button type="button" class="ql-bold" aria-label="Bold"></button>
+                        <button type="button" class="ql-italic" aria-label="Italic"></button>
+                        <button type="button" class="ql-underline" aria-label="Underline"></button>
+                    </span>
+                </ng-template>
+            </p-editor>
         </div>
     </div>
 

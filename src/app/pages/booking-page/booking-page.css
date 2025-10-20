@@ -1,28 +1,39 @@
 form {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 60px;
+}
+
+.dates {
+    padding-top: 60px;
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .in_out_dates {
-    width: 80%;
-    padding-top: 60px;
-    margin: 0 auto;
-    display: flex;
-    /* 啟用 flexbox 水平排列 */
-    justify-content: space-between;
-    /* 三個區塊左右平均分布，有間距 */
-    align-items: center;
-    /* 垂直置中對齊 */
-    gap: 10px;
-    /* 子元素之間間距（可選） */
+    flex: 1;
+    max-width: 75%;
 }
 
-.in_out_dates>div {
-    flex: 1;
-    /* 三個子 div 平均分寬 */
-    min-width: 0;
-    /* 防止內容溢出 */
+.between_in_out {
+    margin-left: auto;
+    max-width: 25%;
+}
+
+.dates ::ng-deep .p-datepicker,
+.dates ::ng-deep .p-datepicker .p-inputtext,
+.dates input[pInputText] {
+    height: 60px;
+}
+
+.in_out_dates ::ng-deep .p-datepicker {
+    width: 100%;
+}
+
+.in_out_dates ::ng-deep .p-datepicker .p-inputtext {
+    width: 100%;
 }
 
 .hotel_infos {
@@ -34,15 +45,41 @@ form {
 
 .hotel_infos_photo {
     flex: 1;
-    /* 左邊占一半 */
+}
+
+.hotel_photo {
+    padding: 5%;
 }
 
 .hotel_infos_text {
     flex: 1;
-    /* 右邊占一半 */
     display: flex;
     flex-direction: column;
-    /* 直向排列 */
+}
+
+.hotel_infos_text_title {
+    font-weight: bold;
+    color: #666;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.hotel_infos_text_table {
+    width: 100%;
+    border-collapse: collapse;
+    /* 移除預設的格子間距 */
+}
+
+.hotel_infos_text_table td {
+    padding: 15px 30px;
+}
+
+/* 如果想讓左欄（標題欄）與右欄有不同樣式 */
+.hotel_infos_text_table td:first-child {
+    font-weight: bold;
+    color: #666;
+    width: 180px;
+    /* 固定左欄寬度 */
 }
 
 .order_infos {
@@ -51,10 +88,60 @@ form {
     background-color: #F0E4D8;
 }
 
+.order_infos_titie {
+    font-weight: bold;
+    color: #666;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+}
+
+.order_infos_detail_table {
+    width: 100%;
+    border-collapse: collapse;
+    /* 移除預設的格子間距 */
+}
+
+.order_infos_detail_table td {
+    padding: 15px 30px;
+}
+
+/* 如果想讓左欄（標題欄）與右欄有不同樣式 */
+.order_infos_detail_table td:first-child {
+    font-weight: bold;
+    color: #666;
+    width: 250px;
+    /* 固定左欄寬度 */
+}
+
 .additional_infos {
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+}
+
+.additional_infos_titie {
+    font-weight: bold;
+    color: #666;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+}
+
+.additional_infos_text_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.additional_infos_text_table td {
+    padding: 15px 30px;
+}
+
+/* 如果想讓左欄（標題欄）與右欄有不同樣式 */
+.additional_infos_text_table td:first-child {
+    font-weight: bold;
+    color: #666;
+    width: 250px;
 }
 
 .guest_infos {
@@ -64,11 +151,36 @@ form {
     background-color: #F0E4D8;
 }
 
+.guest_infos_title {
+    font-weight: bold;
+    color: #666;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
+}
+
+.guest_infos_same {
+    padding: 30px;
+}
+
 .guest_infos_diff {
-    padding: 10px;
-    /* width: 80%;
-    margin: 0 auto; */
-    background-color: #F0E4D8;
+    padding: 30px;
+}
+
+.guestType {
+    padding-left: 15px;
+    font-weight: bold;
+    color: #666;
+}
+
+.member_data {
+    padding-top: 30px;
+    padding-left: 60px;
+    font-size: 95%;
+}
+
+.guest_infos_diff_input {
+    padding-top: 15px;
 }
 
 .order_note {
@@ -76,6 +188,14 @@ form {
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+}
+
+.order_note_title {
+    font-weight: bold;
+    color: #666;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
 }
 
 .payment_options {
@@ -96,7 +216,7 @@ form {
     padding: 10px;
     margin: 0 auto;
     width: 100%;
-    height: 100px;
+    height: 400px;
 }
 
 img {

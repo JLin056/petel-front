@@ -1,7 +1,6 @@
-import { EcPayParams } from './../../core/interfaces/BOOK006Res.interface';
 import { BookService } from './../../core/services/book-service';
-import { Component, inject, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { DatePicker } from 'primeng/datepicker';
@@ -15,48 +14,37 @@ import { RadioButton } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { HotelService } from '../../core/services/hotel-service';
 import { BOOK001Tranrq, OrderDetail, OrderInfo } from '../../core/interfaces/BOOK001Req.interface';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { EditorModule } from 'primeng/editor';
 
 @Component({
     selector: 'app-booking-page',
-    imports: [FormsModule, ButtonModule, DatePicker, FloatLabel, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule],
+    imports: [FormsModule, ButtonModule, DatePicker, FloatLabel, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule],
     templateUrl: './booking-page.html',
     styleUrl: './booking-page.css'
 })
 export class BookingPage implements OnInit {
 
-    // formGroup 相關屬性：start
-
     form = new FormGroup({
+
+        // 日期相關
+        rangeDates: new FormControl<Date[]>([new Date(), this.getTomorrowDate()]),
+        lengthOfStay: new FormControl<string>(''),
+
+        // 訂單相關
+        roomQuantity: new FormControl<number>(0),
+
+        // 入住者相關
+        guestType: new FormControl<string>('y'),
+        guestName: new FormControl<string | null>(null),
+        guestPhone: new FormControl<string | null>(null),
+
+        // 其他
         note: new FormControl<string>(''),
-        payments: new FormArray<FormControl<string>>([]),
-        dateFormGroup: new FormGroup({}),
-        orderFormGroup: new FormGroup({}),
-        guestFormGroup: new FormGroup({}),
         selectedPayment: new FormControl<string>('')
     });
 
-    dateFormGroup = new FormGroup({
-        checkIn: new FormControl<Date>(new Date()),
-        checkOut: new FormControl<Date>(new Date()),
-        lengthOfStay: new FormControl<string>(''),
-    });
-
-    orderFormGroup = new FormGroup({
-        roomQuantity: new FormControl<number>(0)
-    });
-
-    guestFormGroup = new FormGroup({
-        guestType: new FormControl<string>('y'),
-        guestName: new FormControl<string | null>(null),
-        guestPhone: new FormControl<string | null>(null)
-    });
-
-    // formGroup 相關屬性：end
-
-    http = inject(HttpClient);
-
-    constructor(private hotelService: HotelService, private bookService: BookService, private httpClient: HttpClient) { };
+    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient) { };
 
     ngOnInit(): void {
         this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用假資料
@@ -90,17 +78,13 @@ export class BookingPage implements OnInit {
 
     // 旅館相關屬性：end
 
-
-
-
-    isSameGuest: boolean = true;
     totalAmount = 800;
-    memberName = 'a';
-    memberEmail = 'b';
-    memberPhone = 'c';
+    memberName = 'William Huang';
+    memberEmail = 'asdfg@gmail.com';
+    memberPhone = '0912345678';
     lengthOfStay = '';
-    roomName = '';
-    roomPrice = 0;
+    roomName = '超大型犬尊榮套房';
+    roomPrice = 2500;
     roomQuantity = 0;
     selectedPayment = '';
     maxNumOfRooms = 10;
@@ -108,21 +92,21 @@ export class BookingPage implements OnInit {
 
 
 
-    setGuestInfo() {
-        if (this.guestFormGroup.controls.guestType.value === 'y') {
-            this.guestFormGroup.setValue({
-                guestType: 'y',
-                guestName: null,
-                guestPhone: null
-            });
-        } else {
-            this.guestFormGroup.setValue({
-                guestType: 'n',
-                guestName: this.guestFormGroup.controls.guestName.value,
-                guestPhone: this.guestFormGroup.controls.guestPhone.value
-            });
-        }
-    }
+    // setGuestInfo() {
+    //     if (this.form.controls.guestType.value === 'y') {
+    //         this.form.patchValue({
+    //             guestType: 'y',
+    //             guestName: null,
+    //             guestPhone: null
+    //         });
+    //     } else {
+    //         this.form.patchValue({
+    //             guestType: 'n',
+    //             guestName: this.guestFormGroup.controls.guestName.value,
+    //             guestPhone: this.guestFormGroup.controls.guestPhone.value
+    //         });
+    //     }
+    // }
 
 
     paymentOptions = [
@@ -135,18 +119,18 @@ export class BookingPage implements OnInit {
             user_id: 'U000000001',
             property_id: 'P000000001',
             payment_id: this.selectedPayment,
-            check_in: this.dateToString(this.dateFormGroup.controls.checkIn.value!),
-            check_out: this.dateToString(this.dateFormGroup.controls.checkOut.value!),
+            check_in: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
+            check_out: this.dateToString(this.form.controls.rangeDates.value!.at(-1)!),
             status: '未付款',
-            guest: this.guestFormGroup.controls.guestType.value!,
-            guest_name: this.guestFormGroup.controls.guestName.value,
-            guest_phone: this.guestFormGroup.controls.guestPhone.value,
+            guest: this.form.controls.guestType.value!,
+            guest_name: this.form.controls.guestName.value,
+            guest_phone: this.form.controls.guestPhone.value,
             note: this.form.controls.note.value
         }
 
         const orderDetails: OrderDetail[] = [{ // 先使用假資料
             room_id: 'R000000001',
-            arrival_date: this.dateToString(this.dateFormGroup.controls.checkIn.value!),
+            arrival_date: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
             room_quantity: 1,
             room_price: 1
         }]
@@ -163,41 +147,47 @@ export class BookingPage implements OnInit {
 
 
     onSubmit() {
-        this.setGuestInfo();
-        this.setDataForCreateOrder();
-        this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
-            next: (response) => {
-                if (response.MWHEADER.RETURNCODE !== "0000") {
-                    return;
-                }
-                // 下方是呼叫綠界信用卡API
-                this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-                    next: (response) => {
-                        const body = new URLSearchParams();
-                        const params = response.TRANRS.ecPay_params;
-                        body.set('MerchantID', params.MerchantID);
-                        body.set('MerchantTradeNo', params.MerchantTradeNo);
-                        body.set('MerchantTradeDate', params.MerchantTradeDate);
-                        body.set('PaymentType', params.PaymentType);
-                        body.set('TotalAmount', params.TotalAmount.toString());
-                        body.set('TradeDesc', params.TradeDesc);
-                        body.set('ItemName', params.ItemName);
-                        body.set('ReturnURL', params.ReturnURL);
-                        body.set('ChoosePayment', params.ChoosePayment);
-                        body.set('CheckMacValue', params.CheckMacValue);
-                        body.set('EncryptType', params.EncryptType.toString());
+        // this.setGuestInfo();
+        // this.setDataForCreateOrder();
+        // this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
+        //     next: (response) => {
+        //         if (response.MWHEADER.RETURNCODE !== "0000") {
+        //             return;
+        //         }
+        //         // 下方是呼叫綠界信用卡API
+        //         this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+        //             next: (response) => {
+        //                 const body = new URLSearchParams();
+        //                 const params = response.TRANRS.ecPay_params;
+        //                 body.set('MerchantID', params.MerchantID);
+        //                 body.set('MerchantTradeNo', params.MerchantTradeNo);
+        //                 body.set('MerchantTradeDate', params.MerchantTradeDate);
+        //                 body.set('PaymentType', params.PaymentType);
+        //                 body.set('TotalAmount', params.TotalAmount.toString());
+        //                 body.set('TradeDesc', params.TradeDesc);
+        //                 body.set('ItemName', params.ItemName);
+        //                 body.set('ReturnURL', params.ReturnURL);
+        //                 body.set('ChoosePayment', params.ChoosePayment);
+        //                 body.set('CheckMacValue', params.CheckMacValue);
+        //                 body.set('EncryptType', params.EncryptType.toString());
 
-                        const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        //                 const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
 
-                        this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
-                    }
-                });
-            }
-        });
+        //                 this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
+        //             }
+        //         });
+        //     }
+        // });
 
     }
 
     dateToString(date: Date) {
         return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    }
+
+    getTomorrowDate(): Date {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return tomorrow;
     }
 }
