@@ -16,10 +16,10 @@
             </p-floatlabel>
         </div>
         <div class="in_out_dates_3">
-            <p-iftalabel>
-                <input pInputText id="lengthOfStay" formControlName="lengthOfStay" autocomplete="off" />
+            <p-floatlabel>
+                <input pInputText id="lengthOfStay" formControlName="lengthOfStay" autocomplete="off" [disabled]="true" />
                 <label for="lengthOfStay"> 晚數 </label>
-            </p-iftalabel>
+            </p-floatlabel>
         </div>
     </div>
 
@@ -44,6 +44,10 @@
                     <td> 旅館電話 </td>
                     <td> {{ propertyTel }} </td>
                 </tr>
+                <tr>
+                    <td> 旅館資訊 </td>
+                    <td> {{ propertyInfo }} </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -59,12 +63,13 @@
                     <td> {{ roomName }} </td>
                 </tr>
                 <tr>
-                    <td> 房型數量 </td>
-                    <td> {{ roomQuantity }} </td>
-                </tr>
-                <tr>
                     <td> 房型價格 </td>
                     <td> {{ roomPrice }} </td>
+                </tr>
+                <tr>
+                    <td> 房型數量 </td>
+                    <td> <p-inputnumber formControlName="roomQuantity" mode="decimal" [showButtons]="true"
+                            inputId="minmax-buttons" [min]="0" [max]="maxNumOfRooms" /> </td>
                 </tr>
             </table>
         </div>
@@ -78,28 +83,28 @@
             <table>
                 <tr>
                     <td> 入住時間 </td>
-                    <td> {{ propertyName }} </td>
+                    <td> {{ checkNotice }} </td>
                 </tr>
                 <tr>
                     <td> 旅館注意事項 </td>
-                    <td> {{ propertyAddress }} </td>
+                    <td> {{ propertyNotice }} </td>
                 </tr>
                 <tr>
                     <td> 寵物注意事項 </td>
-                    <td> {{ propertyTel }} </td>
+                    <td> {{ petNotice }} </td>
                 </tr>
             </table>
         </div>
     </div>
 
-    <div class="guest_infos">
+    <div class="guest_infos" [formGroup]="guestFormGroup">
 
         <div class="guest_infos_title">
             <i class="pi pi-info-circle"></i> 訂購人資訊
         </div>
 
         <div class="guest_infos_same">
-            <p-radiobutton formControlName="guestType" name="guest" value="memberInfo" inputId="ingredient1" />
+            <p-radiobutton formControlName="guestType" name="guest" value="y" inputId="ingredient1" />
             <label for="ingredient1" class="ml-2">同會員資料</label>
 
             <div class="member_data">
@@ -111,7 +116,7 @@
         </div>
 
         <div class="guest_infos_diff">
-            <p-radiobutton formControlName="guestType" name="guest" value="ownInfo" inputId="ingredient2" />
+            <p-radiobutton formControlName="guestType" name="guest" value="n" inputId="ingredient2" />
             <label for="ingredient2" class="ml-2">自行輸入</label>
 
             <p-inputgroup>
@@ -144,14 +149,20 @@
     </div>
 
     <div class="payment_options">
-        <div class="totalPrice">
-
+        <div class="total_price">
+            <p class="title"> 總金額 </p>
+            <p class="amount"> {{ totalAmount }} </p>
+            <p class="note"> 備註：已含稅金、服務費 </p>
         </div>
-        <div formArrayName="payments">
-            <!-- @for (item of payments; track $index) {
-            <p-radiobutton name="paym" value="memberInfo" [(ngModel)]="whichDatas" inputId="ingredient1" />
-            <label for="ingredient1" class="ml-2">同會員資料</label>
-            } -->
+        <div class="payment_ways">
+            <div class="flex flex-col gap-4">
+                @for (paymentOption of paymentOptions; track $index) {
+                <p-radiobutton [inputId]="paymentOption.label" name="paymentMethod" [value]="paymentOption.value"
+                    formControlName="selectedPayment" />
+                <label [for]="paymentOption.label" class="ml-2"> {{ paymentOption.label }} </label>
+                <p class="payment_statement"> {{ paymentOption.statement }} </p>
+                }
+            </div>
         </div>
     </div>
 
