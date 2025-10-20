@@ -1,0 +1,64 @@
+:host ::ng-deep .petel-auth-dialog .p-dialog-header {
+  padding-left: 30px;
+}
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+  font-size: 1.75rem;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-size: 1.75rem;
+}
+.input-container {
+    display: flex;
+    /* gap: 20px; */
+    align-items: center;
+    justify-content: space-between;
+}
+.input-container input {
+    width: 70%;
+}
+:host ::ng-deep .input-container p-password {
+    width: 70%;
+}
+:host ::ng-deep .input-container p-password .p-password {
+    width: 100%;
+}
+:host ::ng-deep .input-container p-password input {
+    width: 100%;
+}
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+:host ::ng-deep .button-container .p-button {
+  font-size: 1.25rem;
+}
+:host ::ng-deep .button-container .p-button .p-button-label {
+  font-size: 1.25rem;
+}
+.auth-link {
+    text-decoration: none;
+    color: #A24522;
+    cursor: pointer;
+}
+.auth-link:hover {
+  opacity: 0.7;
+}
+.auth-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 14px;
+    gap: 6px;
+    font-size: 1.25rem;
+}
+.hint {
+    display: flex;
+    justify-content: center;
+    color: #A24522;
+    /* font-size: 0.9rem; */
+}

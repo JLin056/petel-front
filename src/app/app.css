@@ -7,10 +7,11 @@ html, body {
 } */
 main {
   flex-grow: 1; /* 讓 main 區域佔據所有剩餘空間 */
+  font-size: 25px;
 }
 
 .layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 讓畫面至少撐滿整個視窗高度 */
+  min-height: 100%; /* 讓畫面至少撐滿整個視窗高度 */
 }
