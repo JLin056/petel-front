@@ -19,7 +19,7 @@ export const routes: Routes = [
         component: UploadImg
     },
     {
-        path: 'roomInfoEdit',
+        path: 'merchants/roomInfoEdit',
         component: RoomInfoEditPage
     }
 ];

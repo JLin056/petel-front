@@ -70,8 +70,8 @@
 .form-buttons {
   display: flex;
   justify-content: center; 
-  gap: 400px; /* 調整按鈕間距 */
-  margin-top: 45px;
+  gap: 300px; /* 調整按鈕間距 */
+  margin-top: 15px;
 }
 
 
