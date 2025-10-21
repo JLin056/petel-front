@@ -3,7 +3,9 @@ import { HomePage } from './pages/home-page/home-page';
 import { HotelListPage } from './pages/hotel-list-page/hotel-list-page';
 import { UploadImg } from './shared/sharedComponents/upload-img/upload-img';
 import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-page';
+import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-insert-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
+import { UserPage } from './pages/user-page/user-page';
 
 import { BookingPage } from './pages/booking-page/booking-page';
 
@@ -21,8 +23,16 @@ export const routes: Routes = [
         component: UploadImg
     },
     {
+        path: 'history',
+        component: UserPage
+    },
+    {
         path: 'merchants/roomInfo/edit',
         component: RoomInfoEditPage
+    },
+    {
+        path: 'merchants/roomInfo/insert',
+        component: RoomInfoInsertPage
     },
     {
         path: 'merchants/homepage',
