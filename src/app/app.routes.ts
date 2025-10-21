@@ -27,6 +27,8 @@ export const routes: Routes = [
     {
         path: 'merchants/roomInfo/insert',
         component: RoomInfoInsertPage
+    },
+    {
         path: 'merchants/homepage',
         component: MerchantHomePage
     }
