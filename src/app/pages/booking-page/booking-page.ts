@@ -29,7 +29,7 @@ export class BookingPage implements OnInit {
 
         // 日期相關
         rangeDates: new FormControl<Date[]>([new Date(), this.getTomorrowDate()]),
-        lengthOfStay: new FormControl<string>(''),
+        lengthOfStay: new FormControl<string>('1'),
 
         // 訂單相關
         roomQuantity: new FormControl<number>(0),
@@ -50,7 +50,7 @@ export class BookingPage implements OnInit {
         this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用假資料
             next: (response) => {
 
-                if (!response.TRANRS) {
+                if (response.MWHEADER.RETURNCODE !== '0000') {
                     return;
                 }
 
@@ -82,32 +82,11 @@ export class BookingPage implements OnInit {
     memberName = 'William Huang';
     memberEmail = 'asdfg@gmail.com';
     memberPhone = '0912345678';
-    lengthOfStay = '';
     roomName = '超大型犬尊榮套房';
     roomPrice = 2500;
-    roomQuantity = 0;
+    roomQuantity = 1;
     selectedPayment = '';
     maxNumOfRooms = 10;
-
-
-
-
-    // setGuestInfo() {
-    //     if (this.form.controls.guestType.value === 'y') {
-    //         this.form.patchValue({
-    //             guestType: 'y',
-    //             guestName: null,
-    //             guestPhone: null
-    //         });
-    //     } else {
-    //         this.form.patchValue({
-    //             guestType: 'n',
-    //             guestName: this.guestFormGroup.controls.guestName.value,
-    //             guestPhone: this.guestFormGroup.controls.guestPhone.value
-    //         });
-    //     }
-    // }
-
 
     paymentOptions = [
         { label: '現場付款', value: 'Y000000001', statement: '須提供信用卡資訊預先授權' },
@@ -143,18 +122,14 @@ export class BookingPage implements OnInit {
         return tranrq
     }
 
-
-
-
     onSubmit() {
-        // this.setGuestInfo();
         // this.setDataForCreateOrder();
         // this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
         //     next: (response) => {
         //         if (response.MWHEADER.RETURNCODE !== "0000") {
         //             return;
         //         }
-        //         // 下方是呼叫綠界信用卡API
+        //         // 下方是呼叫綠界信用卡API：可能還需要修
         //         this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
         //             next: (response) => {
         //                 const body = new URLSearchParams();
@@ -178,10 +153,9 @@ export class BookingPage implements OnInit {
         //         });
         //     }
         // });
-
     }
 
-    dateToString(date: Date) {
+    dateToString(date: Date): string {
         return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     }
 

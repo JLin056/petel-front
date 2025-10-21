@@ -1,31 +1,34 @@
+/* ===== 表單容器 ===== */
 form {
     display: flex;
     flex-direction: column;
     gap: 60px;
+    padding-bottom: 60px;
 }
 
+/* ===== 日期選擇區域 ===== */
 .dates {
     padding-top: 60px;
     width: 80%;
     margin: 0 auto;
     display: flex;
     align-items: center;
+    gap: 20px;
 }
 
 .in_out_dates {
-    flex: 1;
-    max-width: 75%;
+    flex: 3;
 }
 
 .between_in_out {
-    margin-left: auto;
-    max-width: 25%;
+    flex: 1;
 }
 
 .dates ::ng-deep .p-datepicker,
 .dates ::ng-deep .p-datepicker .p-inputtext,
 .dates input[pInputText] {
     height: 60px;
+    font-size: 18px;
 }
 
 .in_out_dates ::ng-deep .p-datepicker {
@@ -36,96 +39,123 @@ form {
     width: 100%;
 }
 
+/* ===== 旅館資訊區域 ===== */
 .hotel_infos {
     display: flex;
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+    border-radius: 12px;
+    overflow: hidden;
+    align-items: flex-start;
 }
 
 .hotel_infos_photo {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5%;
 }
 
 .hotel_photo {
-    padding: 5%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    max-width: 100%;
 }
 
 .hotel_infos_text {
     flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 30px;
+    padding-top: 5%;
 }
 
 .hotel_infos_text_title {
     font-weight: bold;
+    font-size: 30px;
     color: #666;
-    padding-top: 30px;
-    padding-bottom: 30px;
+    margin-bottom: 20px;
+    margin-top: 0;
 }
 
 .hotel_infos_text_table {
     width: 100%;
     border-collapse: collapse;
-    /* 移除預設的格子間距 */
 }
 
 .hotel_infos_text_table td {
-    padding: 15px 30px;
+    padding: 12px 15px;
+    vertical-align: top;
+    font-size: 18px;
 }
 
-/* 如果想讓左欄（標題欄）與右欄有不同樣式 */
 .hotel_infos_text_table td:first-child {
     font-weight: bold;
     color: #666;
-    width: 180px;
-    /* 固定左欄寬度 */
+    width: 120px;
+    white-space: nowrap;
+    font-size: 20px;
 }
 
+/* ===== 訂單資訊區域 ===== */
 .order_infos {
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+    border-radius: 12px;
+    padding: 30px;
 }
 
 .order_infos_titie {
     font-weight: bold;
+    font-size: 30px;
     color: #666;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .order_infos_detail_table {
     width: 100%;
     border-collapse: collapse;
-    /* 移除預設的格子間距 */
 }
 
 .order_infos_detail_table td {
-    padding: 15px 30px;
+    padding: 12px 15px;
+    vertical-align: middle;
+    font-size: 18px;
 }
 
-/* 如果想讓左欄（標題欄）與右欄有不同樣式 */
 .order_infos_detail_table td:first-child {
     font-weight: bold;
     color: #666;
-    width: 250px;
-    /* 固定左欄寬度 */
+    width: 150px;
+    font-size: 20px;
 }
 
+/* ===== 其它重要資訊區域 ===== */
 .additional_infos {
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+    border-radius: 12px;
+    padding: 30px;
 }
 
 .additional_infos_titie {
     font-weight: bold;
+    font-size: 30px;
     color: #666;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .additional_infos_text_table {
@@ -134,96 +164,337 @@ form {
 }
 
 .additional_infos_text_table td {
-    padding: 15px 30px;
+    padding: 12px 15px;
+    vertical-align: top;
+    font-size: 18px;
 }
 
-/* 如果想讓左欄（標題欄）與右欄有不同樣式 */
 .additional_infos_text_table td:first-child {
     font-weight: bold;
     color: #666;
-    width: 250px;
+    width: 150px;
+    white-space: nowrap;
+    font-size: 20px;
 }
 
+/* ===== 訂購人資訊區域 ===== */
 .guest_infos {
-    padding: 10px;
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+    border-radius: 12px;
+    padding: 30px;
 }
 
 .guest_infos_title {
     font-weight: bold;
+    font-size: 30px;
     color: #666;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.guest_infos_same {
-    padding: 30px;
-}
-
+.guest_infos_same,
 .guest_infos_diff {
-    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.guest_infos_same:last-child,
+.guest_infos_diff:last-child {
+    margin-bottom: 0;
 }
 
 .guestType {
-    padding-left: 15px;
-    font-weight: bold;
+    padding-left: 10px;
+    font-weight: 500;
     color: #666;
+    cursor: pointer;
+    font-size: 18px;
 }
 
 .member_data {
-    padding-top: 30px;
-    padding-left: 60px;
-    font-size: 95%;
+    margin-top: 20px;
+    margin-left: 35px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.member_data_p {
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 18px;
+}
+
+.member_data_p:last-child {
+    margin-bottom: 0;
 }
 
 .guest_infos_diff_input {
-    padding-top: 15px;
+    margin-top: 20px;
+    margin-left: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
+.guest_infos_diff_input ::ng-deep .p-inputtext {
+    font-size: 18px;
+}
+
+/* ===== 其餘需求區域 ===== */
 .order_note {
-    padding: 10px;
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+    border-radius: 12px;
+    padding: 30px;
 }
 
 .order_note_title {
     font-weight: bold;
+    font-size: 30px;
     color: #666;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+.order_note_text {
+    width: 100%;
+}
+
+.input_square_frame {
+    width: 100%;
+}
+
+/* 編輯器字體調整 */
+.order_note_text ::ng-deep .ql-editor {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.order_note_text ::ng-deep .ql-editor.ql-blank::before {
+    font-size: 18px;
+    color: #999;
+    font-style: normal;
+}
+
+/* ===== 付款選項區域 ===== */
 .payment_options {
     width: 80%;
     margin: 0 auto;
     background-color: #F0E4D8;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    gap: 40px;
 }
 
+.total_price {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    border: 2px solid #824d28;
+}
+
+.total_price .title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.total_price .amount {
+    font-size: 48px;
+    font-weight: 700;
+    color: #824d28;
+    margin-bottom: 10px;
+}
+
+.total_price .note {
+    font-size: 16px;
+    color: #999;
+    text-align: center;
+}
+
+.payment_ways {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+}
+
+.payment_ways .flex {
+    display: flex;
+}
+
+.payment_ways .flex-col {
+    flex-direction: column;
+}
+
+.payment_ways .gap-4 {
+    gap: 20px;
+}
+
+.payment_ways label {
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 18px;
+}
+
+.payment_statement {
+    margin-left: 35px;
+    color: #999;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* ===== 送出按鈕 ===== */
 .submit_button {
     width: 80%;
     margin: 0 auto;
+    padding: 18px 40px;
     background-color: #824d28;
     color: #ffe8c4;
-    margin-bottom: 60px;
+    font-size: 20px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(130, 77, 40, 0.3);
 }
 
-.input_square_frame {
-    padding: 10px;
-    margin: 0 auto;
-    width: 100%;
-    height: 400px;
+.submit_button:hover {
+    background-color: #6a3d21;
+    box-shadow: 0 6px 16px rgba(130, 77, 40, 0.4);
+    transform: translateY(-2px);
 }
 
-img {
-    display: block;
-    /* 確保圖片能正確填滿容器 */
-    max-width: 80%;
-    /* 圖片的最大寬度為父容器的 100% */
-    display: flex;
-    align-items: center;
+.submit_button:active {
+    background-color: #5a3319;
+    box-shadow: 0 2px 8px rgba(130, 77, 40, 0.3);
+    transform: translateY(0);
+}
+
+.submit_button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* ===== 響應式設計 ===== */
+@media (max-width: 768px) {
+    .dates,
+    .hotel_infos,
+    .order_infos,
+    .additional_infos,
+    .guest_infos,
+    .order_note,
+    .payment_options,
+    .submit_button {
+        width: 95%;
+    }
+
+    .dates {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .in_out_dates,
+    .between_in_out {
+        flex: none;
+    }
+
+    .hotel_infos {
+        flex-direction: column;
+    }
+
+    .hotel_infos_photo {
+        padding: 20px;
+    }
+
+    .hotel_infos_text {
+        padding: 20px;
+    }
+
+    .hotel_infos_text_title,
+    .order_infos_titie,
+    .additional_infos_titie,
+    .guest_infos_title,
+    .order_note_title {
+        font-size: 24px;
+    }
+
+    .hotel_infos_text_table td,
+    .order_infos_detail_table td,
+    .additional_infos_text_table td {
+        font-size: 16px;
+        padding: 10px 8px;
+    }
+
+    .hotel_infos_text_table td:first-child,
+    .order_infos_detail_table td:first-child,
+    .additional_infos_text_table td:first-child {
+        font-size: 17px;
+        width: auto;
+    }
+
+    .payment_options {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .total_price {
+        padding: 20px;
+    }
+
+    .total_price .amount {
+        font-size: 28px;
+    }
+
+    .total_price .title {
+        font-size: 18px;
+    }
+
+    .member_data {
+        margin-left: 25px;
+        padding: 12px;
+    }
+
+    .guest_infos_diff_input {
+        margin-left: 25px;
+    }
+
+    .payment_statement {
+        margin-left: 25px;
+        font-size: 13px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .dates,
+    .hotel_infos,
+    .order_infos,
+    .additional_infos,
+    .guest_infos,
+    .order_note,
+    .payment_options,
+    .submit_button {
+        width: 90%;
+    }
 }
