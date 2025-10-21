@@ -1,0 +1,26 @@
+<p-dialog
+    [header]="header"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{width: '600px'}"
+    closable="true"
+    [dismissableMask]="true"
+    styleClass = "petel-auth-dialog"
+    (onHide)="onDialogHide()"
+>
+    <div class="content">
+        <p>{{ message }}</p>
+    </div>
+
+    <div class="button-container">
+        <p-button
+            [label]="cancelLabel"
+            severity="secondary"
+            (click)="onCancel()"
+        ></p-button>
+        <p-button
+            [label]="confirmLabel"
+            (click)="onConfirm()"
+        ></p-button>
+  </div>
+</p-dialog>

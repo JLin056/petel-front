@@ -5,6 +5,7 @@ import { UploadImg } from './shared/sharedComponents/upload-img/upload-img';
 import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-page';
 import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-insert-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
+import { UserPage } from './pages/user-page/user-page';
 
 
 export const routes: Routes = [
@@ -19,6 +20,10 @@ export const routes: Routes = [
     {
         path: 'imageTest',
         component: UploadImg
+    },
+    {
+        path: 'history',
+        component: UserPage
     },
     {
         path: 'merchants/roomInfo/edit',
