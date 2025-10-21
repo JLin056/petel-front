@@ -160,7 +160,10 @@ export class RegisterDialog {
                     console.log('註冊成功');
                     this.isLoading = false;
                     this.registerSuccess.emit(res);
-                    this.onHideDialog();
+                    this.onGoLogin();
+                } else if (res.MWHEADER.RETURNDESC === 'Email 已被使用') {
+                    this.errorMessage = res.MWHEADER.RETURNDESC;
+                    this.isLoading = false;
                 } else {
                     this.errorMessage = '註冊失敗';
                     this.isLoading = false;
