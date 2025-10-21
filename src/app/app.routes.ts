@@ -10,6 +10,7 @@ import { MerchantReviewListPage } from './pages/merchant-review-list-page/mercha
 
 import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
 
+import { BookingPage } from './pages/booking-page/booking-page';
 
 export const routes: Routes = [
     {
@@ -39,6 +40,10 @@ export const routes: Routes = [
     {
         path: 'merchants/homepage',
         component: MerchantHomePage
+    },
+    {
+        path: 'book',
+        component: BookingPage
     },
     {
         path: 'merchants/reviewList',
