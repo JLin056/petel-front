@@ -10,6 +10,7 @@ import { BookingDonePage } from './pages/booking-done-page/booking-done-page';
 import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
 
 import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
+import { ChatPage } from './pages/chat-page/chat-page';
 
 import { BookingPage } from './pages/booking-page/booking-page';
 
@@ -57,5 +58,9 @@ export const routes: Routes = [
     {
         path: 'book/authorize',
         component: AuthorizingPage
+    },
+    {
+        path: 'chat',
+        component: ChatPage
     }
 ];
