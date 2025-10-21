@@ -1,61 +1,158 @@
-<div class="container">
-  <div class="main-card">
-    <p-panel header="付款資訊" styleClass="payment-panel">
-      <div class="card-form">
-        <div class="card-icons">
-          <img src="assets/mastercard.png" alt="MasterCard" class="icon"/>
-          <img src="assets/visa.png" alt="Visa" class="icon"/>
-          <img src="assets/jcb.png" alt="JCB" class="icon"/>
-        </div>
-        <div class="p-field">
-          <label for="cardHolder">持卡人姓名</label>
-          <input id="cardHolder" type="text" class="p-inputtext"/>
-        </div>
-        <div class="p-field">
-          <label for="cardNum">信用卡卡號</label>
-          <input id="cardNum" type="text" class="p-inputtext"/>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <div class="page_title">
+        <h1>請提供您的信用卡資訊</h1>
+    </div>
+
+    <div class="payment_container">
+        <div class="payment_header">
+            <h2 class="payment_title">付款資訊</h2>
         </div>
 
-        <div class="p-field">
-          <label for="cvv">信用卡安全碼</label>
-          <input id="cvv" type="text" maxlength="4" class="p-inputtext"/>
+        <div class="payment_content">
+            <div class="card_logos">
+                <div class="card_logo">
+                    <img src="img/mastercard.png" alt="mastercard">
+                </div>
+                <div class="card_logo">
+                    <img src="img/visa.png" alt="visa">
+                </div>
+                <div class="card_logo">
+                    <img src="img/jcb.png" alt="jcb">
+                </div>
+            </div>
+
+            <div class="form_group">
+                <label class="form_label">持卡人姓名（請輸入卡片上的英文姓名）</label>
+                <input type="text" class="form_input">
+            </div>
+
+            <div class="form_group">
+                <label class="form_label">信用卡 / 金融卡卡號</label>
+                <input type="text" class="form_input" placeholder="格式：XXXX-XXXX-XXXX-XXXX" maxlength="19">
+            </div>
+
+            <div class="form_group">
+                <label class="form_label">卡片有效期限</label>
+                <div class="form_row">
+                    <div class="form_group">
+                        <select class="form_select">
+                            <option value="">Month</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                    <div class="form_group">
+                        <input type="text" class="form_input card_year" placeholder="Year" maxlength="4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form_group">
+                <label class="form_label">信用卡安全碼</label>
+                <input type="text" class="form_input cvv_input" placeholder="" maxlength="4">
+            </div>
+
         </div>
-        <button pButton type="button" class="submit-btn" label="立即預訂"></button>
-        <p-checkbox binary="true" label="已詳閱並同意相關訂購注意事項"/>
-        <small class="notify-email">訂購相關通知將寄送至信箱：abcd@gmail.com</small>
-      </div>
-      <div class="warn-section">
-        <p>注意事項</p>
-        <ul>
-          <li>訂房不等於完成付款，下單後請依頁面指示完成授權及付款。</li>
-          <li>信用卡預授權僅暫時保留額度，實際扣款以入住時為主。</li>
-          <li>刷卡失敗請檢查卡片資訊或聯絡銀行。</li>
-        </ul>
-      </div>
-    </p-panel>
-  </div>
-  <div class="sidebar">
-    <p-panel>
-      <div class="hotel-info">
-        <img src="assets/hotel.jpg" alt="hotel" class="hotel-img"/>
-        <h4>Petel_Name</h4>
-        <p>★ 4.5 (xx則評價)</p>
-        <p>Check in: yyyy/MM/dd 日 14:00</p>
-        <p>Check out: yyyy/MM/dd 日 12:00</p>
-      </div>
-      <div class="order-summary">
-        <div>number_of_rooms x number_of_nights: $800</div>
-        <div>Tax and service fees: $0</div>
-        <div>訂單總額: $800</div>
-      </div>
-      <div class="benefit-info">
-        <p>取得的預訂優惠券多少？</p>
-        <ul>
-          <li>積分回饋x%</li>
-          <li>專屬免費早餐（1份）</li>
-          <li>入住人員保險x日</li>
-        </ul>
-      </div>
-    </p-panel>
-  </div>
-</div>
+    </div>
+
+    <div class="notice_container">
+        <div class="notice_header">
+            <h2 class="notice_title">注意事項</h2>
+        </div>
+
+        <div class="notice_content">
+            <ol class="notice_list">
+                <li class="notice_item red">1. 本預訂修改服務僅提供修改備註，下單前請務必確認相關資訊</li>
+                <li class="notice_item red">2. 逾時入住或提前退房，恕不退還任何費用</li>
+                <li class="notice_item">3. 退款政策請參考右方說明欄</li>
+                <li class="notice_item">4. 延長住宿需重新訂房</li>
+                <li class="notice_item">5. 櫃檯人員將於入住時為客人辦理報到</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="order_info_container">
+        <p-card>
+            <ng-template pTemplate="header"> <!-- 隨機生成相片，因為可能會訂超過一間旅館 -->
+                <img src="https://blog-static.kkday.com/zh-tw/blog/wp-content/uploads/2025/03/Snapinst.app_278024614_170723668634791_2379235125175504030_n_1080.jpg"
+                    alt="PETEL" class="property_image">
+            </ng-template>
+
+            <div class="order_info_content">
+                <div class="section-header"> 訂單資訊 </div>
+
+                <div class="price-details"> <!-- 以對應到單一訂單標號為一個item -->
+                    @for (booking of bookings; track $index) {
+                    <h3 class="order"> 訂單編號為 {{ booking.orderId }} 的詳細資訊： </h3>
+                    @for (item of booking.detail; track $index) {
+                    <p class="order_item"> 入住時間：{{ item.arrivalDate }} </p>
+                    <p class="order_item"> 入住房型：{{ item.roomId }} </p> <!-- 要改成房型名稱 -->
+                    <p class="order_item"> 房型數量：{{ item.quantity }} </p>
+                    <p class="order_item"> 房型數量 x 房型價格：${{ item.price }} </p>
+                    }
+                    <p class="order"> 訂單編號為 {{ booking.orderId }} 的付款金額為 ${{ booking.hotelCharges }} </p>
+                    }
+
+                </div>
+
+                <p-divider></p-divider>
+
+                <div class="total_section">
+                    <div class="total_row">
+                        <span>訂單總額</span>
+                        <span class="total_amount">${{ totalAmount }}</span>
+                    </div>
+                </div>
+            </div>
+        </p-card>
+    </div>
+
+    <div class="cancellation_policy">
+        <h2 class="cancellation_title">取消的話要付多少錢？</h2>
+
+        <ol class="policy_list">
+            <li class="policy_item">1. 距離入住日期10天以上：免費取消</li>
+            <li class="policy_item">2. 距離入住日期5-10天：退款50%</li>
+            <li class="policy_item">3. 距離入住日期 5 天內：不退款</li>
+        </ol>
+
+        <div class="timeline_container">
+            <div class="timeline_bar">
+                <div class="timeline-dot dot-active"></div>
+                <div class="progress-segment progress-active"></div>
+                <div class="timeline-dot dot-inactive"></div>
+                <div class="progress-segment progress-inactive"></div>
+                <div class="timeline-dot dot-inactive"></div>
+                <div class="progress-segment progress-inactive"></div>
+                <div class="timeline-dot dot-inactive"></div>
+            </div>
+
+            <div class="timeline_labels">
+                <span class="timeline_label">今天</span>
+                <span class="timeline_label">入住前10天</span>
+                <span class="timeline_label">入住前5天</span>
+                <span class="timeline_label">入住當天</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="submit_container">
+        <div class="submit_button_container">
+            <button class="submit_button" type="submit">
+                送出授權
+            </button>
+        </div>
+    </div>
+
+</form>
