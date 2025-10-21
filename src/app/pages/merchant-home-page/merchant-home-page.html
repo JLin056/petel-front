@@ -1,0 +1,52 @@
+<div class="merchant-dashboard">
+    <!-- 上半部：當月銷售額 -->
+    <h2 class="page-title">當月銷售額</h2>
+
+    <div class="stats-cards">
+        @for (stat of stats; track stat) {
+        <div class="card">
+            <div class="card-icon">📊</div>
+            <div class="card-content">
+                <div class="card-value">{{ stat.value }}</div>
+                <div class="card-label">{{ stat.label }}</div>
+                <div class="card-change">{{ stat.change }}</div>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- 下半部：房型資訊 -->
+    <div class="section-header-row">
+        <div class="section-title">房型資訊</div>
+        <div class="btn-add-container">
+            <button class="btn-add">新增房型</button>
+        </div>
+    </div>
+
+    <div class="room-list">
+        @for (room of rooms; track room) {
+        <div class="room-card">
+            <img src="https://image.bvshop.tw/3430/home/3430_68e0ffea2e896.png.webp" alt="房型圖片" class="room-image" />
+
+            <div class="room-info">
+                <div class="room-name">{{ room.name }}</div>
+                <div class="room-detail">空間尺寸：{{ room.size }}</div>
+                <div class="room-detail">介紹：{{ room.info }}</div>
+                <div class="room-detail">房間設施：{{ room.facilities }}</div>
+
+                <div class="room-buttons">
+                    <button class="btn-detail">詳細資料</button>
+                    <button class="btn-edit">修改房型</button>
+                    <button class="btn-delete">刪除房型</button>
+                </div>
+            </div>
+
+            <div class="room-units">總房數<br />{{ room.totalUnits }}間</div>
+        </div>
+        }
+    </div>
+
+    <div class="btn-more-container">
+        <button class="btn-more">更多房型</button>
+    </div>
+</div>
