@@ -13,6 +13,7 @@ import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
 import { ChatPage } from './pages/chat-page/chat-page';
 
 import { BookingPage } from './pages/booking-page/booking-page';
+import { OrderTableComponent } from './pages/order-table-component/order-table-component';
 
 export const routes: Routes = [
     {
@@ -62,5 +63,9 @@ export const routes: Routes = [
     {
         path: 'chat',
         component: ChatPage
+    },
+    {
+        path:'orderTable',
+        component:OrderTableComponent
     }
 ];
