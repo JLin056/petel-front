@@ -6,6 +6,7 @@ import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-pag
 import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-insert-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
 import { UserPage } from './pages/user-page/user-page';
+import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
 
 
 export const routes: Routes = [
@@ -36,5 +37,9 @@ export const routes: Routes = [
     {
         path: 'merchants/homepage',
         component: MerchantHomePage
+    },
+    {
+        path: 'book/authorize',
+        component: AuthorizingPage
     }
 ];
