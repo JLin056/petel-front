@@ -17,10 +17,12 @@ import { BOOK001Tranrq, OrderDetail, OrderInfo } from '../../core/interfaces/BOO
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EditorModule } from 'primeng/editor';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
     selector: 'app-booking-page',
-    imports: [FormsModule, ButtonModule, DatePicker, FloatLabel, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule],
+    imports: [FormsModule, ButtonModule, DatePicker, FloatLabel, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule, ButtonModule],
     templateUrl: './booking-page.html',
     styleUrl: './booking-page.css'
 })
@@ -65,7 +67,7 @@ export class BookingPage implements OnInit {
         selectedPayment: new FormControl<string>('')
     });
 
-    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient, private router: Router) { };
+    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient, private router: Router, private messageService: MessageService) { };
 
     ngOnInit(): void {
         this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用固定的旅館編號
@@ -120,7 +122,7 @@ export class BookingPage implements OnInit {
 
     onSubmit() {
 
-        switch (this.form.controls.selectedPayment.value) { // test use only
+        switch (this.form.controls.selectedPayment.value) {
 
             case this.paymentOptions.at(0)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
@@ -131,7 +133,7 @@ export class BookingPage implements OnInit {
                     }
                 });
                 // 把資料帶過去
-                this.router.navigateByUrl('/book/authorize'); // 不同分支尚未合併，目前無法使用
+                this.router.navigateByUrl('/book/authorize');
                 break;
             }
 
@@ -142,34 +144,34 @@ export class BookingPage implements OnInit {
                             return;
                         }
                         // 下方是呼叫綠界信用卡API：可能還需要修
-                        this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-                            next: (response) => {
-                                const body = new URLSearchParams();
-                                const params = response.TRANRS.ecPay_params;
-                                body.set('MerchantID', params.MerchantID);
-                                body.set('MerchantTradeNo', params.MerchantTradeNo);
-                                body.set('MerchantTradeDate', params.MerchantTradeDate);
-                                body.set('PaymentType', params.PaymentType);
-                                body.set('TotalAmount', params.TotalAmount.toString());
-                                body.set('TradeDesc', params.TradeDesc);
-                                body.set('ItemName', params.ItemName);
-                                body.set('ReturnURL', params.ReturnURL);
-                                body.set('ChoosePayment', params.ChoosePayment);
-                                body.set('CheckMacValue', params.CheckMacValue);
-                                body.set('EncryptType', params.EncryptType.toString());
+                        // this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+                        //     next: (response) => {
+                        //         const body = new URLSearchParams();
+                        //         const params = response.TRANRS.ecPay_params;
+                        //         body.set('MerchantID', params.MerchantID);
+                        //         body.set('MerchantTradeNo', params.MerchantTradeNo);
+                        //         body.set('MerchantTradeDate', params.MerchantTradeDate);
+                        //         body.set('PaymentType', params.PaymentType);
+                        //         body.set('TotalAmount', params.TotalAmount.toString());
+                        //         body.set('TradeDesc', params.TradeDesc);
+                        //         body.set('ItemName', params.ItemName);
+                        //         body.set('ReturnURL', params.ReturnURL);
+                        //         body.set('ChoosePayment', params.ChoosePayment);
+                        //         body.set('CheckMacValue', params.CheckMacValue);
+                        //         body.set('EncryptType', params.EncryptType.toString());
 
-                                const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+                        //         const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
 
-                                this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
-                            }
-                        });
+                        //         this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
+                        //     }
+                        // });
                     }
                 });
                 break;
             }
 
             default: {
-                // 沒選付款方式，彈跳或漂浮視窗提醒
+                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '您需要選取一種付款方式' });
                 break;
             }
         }
