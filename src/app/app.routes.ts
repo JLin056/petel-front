@@ -7,7 +7,11 @@ import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-inse
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
 import { UserPage } from './pages/user-page/user-page';
 import { BookingDonePage } from './pages/booking-done-page/booking-done-page';
+import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
 
+import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
+
+import { BookingPage } from './pages/booking-page/booking-page';
 
 export const routes: Routes = [
     {
@@ -41,5 +45,17 @@ export const routes: Routes = [
     {
         path: 'book/finish',
         component: BookingDonePage
+    },
+    {
+        path: 'book',
+        component: BookingPage
+    },
+    {
+        path: 'merchants/reviewList',
+        component: MerchantReviewListPage
+    },
+    {
+        path: 'book/authorize',
+        component: AuthorizingPage
     }
 ];
