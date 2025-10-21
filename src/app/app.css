@@ -13,5 +13,5 @@ main {
 .layout {
   display: flex;
   flex-direction: column;
-  min-height: 100%; /* 讓畫面至少撐滿整個視窗高度 */
+  min-height: 100vh; /* 讓畫面至少撐滿整個視窗高度 */
 }

@@ -1,0 +1,162 @@
+<div class="wrap">
+    <!-- 會員資訊區 -->
+    <div class="user-info-container">
+        <div class="image">
+            <img class="avatar" [src]="user.avatarUrl || 'img/avatar.png'" alt="頭貼">
+        </div>
+        <div class="user-info">
+            <div class="title">
+                <i class="pi pi-info-circle"></i>
+                <h3>會員資訊</h3>
+            </div>
+            <div class="content">
+                <div class="item">
+                    <p class="material-symbols-outlined">person</p>
+                    <div class="item-text">
+                        <p>{{ user.name }}</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <p class="material-symbols-outlined">mail</p>
+                    <div class="item-text">
+                        <p>{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <p class="material-symbols-outlined">call</p>
+                    <div class="item-text">
+                        <p>{{ user.phone }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <p-button
+                    label="修改會員資訊"
+                    styleClass="button"
+                    (click)="openEdit()"
+                    [outlined]="true"
+                />
+                <p-button
+                    label="刪除會員"
+                    styleClass="button"
+                    (click)="showConfirm()"
+                    [outlined]="true"
+                />
+                <!-- <button type="button" class="button" (click)="openEdit()">修改會員資訊</button>
+                <button type="button" class="button" (click)="confirmDelete()">刪除會員</button> -->
+            </div>
+        </div>
+    </div>
+    <!-- 歷史訂單區 -->
+    <div class="order">
+        <h3>您的歷史訂單紀錄</h3>
+        <div class="order-item">
+            <div class="order-item-img">
+                <img src="img/hotelImg.png" alt="旅館照片">
+            </div>
+            <div class="order-item-content">
+                <h4>杜家村精品旅館</h4>
+                <div class="order-content">
+                    <div>
+                        <p>入住房型：迷你犬</p>
+                        <p>入住時間：2025/10/01 ~ 2025/10/03</p>
+                    </div>
+                    <div>
+                        <p>訂單狀態：已完成</p>
+                        <p>訂單金額：$300</p>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <!-- <button type="button" class="button" (click)="confirmDeleteOrder()">取消訂單</button> -->
+                    <p-toast />
+                    <!-- <p-confirmdialog /> -->
+                    <p-button
+                        label="取消訂單"
+                        styleClass="button"
+                        (click)="confirmDeleteOrder($event)"
+                        [outlined]="true"
+                    />
+                    <!-- <button type="button" class="button">聊聊</button>
+                    <button type="button" class="button">評論</button> -->
+                    <p-button
+                        label="聊聊"
+                        styleClass="button"
+                        [outlined]="true"
+                    />
+                    <p-button
+                        label="評論"
+                        styleClass="button"
+                        [outlined]="true"
+                    />
+                </div>
+            </div>
+        </div>
+         <div class="order-item">
+            <div class="order-item-img">
+                <img src="img/hotelImg.png" alt="旅館照片">
+            </div>
+            <div class="order-item-content">
+                <h4>杜家村精品旅館</h4>
+                <div class="order-content">
+                    <div>
+                        <p>入住房型：迷你犬</p>
+                        <p>入住時間：2025/10/01 ~ 2025/10/03</p>
+                    </div>
+                    <div>
+                        <p>訂單狀態：已完成</p>
+                        <p>訂單金額：$300</p>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <p-toast />
+                    <!-- <p-confirmdialog /> -->
+                    <p-button
+                        label="取消訂單"
+                        styleClass="button"
+                        (click)="confirmDeleteOrder($event)"
+                        [outlined]="true"
+                    />
+                    <!-- <button type="button" class="button">聊聊</button>
+                    <button type="button" class="button">評論</button> -->
+                    <p-button
+                        label="聊聊"
+                        styleClass="button"
+                        [outlined]="true"
+                    />
+                    <p-button
+                        label="評論"
+                        styleClass="button"
+                        [outlined]="true"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-toast />
+
+    <!-- 修改會員資訊 dialog -->
+    <app-update-user-dialog
+        [(visible)]="editVisible"
+        [user]="user"
+        (saved)="onEditSaved($event)">
+    </app-update-user-dialog>
+
+    <!-- 刪除會員 confirm dialog -->
+    <app-shared-confirm-dialog
+        [header]="'確認刪除會員'"
+        [message]="'確定要刪除此會員嗎？此操作無法復原。'"
+        [(visible)]="deleteUserVisible"
+        (confirm)="onDeleteUserConfirmed()"
+        (cancel)="deleteUserVisible = false"
+    ></app-shared-confirm-dialog>
+
+    <!-- 取消訂單 confirm dialog -->
+    <app-shared-confirm-dialog
+        [header]="'確認取消訂單'"
+        [message]="'確定要取消此訂單嗎？'"
+        [(visible)]="deleteOrderVisible"
+        (confirm)="onDeleteOrderConfirmed()"
+        (cancel)="deleteOrderVisible = false"
+    ></app-shared-confirm-dialog>
+</div>

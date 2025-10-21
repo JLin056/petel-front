@@ -1,0 +1,27 @@
+:host ::ng-deep .petel-auth-dialog .p-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 30px;
+}
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+    font-size: 1.6rem;
+    flex: 1;
+    text-align: center;
+}
+.content {
+    font-size: 1.5rem;
+    text-align: center;
+}
+/* 按鈕區 */
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+.button-container ::ng-deep .p-button {
+  font-size: 1.4rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
