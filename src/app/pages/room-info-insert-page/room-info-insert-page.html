@@ -1,0 +1,76 @@
+<div class="room-form-container">
+    <h2 class="page-title">房型資訊</h2>
+    <form [formGroup]="roomForm" class="form-body">
+        <!-- 房型圖片 -->
+        <div class="form-section">
+            <label class="section-label">房型圖片</label>
+            <button type="button" class="btn-upload">新增圖片</button>
+        </div>
+
+        <!-- 房型名稱 -->
+        <div class="form-section">
+            <label class="section-label">房型名稱</label>
+            <input formControlName="name" type="text" placeholder="請輸入房型名稱" class="input" />
+        </div>
+
+        <!-- 空間尺寸 -->
+        <div class="form-section">
+            <label class="section-label">空間尺寸</label>
+            <textarea formControlName="description" rows="5" placeholder="請輸入空間尺寸" class="textarea"></textarea>
+        </div>
+
+        <!-- 房間介紹 -->
+        <div class="form-section">
+            <label class="section-label">房間介紹</label>
+            <p-editor formControlName="equipment" [style]="{'height':'280px', 'background-color':'#fffdf8'}">
+                <ng-template pTemplate="header">
+                    <span class="ql-formats">
+                        <select class="ql-header">
+                            <option value="1">Heading</option>
+                            <option value="2">Subheading</option>
+                            <option selected>Normal</option>
+                        </select>
+                    </span>
+                    <span class="ql-formats">
+                        <button type="button" class="ql-bold" aria-label="Bold"></button>
+                        <button type="button" class="ql-italic" aria-label="Italic"></button>
+                        <button type="button" class="ql-underline" aria-label="Underline"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                        <button type="button" class="ql-list" value="bullet" aria-label="Bullet List"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-align">
+                            <option selected></option>
+                            Ï <option value="center"></option>
+                            <option value="right"></option>
+                            <option value="justify"></option>
+                        </select>
+                    </span>
+                </ng-template>
+            </p-editor>
+        </div>
+
+        <!-- 價格 -->
+        <div class="form-section">
+            <label class="section-label">價格 NT$ / 天</label>
+            <input formControlName="price" type="text" placeholder="請輸入此房間價格" class="input" />
+        </div>
+
+        <!-- 總房數 -->
+        <div class="form-section">
+            <label class="section-label">總房間數</label>
+            <input formControlName="unit" type="text" placeholder="請輸入此房間總數量" class="input" />
+        </div>
+
+        <div class="form-buttons">
+            <button type="button" class="btn-save">確 認 新 增</button>
+            <button type="reset" class="btn-cancel">取 消 新 增</button>
+        </div>
+
+    </form>
+</div>

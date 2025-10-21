@@ -43,7 +43,7 @@ export class ForgotPasswordDialog {
           header: '已寄出',
           message: `重設密碼連結已寄至 ${this.email}，請前往收信。`,
           icon: 'pi pi-envelope',
-          rejectVisible: false,         // 只顯示一顆「好」
+          rejectVisible: false,
           acceptLabel: '好',
           accept: () => this.onHideDialog()
         });

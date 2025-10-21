@@ -1,0 +1,53 @@
+:host ::ng-deep .petel-auth-dialog .p-dialog-header {
+  padding-left: 30px;
+}
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+  font-size: 1.75rem;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.75rem;
+}
+/* 頭貼區 */
+.avatar-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.avatar-box img {
+    width: 80%;
+}
+.avatar-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+}
+.avatar-actions ::ng-deep .p-button {
+  font-size: 1.5rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.hint, .err {
+    margin-top: 10px;
+    color: #757575;
+}
+/* 表單區 */
+.input-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+/* 按鈕區 */
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.button-container ::ng-deep .p-button {
+  font-size: 1.4rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+}

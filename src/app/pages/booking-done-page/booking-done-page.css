@@ -1,0 +1,181 @@
+/* ===== 訂單成功容器 ===== */
+.order_success_container {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* ===== 成功標題區域 ===== */
+.success_header {
+  background: linear-gradient(135deg, #f5a623 0%, #f7b84b 100%);
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.success_header i {
+  font-size: 36px;
+  color: white;
+}
+
+.success_header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* ===== 訂單內容區域 ===== */
+.order_content {
+  padding: 40px;
+  background-color: #fafafa;
+}
+
+/* ===== 資訊區塊 ===== */
+.info_section {
+  margin-bottom: 30px;
+}
+
+.info_section:last-of-type {
+  margin-bottom: 40px;
+}
+
+.section_title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.info_list {
+  padding-left: 20px;
+}
+
+.info_item {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.info_item:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== 按鈕群組 ===== */
+.button_group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+/* PrimeNG 按鈕樣式覆蓋 */
+::ng-deep .btn_primary {
+  background-color: #2196F3 !important;
+  border-color: #2196F3 !important;
+  color: white !important;
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+::ng-deep .btn_primary:hover {
+  background-color: #1976D2 !important;
+  border-color: #1976D2 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
+}
+
+::ng-deep .btn_danger {
+  background-color: #f44336 !important;
+  border-color: #f44336 !important;
+  color: white !important;
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+::ng-deep .btn_danger:hover {
+  background-color: #d32f2f !important;
+  border-color: #d32f2f !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4) !important;
+}
+
+::ng-deep .btn_info {
+  background-color: #2196F3 !important;
+  border-color: #2196F3 !important;
+  color: white !important;
+  padding: 12px 24px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+::ng-deep .btn_info:hover {
+  background-color: #1976D2 !important;
+  border-color: #1976D2 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
+}
+
+/* 按鈕圖標樣式 */
+::ng-deep .button_group .p-button-icon {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+/* ===== 響應式設計 ===== */
+@media (max-width: 768px) {
+  .order_success_container {
+    margin: 20px;
+    border-radius: 8px;
+  }
+
+  .success_header {
+    padding: 30px 20px;
+    flex-direction: column;
+  }
+
+  .success_header h1 {
+    font-size: 24px;
+  }
+
+  .success_header i {
+    font-size: 28px;
+  }
+
+  .order_content {
+    padding: 30px 20px;
+  }
+
+  .section_title {
+    font-size: 18px;
+  }
+
+  .info_item {
+    font-size: 15px;
+  }
+
+  .button_group {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  ::ng-deep .button_group .p-button {
+    width: 100%;
+  }
+}
