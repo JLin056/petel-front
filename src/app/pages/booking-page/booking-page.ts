@@ -14,8 +14,9 @@ import { RadioButton } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { HotelService } from '../../core/services/hotel-service';
 import { BOOK001Tranrq, OrderDetail, OrderInfo } from '../../core/interfaces/BOOK001Req.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EditorModule } from 'primeng/editor';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-booking-page',
@@ -25,29 +26,49 @@ import { EditorModule } from 'primeng/editor';
 })
 export class BookingPage implements OnInit {
 
-    form = new FormGroup({
+    // 旅館相關屬性
+    propertyName = '';
+    propertyTel = '';
+    propertyAddress = '';
+    propertyInfo = '';
+    checkNotice = '';
+    petNotice = '';
+    propertyNotice = '';
+    // 其餘無法在這個頁面被用戶編輯的屬性
+    totalAmount = 800;
+    memberName = 'William Huang';
+    memberEmail = 'asdfg@gmail.com';
+    memberPhone = '0912345678';
+    roomName = '超大型犬尊榮套房';
+    roomPrice = 2500;
+    roomQuantity = 1;
+    selectedPayment = '';
+    maxNumOfRooms = 10;
+    // 只有兩筆資料，直接在前端建資料
+    paymentOptions = [
+        { label: '現場付款', value: 'Y000000001', statement: '須提供信用卡資訊預先授權' },
+        { label: '線上刷卡', value: 'Y000000002', statement: '信用卡一次付清（將轉導至綠界付款頁面）' }
+    ];
 
+    form = new FormGroup({
         // 日期相關
         rangeDates: new FormControl<Date[]>([new Date(), this.getTomorrowDate()]),
         lengthOfStay: new FormControl<string>('1'),
-
         // 訂單相關
         roomQuantity: new FormControl<number>(0),
-
         // 入住者相關
         guestType: new FormControl<string>('y'),
         guestName: new FormControl<string | null>(null),
         guestPhone: new FormControl<string | null>(null),
-
         // 其他
         note: new FormControl<string>(''),
         selectedPayment: new FormControl<string>('')
     });
 
-    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient) { };
+    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient, private router: Router) { };
 
     ngOnInit(): void {
-        this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用假資料
+        this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用固定的旅館編號
             next: (response) => {
 
                 if (response.MWHEADER.RETURNCODE !== '0000') {
@@ -66,32 +87,7 @@ export class BookingPage implements OnInit {
         });
     }
 
-    // 旅館相關屬性：begin
 
-    propertyName = '';
-    propertyTel = '';
-    propertyAddress = '';
-    propertyInfo = '';
-    checkNotice = '';
-    petNotice = '';
-    propertyNotice = '';
-
-    // 旅館相關屬性：end
-
-    totalAmount = 800;
-    memberName = 'William Huang';
-    memberEmail = 'asdfg@gmail.com';
-    memberPhone = '0912345678';
-    roomName = '超大型犬尊榮套房';
-    roomPrice = 2500;
-    roomQuantity = 1;
-    selectedPayment = '';
-    maxNumOfRooms = 10;
-
-    paymentOptions = [
-        { label: '現場付款', value: 'Y000000001', statement: '須提供信用卡資訊預先授權' },
-        { label: '線上刷卡', value: 'Y000000002', statement: '信用卡一次付清（將轉導至綠界付款頁面）' }
-    ];
 
     setDataForCreateOrder() {
         const orderInfo: OrderInfo = {
@@ -123,36 +119,60 @@ export class BookingPage implements OnInit {
     }
 
     onSubmit() {
-        // this.setDataForCreateOrder();
-        // this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
-        //     next: (response) => {
-        //         if (response.MWHEADER.RETURNCODE !== "0000") {
-        //             return;
-        //         }
-        //         // 下方是呼叫綠界信用卡API：可能還需要修
-        //         this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-        //             next: (response) => {
-        //                 const body = new URLSearchParams();
-        //                 const params = response.TRANRS.ecPay_params;
-        //                 body.set('MerchantID', params.MerchantID);
-        //                 body.set('MerchantTradeNo', params.MerchantTradeNo);
-        //                 body.set('MerchantTradeDate', params.MerchantTradeDate);
-        //                 body.set('PaymentType', params.PaymentType);
-        //                 body.set('TotalAmount', params.TotalAmount.toString());
-        //                 body.set('TradeDesc', params.TradeDesc);
-        //                 body.set('ItemName', params.ItemName);
-        //                 body.set('ReturnURL', params.ReturnURL);
-        //                 body.set('ChoosePayment', params.ChoosePayment);
-        //                 body.set('CheckMacValue', params.CheckMacValue);
-        //                 body.set('EncryptType', params.EncryptType.toString());
 
-        //                 const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+        switch (this.form.controls.selectedPayment.value) { // test use only
 
-        //                 this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
-        //             }
-        //         });
-        //     }
-        // });
+            case this.paymentOptions.at(0)?.value: {
+                this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
+                    next: (response) => {
+                        if (response.MWHEADER.RETURNCODE !== "0000") {
+                            return;
+                        }
+                    }
+                });
+                // 把資料帶過去
+                this.router.navigateByUrl('/book/authorize'); // 不同分支尚未合併，目前無法使用
+                break;
+            }
+
+            case this.paymentOptions.at(1)?.value: {
+                this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
+                    next: (response) => {
+                        if (response.MWHEADER.RETURNCODE !== "0000") {
+                            return;
+                        }
+                        // 下方是呼叫綠界信用卡API：可能還需要修
+                        this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+                            next: (response) => {
+                                const body = new URLSearchParams();
+                                const params = response.TRANRS.ecPay_params;
+                                body.set('MerchantID', params.MerchantID);
+                                body.set('MerchantTradeNo', params.MerchantTradeNo);
+                                body.set('MerchantTradeDate', params.MerchantTradeDate);
+                                body.set('PaymentType', params.PaymentType);
+                                body.set('TotalAmount', params.TotalAmount.toString());
+                                body.set('TradeDesc', params.TradeDesc);
+                                body.set('ItemName', params.ItemName);
+                                body.set('ReturnURL', params.ReturnURL);
+                                body.set('ChoosePayment', params.ChoosePayment);
+                                body.set('CheckMacValue', params.CheckMacValue);
+                                body.set('EncryptType', params.EncryptType.toString());
+
+                                const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+                                this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
+                            }
+                        });
+                    }
+                });
+                break;
+            }
+
+            default: {
+                // 沒選付款方式，彈跳或漂浮視窗提醒
+                break;
+            }
+        }
     }
 
     dateToString(date: Date): string {
