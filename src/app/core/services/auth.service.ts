@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AUTH002Res } from '../interfaces/AUTH002Res.interface';
 import { environment } from '../../../environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
