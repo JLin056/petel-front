@@ -33,12 +33,13 @@
                 {{ getErrorMessage('email') }}
             </div>
 
-            <div class="input-container">
+            <div class="input-container-password">
                 <label for="password">密碼</label>
                 <p-password
                     formControlName="password"
                     [disabled]="isLoading"
                     [feedback]="false"
+                    inputStyleClass="petel-input"
                     placeholder="請輸入密碼"
                 />
             </div>

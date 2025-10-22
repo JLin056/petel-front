@@ -58,9 +58,25 @@ export class RegisterDialog {
      * @returns
      */
     private passwordsMatch(group: AbstractControl): ValidationErrors | null {
-        const pwd = group.get('password')?.value;
-        const confirm = group.get('confirm')?.value;
-        return pwd && confirm && pwd !== confirm ? { passwordsMismatch: true } : null;
+        const passCtrl = group.get('password');
+        const confirmCtrl = group.get('confirm');
+        if (!passCtrl || !confirmCtrl) return null;
+
+        const pass = passCtrl.value;
+        const confirm = confirmCtrl.value;
+
+        const currentErrors = confirmCtrl.errors || {};
+
+        if (pass && confirm && pass !== confirm) {
+            confirmCtrl.setErrors({ ...currentErrors, passwordsMismatch: true });
+            return { passwordsMismatch: true };
+        } else {
+            if ('passwordsMismatch' in currentErrors) {
+                const { passwordsMismatch, ...rest } = currentErrors;
+                confirmCtrl.setErrors(Object.keys(rest).length ? rest : null);
+                }
+                return null;
+        }
     }
 
     /**
