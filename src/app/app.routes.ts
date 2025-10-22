@@ -14,6 +14,7 @@ import { ChatPage } from './pages/chat-page/chat-page';
 
 import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
+import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
 import { AdminSellerTable } from './pages/admin-seller-table/admin-seller-table';
 
 export const routes: Routes = [
@@ -66,8 +67,12 @@ export const routes: Routes = [
         component: ChatPage
     },
     {
-        path:'orderTable',
+        path:'admin/orderTable',
         component:OrderTableComponent
+    },
+      {
+        path:'admin/userTable',
+        component:AdminUserTable
     },
       {
         path:'admin/sellerTable',

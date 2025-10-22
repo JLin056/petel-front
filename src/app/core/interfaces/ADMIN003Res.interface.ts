@@ -1,0 +1,23 @@
+export interface Order {
+  ORDER_ID: string;
+  STAY_DATE: string;
+  CHECK_IN: string;
+  CHECK_OUT: string;
+  USER_NAME: string;
+  USER_PHONE: string;
+  PROPERTY_NAME: string | null;
+  PROPERTY_PHONE: string | null;
+  ROOM: string | null;
+  QUANTITY: number;
+  HOTEL_CHARGES: number;
+  PRICE_EVERYNIGHT: number;
+  STATUS: string;
+  NOTE: string | null;
+  CREATED_AT: string;
+  UPDATED_AT: string;
+}
+
+export interface Status {
+  label: string;
+  value: string;
+}
