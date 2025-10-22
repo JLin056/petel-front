@@ -93,9 +93,10 @@ export class BookingPage implements OnInit {
 
     setDataForCreateOrder() {
         const orderInfo: OrderInfo = {
-            user_id: 'U000000001',
+            // user_id: 'U000000001',
             property_id: 'P000000001',
-            payment_id: this.selectedPayment,
+            // payment_id: this.selectedPayment,
+            payment_id: 'Y000000002',
             check_in: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
             check_out: this.dateToString(this.form.controls.rangeDates.value!.at(-1)!),
             status: '未付款',
@@ -122,6 +123,9 @@ export class BookingPage implements OnInit {
 
     onSubmit() {
 
+        console.log('test');
+        console.log(this.selectedPayment);
+
         switch (this.form.controls.selectedPayment.value) {
 
             case this.paymentOptions.at(0)?.value: {
@@ -138,35 +142,66 @@ export class BookingPage implements OnInit {
             }
 
             case this.paymentOptions.at(1)?.value: {
-                this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
-                    next: (response) => {
-                        if (response.MWHEADER.RETURNCODE !== "0000") {
-                            return;
-                        }
+                console.log('test2');
+                // this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
+                //     next: (response) => {
+                //         if (response.MWHEADER.RETURNCODE !== "0000") {
+                //             return;
+                //         }
                         // 下方是呼叫綠界信用卡API：可能還需要修
                         // this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-                        //     next: (response) => {
-                        //         const body = new URLSearchParams();
-                        //         const params = response.TRANRS.ecPay_params;
-                        //         body.set('MerchantID', params.MerchantID);
-                        //         body.set('MerchantTradeNo', params.MerchantTradeNo);
-                        //         body.set('MerchantTradeDate', params.MerchantTradeDate);
-                        //         body.set('PaymentType', params.PaymentType);
-                        //         body.set('TotalAmount', params.TotalAmount.toString());
-                        //         body.set('TradeDesc', params.TradeDesc);
-                        //         body.set('ItemName', params.ItemName);
-                        //         body.set('ReturnURL', params.ReturnURL);
-                        //         body.set('ChoosePayment', params.ChoosePayment);
-                        //         body.set('CheckMacValue', params.CheckMacValue);
-                        //         body.set('EncryptType', params.EncryptType.toString());
+                        this.bookService.getCreditParams('O000000007').subscribe({
+                            next: (response) => {
 
-                        //         const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+                                const params = response.TRANRS.ecPay_params;
 
-                        //         this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
-                        //     }
-                        // });
-                    }
-                });
+                                // 建立form
+                                const form = document.createElement('form');
+                                form.method = 'POST';
+                                form.action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+
+                                // 將所有參數加入form的hidden input中
+                                Object.entries(params).forEach(([key, value]) => {
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = key;
+                                    input.value = String(value); // 確保值是字串
+                                    form.appendChild(input);
+                                });
+                                // for (const key in params) {
+                                //     if (params.hasOwnProperty(key)) {
+                                //         const input = document.createElement('input');
+                                //         input.type = 'hidden';
+                                //         input.name = key;
+                                //         input.value = params[key];
+                                //         form.appendChild(input);
+                                //     }
+                                // }
+
+                                document.body.appendChild(form);
+                                form.submit(); // 送出表單後跳轉至綠界付款頁
+
+                                // const body = new URLSearchParams();
+                                // const params = response.TRANRS.ecPay_params;
+                                // body.set('MerchantID', params.MerchantID);
+                                // body.set('MerchantTradeNo', params.MerchantTradeNo);
+                                // body.set('MerchantTradeDate', params.MerchantTradeDate);
+                                // body.set('PaymentType', params.PaymentType);
+                                // body.set('TotalAmount', params.TotalAmount.toString());
+                                // body.set('TradeDesc', params.TradeDesc);
+                                // body.set('ItemName', params.ItemName);
+                                // body.set('ReturnURL', params.ReturnURL);
+                                // body.set('ChoosePayment', params.ChoosePayment);
+                                // body.set('CheckMacValue', params.CheckMacValue);
+                                // body.set('EncryptType', params.EncryptType.toString());
+
+                                // const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+                                // this.http.post('https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5', body.toString(), { headers });
+                            }
+                        });
+                    // }
+                // });
                 break;
             }
 

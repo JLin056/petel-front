@@ -79,6 +79,6 @@ export class BookService {
             TRANRQ: tranrq
         }
 
-        return this.http.post<Res<BOOK006Tranrs>>('http://localhost:8080/bookings/detail', postData);
+        return this.http.post<Res<BOOK006Tranrs>>('http://localhost:8080/bookings/credit', postData);
     }
 }
