@@ -25,7 +25,7 @@
 }
 
 .success_header h1 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: white;
   margin: 0;
@@ -37,104 +37,162 @@
   background-color: #fafafa;
 }
 
-/* ===== 資訊區塊 ===== */
+/* ===== 資訊區塊（卡片化設計） ===== */
 .info_section {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.info_section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .info_section:last-of-type {
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .section_title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f5a623;
 }
 
 .info_list {
-  padding-left: 20px;
+  padding-left: 0;
 }
 
 .info_item {
   font-size: 16px;
   color: #666;
   line-height: 1.8;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .info_item:last-child {
   margin-bottom: 0;
 }
 
+/* ===== 新增：旅館評價區域 ===== */
+.rating_section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+}
+
+.stars i {
+  color: #ffc107;
+  font-size: 18px;
+}
+
+.rating_score {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-left: 4px;
+}
+
+.rating_text {
+  font-size: 16px;
+  color: #666;
+}
+
 /* ===== 按鈕群組 ===== */
 .button_group {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 30px;
+  margin-top: 32px;
 }
 
-/* PrimeNG 按鈕樣式覆蓋 */
-::ng-deep .btn_primary {
-  background-color: #2196F3 !important;
-  border-color: #2196F3 !important;
-  color: white !important;
+/* PrimeNG 按鈕基礎樣式 */
+::ng-deep .button_group .p-button {
   padding: 12px 24px !important;
   font-size: 16px !important;
   font-weight: 500 !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-::ng-deep .btn_primary:hover {
-  background-color: #1976D2 !important;
-  border-color: #1976D2 !important;
+::ng-deep .button_group .p-button:hover {
   transform: translateY(-2px);
+}
+
+::ng-deep .button_group .p-button:active {
+  transform: translateY(0);
+}
+
+/* 聊聊按鈕 - 藍色 */
+::ng-deep .btn_chat {
+  background-color: #a4642b !important;
+  border-color: #a4642b !important;
+  color: white !important;
+}
+
+::ng-deep .btn_chat:hover {
+  background-color: #a4642b !important;
+  border-color: #a4642b !important;
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
 }
 
-::ng-deep .btn_danger {
+/* 查看歷史訂單按鈕 - 青色 */
+::ng-deep .btn_history {
+  background-color: #00BCD4 !important;
+  border-color: #00BCD4 !important;
+  color: white !important;
+}
+
+::ng-deep .btn_history:hover {
+  background-color: #0097A7 !important;
+  border-color: #0097A7 !important;
+  box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4) !important;
+}
+
+/* 修改訂單按鈕 - 橘色 */
+::ng-deep .btn_edit {
+  background-color: #FF9800 !important;
+  border-color: #FF9800 !important;
+  color: white !important;
+}
+
+::ng-deep .btn_edit:hover {
+  background-color: #F57C00 !important;
+  border-color: #F57C00 !important;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4) !important;
+}
+
+/* 取消訂單按鈕 - 紅色 */
+::ng-deep .btn_cancel {
   background-color: #f44336 !important;
   border-color: #f44336 !important;
   color: white !important;
-  padding: 12px 24px !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  transition: all 0.3s ease !important;
 }
 
-::ng-deep .btn_danger:hover {
+::ng-deep .btn_cancel:hover {
   background-color: #d32f2f !important;
   border-color: #d32f2f !important;
-  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4) !important;
-}
-
-::ng-deep .btn_info {
-  background-color: #2196F3 !important;
-  border-color: #2196F3 !important;
-  color: white !important;
-  padding: 12px 24px !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  transition: all 0.3s ease !important;
-}
-
-::ng-deep .btn_info:hover {
-  background-color: #1976D2 !important;
-  border-color: #1976D2 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
 }
 
 /* 按鈕圖標樣式 */
 ::ng-deep .button_group .p-button-icon {
-  font-size: 18px;
+  font-size: 16px;
   margin-right: 8px;
 }
 
@@ -151,7 +209,7 @@
   }
 
   .success_header h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .success_header i {
@@ -159,20 +217,28 @@
   }
 
   .order_content {
-    padding: 30px 20px;
+    padding: 24px 16px;
+  }
+
+  .info_section {
+    padding: 20px;
   }
 
   .section_title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .info_item {
     font-size: 15px;
   }
 
+  .rating_score {
+    font-size: 18px;
+  }
+
   .button_group {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
   }
 
   ::ng-deep .button_group .p-button {

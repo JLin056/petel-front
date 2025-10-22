@@ -1,19 +1,28 @@
-<div class="order_success_container"> <!-- 目前完成訂單僅秀一筆訂單 (一間旅館) -->
-    <!-- 成功標題 -->
+<div class="order_success_container">
+    <!-- 成功標題區域 -->
     <div class="success_header">
         <i class="pi pi-check-circle"></i>
         <h1>恭喜！您的訂單已成立</h1>
     </div>
 
-    <!-- 訂單內容 -->
+    <!-- 訂單內容區域 -->
     <div class="order_content">
         <!-- 住宿資訊 -->
         <div class="info_section">
             <h2 class="section_title">您的住宿資訊：</h2>
             <div class="info_list">
-                <p class="info_item">{{ petelName }}</p>
-                <p class="info_item">{{ petelAddress }}</p>
-                <p class="info_item">petel_opening hours: {{ petelOpeningHours }}</p>
+                <div class="info_item">{{ petelName }}</div>
+                <div class="info_item">{{ petelAddress }}</div>
+                <div class="info_item">petel_opening hours: {{ petelOpeningHours }}</div>
+
+                <!-- 新增：旅館評價區域 -->
+                <div class="rating_section">
+                    <div class="stars">
+                        <i class="pi pi-star-fill" *ngFor="let star of starArray"></i>
+                    </div>
+                    <span class="rating_score">{{ petelRating }}</span>
+                    <span class="rating_text">分</span>
+                </div>
             </div>
         </div>
 
@@ -21,26 +30,25 @@
         <div class="info_section">
             <h2 class="section_title">您的訂單資訊：</h2>
             <div class="info_list">
-                <p class="info_item">{{ numberOfRooms }} × {{ roomType }}</p>
-                <p class="info_item">適合的寵物：{{ suitablePets }}</p>
-                <p class="info_item">最多入住寵物數量：{{ maxPets }}</p>
+                <div class="info_item">{{ numberOfRooms }} × {{ roomType }}</div>
+                <div class="info_item">適合的寵物：{{ suitablePets }}</div>
+                <div class="info_item">最多入住寵物數量：{{ maxPets }}</div>
             </div>
         </div>
 
         <!-- 按鈕群組 -->
         <div class="button_group">
-            <p-button label="聊聊" icon="pi pi-comments" styleClass="btn_info" (onClick)="onChat()">
+            <p-button label="聊聊" icon="pi pi-comments" styleClass="btn_chat" (onClick)="onChat()">
             </p-button>
 
-            <p-button label="查看歷史訂單" icon="pi pi-history" styleClass="btn_primary" (onClick)="onViewHistory()">
+            <p-button label="查看歷史訂單" icon="pi pi-history" styleClass="btn_history" (onClick)="onViewHistory()">
             </p-button>
 
-            <p-button label="修改訂單" icon="pi pi-pencil" styleClass="btn_primary" (onClick)="onEditOrder()">
+            <p-button label="修改訂單" icon="pi pi-pencil" styleClass="btn_edit" (onClick)="onEditOrder()">
             </p-button>
 
-            <p-button label="取消訂單" icon="pi pi-times" styleClass="btn_danger" (onClick)="onCancelOrder()">
+            <p-button label="取消訂單" icon="pi pi-times" styleClass="btn_cancel" (onClick)="onCancelOrder()">
             </p-button>
-
         </div>
     </div>
 </div>
