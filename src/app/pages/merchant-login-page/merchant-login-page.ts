@@ -11,12 +11,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
 @Component({
-  selector: 'app-login-page',
+  selector: 'app-merchant-login-page',
   imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-  templateUrl: './login-page.html',
-  styleUrl: './login-page.css'
+  templateUrl: './merchant-login-page.html',
+  styleUrl: './merchant-login-page.css'
 })
-export class LoginPage {
+export class MerchantLoginPage {
     /** 登入表單 */
     loginForm!: FormGroup;
     /** 是否還在跑 */
@@ -39,19 +39,6 @@ export class LoginPage {
         private router: Router,
         private toast: MessageService
     ) {}
-
-    /**
-     * 前往之前點擊登入頁的前一頁
-     * @returns
-     */
-    private getRedirectUrl(): string {
-        // 先看 query param
-        const q = this.route.snapshot.queryParamMap.get('redirect');
-        // 或從 navigation state（可當備援）
-        const s = history.state?.redirect as string | undefined;
-        // 預設首頁
-        return q || s || '/';
-    }
 
     /**
      * 取得 email
@@ -88,7 +75,7 @@ export class LoginPage {
      * 前往註冊頁
      */
     goRegister() {
-        this.router.navigate(['register']);
+        this.router.navigate(['merchants/register']);
     }
 
     /**
@@ -111,7 +98,7 @@ export class LoginPage {
             TRANRQ: {
                 email: this.loginForm.value.email,
                 password: this.loginForm.value.password,
-                role: 'user'
+                role: 'seller'
             }
         };
 
@@ -119,11 +106,8 @@ export class LoginPage {
             next: (res: AUTH002Res) => {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    const redirect = this.getRedirectUrl();
                     this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
-                    this.router.navigateByUrl(redirect, {
-                        replaceUrl: true
-                    });
+                    this.router.navigate(['merchants/homepage']);
                 } else {
                     this.toast.add({ severity: 'error', summary: '登入失敗', detail: '帳號或密碼錯誤' });
                 }
@@ -145,3 +129,4 @@ export class LoginPage {
         });
     }
 }
+

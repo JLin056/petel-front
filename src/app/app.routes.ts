@@ -16,6 +16,8 @@ import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
 import { LoginPage } from './pages/login-page/login-page';
 import { RegisterPage } from './pages/register-page/register-page';
+import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
+import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
 
 export const routes: Routes = [
     {
@@ -41,6 +43,14 @@ export const routes: Routes = [
     {
         path: 'history',
         component: UserPage
+    },
+    {
+        path: 'merchants/login',
+        component: MerchantLoginPage
+    },
+    {
+        path: 'merchants/register',
+        component: MerchantRegisterPage
     },
     {
         path: 'merchants/roomInfo/edit',

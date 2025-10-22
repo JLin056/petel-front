@@ -18,13 +18,13 @@ import { AUTH001Res } from '../../core/interfaces/AUTH001Res.interface';
 import { MessageService } from 'primeng/api';
 
 @Component({
-    selector: 'app-register-page',
-    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-    templateUrl: './register-page.html',
-    styleUrl: './register-page.css'
+  selector: 'app-merchant-register-page',
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
+  templateUrl: './merchant-register-page.html',
+  styleUrl: './merchant-register-page.css'
 })
-export class RegisterPage {
-    /** 註冊表單 */
+export class MerchantRegisterPage {
+/** 註冊表單 */
     registerForm!: FormGroup;
     /** 是否還在跑 */
     isLoading = false;
@@ -154,7 +154,7 @@ export class RegisterPage {
         TRANRQ: {
             email: this.registerForm.value.email,
             password: this.registerForm.value.password,
-            role: 'user'
+            role: 'seller'
         }
         };
 
@@ -164,7 +164,7 @@ export class RegisterPage {
 
                 if (res.MWHEADER.RETURNCODE === '0000') {
                     this.toast.add({ severity: 'success', summary: '註冊成功', detail: '請使用新帳號登入' });
-                    this.router.navigateByUrl('/login', { replaceUrl: true });
+                    this.router.navigateByUrl('merchants/login', { replaceUrl: true });
                 } else if (res.MWHEADER.RETURNDESC === 'Email 已被使用') {
                     this.toast.add({ severity: 'error', summary: '註冊失敗', detail: 'Email 已被使用' });
                 } else {
@@ -192,3 +192,4 @@ export class RegisterPage {
         );
     }
 }
+

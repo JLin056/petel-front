@@ -59,12 +59,16 @@ export class Header {
         this.router.navigate(['/login']);
     }
 
+    /**
+     * 登出
+     */
     onLogout() {
         this.authService.onLogoutApi().subscribe({
             next: (res) => {
                 this.isLoggedIn = false;
                 this.confirmVisible = false;
                 console.log('登出成功');
+                this.router.navigate(['']);
             },
             error: (err) => {
                 this.confirmVisible = false;
@@ -78,6 +82,9 @@ export class Header {
         });
     }
 
+    /**
+     * 確認登入狀態
+     */
     onCheckLoginStatus() {
         this.authService.onCheckLoginStatus().subscribe({
             next: (res) => {
@@ -93,14 +100,24 @@ export class Header {
         });
     }
 
+    /**
+     * 前往首頁
+     */
     onClickHome() {
         this.router.navigate(['']);
     }
 
+    /**
+     * 前往狗狗旅館
+     */
     onClickDog() {
         this.router.navigate(['/dogHotels']);
     }
 
+    /**
+     * 前往聊天頁
+     * @returns
+     */
     onClickChat() {
         if (!this.isLoggedIn) {
             this.toast.add({
@@ -114,6 +131,10 @@ export class Header {
         this.router.navigate(['/chat']);
     }
 
+    /**
+     * 前往個人資料頁
+     * @returns
+     */
     onClickProfile() {
         if (!this.isLoggedIn) {
             this.toast.add({
