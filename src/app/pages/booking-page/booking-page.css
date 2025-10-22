@@ -1,500 +1,318 @@
-/* ===== 表單容器 ===== */
+/* 整體表單容器 */
 form {
-    display: flex;
-    flex-direction: column;
-    gap: 60px;
-    padding-bottom: 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
 }
 
-/* ===== 日期選擇區域 ===== */
-.dates {
-    padding-top: 60px;
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.in_out_dates {
-    flex: 3;
-}
-
-.between_in_out {
-    flex: 1;
-}
-
-.dates ::ng-deep .p-datepicker,
-.dates ::ng-deep .p-datepicker .p-inputtext,
-.dates input[pInputText] {
-    height: 60px;
-    font-size: 18px;
-}
-
-.in_out_dates ::ng-deep .p-datepicker {
-    width: 100%;
-}
-
-.in_out_dates ::ng-deep .p-datepicker .p-inputtext {
-    width: 100%;
-}
-
-/* ===== 旅館資訊區域 ===== */
+/* 旅館資訊區塊 */
 .hotel_infos {
-    display: flex;
-    width: 80%;
-    margin: 0 auto;
-    background-color: #F0E4D8;
-    border-radius: 12px;
-    overflow: hidden;
-    align-items: flex-start;
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .hotel_infos_photo {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5%;
+  flex-shrink: 0;
+  width: 280px;
 }
 
 .hotel_photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    display: block;
-    max-width: 100%;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
 }
 
 .hotel_infos_text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    padding-top: 5%;
+  flex: 1;
 }
 
 .hotel_infos_text_title {
-    font-weight: bold;
-    font-size: 30px;
-    color: #666;
-    margin-bottom: 20px;
-    margin-top: 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #8B6F47;
+  margin-bottom: 20px;
 }
 
 .hotel_infos_text_table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .hotel_infos_text_table td {
-    padding: 12px 15px;
-    vertical-align: top;
-    font-size: 18px;
+  padding: 12px 8px;
+  border-bottom: 1px solid #f0e6d8;
+  color: #5a5a5a;
 }
 
 .hotel_infos_text_table td:first-child {
-    font-weight: bold;
-    color: #666;
-    width: 120px;
-    white-space: nowrap;
-    font-size: 20px;
+  font-weight: 600;
+  color: #8B6F47;
+  width: 120px;
 }
 
-/* ===== 訂單資訊區域 ===== */
+/* 訂單資訊區塊 */
 .order_infos {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #F0E4D8;
-    border-radius: 12px;
-    padding: 30px;
+  background: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .order_infos_titie {
-    font-weight: bold;
-    font-size: 30px;
-    color: #666;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #8B6F47;
+  margin-bottom: 20px;
 }
 
 .order_infos_detail_table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .order_infos_detail_table td {
-    padding: 12px 15px;
-    vertical-align: middle;
-    font-size: 18px;
+  padding: 12px 8px;
+  border-bottom: 1px solid #f0e6d8;
+  color: #5a5a5a;
 }
 
 .order_infos_detail_table td:first-child {
-    font-weight: bold;
-    color: #666;
-    width: 150px;
-    font-size: 20px;
+  font-weight: 600;
+  color: #8B6F47;
+  width: 150px;
 }
 
-/* ===== 其它重要資訊區域 ===== */
+/* 其他重要資訊 */
 .additional_infos {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #F0E4D8;
-    border-radius: 12px;
-    padding: 30px;
+  background: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .additional_infos_titie {
-    font-weight: bold;
-    font-size: 30px;
-    color: #666;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #8B6F47;
+  margin-bottom: 20px;
 }
 
 .additional_infos_text_table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .additional_infos_text_table td {
-    padding: 12px 15px;
-    vertical-align: top;
-    font-size: 18px;
+  padding: 12px 8px;
+  border-bottom: 1px solid #f0e6d8;
+  color: #5a5a5a;
+  vertical-align: top;
 }
 
 .additional_infos_text_table td:first-child {
-    font-weight: bold;
-    color: #666;
-    width: 150px;
-    white-space: nowrap;
-    font-size: 20px;
+  font-weight: 600;
+  color: #8B6F47;
+  width: 150px;
 }
 
-/* ===== 訂購人資訊區域 ===== */
+/* 訂購人資訊 */
 .guest_infos {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #F0E4D8;
-    border-radius: 12px;
-    padding: 30px;
+  background: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .guest_infos_title {
-    font-weight: bold;
-    font-size: 30px;
-    color: #666;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #8B6F47;
+  margin-bottom: 20px;
 }
 
 .guest_infos_same,
 .guest_infos_diff {
-    margin-bottom: 20px;
-}
-
-.guest_infos_same:last-child,
-.guest_infos_diff:last-child {
-    margin-bottom: 0;
+  margin-bottom: 20px;
 }
 
 .guestType {
-    padding-left: 10px;
-    font-weight: 500;
-    color: #666;
-    cursor: pointer;
-    font-size: 18px;
+  margin-left: 10px;
+  color: #5a5a5a;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .member_data {
-    margin-top: 20px;
-    margin-left: 35px;
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
+  margin-top: 15px;
+  padding: 20px;
+  background: #faf8f5;
+  border-radius: 12px;
+  border-left: 4px solid #8B6F47;
 }
 
 .member_data_p {
-    margin-bottom: 8px;
-    color: #666;
-    font-size: 18px;
-}
-
-.member_data_p:last-child {
-    margin-bottom: 0;
+  margin: 8px 0;
+  color: #5a5a5a;
+  font-size: 15px;
 }
 
 .guest_infos_diff_input {
-    margin-top: 20px;
-    margin-left: 35px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.guest_infos_diff_input ::ng-deep .p-inputtext {
-    font-size: 18px;
+.guest_infos_diff_input input {
+  border-radius: 10px;
 }
 
-/* ===== 其餘需求區域 ===== */
+/* 其餘需求 */
 .order_note {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #F0E4D8;
-    border-radius: 12px;
-    padding: 30px;
+  background: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .order_note_title {
-    font-weight: bold;
-    font-size: 30px;
-    color: #666;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #8B6F47;
+  margin-bottom: 20px;
 }
 
-.order_note_text {
-    width: 100%;
+.order_note_text ::ng-deep .p-editor-container {
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.input_square_frame {
-    width: 100%;
-}
-
-/* 編輯器字體調整 */
-.order_note_text ::ng-deep .ql-editor {
-    font-size: 18px;
-    line-height: 1.6;
-}
-
-.order_note_text ::ng-deep .ql-editor.ql-blank::before {
-    font-size: 18px;
-    color: #999;
-    font-style: normal;
-}
-
-/* ===== 付款選項區域 ===== */
+/* 付款選項 */
 .payment_options {
-    width: 80%;
-    margin: 0 auto;
-    background-color: #F0E4D8;
-    border-radius: 12px;
-    padding: 30px;
-    display: flex;
-    gap: 40px;
+  background: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .total_price {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
-    border: 2px solid #824d28;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #8B6F47 0%, #A68A64 100%);
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 8px rgba(139, 111, 71, 0.3);
 }
 
 .total_price .title {
-    font-size: 28px;
-    font-weight: bold;
-    color: #666;
-    margin-bottom: 15px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
 }
 
 .total_price .amount {
-    font-size: 48px;
-    font-weight: 700;
-    color: #824d28;
-    margin-bottom: 10px;
-}
-
-.total_price .note {
-    font-size: 16px;
-    color: #999;
-    text-align: center;
+  color: #fff;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
 }
 
 .payment_ways {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 20px;
-}
-
-.payment_ways .flex {
-    display: flex;
-}
-
-.payment_ways .flex-col {
-    flex-direction: column;
-}
-
-.payment_ways .gap-4 {
-    gap: 20px;
+  padding: 0 10px;
 }
 
 .payment_ways label {
-    font-weight: 500;
-    color: #666;
-    cursor: pointer;
-    margin-left: 10px;
-    font-size: 18px;
+  color: #5a5a5a;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 .payment_statement {
-    margin-left: 35px;
-    color: #999;
-    font-size: 16px;
-    line-height: 1.5;
+  margin-left: 32px;
+  margin-top: 5px;
+  color: #999;
+  font-size: 14px;
 }
 
-/* ===== 送出按鈕 ===== */
+/* 送出按鈕 */
 .submit_button {
-    width: 80%;
-    margin: 0 auto;
-    padding: 18px 40px;
-    background-color: #824d28;
-    color: #ffe8c4;
-    font-size: 20px;
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(130, 77, 40, 0.3);
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #8B6F47 0%, #A68A64 100%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 111, 71, 0.4);
+  transition: all 0.3s ease;
 }
 
 .submit_button:hover {
-    background-color: #6a3d21;
-    box-shadow: 0 6px 16px rgba(130, 77, 40, 0.4);
-    transform: translateY(-2px);
+  background: linear-gradient(135deg, #A68A64 0%, #8B6F47 100%);
+  box-shadow: 0 6px 16px rgba(139, 111, 71, 0.5);
+  transform: translateY(-2px);
 }
 
 .submit_button:active {
-    background-color: #5a3319;
-    box-shadow: 0 2px 8px rgba(130, 77, 40, 0.3);
-    transform: translateY(0);
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(139, 111, 71, 0.4);
 }
 
-.submit_button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
+/* 全局輸入框樣式 */
+::ng-deep .p-inputtext {
+  border-radius: 10px;
+  border: 1px solid #e0d5c7;
+  padding: 12px;
+  transition: all 0.3s ease;
 }
 
-/* ===== 響應式設計 ===== */
+::ng-deep .p-inputtext:focus {
+  border-color: #8B6F47;
+  box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box {
+  border-radius: 50%;
+  border-color: #8B6F47;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight {
+  background: #8B6F47;
+  border-color: #8B6F47;
+}
+
+/* 響應式設計 */
 @media (max-width: 768px) {
-    .dates,
-    .hotel_infos,
-    .order_infos,
-    .additional_infos,
-    .guest_infos,
-    .order_note,
-    .payment_options,
-    .submit_button {
-        width: 95%;
-    }
+  .hotel_infos {
+    flex-direction: column;
+  }
 
-    .dates {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
-    }
+  .hotel_infos_photo {
+    width: 100%;
+  }
 
-    .in_out_dates,
-    .between_in_out {
-        flex: none;
-    }
-
-    .hotel_infos {
-        flex-direction: column;
-    }
-
-    .hotel_infos_photo {
-        padding: 20px;
-    }
-
-    .hotel_infos_text {
-        padding: 20px;
-    }
-
-    .hotel_infos_text_title,
-    .order_infos_titie,
-    .additional_infos_titie,
-    .guest_infos_title,
-    .order_note_title {
-        font-size: 24px;
-    }
-
-    .hotel_infos_text_table td,
-    .order_infos_detail_table td,
-    .additional_infos_text_table td {
-        font-size: 16px;
-        padding: 10px 8px;
-    }
-
-    .hotel_infos_text_table td:first-child,
-    .order_infos_detail_table td:first-child,
-    .additional_infos_text_table td:first-child {
-        font-size: 17px;
-        width: auto;
-    }
-
-    .payment_options {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .total_price {
-        padding: 20px;
-    }
-
-    .total_price .amount {
-        font-size: 28px;
-    }
-
-    .total_price .title {
-        font-size: 18px;
-    }
-
-    .member_data {
-        margin-left: 25px;
-        padding: 12px;
-    }
-
-    .guest_infos_diff_input {
-        margin-left: 25px;
-    }
-
-    .payment_statement {
-        margin-left: 25px;
-        font-size: 13px;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .dates,
-    .hotel_infos,
-    .order_infos,
-    .additional_infos,
-    .guest_infos,
-    .order_note,
-    .payment_options,
-    .submit_button {
-        width: 90%;
-    }
+  .hotel_infos_text_table td:first-child,
+  .order_infos_detail_table td:first-child,
+  .additional_infos_text_table td:first-child {
+    width: 100px;
+    font-size: 14px;
+  }
 }
