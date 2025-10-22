@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -10,8 +10,15 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { Member, UserStatus, UserRole } from '../../core/interfaces/ADMIN004Res.interface';
+import { TooltipModule } from 'primeng/tooltip';
+import { Member as ADMIN007Member } from '../../core/interfaces/ADMIN007Res.interface';
+import { UserStatus, UserRole } from '../../core/interfaces/ADMIN004Res.interface';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
+import { AdminService } from '../../core/services/admin.service';
+import { ADMIN007Req } from '../../core/interfaces/ADMIN007Req.interface';
+import { ADMIN008Req } from '../../core/interfaces/ADMIN008Req.interface';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-user-table',
@@ -26,122 +33,139 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
     CommonModule,
     FormsModule,
     ButtonModule,
-    SharedConfirmDialog
+    SharedConfirmDialog,
+    TooltipModule
   ],
   templateUrl: './admin-user-table.html',
   styleUrl: './admin-user-table.css'
 })
-export class AdminUserTable implements OnInit {
-  constructor(private http: HttpClient) {}
+export class AdminUserTable implements OnInit, OnDestroy {
+  constructor(private http: HttpClient, private adminService: AdminService) {}
 
-  memberList: Member[] = [];
+  memberList: ADMIN007Member[] = [];
   statuses: UserStatus[] = [];
   loading: boolean = true;
 
-  // Filter variables
-  searchValue: string = '';
+  // Filter variables - 用於後端查詢
   accountIdFilter: string = '';
   emailFilter: string = '';
   nameFilter: string = '';
   phoneFilter: string = '';
-  statusFilter: string = '';
+
+  // Pagination
+  totalRecords: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 5;
 
   // Confirm dialog
   deleteConfirmVisible: boolean = false;
-  selectedMember: Member | null = null;
+  selectedMember: ADMIN007Member | null = null;
+
+  // Debounce 搜尋
+  private searchSubject = new Subject<void>();
+  private isFirstLoad = true; // 追蹤是否為第一次載入
 
   ngOnInit() {
-    // 模擬資料載入
-    this.memberList = [
-      {
-        "ACCOUNT_ID": "A0001",
-        "EMAIL": "user1@example.com",
-        "NAME": "王小明",
-        "PHONE": "0912345678",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0002",
-        "EMAIL": "user2@example.com",
-        "NAME": "李美玲",
-        "PHONE": "0923456789",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0003",
-        "EMAIL": "user3@example.com",
-        "NAME": "張大偉",
-        "PHONE": "0934567890",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0004",
-        "EMAIL": "user4@example.com",
-        "NAME": "陳怡君",
-        "PHONE": "0945678901",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0005",
-        "EMAIL": "user5@example.com",
-        "NAME": "林小華",
-        "PHONE": "0956789012",
-        "ROLE": "USER",
-        "STATUS": "INACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0006",
-        "EMAIL": "user6@example.com",
-        "NAME": "黃志明",
-        "PHONE": "0967890123",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0007",
-        "EMAIL": "user7@example.com",
-        "NAME": "吳雅婷",
-        "PHONE": "0978901234",
-        "ROLE": "USER",
-        "STATUS": "SUSPENDED"
-      },
-      {
-        "ACCOUNT_ID": "A0008",
-        "EMAIL": "user8@example.com",
-        "NAME": "劉雅文",
-        "PHONE": "0989012345",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0009",
-        "EMAIL": "user9@example.com",
-        "NAME": "周建國",
-        "PHONE": "0990123456",
-        "ROLE": "USER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "ACCOUNT_ID": "A0010",
-        "EMAIL": "user10@example.com",
-        "NAME": "鄭雅雯",
-        "PHONE": "0901234567",
-        "ROLE": "USER",
-        "STATUS": "INACTIVE"
-      }
-    ];
-
     this.statuses = [
       { label: '啟用', value: 'ACTIVE' },
       { label: '停用', value: 'INACTIVE' },
       { label: '暫停', value: 'SUSPENDED' }
     ];
 
-    this.loading = false;
+    // 設定 Debounce 搜尋（500ms 延遲）
+    this.searchSubject.pipe(
+      debounceTime(500)
+    ).subscribe(() => {
+      this.loadMembers();
+    });
+  }
+
+  ngOnDestroy() {
+    // 清理訂閱，避免記憶體洩漏
+    this.searchSubject.complete();
+  }
+
+  /**
+   * 載入會員列表
+   */
+  loadMembers() {
+    this.loading = true;
+
+    // 建立請求資料
+    const requestData: ADMIN007Req = {
+      MWHEADER: {
+        MSGID: 'ADMIN-007'
+      },
+      TRANRQ: {
+        page: {
+          pageNumber: this.currentPage,
+          pageSize: this.pageSize
+        }
+      }
+    };
+
+    // 加入篩選條件（只有在有值的時候才加入）
+    if (this.accountIdFilter) {
+      requestData.TRANRQ.Account_Id = this.accountIdFilter;
+    }
+    if (this.nameFilter) {
+      requestData.TRANRQ.Name = this.nameFilter;
+    }
+    if (this.emailFilter) {
+      requestData.TRANRQ.Email = this.emailFilter;
+    }
+    if (this.phoneFilter) {
+      requestData.TRANRQ.Phone = this.phoneFilter;
+    }
+
+    // 呼叫 API
+    this.adminService.queryMembers(requestData).subscribe({
+      next: (response) => {
+        if (response.MWHEADER.RETURNCODE === '0000') {
+          this.memberList = response.TRANRS.members;
+          this.totalRecords = response.TRANRS.totalCount;
+          this.currentPage = response.TRANRS.currentPage;
+        } else {
+          console.error('API 回傳錯誤:', response.MWHEADER.RETURNDESC);
+          this.memberList = [];
+          this.totalRecords = 0;
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('API 呼叫失敗:', error);
+        this.memberList = [];
+        this.totalRecords = 0;
+        this.loading = false;
+      }
+    });
+  }
+
+  /**
+   * 分頁切換事件（PrimeNG lazy loading）
+   */
+  onPageChange(event: any) {
+    // PrimeNG lazy table 使用 event.first (起始索引) 和 event.rows (每頁筆數)
+    // 需要計算當前頁碼：page = first / rows
+    const page = event.first !== undefined ? Math.floor(event.first / event.rows) : (event.page || 0);
+    const rows = event.rows || this.pageSize;
+
+    // 第一次載入由 lazy table 觸發
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+    }
+
+    this.currentPage = page + 1; // PrimeNG 的 page 是從 0 開始，後端從 1 開始
+    this.pageSize = rows;
+    this.loadMembers();
+  }
+
+  /**
+   * 篩選條件變更（使用 Debounce）
+   */
+  onFilterChange() {
+    this.currentPage = 1; // 重置到第一頁
+    this.searchSubject.next(); // 觸發 debounce，500ms 後才會執行查詢
   }
 
   getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
@@ -173,7 +197,7 @@ export class AdminUserTable implements OnInit {
   /**
    * 顯示刪除確認對話框
    */
-  confirmDelete(member: Member) {
+  confirmDelete(member: ADMIN007Member) {
     this.selectedMember = member;
     this.deleteConfirmVisible = true;
   }
@@ -182,17 +206,61 @@ export class AdminUserTable implements OnInit {
    * 確認刪除會員
    */
   onDeleteConfirmed() {
-    if (this.selectedMember) {
-      console.log('刪除會員:', this.selectedMember.ACCOUNT_ID);
-      // TODO: 呼叫 API 刪除會員
-      // this.http.delete(`/api/members/${this.selectedMember.ACCOUNT_ID}`).subscribe(...);
-
-      // 從列表中移除
-      this.memberList = this.memberList.filter(m => m.ACCOUNT_ID !== this.selectedMember!.ACCOUNT_ID);
-
-      this.selectedMember = null;
+    if (!this.selectedMember) {
+      this.deleteConfirmVisible = false;
+      return;
     }
-    this.deleteConfirmVisible = false;
+
+    const memberToDelete = this.selectedMember;
+
+    // 建立刪除請求資料
+    const requestData: ADMIN008Req = {
+      MWHEADER: {
+        MSGID: 'ADMIN-008'
+      },
+      TRANRQ: {
+        usersId: memberToDelete.USER_ID
+      }
+    };
+
+    // 呼叫刪除 API
+    this.adminService.deleteMember(requestData).subscribe({
+      next: (response) => {
+        if (response.MWHEADER.RETURNCODE === '0000') {
+          console.log('刪除成功:', response.TRANRS.message);
+
+          // 從列表中移除該會員
+          this.memberList = this.memberList.filter(m => m.USER_ID !== memberToDelete.USER_ID);
+
+          // 如果當前頁沒有資料了，且不是第一頁，則回到上一頁
+          if (this.memberList.length === 0 && this.currentPage > 1) {
+            this.currentPage--;
+            this.loadMembers();
+          } else if (this.memberList.length === 0) {
+            // 如果是第一頁且沒資料，重新載入
+            this.loadMembers();
+          }
+
+          // TODO: 顯示成功訊息給使用者
+          alert('刪除成功：' + response.TRANRS.message);
+        } else {
+          console.error('刪除失敗:', response.MWHEADER.RETURNDESC);
+          // TODO: 顯示錯誤訊息給使用者
+          alert('刪除失敗：' + response.MWHEADER.RETURNDESC);
+        }
+
+        this.selectedMember = null;
+        this.deleteConfirmVisible = false;
+      },
+      error: (error) => {
+        console.error('刪除 API 呼叫失敗:', error);
+        // TODO: 顯示錯誤訊息給使用者
+        alert('刪除失敗：' + (error.error?.MWHEADER?.RETURNDESC || '網路錯誤，請稍後再試'));
+
+        this.selectedMember = null;
+        this.deleteConfirmVisible = false;
+      }
+    });
   }
 
   /**
@@ -201,5 +269,19 @@ export class AdminUserTable implements OnInit {
   onDeleteCancelled() {
     this.selectedMember = null;
     this.deleteConfirmVisible = false;
+  }
+
+  /**
+   * 查看會員的歷史訂單
+   */
+  viewMemberOrders(member: ADMIN007Member) {
+    console.log('查看會員歷史訂單:', member.ACCOUNT_ID, member.NAME);
+    // TODO: 實作導航到訂單列表頁面，並根據會員 ID 進行篩選
+    // 方式 1: 使用 Router 導航並傳遞參數
+    // this.router.navigate(['/orders'], { queryParams: { memberId: member.ACCOUNT_ID, memberName: member.NAME } });
+
+    // 方式 2: 使用狀態管理或 Service 傳遞篩選條件
+    // this.orderService.setMemberFilter(member.ACCOUNT_ID);
+    // this.router.navigate(['/orders']);
   }
 }
