@@ -1,0 +1,79 @@
+.card {
+  padding: 30px;
+}
+
+.title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 36px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.text-large {
+  font-size: 1.3rem; 
+  font-weight: 500;
+}
+
+.icon-large {
+  font-size: 1.5rem; 
+}
+
+/* 調整表格整體字體大小 */
+::ng-deep .p-datatable {
+  font-size: 1.1rem;      
+}
+
+/* 調整表頭字體 */
+::ng-deep .p-datatable th {
+  font-size: 1.5rem;      
+}
+
+/* 調整輸入框字體 */
+::ng-deep .p-datatable input {
+  font-size: 1.1rem;      
+}
+
+/* 
+::ng-deep : 可以穿透到p-tag內部
+*/
+::ng-deep .tag-large {
+  font-size: 1.5rem ;
+  padding: 0.5rem 0.75rem ;
+}
+
+/*
+按鈕大小調整說明：
+- .deleteBtn: 控制整個按鈕容器的大小
+- .deleteBtn button: 針對按鈕本身
+- .deleteBtn .p-button-icon: 針對按鈕內部的圖示
+*/
+::ng-deep .deleteBtn {
+  width: 3rem;           /* 按鈕外層容器寬度 */
+  height: 3rem;          /* 按鈕外層容器高度 */
+}
+
+::ng-deep .deleteBtn button {
+  width: 3rem;           /* 按鈕本身寬度 */
+  height: 3rem;          /* 按鈕本身高度 */
+}
+
+::ng-deep .deleteBtn .p-button-icon {
+  font-size: 1.5rem;     /* 圖示大小 */
+}

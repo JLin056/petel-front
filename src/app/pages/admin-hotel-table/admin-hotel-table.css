@@ -1,0 +1,71 @@
+.card {
+  padding: 30px;
+}
+
+.title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 36px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.text-large {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.icon-large {
+  font-size: 1.5rem;
+}
+
+/* ¿th<tÔWÔ' */
+::ng-deep .p-datatable {
+  font-size: 1.1rem;
+}
+
+/* ¿th-WÔ */
+::ng-deep .p-datatable th {
+  font-size: 1.2rem;
+}
+
+/* ¿t8eFWÔ */
+::ng-deep .p-datatable input {
+  font-size: 1.1rem;
+}
+
+/*
+	'¿tª
+- .deleteBtn: §6t	¹h„'
+- .deleteBtn button: Ý	,«
+- .deleteBtn .p-button-icon: Ý	gè„:
+*/
+::ng-deep .deleteBtn {
+  width: 3rem;
+  height: 3rem;
+}
+
+::ng-deep .deleteBtn button {
+  width: 3rem;
+  height: 3rem;
+}
+
+::ng-deep .deleteBtn .p-button-icon {
+  font-size: 1.5rem;
+}
