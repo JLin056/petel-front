@@ -95,14 +95,14 @@
 
                     <div class="price-details"> <!-- 以對應到單一訂單標號為一個item -->
                         @for (booking of bookings; track $index) {
-                        <h3 class="order"> 訂單編號為 {{ booking.orderId }} 的詳細資訊： </h3>
+                        <h3 class="order"> 訂單詳細資訊： </h3>
                         @for (item of booking.detail; track $index) {
                         <p class="order_item"> 入住時間：{{ item.arrivalDate }} </p>
                         <p class="order_item"> 入住房型：{{ item.roomId }} </p> <!-- 要改成房型名稱 -->
                         <p class="order_item"> 房型數量：{{ item.quantity }} </p>
-                        <p class="order_item"> 房型數量 x 房型價格：${{ item.price }} </p>
+                        <p class="order_item"> 房型數量 x 房型價格：{{ item.price }} </p>
                         }
-                        <p class="order"> 訂單編號為 {{ booking.orderId }} 的付款金額為 ${{ booking.hotelCharges }} </p>
+                        <p class="order"> 訂單付款金額為 ${{ booking.hotelCharges }} </p>
                         }
 
                     </div>
