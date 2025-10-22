@@ -8,6 +8,7 @@ import { AUTH001Req } from '../interfaces/AUTH001Req.interface';
 import { AUTH001Res } from '../interfaces/AUTH001Res.interface';
 import { AUTH003Res } from '../interfaces/AUTH003Res.interface';
 import { AUTH008Res } from '../interfaces/AUTH008Res.interface';
+import { AUTH009Res } from '../interfaces/AUTH009Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,8 @@ export class Auth {
     logoutUrl = `${environment.BASE_URL}/auth/logout`;
     /** 檢查登入狀態 API URL */
     checkLoginUrl = `${environment.BASE_URL}/auth/check`;
+    /** 檢查個人資訊是否填寫 */
+    profileCheckUrl = `${environment.BASE_URL}/auth/profile/check`;
 
     /** headers */
     private headers = new HttpHeaders({
@@ -72,6 +75,17 @@ export class Auth {
      */
     onCheckLoginStatus(): Observable<AUTH008Res> {
         return this.http.post<AUTH008Res>(this.checkLoginUrl, null, {
+            headers: this.headers,
+            withCredentials: true
+        })
+    }
+
+    /**
+     * 檢查用戶是否填寫過會員資訊 API
+     * @returns
+     */
+    onProfileCheck(): Observable<AUTH009Res> {
+        return this.http.post<AUTH009Res>(this.profileCheckUrl, null, {
             headers: this.headers,
             withCredentials: true
         })

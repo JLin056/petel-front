@@ -9,12 +9,16 @@ import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
 import { AUTH002Res } from '../../core/interfaces/AUTH002Res.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Dialog } from 'primeng/dialog';
+import { AddUserInfoDialog } from '../add-user-info-dialog/add-user-info-dialog';
+import { User } from '../../core/services/user.service';
+import { USER001Req } from '../../core/interfaces/USER001Req.interface';
 
 @Component({
-  selector: 'app-login-page',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-  templateUrl: './login-page.html',
-  styleUrl: './login-page.css'
+    selector: 'app-login-page',
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, AddUserInfoDialog],
+    templateUrl: './login-page.html',
+    styleUrl: './login-page.css'
 })
 export class LoginPage {
     /** 登入表單 */
@@ -23,6 +27,12 @@ export class LoginPage {
     isLoading = false;
     /** 錯誤訊息 */
     errorMessage = '';
+    /** 填寫會員資訊 dialog */
+    showFillDialog = false;
+
+    dialogName = '';
+    dialogPhone = '';
+    dialogAvatarUrl: string | null = null;
 
     /**
      * 注入
@@ -35,6 +45,7 @@ export class LoginPage {
     constructor(
         private fb: FormBuilder,
         private authService: Auth,
+        private userService: User,
         private route: ActivatedRoute,
         private router: Router,
         private toast: MessageService
@@ -116,20 +127,92 @@ export class LoginPage {
         };
 
         this.authService.onLoginApi(payload).subscribe({
-            next: (res: AUTH002Res) => {
+            next: (res) => {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    const redirect = this.getRedirectUrl();
-                    this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
-                    this.router.navigateByUrl(redirect, {
-                        replaceUrl: true
+                //     const redirect = this.getRedirectUrl();
+                //     this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
+                //     this.router.navigateByUrl(redirect, {
+                //         replaceUrl: true
+                //     });
+                // } else {
+                //     this.toast.add({ severity: 'error', summary: '登入失敗', detail: '帳號或密碼錯誤' });
+                // }
+                    this.authService.onProfileCheck().subscribe({
+                        next: (chk) => {
+                            if (chk?.TRANRS?.filled === false) {
+                                // 尚未填 → 打開 dialog
+                                this.toast.add({
+                                    severity: 'info',
+                                    summary: '請完成會員資料',
+                                    detail: '請填寫姓名與電話以繼續使用服務'
+                                });
+                                this.showFillDialog = true;
+                            } else {
+                                // 已填 → 直接導頁
+                                const redirect = this.getRedirectUrl();
+                                this.toast.add({
+                                    severity: 'success',
+                                    summary: '登入成功',
+                                    detail: '歡迎回來！'
+                                });
+                                this.router.navigateByUrl(redirect, { replaceUrl: true });
+                            }
+                        },
+                        error: () => {
+                            this.toast.add({
+                                severity: 'error',
+                                summary: '資料檢查失敗',
+                                detail: '請稍後再試'
+                            });
+                        }
                     });
                 } else {
-                    this.toast.add({ severity: 'error', summary: '登入失敗', detail: '帳號或密碼錯誤' });
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '登入失敗',
+                        detail: '帳號或密碼錯誤'
+                    });
                 }
             },
             error: () => {
                 this.isLoading = false;
+                this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
+            }
+        });
+    }
+
+    /**
+     * 送出會員資訊
+     */
+     onDialogSave(e: { name: string; phone: string; file?: File | null }) {
+        const req: USER001Req = {
+            MWHEADER: {
+                MSGID: 'USER-001'
+            },
+            TRANRQ: {
+                name: e.name,
+                phone: e.phone,
+                mediaId: 'M000000001' // 暫時用
+            }
+        };
+
+        this.userService.onAddUserApi(req).subscribe({
+            next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                    this.toast.add({ severity: 'success', summary: '會員資料已建立', detail: '感謝您的填寫' });
+                    this.showFillDialog = false;
+                    const redirect = this.getRedirectUrl();
+                    this.router.navigateByUrl(redirect, { replaceUrl: true });
+                } else {
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '建立失敗',
+                        detail: res.MWHEADER.RETURNDESC
+                    });
+                }
+            },
+            error: () => {
                 this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
             }
         });
