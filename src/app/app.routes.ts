@@ -14,6 +14,8 @@ import { ChatPage } from './pages/chat-page/chat-page';
 
 import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
+import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
+import { AdminSellerTable } from './pages/admin-seller-table/admin-seller-table';
 import { LoginPage } from './pages/login-page/login-page';
 import { RegisterPage } from './pages/register-page/register-page';
 import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
@@ -53,15 +55,23 @@ export const routes: Routes = [
         component: MerchantRegisterPage
     },
     {
-        path: 'merchants/roomInfo/edit',
+        path: 'merchants/login',
+        component: MerchantLoginPage
+    },
+    {
+        path: 'merchants/register',
+        component: MerchantRegisterPage
+    },
+    {
+        path: 'merchants/property/roomInfo/edit',
         component: RoomInfoEditPage
     },
     {
-        path: 'merchants/roomInfo/insert',
+        path: 'merchants/property/roomInfo/insert',
         component: RoomInfoInsertPage
     },
     {
-        path: 'merchants/homepage',
+        path: 'merchants/property/homepage',
         component: MerchantHomePage
     },
     {
@@ -73,7 +83,7 @@ export const routes: Routes = [
         component: BookingPage
     },
     {
-        path: 'merchants/reviewList',
+        path: 'merchants/property/reviewList',
         component: MerchantReviewListPage
     },
     {
@@ -85,7 +95,15 @@ export const routes: Routes = [
         component: ChatPage
     },
     {
-        path:'orderTable',
+        path:'admin/orderTable',
         component:OrderTableComponent
+    },
+      {
+        path:'admin/userTable',
+        component:AdminUserTable
+    },
+      {
+        path:'admin/sellerTable',
+        component:AdminSellerTable
     }
 ];
