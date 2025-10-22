@@ -62,3 +62,42 @@
     gap: 6px;
     font-size: 1.25rem;
 }
+
+/* 錯誤訊息 */
+.error-message {
+    background-color: #fff5f5;
+    border: 2px solid #A24522;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    color: #A24522;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+}
+
+.error-message i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* 欄位驗證錯誤文字 */
+.error-text {
+    display: block;
+    color: #A24522;
+    margin-top: -10px;
+    padding-left: 30%;
+    font-size: 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 無效欄位的邊框顏色 */
+:host ::ng-deep input.ng-invalid.ng-touched {
+    border-color: #A24522;
+}
+
+:host ::ng-deep .p-password.ng-invalid.ng-touched input {
+    border-color: #A24522;
+}
