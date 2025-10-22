@@ -51,39 +51,43 @@
     font-size: 17px;
 }
 
-/* 新增的 CSS 類別 */
+/* 房型資訊標題列 */
 .section-header-row {
     display: flex;
-    /* 讓標題和按鈕分別靠左和靠右 */
     justify-content: space-between;
-    /* 垂直居中對齊 */
-    align-items: center;
-    /* 移除 section-title 原本的底部邊距，改為容器的底部邊距 */
-    margin-bottom: 25px;
+    align-items: flex-end;
+    /* 底部對齊 */
+    border-bottom: 3px solid #3a1f0b;
+    /* 整行加底線 */
+    padding-bottom: 8px;
+    margin-bottom: 24px;
 }
 
 .section-title {
     font-size: 35px;
     font-weight: bold;
+    margin: 0;
+    /* 移除預設 margin */
 }
 
-.btn-add-container {
-    display: flex;
-    justify-content: left;
-    font-size: 20px;
-}
-
+/* 移除原本的 btn-add-container，因為按鈕已經在 section-header-row 裡 */
 .btn-add {
-    background-color: #974b2c;
-    color: white;
-    border: none;
+    background-color: transparent;
+    /* 改成透明 */
+    color: #974b2c;
+    border: 2px solid #974b2c;
+    /* 加上邊框 */
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 .btn-add:hover {
-    background-color: #a4642b;
+    background-color: #974b2c;
+    /* hover 時填滿 */
+    color: white;
 }
 
 .room-list {
@@ -92,14 +96,18 @@
     gap: 20px;
 }
 
+/* 調整 room-card 的對齊方式 */
 .room-card {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: stretch;
+    /* 改成 stretch，讓高度一致 */
     background-color: #fffdf8;
     border: 1px solid #d8b39a;
     border-radius: 8px;
     padding: 16px;
+    gap: 16px;
+    /* 加上間距 */
 }
 
 .room-image {
@@ -107,6 +115,8 @@
     height: 190px;
     object-fit: cover;
     border-radius: 6px;
+    margin-left: 15px;
+    margin-top: 5px;
 }
 
 .room-info {
@@ -141,6 +151,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 18px;
+    transition: background-color 0.2s;
 }
 
 .btn-detail:hover,
@@ -152,16 +163,42 @@
     background-color: #974B2C;
 }
 
-.room-units {
-    text-align: right;
-    font-size: 25px;
-    font-weight: bold;
-    color: #3a1f0b;
-    min-width: 80px;
-    margin-top: 125px;
+.btn-delete:hover {
+    background-color: #7d3d23;
 }
 
-.btn-more-container {
+/* 優化 room-units 排版 */
+.room-units {
+    text-align: center;
+    font-size: 23px;
+    font-weight: bold;
+    color: #3a1f0b;
+    min-width: 140px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 優化分隔線 */
+.units-divider {
+    height: 1px;
+    background-color: #c5b09b;
+    /* 顏色深一點 */
+    margin: 10px 0;
+    width: 60px;
+    /* 固定寬度，不要用百分比 */
+}
+
+/* 改成橘棕色 */
+.available-count {
+    color: #c17a4a;
+    /* 橘棕色 */
+    font-size: 26px;
+}
+
+/* .btn-more-container {
     display: flex;
     justify-content: center;
     margin-top: 40px;
@@ -175,8 +212,9 @@
     padding: 12px 24px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .btn-more:hover {
     background-color: #a4642b;
-}
+} */

@@ -1,43 +1,151 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
+import { Router } from '@angular/router';
+import { MerchService } from '../../core/services/merch-service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-merchant-home-page',
-  imports: [],
+  imports: [CommonModule, SharedConfirmDialog],
   templateUrl: './merchant-home-page.html',
   styleUrl: './merchant-home-page.css'
 })
-export class MerchantHomePage {
-  stats = [
-    { label: '當月銷售總額', value: '$55000', change: '+15% from last month' },
-    { label: '總訂單數', value: '45', change: '+10% from last month' },
-    { label: '新增房客人數', value: '5', change: '+3% from last month' },
-    { label: '房型數', value: '12', change: '+5% from last month' }
-  ];
-  rooms = [
-    {
-      name: '陽光豪華房',
-      size: '高125cm X 寛112cm X 長114cm',
-      info: '適合老貓或術後需休養的貓咪‘',
-      facilities: '1台智能可旋轉24監控',
-      totalUnits: 11,
-      image: 'assets/rooms/room1.jpg'
-    },
-    {
-      name: '時尚森林房',
-      size: '高250cm X 寛112~136cm X 長114cm',
-      info: '提供各式窗型因應不同貓咪習性',
-      facilities: '1台智能可旋轉24監控',
-      totalUnits: 5,
-      image: 'assets/rooms/room2.jpg'
-    },
-    {
-      name: '無邊海景房',
-      size: '高300cm X 寛212cm X 長114cm',
-      info: '面向101，適合喜愛景觀房的主子',
-      facilities: '2台智能可旋轉24監控',
-      totalUnits: 8,
-      image: 'assets/rooms/room3.jpg'
+export class MerchantHomePage implements OnInit {
+  /** deleteRoomVisible */
+  deleteRoomVisible = false;
+  /** roomToDelete */
+  roomToDelete: any = null;
+  /** propertyId */
+  propertyId: string = '';
+  /** roomList */
+  roomList: any[] = [];
+  /** status */
+  stats: any[] = [];
+  /** isLoading */
+  isLoading = false;
+  /** isDeleting */
+  isDeleting = false;
+  /** errorMessage */
+  errorMessage = '';
+
+  /**
+   * 注入
+   * @param router 
+   * @param merchService 
+   */
+  constructor(private router: Router, private merchService: MerchService) { }
+
+  ngOnInit(): void {
+    this.loadRooms();
+  }
+
+  /**
+   * 載入房間列表
+   */
+  loadRooms(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    const tranrq = {
+      propertyId: this.propertyId
+    };
+
+    this.merchService.queryPropertyRooms(tranrq).subscribe({
+      next: (res) => {
+        console.log('API 回應:', res);
+
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          this.roomList = res.TRANRS?.rooms || [];
+          this.stats = res.TRANRS?.stats || [];
+          console.log('房間列表載入成功', this.roomList);
+        } else {
+          this.errorMessage = '載入房型列表失敗';
+          this.roomList = [];
+          this.stats = [];
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('載入房間列表失敗', err);
+        this.errorMessage = '無法載入房型列表，請稍後再試';
+        this.isLoading = false;
+        this.roomList = [];
+        this.stats = [];
+      }
+    });
+  }
+
+  /**
+   * 新增房型
+   */
+  onAdd(): void {
+    this.router.navigate(['/merchants/property/roomInfo/insert'])
+  }
+
+  /**
+   * 修改房型
+   * @param room 
+   * @returns 
+   */
+  onEdit(room: any): void {
+    if (!room || !room.id) {
+      this.errorMessage = '無法取得房型資料';
+      return;
     }
-  ];
+    this.router.navigate(['/merchants/property/roomInfo/edit'], {
+      state: { room: room }
+    });
+  }
+
+  /**
+   * 顯示刪除確認對話框
+   * @param room 
+   */
+  showDeleteConfirm(room: any) {
+    if (!room || !room.id) {
+      this.errorMessage = '無法取得房型，請稍後再試';
+      return;
+    }
+    this.roomToDelete = room;
+    this.deleteRoomVisible = true;
+    this.errorMessage = '';
+  }
+
+  /**
+   * 刪除
+   */
+  onDelete() {
+    if (!this.roomToDelete || !this.roomToDelete.id) {
+      this.errorMessage = '無法取得房型，請稍後再試';
+      return;
+    }
+    this.isDeleting = true;
+    this.errorMessage = '';
+
+    this.merchService.deleteRoomDetail(this.roomToDelete.id).subscribe({
+      next: (res) => {
+        console.log('刪除API回應', res);
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          const index = this.roomList.indexOf(this.roomToDelete);
+          if (index > -1) {
+            this.roomList.splice(index, 1);
+          }
+          console.log('已成功刪除房型', this.roomToDelete.name)
+          this.roomToDelete = null;
+          this.deleteRoomVisible = false;
+        } else {
+          this.errorMessage = '刪除失敗';
+        }
+        this.isDeleting = false;
+      },
+      error: (err) => {
+        console.error('刪除失敗', err);
+        this.errorMessage = err.error?.TRANRS?.message || '刪除房型時發生錯誤，請稍後再試';
+        this.isDeleting = false;
+        this.deleteRoomVisible = false;
+        this.roomToDelete = null;
+      }
+    });
+  }
 }
 
