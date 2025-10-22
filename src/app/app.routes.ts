@@ -16,6 +16,7 @@ import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
 import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
 import { AdminSellerTable } from './pages/admin-seller-table/admin-seller-table';
+import { AdminHotelTable } from './pages/admin-hotel-table/admin-hotel-table';
 
 export const routes: Routes = [
     {
@@ -77,5 +78,9 @@ export const routes: Routes = [
       {
         path:'admin/sellerTable',
         component:AdminSellerTable
+    },
+      {
+        path:'admin/hotelTable',
+        component:AdminHotelTable
     }
 ];
