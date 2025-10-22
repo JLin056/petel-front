@@ -15,13 +15,31 @@
 }
 /* 按鈕區 */
 .button-container {
-    margin-top: 30px;
+    margin-top: 40px;
     display: flex;
     justify-content: center;
     gap: 40px;
+    font-size: 2rem;
 }
-.button-container ::ng-deep .p-button {
-  font-size: 1.4rem;
-  padding: 6px 12px;
-  border-radius: 6px;
+:host ::ng-deep .button-container .p-button {
+    font-size: 1.25rem;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 24px;
+    background-color: #f0e4d8;
+    color: #5b4636;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
+    transition: all 0.2s ease;
+}
+:host ::ng-deep .button-container .p-button:hover {
+  background-color: #e4d2be;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
+}
+:host ::ng-deep .button-container .p-button:disabled {
+  opacity: 0.6;
+}
+:host ::ng-deep .button-container .p-button .p-button-label {
+  font-size: 1.25rem;
 }

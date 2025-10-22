@@ -27,39 +27,12 @@
         ></i>
         <div class="auth-area">
             <!-- 判斷登入 -->
-            <button *ngIf="!isLoggedIn" pButton class="LoginLogout" label="登入" (click)="showLogin()" [outlined]="true"></button>
+            <button *ngIf="!isLoggedIn" pButton class="LoginLogout" label="登入" (click)="onClickLogin()" [outlined]="true"></button>
             <!-- 判斷登出 -->
             <button *ngIf="isLoggedIn" pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true"></button>
         </div>
     </div>
 </div>
-
-<!-- 登入 dialog -->
-<app-login-dialog
-    *ngIf="loginDialogVisible"
-    [(visible)]="loginDialogVisible"
-    (loginSuccess)="onLoginSuccess()"
-    (goRegister)="openRegister()"
-    (forgot)="openForgot()"
->
-</app-login-dialog>
-
-<!-- 註冊 dialog -->
-<app-register-dialog
-  *ngIf="registerDialogVisible"
-  [(visible)]="registerDialogVisible"
-  (goLogin)="openLogin()"
->
-</app-register-dialog>
-
-<!-- 忘記密碼 -->
-<app-forgot-password
-  *ngIf="forgotDialogVisible"
-  [(visible)]="forgotDialogVisible"
-  (visibleChange)="forgotDialogVisible = $event"
-  (sent)="openLogin()"
->
-</app-forgot-password>
 
 <!-- 登出 dialog -->
 <app-shared-confirm-dialog

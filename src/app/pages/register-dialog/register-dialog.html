@@ -29,13 +29,14 @@
                 {{ getErrorMessage('email') }}
             </div>
 
-            <div class="input-container">
+            <div class="input-container-password">
                 <label for="password">密碼</label>
                 <p-password
                     id="password"
                     formControlName="password"
                     [disabled]="isLoading"
                     [feedback]="false"
+                    inputStyleClass="petel-input"
                     placeholder="請輸入密碼"
                 />
             </div>
@@ -43,13 +44,14 @@
                 {{ getErrorMessage('password') }}
             </div>
 
-            <div class="input-container">
+            <div class="input-container-password">
                 <label for="confirm">確認密碼</label>
                 <p-password
                     id="confirm"
                     formControlName="confirm"
                     [disabled]="isLoading"
                     [feedback]="false"
+                    inputStyleClass="petel-input"
                     placeholder="請再次輸入密碼"
                 />
             </div>
