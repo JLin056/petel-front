@@ -6,24 +6,69 @@
     [style]="{width: '600px'}"
     styleClass = "petel-auth-dialog"
 >
-    <div class="container">
-        <div class="input-container">
-            <label for="email">信箱</label>
-            <input pInputText id="email" class="email-input" [(ngModel)]="email" />
-        </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <div class="container">
+            <!-- 錯誤訊息 -->
+            <div *ngIf="errorMessage" class="error-message">
+                <i class="pi pi-exclamation-triangle"></i>
+                {{ errorMessage }}
+            </div>
 
-        <div class="input-container">
-            <label for="password">密碼</label>
-            <p-password [(ngModel)]="password" />
+            <div class="input-container">
+                <label for="email">信箱</label>
+                <input
+                    pInputText
+                    id="email"
+                    class="email-input"
+                    formControlName="email"
+                    [disabled]="isLoading"
+                    placeholder="請輸入信箱"
+                />
+            </div>
+            <!-- 欄位驗證錯誤訊息 -->
+            <div
+                *ngIf="emailControl?.invalid && emailControl?.touched"
+                class="error-text"
+            >
+                {{ getErrorMessage('email') }}
+            </div>
+
+            <div class="input-container">
+                <label for="password">密碼</label>
+                <p-password
+                    formControlName="password"
+                    [disabled]="isLoading"
+                    [feedback]="false"
+                    placeholder="請輸入密碼"
+                />
+            </div>
+            <!-- 欄位驗證錯誤訊息 -->
+            <div
+                *ngIf="passwordControl?.invalid && passwordControl?.touched"
+                class="error-text"
+            >
+                {{ getErrorMessage('password') }}
+            </div>
         </div>
-    </div>
-    <div class="aux-row">
-        <a class="auth-link" (click)="onForgot()">忘記密碼？</a>
-    </div>
-    <div class="button-container">
-        <p-button label="取消" severity="secondary" (click)="onHideDialog()"></p-button>
-        <p-button label="登入" (click)="onLogin()" />
-    </div>
+        <div class="aux-row">
+            <a class="auth-link" (click)="onForgot()">忘記密碼？</a>
+        </div>
+        <div class="button-container">
+            <p-button
+                label="取消"
+                severity="secondary"
+                type="button"
+                (click)="onHideDialog()"
+                [disabled]="isLoading"
+            ></p-button>
+            <p-button
+                label="登入"
+                type="submit"
+                [loading]="isLoading"
+                [disabled]="isLoading"
+            />
+        </div>
+    </form>
 
     <div class="auth-footer">
         <span class="p-text-secondary block mb-8">還沒有帳號？ </span>
