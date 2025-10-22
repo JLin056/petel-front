@@ -7,6 +7,15 @@
             <button type="button" class="btn-upload">新增圖片</button>
         </div>
 
+        <!-- 寵物種類 -->
+        <div class="form-section">
+            <label class="section-label">寵物種類</label>
+
+            <p-autocomplete formControlName="petTypeObject" [suggestions]="filteredPetTypes"
+                (completeMethod)="filterPetTypes($event)" optionLabel="name" [dropdown]="true" placeholder="請選擇寵物種類"
+                [forceSelection]="true" class="room-autocomplete"> </p-autocomplete>
+        </div>
+
         <!-- 房型名稱 -->
         <div class="form-section">
             <label class="section-label">房型名稱</label>
@@ -16,13 +25,13 @@
         <!-- 空間尺寸 -->
         <div class="form-section">
             <label class="section-label">空間尺寸</label>
-            <textarea formControlName="description" rows="5" placeholder="請輸入空間尺寸" class="textarea"></textarea>
+            <textarea formControlName="size" rows="5" placeholder="請輸入空間尺寸" class="textarea"></textarea>
         </div>
 
         <!-- 房間介紹 -->
         <div class="form-section">
             <label class="section-label">房間介紹</label>
-            <p-editor formControlName="equipment" [style]="{'height':'280px', 'background-color':'#fffdf8'}">
+            <p-editor formControlName="description" [style]="{'height':'280px', 'background-color':'#fffdf8'}">
                 <ng-template pTemplate="header">
                     <span class="ql-formats">
                         <select class="ql-header">
@@ -58,19 +67,34 @@
         <!-- 價格 -->
         <div class="form-section">
             <label class="section-label">價格 NT$ / 天</label>
-            <input formControlName="price" type="text" placeholder="請輸入此房間價格" class="input" />
+            <input formControlName="price" type="number" min="1" step="any" placeholder="請輸入此房間價格" class="input" />
         </div>
 
         <!-- 總房數 -->
         <div class="form-section">
             <label class="section-label">總房間數</label>
-            <input formControlName="unit" type="text" placeholder="請輸入此房間總數量" class="input" />
+            <input formControlName="unit" type="number" min="1" step="1" placeholder="請輸入此房間總數量" class="input" />
         </div>
 
         <div class="form-buttons">
-            <button type="button" class="btn-save">確 認 新 增</button>
-            <button type="reset" class="btn-cancel">取 消 新 增</button>
+            <button type="button" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
+                {{ isSubmitting ? '新增中...' : '確 認 新 增' }}
+            </button>
+            <button type="button" class="btn-cancel" (click)="onCancelClick()" [disabled]="isSubmitting">
+                取 消 新 增
+            </button>
         </div>
-
     </form>
 </div>
+
+<!-- 錯誤訊息顯示 -->
+@if (errorMessage) {
+<div class="error-message">
+    {{ errorMessage }}
+</div>
+}
+
+<!-- 取消確認對話框 -->
+<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消新增嗎？已填寫的資料將不會被儲存。"
+    confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()"
+    (cancel)="onCancelCancel()"></app-shared-confirm-dialog>

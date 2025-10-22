@@ -1,10 +1,28 @@
 <div class="room-form-container">
+    <!-- 錯誤訊息 -->
+    @if (errorMessage && !isSubmitting) {
+    <div class="error-banner">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>{{ errorMessage }}</span>
+    </div>
+    }
+
     <h2 class="page-title">房型資訊</h2>
+
     <form [formGroup]="roomForm" class="form-body">
         <!-- 房型圖片 -->
         <div class="form-section">
             <label class="section-label">房型圖片</label>
             <button type="button" class="btn-upload">修改圖片</button>
+        </div>
+
+        <!-- 寵物種類 -->
+        <div class="form-section">
+            <label class="section-label">寵物種類</label>
+            <p-autocomplete formControlName="petTypeObject" [suggestions]="filteredPetTypes"
+                (completeMethod)="filterPetTypes($event)" optionLabel="name" [dropdown]="true" placeholder="請選擇寵物種類"
+                [forceSelection]="true" class="room-autocomplete">
+            </p-autocomplete>
         </div>
 
         <!-- 房型名稱 -->
@@ -16,13 +34,14 @@
         <!-- 空間尺寸 -->
         <div class="form-section">
             <label class="section-label">空間尺寸</label>
-            <textarea formControlName="description" rows="5" placeholder="請輸入空間尺寸" class="textarea"></textarea>
+            <textarea formControlName="size" rows="5" placeholder="請輸入空間尺寸" class="textarea">
+            </textarea>
         </div>
 
         <!-- 房間介紹 -->
         <div class="form-section">
             <label class="section-label">房間介紹</label>
-            <p-editor formControlName="equipment" [style]="{'height':'280px', 'background-color':'#fffdf8'}">
+            <p-editor formControlName="description" [style]="{'height':'280px', 'background-color':'#fffdf8'}">
                 <ng-template pTemplate="header">
                     <span class="ql-formats">
                         <select class="ql-header">
@@ -40,13 +59,13 @@
                         <select class="ql-color"></select>
                     </span>
                     <span class="ql-formats">
-                        <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
                         <button type="button" class="ql-list" value="bullet" aria-label="Bullet List"></button>
+                        <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
                     </span>
                     <span class="ql-formats">
                         <select class="ql-align">
                             <option selected></option>
-                            Ï <option value="center"></option>
+                            <option value="center"></option>
                             <option value="right"></option>
                             <option value="justify"></option>
                         </select>
@@ -58,19 +77,28 @@
         <!-- 價格 -->
         <div class="form-section">
             <label class="section-label">價格 NT$ / 天</label>
-            <input formControlName="price" type="text" placeholder="請輸入此房間價格" class="input" />
+            <input formControlName="price" type="number" placeholder="請輸入此房間價格" class="input" />
         </div>
 
         <!-- 總房數 -->
         <div class="form-section">
             <label class="section-label">總房間數</label>
-            <input formControlName="unit" type="text" placeholder="請輸入此房間總數量" class="input" />
+            <input formControlName="unit" type="number" placeholder="請輸入此房間總數量" class="input" />
         </div>
 
         <!-- 按鈕 -->
         <div class="form-buttons">
-            <button type="button" class="btn-save">確 認 修 改</button>
-            <button type="reset" class="btn-cancel">取 消 修 改</button>
+            <button type="button" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
+                {{ isSubmitting ? '修改中...' : '確 認 修 改' }}
+            </button>
+            <button type="button" class="btn-cancel" (click)="onCancelClick()" [disabled]="isSubmitting">
+                取 消 修 改
+            </button>
         </div>
     </form>
 </div>
+
+<!-- 取消確認對話框 -->
+<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消修改嗎？已修改的資料將不會被儲存。"
+    confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()"
+    (cancel)="onCancelCancel()"></app-shared-confirm-dialog>

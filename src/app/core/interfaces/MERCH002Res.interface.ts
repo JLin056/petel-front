@@ -4,6 +4,7 @@ export interface MERCH002Tranrs {
 }
 
 export interface roomList {
+    id: string;
     name: string;
     totalUnits: number;
     basePrice: number;

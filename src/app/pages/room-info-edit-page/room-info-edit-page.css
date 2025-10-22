@@ -1,113 +1,179 @@
 .section-label {
-    font-size: 28px;
-    display: block;
-    font-weight: bold;
-    color: #3a1f0b;
-    margin-bottom: 10px;
+  font-size: 28px;
+  display: block;
+  font-weight: bold;
+  color: #3a1f0b;
+  margin-bottom: 10px;
 }
 
 .btn-save,
 .btn-cancel,
 .btn-upload {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .room-form-container {
-    background-color: #f8f1e9;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
+  background-color: #f8f1e9;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .page-title {
-    font-size: 35px;
-    font-weight: bold;
-    color: #3a1f0b;
-    border-bottom: 3px solid #3a1f0b;
-    padding-bottom: 9px;
-    margin-bottom: 25px;
+  font-size: 35px;
+  font-weight: bold;
+  color: #3a1f0b;
+  border-bottom: 3px solid #3a1f0b;
+  padding-bottom: 9px;
+  margin-bottom: 25px;
 }
 
 .form-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .form-section {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .input,
 .textarea {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 10px 12px;
-    background-color: white;
-    font-size: 20px;
-    color: #3a1f0b;
-    box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background-color: white;
+  font-size: 20px;
+  color: #3a1f0b;
+  box-sizing: border-box;
 }
 
 .textarea {
-    resize: vertical;
-    font-family: inherit;
-    line-height: 1.5;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
 }
 
 .input:focus,
 .textarea:focus {
-    outline: none;
-    border-color: #974B2C;
-    box-shadow: 0 0 0 2px rgba(151, 75, 44, 0.1);
+  outline: none;
+  border-color: #974B2C;
+  box-shadow: 0 0 0 2px rgba(151, 75, 44, 0.1);
 }
 
 .btn-upload {
-    background-color: #974B2C;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    align-self: flex-start;
+  background-color: #974B2C;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  align-self: flex-start;
 }
 
 .btn-upload:hover {
-    background-color: #a4642b;
+  background-color: #a4642b;
 }
 
 .form-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 80px;
-    margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  margin-top: 30px;
 }
 
 .btn-save,
 .btn-cancel {
-    background-color: #974B2C;
-    color: white;
-    border: none;
-    padding: 12px 40px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    min-width: 150px;
+  background-color: #974B2C;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  min-width: 150px;
 }
 
 .btn-save:hover {
-    background-color: #a4642b;
+  background-color: #a4642b;
 }
 
 .btn-cancel:hover {
-    background-color: #7d3d23;
+  background-color: #7d3d23;
+}
+
+/* 錯誤訊息橫幅 */
+.error-banner {
+  background-color: #fff3e0;
+  color: #a4642b;
+  border: 1px solid #c17a4a;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.error-banner i {
+  font-size: 1.2rem;
+}
+
+/* 按鈕禁用狀態 */
+.btn-save:disabled,
+.btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* p-autocomplete 樣式 */
+.room-autocomplete {
+  width: 100%;
+}
+
+::ng-deep .room-autocomplete .p-autocomplete {
+  width: 100%;
+}
+
+::ng-deep .room-autocomplete .p-autocomplete-input {
+  width: 100% !important;
+  border: 1px solid #ccc !important;
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  background-color: white !important;
+  font-size: 20px !important;
+  color: #3a1f0b !important;
+}
+
+::ng-deep .room-autocomplete .p-autocomplete-input:focus {
+  border-color: #974B2C !important;
+  box-shadow: 0 0 0 2px rgba(151, 75, 44, 0.1) !important;
+}
+
+::ng-deep .room-autocomplete .p-autocomplete-dropdown {
+  background-color: white !important;
+  color: #974B2C !important;
+  border: 1px solid #ccc !important;
+  border-left: none !important;
+}
+
+::ng-deep .room-autocomplete .p-autocomplete-item:hover {
+  background-color: #f8f1e9 !important;
+}
+
+::ng-deep .room-autocomplete .p-autocomplete-item.p-highlight {
+  background-color: #974B2C !important;
+  color: white !important;
 }
