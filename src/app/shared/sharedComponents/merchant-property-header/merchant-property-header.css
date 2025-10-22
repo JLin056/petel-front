@@ -5,12 +5,14 @@
     justify-content: space-around;
     height: 10%;
 }
+
 .navbar-items {
     display: flex;
     list-style: none;
     color: #f6f2f2;
     margin-top: 10px;
 }
+
 .navbar-items li {
     margin-right: 40px;
     font-size: 25px;
@@ -21,6 +23,7 @@
     align-items: center;
     gap: 50px;
 }
+
 .LoginLogout {
     color: #f6f2f2;
     border: 1px solid #f6f2f2;

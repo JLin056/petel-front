@@ -6,9 +6,10 @@
     <div class="navbar">
         <ul class="navbar-items">
             <li (click)="onClickHome()">首頁</li>
-            <li (click)="onClickDog()">狗狗旅館</li>
-            <li>貓貓旅館</li>
-            <li>線上捐款</li>
+            <li>旅館資訊</li>
+            <li>訂單管理</li>
+            <li (click)="onClickReview()">評價管理</li>
+            <li>營運分析</li>
             <li>關於我們</li>
         </ul>
     </div>
@@ -69,3 +70,4 @@
     cancelLabel="取消"
     (confirm)="onLogout()"
 ></app-shared-confirm-dialog>
+
