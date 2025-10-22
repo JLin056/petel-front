@@ -33,15 +33,15 @@ export const routes: Routes = [
         component: UserPage
     },
     {
-        path: 'merchants/roomInfo/edit',
+        path: 'merchants/property/roomInfo/edit',
         component: RoomInfoEditPage
     },
     {
-        path: 'merchants/roomInfo/insert',
+        path: 'merchants/property/roomInfo/insert',
         component: RoomInfoInsertPage
     },
     {
-        path: 'merchants/homepage',
+        path: 'merchants/property/homepage',
         component: MerchantHomePage
     },
     {
@@ -53,7 +53,7 @@ export const routes: Routes = [
         component: BookingPage
     },
     {
-        path: 'merchants/reviewList',
+        path: 'merchants/property/reviewList',
         component: MerchantReviewListPage
     },
     {
