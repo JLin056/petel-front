@@ -55,20 +55,8 @@ export const routes: Routes = [
         component: MerchantRegisterPage
     },
     {
-        path: 'merchants/login',
-        component: MerchantLoginPage
-    },
-    {
-        path: 'merchants/register',
-        component: MerchantRegisterPage
-    },
-    {
         path: 'merchants/property/roomInfo/edit',
         component: RoomInfoEditPage
-    },
-    {
-        path: 'merchants/property/roomInfo/insert',
-        component: RoomInfoInsertPage
     },
     {
         path: 'merchants/property/homepage',
