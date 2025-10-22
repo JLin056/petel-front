@@ -6,6 +6,8 @@ import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-pag
 import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-insert-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
 import { UserPage } from './pages/user-page/user-page';
+import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page';
+import { UploadPropertyImage } from './pages/sellers-property-page/upload-property-image/upload-property-image';
 
 
 export const routes: Routes = [
@@ -16,6 +18,14 @@ export const routes: Routes = [
     {
         path: 'dogHotels',
         component: HotelListPage
+    },
+    {
+        path: 'singleHotel',
+        component: HotelSinglePage
+    },
+    {
+        path: 'uploadImageTest',
+        component: UploadPropertyImage
     },
     {
         path: 'imageTest',
