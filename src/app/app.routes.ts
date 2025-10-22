@@ -59,6 +59,10 @@ export const routes: Routes = [
         component: RoomInfoEditPage
     },
     {
+        path: 'merchants/property/roomInfo/insert',
+        component: RoomInfoInsertPage
+    },
+    {
         path: 'merchants/property/homepage',
         component: MerchantHomePage
     },
