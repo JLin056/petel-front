@@ -1,6 +1,6 @@
 import { BookService } from './../../core/services/book-service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { DatePicker } from 'primeng/datepicker';
@@ -18,12 +18,11 @@ import { HttpClient } from '@angular/common/http';
 import { EditorModule } from 'primeng/editor';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Auth } from '../../core/services/auth.service';
 import { PricePipe } from "../../shared/pipes/price-pipe";
 
 @Component({
     selector: 'app-booking-page',
-    imports: [FormsModule, ButtonModule, DatePicker, FloatLabel, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule, ButtonModule, PricePipe],
+    imports: [FormsModule, ButtonModule, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule, ButtonModule, PricePipe],
     templateUrl: './booking-page.html',
     styleUrl: './booking-page.css'
 })
@@ -70,7 +69,7 @@ export class BookingPage implements OnInit {
         selectedPayment: new FormControl<string>('')
     });
 
-    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient, private router: Router, private messageService: MessageService, private authService: Auth) { };
+    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient, private router: Router, private messageService: MessageService) { };
 
     ngOnInit(): void {
         this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用固定的旅館編號
@@ -92,14 +91,10 @@ export class BookingPage implements OnInit {
         });
     }
 
-
-
     setDataForCreateOrder() {
         const orderInfo: OrderInfo = {
-            // user_id: 'U000000001',
             property_id: 'P000000001',
-            // payment_id: this.selectedPayment,
-            payment_id: 'Y000000002',
+            payment_id: this.form.controls.selectedPayment.value!,
             check_in: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
             check_out: this.dateToString(this.form.controls.rangeDates.value!.at(-1)!),
             status: '未付款',
@@ -113,7 +108,7 @@ export class BookingPage implements OnInit {
             room_id: 'R000000001',
             arrival_date: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
             room_quantity: 1,
-            room_price: 1
+            room_price: 2500
         }]
 
         const tranrq: BOOK001Tranrq = {
@@ -126,15 +121,10 @@ export class BookingPage implements OnInit {
 
     onSubmit() {
 
-
-        console.log(this.authService.onLoginApi({
-            MWHEADER: { MSGID: 'AUTH-002' },
-            TRANRQ: {
-                email: 'kai@test.com',
-                password: '88888888',
-                role: 'USER'
-            }
-        }));
+        if (this.form.controls.guestType.value === 'n' && (this.form.controls.guestName === null || this.form.controls.guestPhone === null)) {
+            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '請填入主人姓名和電話' });
+            return;
+        }
 
         switch (this.form.controls.selectedPayment.value) {
 
@@ -146,21 +136,19 @@ export class BookingPage implements OnInit {
                         }
                     }
                 });
-                // 把資料帶過去
+                // TODO 把資料帶過去
                 this.router.navigateByUrl('/book/authorize');
                 break;
             }
 
             case this.paymentOptions.at(1)?.value: {
-                console.log('test2');
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
                         if (response.MWHEADER.RETURNCODE !== "0000") {
                             return;
                         }
-                        // 下方是呼叫綠界信用卡API：可能還需要修
+                        // 呼叫綠界信用卡API
                         this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-                            // this.bookService.getCreditParams('O000000007').subscribe({
                             next: (response) => {
 
                                 const params = response.TRANRS.ecPay_params;

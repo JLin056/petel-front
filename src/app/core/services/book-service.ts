@@ -31,7 +31,9 @@ export class BookService {
             TRANRQ: tranrq
         }
 
-        return this.http.post<Res<BOOK001Tranrs>>('http://localhost:8080/bookings/create', postData);
+        return this.http.post<Res<BOOK001Tranrs>>('http://localhost:8080/bookings/create', postData, {
+            withCredentials: true
+        });
     }
 
     /**

@@ -75,9 +75,9 @@ export const routes: Routes = [
         path: 'book',
         component: BookingPage
     },
-    {
-        path: 'merchants/property/reviewList',
-    },
+    // {
+    //     path: 'merchants/property/reviewList',
+    // },
     {
         path: 'merchants/reviewList',
         component: MerchantReviewListPage
