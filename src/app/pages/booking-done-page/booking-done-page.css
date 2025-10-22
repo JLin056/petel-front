@@ -1,8 +1,13 @@
+.component {
+  background-color: #f8f1e9;
+  padding: 40px;
+}
+
 /* ===== 訂單成功容器 ===== */
 .order_success_container {
   max-width: 900px;
   margin: 40px auto;
-  background-color: white;
+  background-color: #d8b39a;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -10,7 +15,7 @@
 
 /* ===== 成功標題區域 ===== */
 .success_header {
-  background: linear-gradient(135deg, #f5a623 0%, #f7b84b 100%);
+  background: linear-gradient(135deg, #974B2C 0%, #974B2C 100%);
   padding: 40px;
   text-align: center;
   display: flex;
@@ -20,12 +25,12 @@
 }
 
 .success_header i {
-  font-size: 36px;
+  font-size: 40px;
   color: white;
 }
 
 .success_header h1 {
-  font-size: 28px;
+  font-size: 31px;
   font-weight: 700;
   color: white;
   margin: 0;
@@ -56,59 +61,85 @@
 }
 
 .section_title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #333;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #f5a623;
+  border-bottom: 2px solid #ca8a04;
 }
 
 .info_list {
   padding-left: 0;
 }
 
+/* ===== info_item 布局（適用於住宿資訊） ===== */
 .info_item {
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  gap: 16px;
+  font-size: 18px;
   color: #666;
   line-height: 1.8;
-  margin-bottom: 10px;
 }
 
 .info_item:last-child {
   margin-bottom: 0;
+  border-bottom: none;
 }
 
-/* ===== 新增：旅館評價區域 ===== */
+/* ===== 標題部分（左側） ===== */
+.info_item_title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+/* ===== 內容部分（中間） ===== */
+.info_item_text {
+  font-size: 18px;
+  color: #666;
+  flex-grow: 1;
+  text-align: left;
+}
+
+/* ===== 第一個 info_item 特殊布局（包含評分） ===== */
+.info_section:first-of-type .info_item:first-child {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+}
+
+/* ===== 評價區域（右側） ===== */
 .rating_section {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
+  flex-shrink: 0;
 }
 
-.stars {
-  display: flex;
+/* PrimeNG Rating 組件樣式調整 */
+::ng-deep .rating_section .p-rating {
   gap: 4px;
 }
 
-.stars i {
-  color: #ffc107;
-  font-size: 18px;
-}
-
-.rating_score {
+::ng-deep .rating_section .p-rating .p-rating-icon {
   font-size: 20px;
-  font-weight: 700;
-  color: #333;
-  margin-left: 4px;
+  color: #ffc107;
 }
 
-.rating_text {
-  font-size: 16px;
-  color: #666;
+::ng-deep .rating_section .p-rating .p-rating-icon.pi-star {
+  color: #ddd;
+}
+
+::ng-deep .rating_section .p-rating .p-rating-icon.pi-star-fill {
+  color: #ffc107;
 }
 
 /* ===== 按鈕群組 ===== */
@@ -123,7 +154,7 @@
 /* PrimeNG 按鈕基礎樣式 */
 ::ng-deep .button_group .p-button {
   padding: 12px 24px !important;
-  font-size: 16px !important;
+  font-size: 18px !important;
   font-weight: 500 !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
@@ -138,61 +169,28 @@
   transform: translateY(0);
 }
 
-/* 聊聊按鈕 - 藍色 */
-::ng-deep .btn_chat {
-  background-color: #a4642b !important;
-  border-color: #a4642b !important;
-  color: white !important;
-}
-
-::ng-deep .btn_chat:hover {
-  background-color: #a4642b !important;
-  border-color: #a4642b !important;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
-}
-
-/* 查看歷史訂單按鈕 - 青色 */
-::ng-deep .btn_history {
-  background-color: #00BCD4 !important;
-  border-color: #00BCD4 !important;
-  color: white !important;
-}
-
-::ng-deep .btn_history:hover {
-  background-color: #0097A7 !important;
-  border-color: #0097A7 !important;
-  box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4) !important;
-}
-
-/* 修改訂單按鈕 - 橘色 */
-::ng-deep .btn_edit {
-  background-color: #FF9800 !important;
-  border-color: #FF9800 !important;
-  color: white !important;
-}
-
-::ng-deep .btn_edit:hover {
-  background-color: #F57C00 !important;
-  border-color: #F57C00 !important;
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4) !important;
-}
-
-/* 取消訂單按鈕 - 紅色 */
+/* 所有按鈕統一樣式 */
+::ng-deep .btn_chat,
+::ng-deep .btn_history,
+::ng-deep .btn_edit,
 ::ng-deep .btn_cancel {
-  background-color: #f44336 !important;
-  border-color: #f44336 !important;
+  background-color: #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: white !important;
 }
 
+::ng-deep .btn_chat:hover,
+::ng-deep .btn_history:hover,
+::ng-deep .btn_edit:hover,
 ::ng-deep .btn_cancel:hover {
-  background-color: #d32f2f !important;
-  border-color: #d32f2f !important;
-  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4) !important;
+  background-color: #a67003 !important;
+  border-color: #a67003 !important;
+  box-shadow: 0 4px 12px rgba(202, 138, 4, 0.4) !important;
 }
 
 /* 按鈕圖標樣式 */
 ::ng-deep .button_group .p-button-icon {
-  font-size: 16px;
+  font-size: 18px;
   margin-right: 8px;
 }
 
@@ -209,11 +207,11 @@
   }
 
   .success_header h1 {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .success_header i {
-    font-size: 28px;
+    font-size: 31px;
   }
 
   .order_content {
@@ -225,15 +223,36 @@
   }
 
   .section_title {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .info_item {
-    font-size: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 17px;
   }
 
-  .rating_score {
-    font-size: 18px;
+  .info_item_title {
+    min-width: auto;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ca8a04;
+  }
+
+  .info_item_text {
+    font-size: 17px;
+    padding-left: 0;
+  }
+
+  .rating_section {
+    align-self: flex-end;
+  }
+
+  .info_section:first-of-type .info_item:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .button_group {
