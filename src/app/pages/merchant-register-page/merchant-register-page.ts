@@ -126,7 +126,7 @@ export class MerchantRegisterPage {
      * 前往登入頁
      */
     goLoginPage() {
-        this.router.navigate(['login']);
+        this.router.navigate(['merchants/login']);
     }
 
     /**
