@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AUTH002Res } from '../interfaces/AUTH002Res.interface';
 import { environment } from '../../../environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -64,6 +64,7 @@ export class Auth {
             withCredentials: true
         })
     }
+
 
     /**
      * 確認登入狀態 API

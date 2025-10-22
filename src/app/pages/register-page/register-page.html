@@ -1,0 +1,74 @@
+<div class="auth-page">
+    <div class="hero">
+        <h1>歡迎加入</h1>
+        <p>為毛孩找到像家的旅館 🐾</p>
+    </div>
+
+    <div class="auth-card">
+        <h2 class="card-title">會員註冊</h2>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <!-- 錯誤訊息 -->
+            <div *ngIf="errorMessage" class="error-message">
+                <i class="pi pi-exclamation-triangle"></i>
+                {{ errorMessage }}
+            </div>
+
+        <div class="input-container">
+            <label for="email">信箱</label>
+            <input
+                pInputText
+                id="email"
+                formControlName="email"
+                [disabled]="isLoading"
+                placeholder="請輸入信箱"
+            />
+            </div>
+            <div *ngIf="emailControl?.invalid && emailControl?.touched" class="error-text">
+                {{ getErrorMessage('email') }}
+            </div>
+
+        <div class="input-container-password">
+            <label for="password">密碼</label>
+            <p-password
+                id="password"
+                formControlName="password"
+                [feedback]="false"
+                inputStyleClass="petel-input"
+                [disabled]="isLoading"
+                placeholder="請輸入密碼"
+            ></p-password>
+            </div>
+            <div *ngIf="passwordControl?.invalid && passwordControl?.touched" class="error-text">
+                {{ getErrorMessage('password') }}
+            </div>
+
+        <div class="input-container-password">
+            <label for="confirm">確認密碼</label>
+            <p-password
+                id="confirm"
+                formControlName="confirm"
+                [feedback]="false"
+                inputStyleClass="petel-input"
+                [disabled]="isLoading"
+                placeholder="請再次輸入密碼"
+            ></p-password>
+        </div>
+        <div *ngIf="confirmControl?.touched && registerForm.hasError('passwordsMismatch')" class="error-text">
+            {{ getErrorMessage('confirm') }}
+        </div>
+
+        <div class="button-container">
+            <button pButton type="button" class="p-button-secondary ghost" (click)="goLoginPage()" [disabled]="isLoading">
+            取消
+            </button>
+            <button pButton type="submit" [disabled]="isLoading" [loading]="isLoading" label="註冊"></button>
+        </div>
+        </form>
+
+        <div class="auth-footer">
+        <span>已有帳號？</span>
+        <a class="auth-link" routerLink="/login">立刻登入</a>
+        </div>
+    </div>
+</div>

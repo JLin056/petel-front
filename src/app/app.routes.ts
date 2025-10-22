@@ -14,11 +14,21 @@ import { ChatPage } from './pages/chat-page/chat-page';
 
 import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
+import { LoginPage } from './pages/login-page/login-page';
+import { RegisterPage } from './pages/register-page/register-page';
 
 export const routes: Routes = [
     {
         path: '',
         component: HomePage
+    },
+    {
+        path: 'login',
+        component: LoginPage
+    },
+    {
+        path: 'register',
+        component: RegisterPage
     },
     {
         path: 'dogHotels',

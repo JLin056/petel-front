@@ -7,13 +7,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
-import { LoginDialog } from '../../../pages/login-dialog/login-dialog';
-import { RegisterDialog } from '../../../pages/register-dialog/register-dialog';
-import { ForgotPasswordDialog } from '../../../pages/forgot-password-dialog/forgot-password-dialog';
 import { Auth } from '../../../core/services/auth.service';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
 import { MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -27,21 +25,12 @@ import { Router } from '@angular/router';
     InputTextModule,
     SelectModule,
     InputNumberModule,
-    LoginDialog,
-    RegisterDialog,
-    ForgotPasswordDialog,
     SharedConfirmDialog
 ],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-    /** loginDialogVisible */
-    loginDialogVisible = false;
-    /** registerDialogVisible */
-    registerDialogVisible = false;
-    /** forgotDialogVisible */
-    forgotDialogVisible = false;
     /** 確認登入狀態 */
     isLoggedIn = false; /** 確認登入狀態 */
     /** confirmVisible */
@@ -57,52 +46,17 @@ export class Header {
         private router: Router,
         private authService: Auth,
         private toast: MessageService
-    ) {}
-
-    /**
-     * 跳出 login 框
-     */
-    showLogin() {
-        this.loginDialogVisible = true;
+    ) {
+        this.router.events
+        .pipe(filter(e => e instanceof NavigationEnd))
+        .subscribe(() => this.onCheckLoginStatus());
     }
 
     /**
-     * login 成功
+     * 跳出 login
      */
-    onLoginSuccess() {
-        this.isLoggedIn = true;
-        this.loginDialogVisible = false;
-    }
-
-    /**
-     * 跳出註冊框
-     */
-    showRegister() {
-        this.registerDialogVisible = true;
-    }
-
-    /**
-     * 轉到註冊框
-     */
-    openRegister() {
-        this.loginDialogVisible = false;
-        this.registerDialogVisible = true;
-    }
-
-    /**
-     * 打開 login 框
-     */
-    openLogin() {
-        this.registerDialogVisible = false;
-        this.loginDialogVisible = true;
-    }
-
-    /**
-     * 轉到 忘記密碼 框
-     */
-    openForgot() {
-        this.loginDialogVisible = false;
-        this.forgotDialogVisible = true;
+    onClickLogin() {
+        this.router.navigate(['/login']);
     }
 
     onLogout() {
@@ -154,7 +108,7 @@ export class Header {
                 summary: '尚未登入',
                 detail: '請先登入後再使用聊天室功能'
             });
-            this.loginDialogVisible = true;
+            this.router.navigate(['/login'], { queryParams: { redirect: '/chat' } });
             return;
         }
         this.router.navigate(['/chat']);
@@ -167,7 +121,7 @@ export class Header {
                 summary: '尚未登入',
                 detail: '請先登入後再看會員資訊'
             });
-            this.loginDialogVisible = true;
+            this.router.navigate(['/login'], { queryParams: { redirect: '/history' } });
             return;
         }
         this.router.navigate(['/history']);
