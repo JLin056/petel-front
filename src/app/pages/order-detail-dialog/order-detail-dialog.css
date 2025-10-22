@@ -1,0 +1,183 @@
+.order-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 2rem 0;
+  font-size: 1.05rem;
+}
+
+.detail-row {
+  display: flex;
+  gap: 2rem;
+}
+
+.detail-row.full-width {
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.detail-value {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  color: #212529;
+}
+
+.detail-value i {
+  color: #6c757d;
+  font-size: 1.25rem;
+}
+
+.detail-value.clickable {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detail-value.clickable:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+}
+
+.detail-value.clickable .pi-external-link {
+  margin-left: auto;
+  font-size: 1rem;
+  color: #0d6efd;
+}
+
+.detail-value.price {
+  background-color: #d1e7dd;
+  font-weight: 600;
+  padding: 1.5rem 1.75rem;
+}
+
+.detail-value.price .price-amount {
+  font-size: 1.75rem;
+  color: #198754;
+  font-weight: 700;
+}
+
+.detail-value.status {
+  padding: 1.5rem 1.75rem;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.detail-value.status .status-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* 已完成 - 綠色 */
+.detail-value.status.status-success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.detail-value.status.status-success i {
+  color: #0f5132;
+}
+
+/* 已確認 - 藍色 */
+.detail-value.status.status-info {
+  background-color: #cfe2ff;
+  color: #084298;
+}
+
+.detail-value.status.status-info i {
+  color: #084298;
+}
+
+/* 待付款 - 黃色 */
+.detail-value.status.status-warn {
+  background-color: #fff3cd;
+  color: #997404;
+}
+
+.detail-value.status.status-warn i {
+  color: #997404;
+}
+
+/* 已取消 - 紅色 */
+.detail-value.status.status-danger {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.detail-value.status.status-danger i {
+  color: #842029;
+}
+
+.note-section {
+  margin-top: 0.5rem;
+}
+
+.note-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.note-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.note-text {
+  padding: 1.25rem 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  min-height: 120px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #495057;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}
+
+.note-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.note-textarea {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid #ced4da;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.note-textarea:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

@@ -11,6 +11,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
+import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
 
 
 
@@ -26,7 +27,8 @@ import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
     SelectModule,
     CommonModule,
     FormsModule,
-    ButtonModule
+    ButtonModule,
+    OrderDetailDialog
   ],
   templateUrl: './order-table-component.html',
   styleUrl: './order-table-component.css'
@@ -36,6 +38,10 @@ export class OrderTableComponent implements OnInit {
   orderList: Order[] = [];
   statuses: Status[] = [];
   loading: boolean = true;
+
+  // 詳細資料彈窗相關
+  showDetailDialog = false;
+  selectedOrder: Order | null = null;
 
   ngOnInit() {
     // 模擬資料載入
@@ -54,7 +60,7 @@ export class OrderTableComponent implements OnInit {
         "HOTEL_CHARGES": 7000,
         "PRICE_EVERYNIGHT": 3500,
         "STATUS": "待付款",
-        "NOTE": null,
+        "NOTE": "測試",
         "CREATED_AT": "2025-10-22",
         "UPDATED_AT": "2025-10-22"
       },
@@ -198,7 +204,7 @@ export class OrderTableComponent implements OnInit {
         "HOTEL_CHARGES": 3200,
         "PRICE_EVERYNIGHT": 1600,
         "STATUS": "已完成",
-        "NOTE": null,
+        "NOTE": "我的貓有病，請小心照顧",
         "CREATED_AT": "2025-10-10",
         "UPDATED_AT": "2025-10-23"
       },
@@ -245,5 +251,28 @@ export class OrderTableComponent implements OnInit {
       default:
         return null;
     }
+  }
+
+  // 開啟詳細資料彈窗
+  showOrderDetail(order: Order) {
+    this.selectedOrder = order;
+    this.showDetailDialog = true;
+  }
+
+  // 更新備註
+  onNoteUpdated(data: { orderId: string, note: string }) {
+    // 更新訂單列表中的備註
+    const orderIndex = this.orderList.findIndex(o => o.ORDER_ID === data.orderId);
+    if (orderIndex !== -1) {
+      this.orderList[orderIndex].NOTE = data.note;
+    }
+
+    // 更新選中的訂單
+    if (this.selectedOrder && this.selectedOrder.ORDER_ID === data.orderId) {
+      this.selectedOrder.NOTE = data.note;
+    }
+
+    console.log('備註已更新:', data);
+    // TODO: 這裡可以加入 API 呼叫來更新後端資料
   }
 }
