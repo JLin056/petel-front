@@ -1,22 +1,4 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
-    <div class="dates">
-        <div class="in_out_dates">
-            <p-iftalabel>
-                <p-datepicker formControlName="rangeDates" selectionMode="range" dateFormat="yy.mm.dd" inputId="date"
-                    showIcon iconDisplay="input" [readonlyInput]="true" />
-                <label for="date"> 請選取您的入住日期和退房日期 </label>
-            </p-iftalabel>
-        </div>
-        <div class="between_in_out">
-            <p-floatlabel>
-                <input pInputText id="lengthOfStay" formControlName="lengthOfStay" autocomplete="off"
-                    [disabled]="true" />
-                <label for="lengthOfStay"> 晚數 </label>
-            </p-floatlabel>
-        </div>
-    </div>
-
     <div class="hotel_infos">
         <div class="hotel_infos_photo">
             <img class="hotel_photo"
@@ -49,22 +31,33 @@
 
     <div class="order_infos">
         <div class="order_infos_titie">
-            <i class="pi pi-info-circle"></i> 您的訂單資訊
+            您的訂單資訊
         </div>
         <div class="order_infos_detail">
             <table class="order_infos_detail_table">
+                <tr>
+                    <td> 入住日期 </td>
+                    <td> {{ checkIn }} </td>
+                </tr>
+                <tr>
+                    <td> 退房日期 </td>
+                    <td> {{ checkOut }} </td>
+                </tr>
                 <tr>
                     <td> 房型名稱 </td>
                     <td> {{ roomName }} </td>
                 </tr>
                 <tr>
-                    <td> 房型價格 </td>
-                    <td> ${{ roomPrice }} </td>
+                    <td> 房型金額 </td>
+                    <td> {{ roomPrice | price }} </td>
                 </tr>
                 <tr>
                     <td> 房型數量 </td>
-                    <td> <p-inputnumber formControlName="roomQuantity" mode="decimal" [showButtons]="true"
-                            inputId="minmax-buttons" [min]="0" [max]="maxNumOfRooms" /> </td>
+                    <td> {{ roomQuantity }} </td>
+                </tr>
+                <tr>
+                    <td> 房型總金額 </td>
+                    <td> {{ totalPrice | price }} </td>
                 </tr>
             </table>
         </div>
@@ -72,7 +65,7 @@
 
     <div class="additional_infos">
         <div class="additional_infos_titie">
-            <i class="pi pi-info-circle"></i> 其它重要資訊
+            其它重要資訊
         </div>
         <div class="additional_infos_text">
             <table class="additional_infos_text_table">
@@ -95,7 +88,7 @@
     <div class="guest_infos">
 
         <div class="guest_infos_title">
-            <i class="pi pi-info-circle"></i> 訂購人資訊
+            訂購人資訊
         </div>
 
         <div class="guest_infos_same">
@@ -121,15 +114,9 @@
             @if (form.controls.guestType.value === 'n') {
             <div class="guest_infos_diff_input">
                 <p-inputgroup>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-user"></i>
-                    </p-inputgroup-addon>
                     <input pInputText placeholder="請輸入訂購人的姓名" formControlName="guestName" />
                 </p-inputgroup>
                 <p-inputgroup>
-                    <p-inputgroup-addon>
-                        <i class="pi pi-phone"></i>
-                    </p-inputgroup-addon>
                     <input pInputText placeholder="請輸入訂購人的手機號碼" formControlName="guestPhone" />
                 </p-inputgroup>
             </div>
@@ -141,7 +128,7 @@
 
     <div class="order_note">
         <div class="order_note_title">
-            <i class="pi pi-info-circle"></i> 其餘需求
+            其餘需求
         </div>
         <div class="order_note_text">
             <p-editor class="input_square_frame" placeholder="例如：客製化飲食、餵藥照顧、即時狀態回報、預計抵達時間、其他需求等" formControlName="note"
@@ -161,7 +148,6 @@
         <div class="total_price">
             <p class="title"> 總金額 </p>
             <p class="amount"> ${{ totalAmount }} </p>
-            <p class="note"> 備註：已含稅金、服務費 </p>
         </div>
         <div class="payment_ways">
             <div class="flex flex-col gap-4">
