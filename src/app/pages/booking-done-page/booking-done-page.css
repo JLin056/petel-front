@@ -1,8 +1,13 @@
+.component {
+  background-color: #f8f1e9;
+  padding: 40px;
+}
+
 /* ===== 訂單成功容器 ===== */
 .order_success_container {
   max-width: 900px;
   margin: 40px auto;
-  background-color: white;
+  background-color: #d8b39a;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -10,7 +15,7 @@
 
 /* ===== 成功標題區域 ===== */
 .success_header {
-  background: linear-gradient(135deg, #f5a623 0%, #f7b84b 100%);
+  background: linear-gradient(135deg, #974B2C 0%, #974B2C 100%);
   padding: 40px;
   text-align: center;
   display: flex;
@@ -20,12 +25,12 @@
 }
 
 .success_header i {
-  font-size: 36px;
+  font-size: 40px;
   color: white;
 }
 
 .success_header h1 {
-  font-size: 32px;
+  font-size: 31px;
   font-weight: 700;
   color: white;
   margin: 0;
@@ -37,99 +42,150 @@
   background-color: #fafafa;
 }
 
-/* ===== 資訊區塊 ===== */
+/* ===== 資訊區塊（卡片化設計） ===== */
 .info_section {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.info_section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .info_section:last-of-type {
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .section_title {
   font-size: 20px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ca8a04;
 }
 
 .info_list {
-  padding-left: 20px;
+  padding-left: 0;
 }
 
+/* ===== info_item 布局（適用於住宿資訊） ===== */
 .info_item {
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  gap: 16px;
+  font-size: 18px;
   color: #666;
   line-height: 1.8;
-  margin-bottom: 8px;
 }
 
 .info_item:last-child {
   margin-bottom: 0;
+  border-bottom: none;
+}
+
+/* ===== 標題部分（左側） ===== */
+.info_item_title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+/* ===== 內容部分（中間） ===== */
+.info_item_text {
+  font-size: 18px;
+  color: #666;
+  flex-grow: 1;
+  text-align: left;
+}
+
+/* ===== 第一個 info_item 特殊布局（包含評分） ===== */
+.info_section:first-of-type .info_item:first-child {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+}
+
+/* ===== 評價區域（右側） ===== */
+.rating_section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* PrimeNG Rating 組件樣式調整 */
+::ng-deep .rating_section .p-rating {
+  gap: 4px;
+}
+
+::ng-deep .rating_section .p-rating .p-rating-icon {
+  font-size: 20px;
+  color: #ffc107;
+}
+
+::ng-deep .rating_section .p-rating .p-rating-icon.pi-star {
+  color: #ddd;
+}
+
+::ng-deep .rating_section .p-rating .p-rating-icon.pi-star-fill {
+  color: #ffc107;
 }
 
 /* ===== 按鈕群組 ===== */
 .button_group {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 30px;
+  margin-top: 32px;
 }
 
-/* PrimeNG 按鈕樣式覆蓋 */
-::ng-deep .btn_primary {
-  background-color: #2196F3 !important;
-  border-color: #2196F3 !important;
-  color: white !important;
+/* PrimeNG 按鈕基礎樣式 */
+::ng-deep .button_group .p-button {
   padding: 12px 24px !important;
-  font-size: 16px !important;
+  font-size: 18px !important;
   font-weight: 500 !important;
   border-radius: 8px !important;
   transition: all 0.3s ease !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-::ng-deep .btn_primary:hover {
-  background-color: #1976D2 !important;
-  border-color: #1976D2 !important;
+::ng-deep .button_group .p-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
 }
 
-::ng-deep .btn_danger {
-  background-color: #f44336 !important;
-  border-color: #f44336 !important;
+::ng-deep .button_group .p-button:active {
+  transform: translateY(0);
+}
+
+/* 所有按鈕統一樣式 */
+::ng-deep .btn_chat,
+::ng-deep .btn_history,
+::ng-deep .btn_edit,
+::ng-deep .btn_cancel {
+  background-color: #ca8a04 !important;
+  border-color: #ca8a04 !important;
   color: white !important;
-  padding: 12px 24px !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  transition: all 0.3s ease !important;
 }
 
-::ng-deep .btn_danger:hover {
-  background-color: #d32f2f !important;
-  border-color: #d32f2f !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4) !important;
-}
-
-::ng-deep .btn_info {
-  background-color: #2196F3 !important;
-  border-color: #2196F3 !important;
-  color: white !important;
-  padding: 12px 24px !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  transition: all 0.3s ease !important;
-}
-
-::ng-deep .btn_info:hover {
-  background-color: #1976D2 !important;
-  border-color: #1976D2 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4) !important;
+::ng-deep .btn_chat:hover,
+::ng-deep .btn_history:hover,
+::ng-deep .btn_edit:hover,
+::ng-deep .btn_cancel:hover {
+  background-color: #a67003 !important;
+  border-color: #a67003 !important;
+  box-shadow: 0 4px 12px rgba(202, 138, 4, 0.4) !important;
 }
 
 /* 按鈕圖標樣式 */
@@ -155,11 +211,15 @@
   }
 
   .success_header i {
-    font-size: 28px;
+    font-size: 31px;
   }
 
   .order_content {
-    padding: 30px 20px;
+    padding: 24px 16px;
+  }
+
+  .info_section {
+    padding: 20px;
   }
 
   .section_title {
@@ -167,12 +227,37 @@
   }
 
   .info_item {
-    font-size: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 17px;
+  }
+
+  .info_item_title {
+    min-width: auto;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ca8a04;
+  }
+
+  .info_item_text {
+    font-size: 17px;
+    padding-left: 0;
+  }
+
+  .rating_section {
+    align-self: flex-end;
+  }
+
+  .info_section:first-of-type .info_item:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .button_group {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
   }
 
   ::ng-deep .button_group .p-button {

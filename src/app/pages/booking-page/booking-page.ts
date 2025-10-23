@@ -14,7 +14,7 @@ import { RadioButton } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { HotelService } from '../../core/services/hotel-service';
 import { BOOK001Tranrq, OrderDetail, OrderInfo } from '../../core/interfaces/BOOK001Req.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EditorModule } from 'primeng/editor';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
