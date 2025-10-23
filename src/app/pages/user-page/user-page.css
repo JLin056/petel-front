@@ -86,7 +86,8 @@
 .order h3 {
     font-size: 2rem;
 }
-.empty-text {
+.empty-text,
+.error {
     text-align: center;
     color: #888;
     font-size: 1.75rem;
