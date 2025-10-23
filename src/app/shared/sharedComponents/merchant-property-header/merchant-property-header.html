@@ -1,0 +1,46 @@
+<div class="header">
+    <div class="logo">
+        <a href="#"><img src="img/Logo.png" alt="Petel Logo" class="logo-img"></a>
+    </div>
+
+    <div class="navbar">
+        <ul class="navbar-items">
+            <li (click)="onClickHome()">首頁</li>
+            <li>旅館資訊</li>
+            <li>訂單管理</li>
+            <li (click)="onClickReview()">評價管理</li>
+            <li>營運分析</li>
+            <li>關於我們</li>
+        </ul>
+    </div>
+
+    <div class="account">
+        <i
+            class="pi pi-comments"
+            style="color: #2e2424; font-size: 1.5rem;"
+            (click)="onClickChat()"
+        ></i>
+        <i
+            class="pi pi-user"
+            style="color: #2e2424; font-size: 1.5rem;"
+            (click)="onClickProfile()"
+        ></i>
+        <div class="auth-area">
+            <!-- 判斷登入 -->
+            <button *ngIf="!isLoggedIn" pButton class="LoginLogout" label="登入" (click)="onClickLogin()" [outlined]="true"></button>
+            <!-- 判斷登出 -->
+            <button *ngIf="isLoggedIn" pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true"></button>
+        </div>
+    </div>
+</div>
+
+<!-- 登出 dialog -->
+<app-shared-confirm-dialog
+    [(visible)]="confirmVisible"
+    header="登出確認"
+    message="確定要登出嗎？"
+    confirmLabel="登出"
+    cancelLabel="取消"
+    (confirm)="onLogout()"
+></app-shared-confirm-dialog>
+

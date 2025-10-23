@@ -1,0 +1,74 @@
+.review {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.review-text-content {
+    flex-basis: 80%;
+    margin-right: 30px;
+}
+
+.stars-rating {
+    /* 確保評分區塊不會太寬 */
+    flex-basis: 20%;
+    /* 設置一個基礎寬度，讓它佔右邊 20% */
+    flex-shrink: 0;
+    /* 防止被擠壓 */
+
+    /* 讓星星評分的小項目在右邊垂直堆疊，並靠右對齊 */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* 讓分數靠右對齊 */
+
+    font-size: 25px;
+    /* 調整字體大小 */
+    line-height: 1.2;
+}
+
+.page-title{
+    font-size: 35px;
+    margin-top: 45px;
+    margin-bottom: 25px;
+    margin-left: 15px;
+}
+.review-card {
+    background-color: #fffdf8;
+    border: 1px solid #d8b39a;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    /* 如果 .review-header 需要絕對定位，保留它 */
+}
+
+.review-header {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.order-number {
+    font-size: 28px;
+}
+
+/* 確保評價內容的字體大小，現在它在 .review-text-content 內 */
+.review-content {
+    color: #3a1f0b;
+    font-size: 25px;
+    /* 這裡不再需要 margin-bottom，間距由 .review 容器控制 */
+    margin-bottom: 0;
+}
+
+/* 按鈕靠左對齊 */
+.btn-detail {
+    background-color: #974B2C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    display: block;
+    font-size: 20px;
+}
+

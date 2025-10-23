@@ -1,0 +1,646 @@
+<div class="banner">
+    <div class="search-container">
+        <div class="search-bar">
+            <p-floatlabel variant="in" class="search-label">
+                <p-select [options]="cities" optionLabel="name" class="search-item" />
+                <label class="search-label">縣市</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" />
+                <label class="search-label">入住日</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" />
+                <label class="search-label">退房日</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-select class="search-item" [options]="types" optionLabel="name" />
+                <label class="search-label">寵物種類</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons"
+                    [min]="1" [max]="10" />
+                <label class="search-label">寵物數量</label>
+            </p-floatlabel>
+            <p-button label="搜尋" styleClass="petel-search-btn"></p-button>
+        </div>
+    </div>
+</div>
+
+<!-- 圖片網格 - 點擊可打開全螢幕相簿 -->
+<div class="image-grid-container">
+    <div class="image-grid">
+        <div *ngFor="let image of images; let i = index" class="grid-item" (click)="imageClick(i)">
+            <img [src]="image.thumbnailImageSrc" [alt]="image.alt || '旅館圖片'" />
+            <div class="image-overlay">
+                <i class="pi pi-search-plus"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全螢幕 Galleria -->
+<p-galleria
+    [value]="images"
+    [(visible)]="displayCustom"
+    [(activeIndex)]="activeIndex"
+    [responsiveOptions]="responsiveOptions"
+    [containerStyle]="{ 'max-width': '850px' }"
+    [numVisible]="7"
+    [circular]="true"
+    [fullScreen]="true"
+    [showItemNavigators]="true"
+    [showThumbnails]="false">
+    <ng-template pTemplate="item" let-item>
+        <img [src]="item.itemImageSrc" [alt]="item.alt || '旅館圖片'" style="width: 100%; display: block;" />
+    </ng-template>
+</p-galleria>
+
+<div>
+    <p-tabs [(value)]="activeTabValue">
+        <p-tablist>
+            <p-tab value="0">店家資訊</p-tab>
+            <p-tab value="1">房型/價目表</p-tab>
+            <p-tab value="2">顧客評價</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <!-- 頂部資訊容器 -->
+                <div class="store-header-container">
+                    <!-- 店家名稱 (H1) -->
+                    <h1 class="store-name">杜家村精品旅館</h1>
+
+                    <!-- 評分和評論數 row -->
+                    <div class="rating-row">
+                        <!-- 評分 (星星) -->
+                        <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                        <!-- 4.5 (1200 則評論) -->
+                        <p class="review-count">(1200 則評論)</p>
+                    </div>
+
+                    <!-- 地址 row -->
+                    <div class="address-row">
+                        <i class="pi pi-map-marker address-icon"></i>
+                        <p class="address-text">中山區 台北市</p>
+                    </div>
+                </div>
+                <div class="info-layout">
+                    <p-card header="店家資訊" class="left-card">
+                        <p>
+                            你好咖啡旅館位於著名的大安區，擁有舒適的生活風格、美麗的植物，供應道地的在地美食和專業咖啡。客房採淺色調牆面，設有用餐區和免費 WiFi。
+                            你好咖啡旅館距離捷運大安站（1 號出口）3 分鐘步行路程，距離台北車站 11 分鐘車程，距離台北 101 和捷運東門站 2 站捷運車程，距離東區商圈 10
+                            分鐘步行路程，距離桃園國際機場 40
+                            分鐘車程。
+                            每間客房都配有空調、平面電視、吹風機和共享迷你吧。私人浴室提供有機盥洗用品和坐浴盆。
+                            客人可以在花園悠閒漫步、在圖書區享受閱讀時光，或在公共休息室與其他旅客交流。館內設有觀光旅遊櫃檯可協助安排行程。
+                            情侶特別喜歡這個位置－並給他們的雙人旅行住宿體驗 9.3 分。
+                        </p>
+                        <p-divider />
+                        <p>設施</p>
+                        <div class="chip-container">
+                            <p-chip label="寵物監視器" icon="pi pi-camera" />
+                            <p-chip label="獨立套房" icon="pi pi-home" />
+                            <p-chip label="中央空調" icon="pi pi-face-smile" />
+                            <p-chip label="戶外空間" icon="pi pi-check-circle" />
+                            <p-chip label="停車方便" icon="pi pi-car" />
+                            <p-chip label="此地區評價最高" icon="pi pi-thumbs-up" />
+                        </div>
+                    </p-card>
+
+                    <div class="right-cards">
+                        <p-card header="評價" class="right-card">
+                            <p-divider />
+                            <div class="card-body">
+                                <div class="card-header-row">
+                                    <div class="card-title-group">
+                                        <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                                        <p>
+                                            房間乾淨舒適，服務人員很親切，價格合理，下次還會再來！
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-card>
+                        <p-card header="注意事項" class="right-card">
+                            <p-divider />
+                            <div class="card-body">
+                                <div class="card-header-row">
+                                    <div class="card-title-group">
+                                        <p>
+                                            本旅館僅提供住宿與照護服務，不負責因寵物突發疾病或過敏引起之醫療費用。請飼主於入住前確認健康狀況。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-card>
+                    </div>
+
+                </div>
+                <!-- <div class="hotel-media-container">
+                    <p-galleria [value]="images" [showItemNavigators]="true" [showThumbnails]="false"
+                        [responsiveOptions]="responsiveOptions" [circular]="true" [numVisible]="5"
+                        [showIndicators]="false">
+                        <ng-template pTemplate="item" let-item>
+                            <img [src]="item.itemImageSrc" [alt]="item.alt || '旅館圖片'"
+                                style="width: 100%; display: block;" />
+                        </ng-template>
+                    </p-galleria>
+                </div> -->
+
+                <!-- 須知區塊容器 -->
+                <div class="notes-container">
+                    <div class="pet-note">
+                        <p class="note-title">毛孩須知</p>
+                        <p-divider />
+                        <p class="note-content">入住前請完成預防針與驅蟲，並於入住時出示疫苗證明。中大型犬需繫上牽繩，禁止攜帶攻擊性犬隻。</p>
+                    </div>
+
+                    <div class="checkIn-note">
+                        <p class="note-title">入住須知</p>
+                        <p-divider />
+                        <p class="note-content">入住時間：15:00 後；退房時間：11:00 前。若需延遲退房請提前告知，將酌收費用。</p>
+                    </div>
+                </div>
+
+                <!-- 房型推薦區塊 -->
+                <div class="room-recommend">
+                    <p class="recommend-title">房型推薦</p>
+                </div>
+                <div class="card-container">
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://www.star-interiordesign.com/images/pdt2/%E5%AF%B5%E7%89%A9-1.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">經典舒眠雙貓房</h3>
+                                    <p class="card-subtitle">
+                                        給主子溫馨好眠<br />
+                                        安靜又舒適<br />
+                                        主人也安心</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://s3-ap-southeast-1.amazonaws.com/aj-yahoo/buzzdaily_news/107590_news_20250528115011.webp" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">尊榮皇家貓獨立套房</h3>
+                                    <p class="card-subtitle">
+                                        給主子尊榮不凡享受<br />
+                                        豪華海景公寓<br />
+                                        又大又爽，花錢享受</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://rocky.tw/wp-content/uploads/%E7%91%8B%E7%89%B9-9023.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">奢華總統貓套房</h3>
+                                    <p class="card-subtitle">
+                                        景觀落地窗<br />
+                                        空間寬敞舒適<br />
+                                        每日新鮮餐點
+                                    </p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                </div>
+
+                <div class="order-button">
+                    <p-button label="返回搜尋列表" class="card-btn" styleClass="card-btn" />
+                </div>
+            </p-tabpanel>
+            <p-tabpanel value="1">
+                <!-- 頂部資訊容器 -->
+                <div class="store-header-container">
+                    <!-- 店家名稱 (H1) -->
+                    <h1 class="store-name">杜家村精品旅館</h1>
+
+                    <!-- 評分和評論數 row -->
+                    <div class="rating-row">
+                        <!-- 評分 (星星) -->
+                        <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                        <!-- 4.5 (1200 則評論) -->
+                        <p class="review-count">(1200 則評論)</p>
+                    </div>
+
+                    <!-- 地址 row -->
+                    <div class="address-row">
+                        <i class="pi pi-map-marker address-icon"></i>
+                        <p class="address-text">中山區 台北市</p>
+                    </div>
+                </div>
+                <!-- 排序控制項 -->
+                <div class="sort-control">
+                    <label for="sort-by">排序依據：</label>
+                    <p-select [options]="sortOptions" [(ngModel)]="selectedSortOption" optionLabel="name"
+                        placeholder="選擇排序方式" inputId="sort-by" />
+                </div>
+                <div class="card-container">
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://www.star-interiordesign.com/images/pdt2/%E5%AF%B5%E7%89%A9-1.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">經典舒眠雙貓房</h3>
+                                    <p class="card-subtitle">
+                                        給主子溫馨好眠<br />
+                                        安靜又舒適<br />
+                                        主人也安心</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://s3-ap-southeast-1.amazonaws.com/aj-yahoo/buzzdaily_news/107590_news_20250528115011.webp" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">尊榮皇家貓獨立套房</h3>
+                                    <p class="card-subtitle">
+                                        給主子尊榮不凡享受<br />
+                                        豪華海景公寓<br />
+                                        又大又爽，花錢享受</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked2" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://rocky.tw/wp-content/uploads/%E7%91%8B%E7%89%B9-9023.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">奢華總統貓套房</h3>
+                                    <p class="card-subtitle">
+                                        景觀落地窗<br />
+                                        空間寬敞舒適<br />
+                                        每日新鮮餐點
+                                    </p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked3" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://www.star-interiordesign.com/images/pdt2/%E5%AF%B5%E7%89%A9-1.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">經典舒眠雙貓房</h3>
+                                    <p class="card-subtitle">
+                                        給主子溫馨好眠<br />
+                                        安靜又舒適<br />
+                                        主人也安心</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked4" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://s3-ap-southeast-1.amazonaws.com/aj-yahoo/buzzdaily_news/107590_news_20250528115011.webp" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">尊榮皇家貓獨立套房</h3>
+                                    <p class="card-subtitle">
+                                        給主子尊榮不凡享受<br />
+                                        豪華海景公寓<br />
+                                        又大又爽，花錢享受</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked5" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://rocky.tw/wp-content/uploads/%E7%91%8B%E7%89%B9-9023.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">奢華總統貓套房</h3>
+                                    <p class="card-subtitle">
+                                        景觀落地窗<br />
+                                        空間寬敞舒適<br />
+                                        每日新鮮餐點
+                                    </p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked6" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://www.star-interiordesign.com/images/pdt2/%E5%AF%B5%E7%89%A9-1.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">經典舒眠雙貓房</h3>
+                                    <p class="card-subtitle">
+                                        給主子溫馨好眠<br />
+                                        安靜又舒適<br />
+                                        主人也安心</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked7" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://rocky.tw/wp-content/uploads/%E7%91%8B%E7%89%B9-9023.jpg" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">奢華總統貓套房</h3>
+                                    <p class="card-subtitle">
+                                        景觀落地窗<br />
+                                        空間寬敞舒適<br />
+                                        每日新鮮餐點
+                                    </p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked8" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <p-card class="custom-card">
+                        <ng-template #header>
+                            <img alt="Card" class="card-image"
+                                src="https://s3-ap-southeast-1.amazonaws.com/aj-yahoo/buzzdaily_news/107590_news_20250528115011.webp" />
+                        </ng-template>
+
+                        <div class="card-body">
+                            <div class="card-header-row">
+                                <div class="card-title-group">
+                                    <h3 class="card-title">尊榮皇家貓獨立套房</h3>
+                                    <p class="card-subtitle">
+                                        給主子尊榮不凡享受<br />
+                                        豪華海景公寓<br />
+                                        又大又爽，花錢享受</p>
+                                    <p class="card-price">NT $ 2500 / 天</p>
+                                </div>
+                                <p-checkbox [(ngModel)]="checked9" [binary]="true" class="card-checkbox"></p-checkbox>
+                            </div>
+
+                            <div class="card-footer">
+                                <p-button label="詳細資訊" class="card-btn" styleClass="card-btn" />
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+
+                <div class="order-button">
+                    <p-button label="我要預訂" class="card-btn" styleClass="card-btn" />
+                </div>
+            </p-tabpanel>
+            <p-tabpanel value="2">
+                <!-- 頂部資訊容器 -->
+                <div class="store-header-container">
+                    <!-- 店家名稱 (H1) -->
+                    <h1 class="store-name">杜家村精品旅館</h1>
+
+                    <!-- 評分和評論數 row -->
+                    <div class="rating-row">
+                        <!-- 評分 (星星) -->
+                        <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                        <!-- 4.5 (1200 則評論) -->
+                        <p class="review-count">(1200 則評論)</p>
+                    </div>
+
+                    <!-- 地址 row -->
+                    <div class="address-row">
+                        <i class="pi pi-map-marker address-icon"></i>
+                        <p class="address-text">中山區 台北市</p>
+                    </div>
+                </div>
+                <!-- 排序控制項 -->
+                <div class="sort-control">
+                    <label for="sort-by">排序依據：</label>
+                    <p-select [options]="sortOptions" [(ngModel)]="selectedSortOption" optionLabel="name"
+                        placeholder="選擇排序方式" inputId="sort-by" />
+                </div>
+                <p-divider />
+                <div class="score-layout">
+                    <div>
+                        <p>價格評分 </p>
+                        <p>4.0</p>
+                    </div>
+                    <p-divider layout="vertical" />
+                    <div>
+                        <p>環境評分 </p>
+                        <p>4.0</p>
+                    </div>
+                    <p-divider layout="vertical" />
+                    <div>
+                        <p>服務評分 </p>
+                        <p>4.0</p>
+                    </div>
+                </div>
+                <p-divider />
+                <div class="review-grid">
+                    <p-fieldset class="p-fieldset">
+                        <ng-template #header class="p-fieldset-legend">
+                            <div class="review-head">
+                                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    shape="circle" />
+                                <span class="font-bold">Amy Elsner</span>
+                            </div>
+                        </ng-template>
+                        <p class="review-content">
+                            <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                            <br>
+                            寵物住宿環境很好，交通方便，服務態度也很棒。
+                        </p>
+                    </p-fieldset>
+                    <p-fieldset class="p-fieldset">
+                        <ng-template #header class="p-fieldset-legend">
+                            <div class="review-head">
+                                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    shape="circle" />
+                                <span class="font-bold">Amy Elsner</span>
+                            </div>
+                        </ng-template>
+                        <p class="review-content">
+                            <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                            <br>
+                            寵物住宿環境很好，交通方便，服務態度也很棒。
+                        </p>
+                    </p-fieldset>
+                    <p-fieldset class="p-fieldset">
+                        <ng-template #header class="p-fieldset-legend">
+                            <div class="review-head">
+                                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    shape="circle" />
+                                <span class="font-bold">Amy Elsner</span>
+                            </div>
+                        </ng-template>
+                        <p class="review-content">
+                            <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                            <br>
+                            寵物住宿環境很好，交通方便，服務態度也很棒。
+                        </p>
+                    </p-fieldset>
+                    <p-fieldset class="p-fieldset">
+                        <ng-template #header class="p-fieldset-legend">
+                            <div class="review-head">
+                                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    shape="circle" />
+                                <span class="font-bold">Amy Elsner</span>
+                            </div>
+                        </ng-template>
+                        <p class="review-content">
+                            <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                            <br>
+                            寵物住宿環境很好，交通方便，服務態度也很棒。
+                        </p>
+                    </p-fieldset>
+                    <p-fieldset class="p-fieldset">
+                        <ng-template #header class="p-fieldset-legend">
+                            <div class="review-head">
+                                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    shape="circle" />
+                                <span class="font-bold">Amy Elsner</span>
+                            </div>
+                        </ng-template>
+                        <p class="review-content">
+                            <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                            <br>
+                            寵物住宿環境很好，交通方便，服務態度也很棒。
+                        </p>
+                    </p-fieldset>
+                    <p-fieldset class="p-fieldset">
+                        <ng-template #header class="p-fieldset-legend">
+                            <div class="review-head">
+                                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+                                    shape="circle" />
+                                <span class="font-bold">Amy Elsner</span>
+                            </div>
+                        </ng-template>
+                        <p class="review-content">
+                            <p-rating [(ngModel)]="starValue" [readonly]="true" />
+                            <br>
+                            寵物住宿環境很好，交通方便，服務態度也很棒。
+                        </p>
+                    </p-fieldset>
+                </div>
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+</div>
+<div>
+
+</div>

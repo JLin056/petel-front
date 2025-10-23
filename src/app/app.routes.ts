@@ -6,8 +6,21 @@ import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-pag
 import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-insert-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
 import { UserPage } from './pages/user-page/user-page';
+import { BookingDonePage } from './pages/booking-done-page/booking-done-page';
+import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
 import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
-
+import { ChatPage } from './pages/chat-page/chat-page';
+import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page';
+import { UploadPropertyImage } from './pages/sellers-property-page/upload-property-image/upload-property-image';
+import { BookingPage } from './pages/booking-page/booking-page';
+import { OrderTableComponent } from './pages/order-table-component/order-table-component';
+import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
+import { AdminSellerTable } from './pages/admin-seller-table/admin-seller-table';
+import { AdminHotelTable } from './pages/admin-hotel-table/admin-hotel-table';
+import { LoginPage } from './pages/login-page/login-page';
+import { RegisterPage } from './pages/register-page/register-page';
+import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
+import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
 
 export const routes: Routes = [
     {
@@ -15,8 +28,24 @@ export const routes: Routes = [
         component: HomePage
     },
     {
+        path: 'login',
+        component: LoginPage
+    },
+    {
+        path: 'register',
+        component: RegisterPage
+    },
+    {
         path: 'dogHotels',
         component: HotelListPage
+    },
+    {
+        path: 'singleHotel',
+        component: HotelSinglePage
+    },
+    {
+        path: 'uploadImageTest',
+        component: UploadPropertyImage
     },
     {
         path: 'imageTest',
@@ -27,19 +56,59 @@ export const routes: Routes = [
         component: UserPage
     },
     {
-        path: 'merchants/roomInfo/edit',
+        path: 'merchants/login',
+        component: MerchantLoginPage
+    },
+    {
+        path: 'merchants/register',
+        component: MerchantRegisterPage
+    },
+    {
+        path: 'merchants/property/roomInfo/edit',
         component: RoomInfoEditPage
     },
     {
-        path: 'merchants/roomInfo/insert',
+        path: 'merchants/property/roomInfo/insert',
         component: RoomInfoInsertPage
     },
     {
-        path: 'merchants/homepage',
+        path: 'merchants/property/homepage',
         component: MerchantHomePage
+    },
+    {
+        path: 'book/finish',
+        component: BookingDonePage
+    },
+    {
+        path: 'book',
+        component: BookingPage
+    },
+    {
+        path: 'merchants/property/reviewList',
+        component: MerchantReviewListPage
     },
     {
         path: 'book/authorize',
         component: AuthorizingPage
+    },
+    {
+        path: 'chat',
+        component: ChatPage
+    },
+    {
+        path:'admin/orderTable',
+        component:OrderTableComponent
+    },
+      {
+        path:'admin/userTable',
+        component:AdminUserTable
+    },
+      {
+        path:'admin/sellerTable',
+        component:AdminSellerTable
+    },
+      {
+        path:'admin/hotelTable',
+        component:AdminHotelTable
     }
 ];

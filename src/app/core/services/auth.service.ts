@@ -7,6 +7,7 @@ import { AUTH002Req } from '../interfaces/AUTH002Req.interface';
 import { AUTH001Req } from '../interfaces/AUTH001Req.interface';
 import { AUTH001Res } from '../interfaces/AUTH001Res.interface';
 import { AUTH003Res } from '../interfaces/AUTH003Res.interface';
+import { AUTH008Res } from '../interfaces/AUTH008Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,8 @@ export class Auth {
     loginUrl = `${environment.BASE_URL}/auth/login`;
     /** 登出 API URL */
     logoutUrl = `${environment.BASE_URL}/auth/logout`;
+    /** 檢查登入狀態 API URL */
+    checkLoginUrl = `${environment.BASE_URL}/auth/check`;
 
     /** headers */
     private headers = new HttpHeaders({
@@ -57,6 +60,18 @@ export class Auth {
      */
     onLogoutApi(): Observable<AUTH003Res> {
         return this.http.post<AUTH003Res>(this.logoutUrl, null, {
+            headers: this.headers,
+            withCredentials: true
+        })
+    }
+
+
+    /**
+     * 確認登入狀態 API
+     * @returns AUTH008Res
+     */
+    onCheckLoginStatus(): Observable<AUTH008Res> {
+        return this.http.post<AUTH008Res>(this.checkLoginUrl, null, {
             headers: this.headers,
             withCredentials: true
         })

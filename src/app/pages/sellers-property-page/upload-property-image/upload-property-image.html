@@ -1,0 +1,72 @@
+<p-toast />
+
+<p-dialog
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="upload-dialog">
+
+    <ng-template pTemplate="header">
+        <div class="dialog-header">
+            <i class="pi pi-images" style="margin-right: 0.5rem;"></i>
+            <span>上傳物件圖片</span>
+        </div>
+    </ng-template>
+
+    <div class="dialog-content">
+        <p-fileupload
+            name="propertyFiles"
+            [multiple]="true"
+            accept="image/*"
+            maxFileSize="5000000"
+            mode="advanced"
+            [customUpload]="true"
+            (uploadHandler)="myUploader($event)"
+            [showUploadButton]="false"
+            [showCancelButton]="false">
+
+            <ng-template pTemplate="content">
+                <div class="upload-content">
+                    <div *ngIf="uploadedFiles.length > 0" class="uploaded-files-list">
+                        <h4>已上傳圖片 ({{ uploadedFiles.length }})</h4>
+                        <div class="file-grid">
+                            <div *ngFor="let file of uploadedFiles" class="file-item">
+                                <i class="pi pi-check-circle" style="color: green;"></i>
+                                <span class="file-name">{{ file.name }}</span>
+                                <span class="file-size">{{ (file.size / 1024).toFixed(2) }} KB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="uploadedFiles.length === 0" class="empty-state">
+                        <i class="pi pi-cloud-upload" style="font-size: 3rem; color: #ccc;"></i>
+                        <p>拖曳圖片到此處或點擊選擇檔案</p>
+                        <p class="hint">支援格式：JPG, PNG, GIF（最大 5MB）</p>
+                    </div>
+                </div>
+            </ng-template>
+        </p-fileupload>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="dialog-footer">
+            <p-button
+                label="清除"
+                icon="pi pi-trash"
+                severity="secondary"
+                (onClick)="onClear()"
+                [disabled]="uploadedFiles.length === 0" />
+            <p-button
+                label="取消"
+                icon="pi pi-times"
+                severity="secondary"
+                (onClick)="onClose()" />
+            <p-button
+                label="完成"
+                icon="pi pi-check"
+                (onClick)="onComplete()"
+                [disabled]="uploadedFiles.length === 0" />
+        </div>
+    </ng-template>
+</p-dialog>
