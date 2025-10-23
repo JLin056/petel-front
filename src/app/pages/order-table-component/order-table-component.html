@@ -94,7 +94,7 @@
           <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined" />
         </td>
         <td>
-          <p-button label="詳細" size="small" severity="info" />
+          <p-button label="詳細" size="small" severity="info" (onClick)="showOrderDetail(order)" />
         </td>
       </tr>
     </ng-template>
@@ -105,4 +105,11 @@
     </ng-template>
   </p-table>
 </div>
+
+<!-- 訂單詳細資料彈窗 -->
+<app-order-detail-dialog
+  [(visible)]="showDetailDialog"
+  [order]="selectedOrder"
+  (noteUpdated)="onNoteUpdated($event)">
+</app-order-detail-dialog>
 

@@ -1,0 +1,143 @@
+<h3 class="title">旅館列表</h3>
+
+<div class="card">
+  <p-table
+    #dt
+    [value]="hotelList"
+    dataKey="PROPERTY_ID"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 15, 20]"
+    [loading]="loading"
+    [paginator]="true"
+    [globalFilterFields]="['PROPERTY_ID', 'PROPERTY_NAME', 'TEL', 'ADDRESS', 'SELLER_NAME', 'BUSINESS_CODE']"
+    [tableStyle]="{ 'min-width': '60rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width:10%">旅館ID</th>
+        <th style="width:18%">旅館名稱</th>
+        <th style="width:12%">電話</th>
+        <th style="width:24%">地址</th>
+        <th style="width:14%">賣家名稱</th>
+        <th style="width:10%">統一編號</th>
+        <th style="width:12%">操作</th>
+      </tr>
+      <tr>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="propertyIdFilter"
+            (ngModelChange)="dt.filter($any($event), 'PROPERTY_ID', 'contains')"
+            placeholder="搜尋旅館ID"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="propertyNameFilter"
+            (ngModelChange)="dt.filter($any($event), 'PROPERTY_NAME', 'contains')"
+            placeholder="搜尋旅館名稱"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="telFilter"
+            (ngModelChange)="dt.filter($any($event), 'TEL', 'contains')"
+            placeholder="搜尋電話"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="addressFilter"
+            (ngModelChange)="dt.filter($any($event), 'ADDRESS', 'contains')"
+            placeholder="搜尋地址"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="sellerNameFilter"
+            (ngModelChange)="dt.filter($any($event), 'SELLER_NAME', 'contains')"
+            placeholder="搜尋賣家名稱"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="businessCodeFilter"
+            (ngModelChange)="dt.filter($any($event), 'BUSINESS_CODE', 'contains')"
+            placeholder="搜尋統一編號"
+            class="w-full"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-hotel>
+      <tr>
+        <td><span class="text-large">{{ hotel.PROPERTY_ID }}</span></td>
+        <td>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-building icon-large"></i>
+            <span class="text-large">{{ hotel.PROPERTY_NAME }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-phone icon-large"></i>
+            <span class="text-large">{{ hotel.TEL }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-map-marker icon-large"></i>
+            <span class="text-large">{{ hotel.ADDRESS }}</span>
+          </div>
+        </td>
+        <td><span class="text-large">{{ hotel.SELLER_NAME }}</span></td>
+        <td><span class="text-large">{{ hotel.BUSINESS_CODE }}</span></td>
+        <td>
+          <div class="flex gap-2">
+            <p-button
+              class="deleteBtn"
+              icon="pi pi-trash"
+              [rounded]="true"
+              [outlined]="true"
+              severity="danger"
+              (onClick)="confirmDelete(hotel)"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7">查無旅館資料</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- 刪除確認對話框 -->
+<app-shared-confirm-dialog
+  [(visible)]="deleteConfirmVisible"
+  header="刪除旅館"
+  [message]="'確定要刪除旅館 ' + (selectedHotel?.PROPERTY_NAME || '') + ' 嗎？此操作無法復原。'"
+  confirmLabel="刪除"
+  cancelLabel="取消"
+  (confirm)="onDeleteConfirmed()"
+  (cancel)="onDeleteCancelled()"
+></app-shared-confirm-dialog>
