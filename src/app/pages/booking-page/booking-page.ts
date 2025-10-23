@@ -119,7 +119,11 @@ export class BookingPage implements OnInit {
         return tranrq
     }
 
-    onSubmit() {
+    /**
+     * 送出訂單
+     * @returns 視情況做出相對應的回應
+     */
+    onSubmit(): void {
 
         if (this.form.controls.guestType.value === 'n' && (this.form.controls.guestName === null || this.form.controls.guestPhone === null)) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '請填入主人姓名和電話' });
@@ -131,46 +135,53 @@ export class BookingPage implements OnInit {
             case this.paymentOptions.at(0)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
-                        if (response.MWHEADER.RETURNCODE !== "0000") {
-                            return;
+                        if (response.MWHEADER.RETURNCODE === "0000") {
+                            this.router.navigateByUrl('/book/authorize'); // TODO 把資料帶過去
                         }
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        return;
+                    },
+                    error: (error) => {
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        return;
                     }
                 });
-                // TODO 把資料帶過去
-                this.router.navigateByUrl('/book/authorize');
                 break;
             }
 
             case this.paymentOptions.at(1)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
-                        if (response.MWHEADER.RETURNCODE !== "0000") {
-                            return;
+                        if (response.MWHEADER.RETURNCODE === "0000") {
+                            // 呼叫綠界信用卡API
+                            this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+                                next: (response) => {
+
+                                    // 建立form
+                                    const form = document.createElement('form');
+                                    form.method = 'POST';
+                                    form.action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+
+                                    // 將所有參數加入form的hidden input中
+                                    Object.entries(response.TRANRS.ecPay_params).forEach(([key, value]) => {
+                                        const input = document.createElement('input');
+                                        input.type = 'hidden';
+                                        input.name = key;
+                                        input.value = String(value);
+                                        form.appendChild(input);
+                                    });
+
+                                    document.body.appendChild(form);
+                                    form.submit();
+                                }
+                            });
                         }
-                        // 呼叫綠界信用卡API
-                        this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-                            next: (response) => {
-
-                                const params = response.TRANRS.ecPay_params;
-
-                                // 建立form
-                                const form = document.createElement('form');
-                                form.method = 'POST';
-                                form.action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
-
-                                // 將所有參數加入form的hidden input中
-                                Object.entries(params).forEach(([key, value]) => {
-                                    const input = document.createElement('input');
-                                    input.type = 'hidden';
-                                    input.name = key;
-                                    input.value = String(value);
-                                    form.appendChild(input);
-                                });
-
-                                document.body.appendChild(form);
-                                form.submit();
-                            }
-                        });
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        return;
+                    },
+                    error: (error) => {
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        return;
                     }
                 });
                 break;
