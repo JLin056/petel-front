@@ -8,10 +8,10 @@ import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page'
 import { UserPage } from './pages/user-page/user-page';
 import { BookingDonePage } from './pages/booking-done-page/booking-done-page';
 import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
-
 import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
 import { ChatPage } from './pages/chat-page/chat-page';
-
+import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page';
+import { UploadPropertyImage } from './pages/sellers-property-page/upload-property-image/upload-property-image';
 import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
 import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
@@ -38,6 +38,14 @@ export const routes: Routes = [
     {
         path: 'dogHotels',
         component: HotelListPage
+    },
+    {
+        path: 'singleHotel',
+        component: HotelSinglePage
+    },
+    {
+        path: 'uploadImageTest',
+        component: UploadPropertyImage
     },
     {
         path: 'imageTest',
