@@ -21,6 +21,7 @@ import { LoginPage } from './pages/login-page/login-page';
 import { RegisterPage } from './pages/register-page/register-page';
 import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
 import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
+import { UserMerchantPage } from './pages/user-merchant-page/user-merchant-page';
 
 export const routes: Routes = [
     {
@@ -68,16 +69,20 @@ export const routes: Routes = [
         component: MerchantHomePage
     },
     {
+        path: 'merchants/property/reviewList',
+        component: MerchantReviewListPage
+    },
+    {
+        path: 'merchants/userPage',
+        component: UserMerchantPage
+    },
+    {
         path: 'book/finish',
         component: BookingDonePage
     },
     {
         path: 'book',
         component: BookingPage
-    },
-    {
-        path: 'merchants/property/reviewList',
-        component: MerchantReviewListPage
     },
     {
         path: 'book/authorize',
@@ -88,19 +93,19 @@ export const routes: Routes = [
         component: ChatPage
     },
     {
-        path:'admin/orderTable',
-        component:OrderTableComponent
+        path: 'admin/orderTable',
+        component: OrderTableComponent
     },
-      {
-        path:'admin/userTable',
-        component:AdminUserTable
+    {
+        path: 'admin/userTable',
+        component: AdminUserTable
     },
-      {
-        path:'admin/sellerTable',
-        component:AdminSellerTable
+    {
+        path: 'admin/sellerTable',
+        component: AdminSellerTable
     },
-      {
-        path:'admin/hotelTable',
-        component:AdminHotelTable
+    {
+        path: 'admin/hotelTable',
+        component: AdminHotelTable
     }
 ];

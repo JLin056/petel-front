@@ -107,7 +107,7 @@ export class MerchantLoginPage {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
                     this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
-                    this.router.navigate(['merchants/property/homepage']);
+                    this.router.navigate(['/merchants/userPage']);
                 } else {
                     this.toast.add({ severity: 'error', summary: '登入失敗', detail: '帳號或密碼錯誤' });
                 }

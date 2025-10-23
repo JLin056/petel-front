@@ -140,7 +140,7 @@ export class MerchantPropertyHeader {
             this.router.navigate(['/login'], { queryParams: { redirect: '/history' } });
             return;
         }
-        this.router.navigate(['/history']);
+        this.router.navigate(['/merchants/userPage']);
     }
 
 

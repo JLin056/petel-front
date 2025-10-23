@@ -1,0 +1,119 @@
+.wrap {
+    margin: 0 auto;
+    max-width: 1420px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+/* 會員資訊區 */
+.user-info-container {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 50px;
+    margin-top: 40px;
+    box-shadow: 0px 5px 0px #F4F4F4;
+}
+/* 頭貼 */
+.image {
+    display: flex;
+    align-items: center;
+    padding: 40px;
+}
+.image img {
+    border-radius: 50%;
+}
+/* 右側 - 會員資訊 */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    width: 50%;
+    padding: 30px;
+}
+.title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.pi-info-circle {
+    font-size: 2.5rem;
+}
+.title h3{
+    font-size: 2.5rem;
+}
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.item {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+.material-symbols-outlined {
+    font-size: 2.5rem;
+}
+.item-text h4{
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+.item-text p {
+    font-size: 1.7rem;
+    font-weight: 400;
+}
+/* 按鈕區 */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+}
+::ng-deep .p-button.button {
+    font-size: 1.4rem;
+    font-weight: 600;
+    transition: 0.2s;
+    margin-right: 50px;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+/* 訂單 */
+.order {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+.order h3 {
+    font-size: 2rem;
+}
+.order-item {
+    margin-top: 30px;
+    box-shadow: 10px 10px 10px #F4F4F4;
+    padding: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+.order-item h4 {
+    font-size: 1.75rem;
+}
+.order-item-content1 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 50px;
+}
+
+.order-item-content2 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 50px;
+}
+.order-content {
+    display: flex;
+    justify-content: flex-start;
+    gap: 50px;
+    color: #757575;
+}
