@@ -17,8 +17,6 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
 import { AdminService } from '../../core/services/admin.service';
 import { ADMIN007Req } from '../../core/interfaces/ADMIN007Req.interface';
 import { ADMIN008Req } from '../../core/interfaces/ADMIN008Req.interface';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-user-table',
@@ -39,7 +37,7 @@ import { debounceTime } from 'rxjs/operators';
   templateUrl: './admin-user-table.html',
   styleUrl: './admin-user-table.css'
 })
-export class AdminUserTable implements OnInit, OnDestroy {
+export class AdminUserTable implements OnInit {
   constructor(private http: HttpClient, private adminService: AdminService) {}
 
   memberList: ADMIN007Member[] = [];
@@ -61,8 +59,6 @@ export class AdminUserTable implements OnInit, OnDestroy {
   deleteConfirmVisible: boolean = false;
   selectedMember: ADMIN007Member | null = null;
 
-  // Debounce 搜尋
-  private searchSubject = new Subject<void>();
   private isFirstLoad = true; // 追蹤是否為第一次載入
 
   ngOnInit() {
@@ -71,18 +67,6 @@ export class AdminUserTable implements OnInit, OnDestroy {
       { label: '停用', value: 'INACTIVE' },
       { label: '暫停', value: 'SUSPENDED' }
     ];
-
-    // 設定 Debounce 搜尋（500ms 延遲）
-    this.searchSubject.pipe(
-      debounceTime(500)
-    ).subscribe(() => {
-      this.loadMembers();
-    });
-  }
-
-  ngOnDestroy() {
-    // 清理訂閱，避免記憶體洩漏
-    this.searchSubject.complete();
   }
 
   /**
@@ -161,11 +145,11 @@ export class AdminUserTable implements OnInit, OnDestroy {
   }
 
   /**
-   * 篩選條件變更（使用 Debounce）
+   * 搜尋按鈕點擊事件
    */
-  onFilterChange() {
+  onSearch() {
     this.currentPage = 1; // 重置到第一頁
-    this.searchSubject.next(); // 觸發 debounce，500ms 後才會執行查詢
+    this.loadMembers();
   }
 
   getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {

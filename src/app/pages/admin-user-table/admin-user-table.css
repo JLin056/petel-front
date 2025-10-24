@@ -14,12 +14,44 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
 .items-center {
   align-items: center;
 }
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.search-container {
+  padding: 20px 30px;
+}
+
+.search-fields {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.search-btn-container {
+  margin-left: auto;
+}
+
+.custom-input {
+  height: 20px;
+  border-radius: 8px;
+}
+
+::ng-deep .admin-search-btn.p-button {
+  background-color: #EDA33A;
+  color: #A24522;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 40px;
+  min-width: 120px;
 }
 
 .ml-auto {
@@ -50,12 +82,12 @@
   font-size: 1.1rem;      
 }
 
-/* 
+/*
 ::ng-deep : 可以穿透到p-tag內部
 */
 ::ng-deep .tag-large {
-  font-size: 1.5rem ;
-  padding: 0.5rem 0.75rem ;
+  font-size: 1rem;
+  padding: 0.35rem 0.5rem;
 }
 
 /*
