@@ -92,6 +92,13 @@ export class LoginPage {
     }
 
     /**
+     * 前往忘記密碼頁
+    */
+    goForgotPassword() {
+        this.router.navigate(['forgotPassword']);
+    }
+
+    /**
      * 登入
      * @returns
      */
