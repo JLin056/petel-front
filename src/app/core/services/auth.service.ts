@@ -8,6 +8,10 @@ import { AUTH001Req } from '../interfaces/AUTH001Req.interface';
 import { AUTH001Res } from '../interfaces/AUTH001Res.interface';
 import { AUTH003Res } from '../interfaces/AUTH003Res.interface';
 import { AUTH008Res } from '../interfaces/AUTH008Res.interface';
+import { AUTH004Res } from '../interfaces/AUTH004Res.interface';
+import { AUTH004Req } from '../interfaces/AUTH004Req.interface';
+import { AUTH005Req } from '../interfaces/AUTH005Req.interface';
+import { AUTH005Res } from '../interfaces/AUTH005Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +29,10 @@ export class Auth {
     logoutUrl = `${environment.BASE_URL}/auth/logout`;
     /** 檢查登入狀態 API URL */
     checkLoginUrl = `${environment.BASE_URL}/auth/check`;
+    /** 忘記密碼 API URL */
+    forgotUrl = `${environment.BASE_URL}/auth/forgot`;
+    /** 重設密碼 API URL */
+    resettUrl = `${environment.BASE_URL}/auth/reset`;
 
     /** headers */
     private headers = new HttpHeaders({
@@ -75,5 +83,25 @@ export class Auth {
             headers: this.headers,
             withCredentials: true
         })
+    }
+
+    /**
+     * 忘記密碼
+     * @returns
+     */
+    onForgotPassword(postData: AUTH004Req): Observable<AUTH004Res> {
+        return this.http.post<AUTH004Res>(this.forgotUrl, postData, {
+            headers: this.headers
+        });
+    }
+
+    /**
+     * 重設密碼
+     * @returns
+     */
+    onResetPassword(postData: AUTH005Req): Observable<AUTH005Res> {
+        return this.http.post<AUTH005Res>(this.resettUrl, postData, {
+            headers: this.headers
+        });
     }
 }

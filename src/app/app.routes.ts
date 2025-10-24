@@ -21,6 +21,8 @@ import { LoginPage } from './pages/login-page/login-page';
 import { RegisterPage } from './pages/register-page/register-page';
 import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
 import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
+import { ResetPasswordPage } from './pages/reset-password-page/reset-password-page';
+import { ForgotPasswordPage } from './pages/forgot-password-page/forgot-password-page';
 
 export const routes: Routes = [
     {
@@ -54,6 +56,14 @@ export const routes: Routes = [
     {
         path: 'history',
         component: UserPage
+    },
+    {
+        path: 'forgotPassword',
+        component: ForgotPasswordPage
+    },
+    {
+        path: 'resetPassword',
+        component: ResetPasswordPage
     },
     {
         path: 'merchants/login',
