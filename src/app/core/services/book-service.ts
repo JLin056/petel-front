@@ -8,6 +8,8 @@ import { Res } from '../interfaces/Res.interface';
 import { BOOK001Tranrq } from './../interfaces/BOOK001Req.interface';
 import { BOOK006Tranrq } from '../interfaces/BOOK006Req.interface';
 import { BOOK006Tranrs } from '../interfaces/BOOK006Res.interface';
+import { BOOK005Tranrq } from '../interfaces/BOOK005Req.interface';
+import { BOOK005Tranrs } from '../interfaces/BOOK005Res.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -58,6 +60,25 @@ export class BookService {
         }
 
         return this.http.post<Res<BOOK002Tranrs>>('http://localhost:8080/bookings/detail', postData);
+    }
+
+    /**
+     * BOOK-005 組合付款參數 (現場付款)
+     * @param tranrq 信用卡相關資訊
+     * @returns
+     */
+    getAuthorizeParams(tranrq: BOOK005Tranrq) {
+
+        const header: Mwheader = {
+            MSGID: 'BOOK-005'
+        };
+
+        const postData: Req<BOOK005Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        }
+
+        return this.http.post<Res<BOOK005Tranrs>>('http://localhost:8080/bookings/authorize', postData);
     }
 
     /**
