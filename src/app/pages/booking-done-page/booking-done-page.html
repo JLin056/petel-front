@@ -1,62 +1,69 @@
-<div class="component">
-    <div class="order_success_container">
-        <!-- 成功標題區域 -->
-        <div class="success_header">
-            <i class="pi pi-check-circle"></i>
-            <h1>恭喜！您的訂單已成立</h1>
+<div class="order_success_container">
+    <!-- 成功標題區域 -->
+    <div class="success_header">
+        <i class="pi pi-check-circle"></i>
+        <h1>恭喜！您的訂單已成立</h1>
+    </div>
+
+    <!-- 訂單內容區域 -->
+    <div class="order_content">
+        <!-- 住宿資訊 -->
+        <div class="info_section">
+            <h2 class="section_title">您的住宿資訊：</h2>
+            <div class="info_list">
+                <div class="info_item">
+                    <span class="info_item_title"> 旅館名稱 </span>
+                    <span class="info_item_text"> {{ propertyName }} </span>
+                </div>
+                <div class="info_item">
+                    <span class="info_item_title"> 旅館電話 </span>
+                    <span class="info_item_text"> {{ propertyTel }} </span>
+                </div>
+                <div class="info_item">
+                    <span class="info_item_title"> 旅館地址 </span>
+                    <span class="info_item_text"> {{ propertyAddress }} </span>
+                </div>
+            </div>
         </div>
 
-        <!-- 訂單內容區域 -->
-        <div class="order_content">
-            <!-- 住宿資訊 -->
-            <div class="info_section">
-                <h2 class="section_title">您的住宿資訊：</h2>
-                <div class="info_list">
-                    <div class="info_item">
-                        <span class="info_item_title"> 旅館名稱 </span>
-                        <span class="info_item_text"> {{ propertyName }} </span>
-                        <span class="rating_section"> <p-rating [(ngModel)]="propertyScore" [readonly]="true" /> </span>
-                    </div>
-                    <div class="info_item">
-                        <span class="info_item_title"> 旅館電話 </span>
-                        <span class="info_item_text"> {{ propertyTel }} </span>
-                    </div>
-                    <div class="info_item">
-                        <span class="info_item_title"> 旅館地址 </span>
-                        <span class="info_item_text"> {{ propertyAddress }} </span>
-                    </div>
+        <!-- 訂單資訊 -->
+
+        <div class="info_section">
+            <p class="section-title">您的訂單資訊</p>
+
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>入住日期</span>
+                    <span>{{ orderData.checkIn }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>退房日期</span>
+                    <span>{{ orderData.checkOut }}</span>
                 </div>
             </div>
 
-            <!-- 訂單資訊 -->
-            <div class="info_section">
-                <h2 class="section_title">您的訂單資訊：</h2>
-                <div class="info_list">
-                    <div class="info_item">
-                        <span class="info_item_title"> 房型名稱 & 房型數量 </span>
-                        <span class="info_item_text"> {{ roomName }} & {{ roomQuantity }} </span>
-                    </div>
-                    <div class="info_item">
-                        <span class="info_item_title"> 入住日期 & 退房日期 </span>
-                        <span class="info_item_text"> {{ checkIn }} & {{ checkOut }} </span>
+            <div class="room-items">
+                @for (room of orderData.rooms; track room.roomName; let i = $index) {
+                <div class="room-item">
+                    <div class="room-header">
+                        <div class="room-basic-info">
+                            <span class="room-number">訂購房型 {{ i + 1 }}</span>
+                            <span class="room-name">{{ room.roomName }}</span>
+                            <span class="room-quantity">{{ room.roomQuantity }}間</span>
+                        </div>
                     </div>
                 </div>
+                }
             </div>
+        </div>
 
-            <!-- 按鈕群組 -->
-            <div class="button_group">
-                <p-button label="聊聊" icon="pi pi-comments" styleClass="btn_chat" (onClick)="onChat()">
-                </p-button>
+        <!-- 按鈕群組 -->
+        <div class="button_group">
+            <p-button label="聊聊" icon="pi pi-comments" styleClass="btn_chat" (onClick)="onChat()">
+            </p-button>
 
-                <p-button label="查看歷史訂單" icon="pi pi-history" styleClass="btn_history" (onClick)="onViewHistory()">
-                </p-button>
-
-                <p-button label="修改訂單" icon="pi pi-pencil" styleClass="btn_edit" (onClick)="onEditOrder()">
-                </p-button>
-
-                <p-button label="取消訂單" icon="pi pi-times" styleClass="btn_cancel" (onClick)="onCancelOrder()">
-                </p-button>
-            </div>
+            <p-button label="查看歷史訂單" icon="pi pi-history" styleClass="btn_history" (onClick)="onViewHistory()">
+            </p-button>
         </div>
     </div>
 </div>

@@ -1,3 +1,4 @@
+import { BookService, OrderData } from './../../core/services/book-service';
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { HotelService } from '../../core/services/hotel-service';
@@ -12,54 +13,43 @@ import { FormsModule } from '@angular/forms';
 })
 export class BookingDonePage {
 
-    // 訂單資訊
-    numberOfRooms: number = 2;
-    roomType: string = '豪華雙人房';
-    suitablePets: string = 'different_name_of_pet(s)';
-    maxPets: number = 4;
-
-    // 旅館相關屬性：begin
-
+    /** 旅館相關屬性 */
     propertyName = '';
     propertyTel = '';
     propertyAddress = '';
-    propertyInfo = '';
-    checkNotice = '';
-    petNotice = '';
-    propertyNotice = '';
 
-    propertyScore: number = 4.8; // related to PETEL_REVIEWS
+    /** 訂單資訊 */
+    orderData: OrderData = {
+        propertyId: '',
+        checkIn: '',
+        checkOut: '',
+        rooms: []
+    };
 
-    // 旅館相關屬性：end
+    /**
+     * 建構子注入
+     */
+    constructor(private bookService: BookService, private hotelService: HotelService) { };
 
-    roomName = 'xx';
-    roomQuantity = 1
-    checkIn = '2025-10-23';
-    checkOut = '2025-10-24';
-
-    constructor(private hotelService: HotelService) {};
-
+    /**
+     * 初始化頁面內容
+     */
     ngOnInit(): void {
-        this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用假資料
-            next: (response) => {
 
+        this.orderData = this.bookService.getSharedOrderData();
+
+        this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
+            next: (response) => {
                 if (response.MWHEADER.RETURNCODE !== '0000') {
                     return;
                 }
-
                 const propertyDetail = response.TRANRS.property_details.at(0);
                 this.propertyName = propertyDetail!.name;
                 this.propertyTel = propertyDetail!.tel;
                 this.propertyAddress = propertyDetail!.address;
-                this.propertyInfo = propertyDetail!.info;
-                this.checkNotice = propertyDetail!.checkNotice;
-                this.petNotice = propertyDetail!.petNotice;
-                this.propertyNotice = propertyDetail!.propertyNotice;
             }
         });
     }
-
-
 
     onChat(): void {
         console.log('開始聊天');
@@ -67,13 +57,5 @@ export class BookingDonePage {
 
     onViewHistory(): void {
         console.log('查看歷史訂單');
-    }
-
-    onEditOrder(): void {
-        console.log('修改訂單');
-    }
-
-    onCancelOrder(): void {
-        console.log('取消訂單');
     }
 }
