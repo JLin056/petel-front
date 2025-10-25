@@ -1,5 +1,5 @@
-import { BookService } from './../../core/services/book-service';
-import { Component } from '@angular/core';
+import { BookService, OrderData } from './../../core/services/book-service';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -29,9 +29,18 @@ import { BOOK005TranrqCardInfo, BOOK005TranrqConsumerInfo } from '../../core/int
     templateUrl: './authorizing-page.html',
     styleUrl: './authorizing-page.css'
 })
-export class AuthorizingPage {
+export class AuthorizingPage implements OnInit {
 
-    constructor(private router: Router, private bookService: BookService) { }
+    orderId = '';
+
+    totalAmount: number = 0;
+
+    orderData: OrderData = {
+        propertyId: '',
+        checkIn: '',
+        checkOut: '',
+        rooms: []
+    };
 
     form = new FormGroup({
         cardName: new FormControl<string>('', Validators.required),
@@ -42,24 +51,18 @@ export class AuthorizingPage {
         cardValidYY: new FormControl<string>('', Validators.required)
     });
 
-    // 訂單資訊
-    checkIn: string = '2025-10-22';
-    checkOut: string = '2025-10-25';
+    constructor(private router: Router, private bookService: BookService) { }
 
-    roomsData: RoomData[] = [
-        {
-            roomName: '豪華雙人房',
-            roomPrice: 2500,
-            roomQuantity: 1,
-            roomTotal: 2500,
-            expanded: false
+    ngOnInit(): void {
+        this.orderId = history.state.orderId;
+        this.orderData = this.bookService.getSharedOrderData();
+        for (let room of this.orderData.rooms) {
+            this.totalAmount += room.roomTotal;
         }
-    ];
-
-    totalAmount: number = 2500;
+    }
 
     toggleRoom(index: number) {
-        this.roomsData[index].expanded = !this.roomsData[index].expanded;
+        this.orderData.rooms[index].expanded = !this.orderData.rooms[index].expanded;
     }
 
     onSubmit(): void {
@@ -89,8 +92,6 @@ export class AuthorizingPage {
         });
     }
 
-    orderId = '';
-
     get cardName() {
         return this.form.controls.cardName;
     }
@@ -114,12 +115,4 @@ export class AuthorizingPage {
     get cardValidYY() {
         return this.form.controls.cardValidYY;
     }
-}
-
-interface RoomData {
-    roomName: string;
-    roomPrice: number;
-    roomQuantity: number;
-    roomTotal: number;
-    expanded: boolean;
 }

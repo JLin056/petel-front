@@ -104,4 +104,53 @@ export class BookService {
 
         return this.http.post<Res<BOOK006Tranrs>>('http://localhost:8080/bookings/credit', postData);
     }
+
+    // -----
+
+    // Normal Setting
+    // sharedOrderData: OrderData = {
+    //     propertyId: '',
+    //     checkIn: '',
+    //     checkOut: '',
+    //     rooms: []
+    // };
+
+    // Test set
+    sharedOrderData: OrderData = {
+        propertyId: 'P000000001',
+        checkIn: '2025-10-26',
+        checkOut: '2025-10-27',
+        rooms: [{
+            roomId: 'R000000001',
+            roomName: '高級寵物房',
+            roomPrice: 2500,
+            roomQuantity: 1,
+            roomTotal: 2500,
+            expanded: false
+        }]
+    };
+
+    setSharedOrderData(data: OrderData): void {
+        this.sharedOrderData = data;
+    }
+
+    getSharedOrderData(): OrderData {
+        return this.sharedOrderData;
+    }
+}
+
+export interface OrderData {
+    propertyId: string;
+    checkIn: string;
+    checkOut: string;
+    rooms: OrderRoom[];
+}
+
+export interface OrderRoom {
+    roomId: string;
+    roomName: string;
+    roomPrice: number;
+    roomQuantity: number;
+    roomTotal: number;
+    expanded: boolean;
 }

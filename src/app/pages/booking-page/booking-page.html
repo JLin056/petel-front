@@ -110,16 +110,16 @@
                 <div class="order-summary">
                     <div class="summary-row">
                         <span>入住日期</span>
-                        <span>{{ checkIn }}</span>
+                        <span>{{ this.orderData.checkIn }}</span>
                     </div>
                     <div class="summary-row">
                         <span>退房日期</span>
-                        <span>{{ checkOut }}</span>
+                        <span>{{ this.orderData.checkOut }}</span>
                     </div>
                 </div>
 
                 <div class="room-items">
-                    @for (room of roomsData; track room.roomName; let i = $index) {
+                    @for (room of this.orderData.rooms; track room.roomName; let i = $index) {
                     <div class="room-item">
                         <div class="room-header" (click)="toggleRoom(i)">
                             <div class="room-basic-info">

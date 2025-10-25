@@ -1,5 +1,5 @@
 import { UserService } from './../../core/services/user-service';
-import { BookService } from './../../core/services/book-service';
+import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -21,18 +21,28 @@ import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-booking-page',
-    imports: [FormsModule, ButtonModule, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule, ButtonModule, PricePipe, CommonModule],
+    imports: [
+        FormsModule,
+        ButtonModule,
+        IftaLabelModule,
+        CarouselModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RadioButton,
+        InputGroupModule,
+        InputGroupAddonModule,
+        InputTextModule,
+        SelectModule,
+        InputNumberModule,
+        EditorModule,
+        ButtonModule,
+        PricePipe,
+        CommonModule
+    ],
     templateUrl: './booking-page.html',
     styleUrl: './booking-page.css'
 })
 export class BookingPage implements OnInit {
-
-    orderData: OrderData = {
-        propertyId: '',
-        checkIn: '',
-        checkOut: '',
-        rooms: []
-    };
 
     // <div class="hotel_infos section-card">
     propertyName: string = '';
@@ -46,9 +56,12 @@ export class BookingPage implements OnInit {
     memberPhone: string = '';
 
     // <div class="order_infos section-card">
-    checkIn: string = '';
-    checkOut: string = '';
-    roomsData: RoomsData[] = [];
+    orderData: OrderData = {
+        propertyId: '',
+        checkIn: '',
+        checkOut: '',
+        rooms: []
+    };
 
     // <div class="additional_infos section-card">
     checkNotice = '';
@@ -74,6 +87,13 @@ export class BookingPage implements OnInit {
 
     ngOnInit(): void {
 
+        this.orderData = this.bookService.getSharedOrderData();
+
+        if (!this.orderData) {
+            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+            this.router.navigateByUrl('/');
+        }
+
         this.userService.getUserInfo().subscribe({
             next: (response) => {
                 if (response.MWHEADER.RETURNCODE !== '0000') {
@@ -91,15 +111,7 @@ export class BookingPage implements OnInit {
             }
         });
 
-        // this.orderData = history.state.orderData;
-
-        // if (!this.orderData) {
-        //     this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
-        //     this.router.navigateByUrl('/');
-        // }
-
-        // this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
-        this.hotelService.queryHotelDetail('P000000001').subscribe({
+        this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
 
             next: (response) => {
 
@@ -119,22 +131,9 @@ export class BookingPage implements OnInit {
             }
         });
 
-        this.checkIn = '2025-10-25';
-        this.checkOut = '2025-10-26';
-        // this.checkIn = this.orderData.checkIn;
-        // this.checkOut = this.orderData.checkOut;
-
-        // for (let item of this.orderData.rooms) {
-        //     this.roomsData.push({
-        //         roomId: item.roomId,
-        //         roomName: item.roomName,
-        //         roomPrice: item.roomPrice,
-        //         roomQuantity: item.roomQuantity,
-        //         roomTotal: item.roomPrice * item.roomQuantity,
-        //         expanded: false
-        //     });
-        //     this.totalAmount += item.roomPrice * item.roomQuantity;
-        // }
+        for (let room of this.orderData.rooms) {
+            this.totalAmount += room.roomTotal;
+        }
     }
 
     /**
@@ -145,8 +144,8 @@ export class BookingPage implements OnInit {
         const orderInfo: OrderInfo = {
             property_id: this.orderData.propertyId,
             payment_id: this.form.controls.selectedPayment.value!,
-            check_in: this.checkIn,
-            check_out: this.checkOut,
+            check_in: this.orderData.checkIn,
+            check_out: this.orderData.checkOut,
             status: '未付款',
             guest: this.form.controls.guestType.value!,
             guest_name: this.form.controls.guestName.value,
@@ -155,9 +154,9 @@ export class BookingPage implements OnInit {
         }
 
         const orderDetails: OrderDetail[] = [];
-        const dates: string[] = this.getDatesBetween(this.checkIn, this.checkOut);
+        const dates: string[] = this.getDatesBetween(this.orderData.checkIn, this.orderData.checkOut);
 
-        for (let item of this.roomsData) {
+        for (let item of this.orderData.rooms) {
             for (let date of dates) {
                 orderDetails.push({
                     room_id: item.roomId,
@@ -193,7 +192,6 @@ export class BookingPage implements OnInit {
                             this.router.navigate(['/book/authorize'], {
                                 state: { orderId: response.TRANRS.order_id }
                             });
-                            // this.router.navigateByUrl('/book/authorize'); // TODO 把資料帶過去
                         }
                         this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                         return;
@@ -256,7 +254,7 @@ export class BookingPage implements OnInit {
      * @params index：第幾個訂購房型
      */
     toggleRoom(index: number): void {
-        this.roomsData[index].expanded = !this.roomsData[index].expanded;
+        this.orderData.rooms[index].expanded = !this.orderData.rooms[index].expanded;
     }
 
     /**
@@ -286,27 +284,4 @@ export class BookingPage implements OnInit {
         return dates;
     }
 
-}
-
-interface OrderData {
-    propertyId: string;
-    checkIn: string;
-    checkOut: string;
-    rooms: OrderRoom[];
-}
-
-interface OrderRoom {
-    roomId: string;
-    roomName: string;
-    roomPrice: number;
-    roomQuantity: number;
-}
-
-interface RoomsData {
-    roomId: string;
-    roomName: string;
-    roomPrice: number;
-    roomQuantity: number;
-    roomTotal: number;
-    expanded: boolean;
 }
