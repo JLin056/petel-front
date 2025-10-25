@@ -75,6 +75,7 @@ export class BookingPage implements OnInit {
         { label: '線上刷卡', value: 'Y000000002', statement: '信用卡一次付清（將轉導至綠界付款頁面）' }
     ];
 
+    /** FormGroup */
     form = new FormGroup({
         guestType: new FormControl<string>('y'),
         guestName: new FormControl<string | null>(null),
@@ -83,8 +84,14 @@ export class BookingPage implements OnInit {
         selectedPayment: new FormControl<string>('')
     });
 
+    /**
+     * 建構子注入
+     */
     constructor(private router: Router, private hotelService: HotelService, private bookService: BookService, private messageService: MessageService, private userService: UserService) { };
 
+    /**
+     * 初始化頁面內容
+     */
     ngOnInit(): void {
 
         this.orderData = this.bookService.getSharedOrderData();
@@ -137,6 +144,14 @@ export class BookingPage implements OnInit {
     }
 
     /**
+     * 重置控制項狀態
+     */
+    cleanTouched(): void {
+        this.guestName.markAsUntouched();
+        this.guestPhone.markAsUntouched();
+    }
+
+    /**
      * 設定建立訂單的相關輸入參數
      * @returns 建立訂單的相關輸入參數
      */
@@ -147,10 +162,10 @@ export class BookingPage implements OnInit {
             check_in: this.orderData.checkIn,
             check_out: this.orderData.checkOut,
             status: '未付款',
-            guest: this.form.controls.guestType.value!,
-            guest_name: this.form.controls.guestName.value,
-            guest_phone: this.form.controls.guestPhone.value,
-            note: this.form.controls.note.value
+            guest: this.guestType.value!,
+            guest_name: this.guestName.value,
+            guest_phone: this.guestPhone.value,
+            note: this.note.value
         }
 
         const orderDetails: OrderDetail[] = [];
@@ -178,7 +193,7 @@ export class BookingPage implements OnInit {
      */
     onSubmit(): void {
 
-        if (this.form.controls.guestType.value === 'n' && (this.form.controls.guestName === null || this.form.controls.guestPhone === null)) {
+        if (this.guestType.value === 'n' && (this.guestName.value === null || this.guestPhone.value === null)) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '請填入主人姓名和電話' });
             return;
         }
@@ -188,13 +203,13 @@ export class BookingPage implements OnInit {
             case this.paymentOptions.at(0)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
-                        if (response.MWHEADER.RETURNCODE === "0000") {
-                            this.router.navigate(['/book/authorize'], {
-                                state: { orderId: response.TRANRS.order_id }
-                            });
+                        if (!(response.MWHEADER.RETURNCODE === "0000")) {
+                            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                            return;
                         }
-                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
-                        return;
+                        this.router.navigate(['/book/authorize'], {
+                            state: { orderId: response.TRANRS.order_id }
+                        });
                     },
                     error: (error) => {
                         this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
@@ -207,32 +222,32 @@ export class BookingPage implements OnInit {
             case this.paymentOptions.at(1)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
-                        if (response.MWHEADER.RETURNCODE === "0000") {
-                            // 呼叫綠界信用卡API
-                            this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
-                                next: (response) => {
-
-                                    // 建立form
-                                    const form = document.createElement('form');
-                                    form.method = 'POST';
-                                    form.action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
-
-                                    // 將所有參數加入form的hidden input中
-                                    Object.entries(response.TRANRS.ecPay_params).forEach(([key, value]) => {
-                                        const input = document.createElement('input');
-                                        input.type = 'hidden';
-                                        input.name = key;
-                                        input.value = String(value);
-                                        form.appendChild(input);
-                                    });
-
-                                    document.body.appendChild(form);
-                                    form.submit();
-                                }
-                            });
+                        if (!(response.MWHEADER.RETURNCODE === "0000")) {
+                            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                            return;
                         }
-                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
-                        return;
+                        // 呼叫綠界信用卡API
+                        this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+                            next: (response) => {
+
+                                // 建立form
+                                const form = document.createElement('form');
+                                form.method = 'POST';
+                                form.action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
+
+                                // 將所有參數加入form的hidden input中
+                                Object.entries(response.TRANRS.ecPay_params).forEach(([key, value]) => {
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = key;
+                                    input.value = String(value);
+                                    form.appendChild(input);
+                                });
+
+                                document.body.appendChild(form);
+                                form.submit();
+                            }
+                        });
                     },
                     error: (error) => {
                         this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
@@ -284,4 +299,25 @@ export class BookingPage implements OnInit {
         return dates;
     }
 
+    // 簡化取得控制項：beginning
+    get guestType() {
+        return this.form.controls.guestType;
+    }
+
+    get guestName() {
+        return this.form.controls.guestName;
+    }
+
+    get guestPhone() {
+        return this.form.controls.guestPhone;
+    }
+
+    get note() {
+        return this.form.controls.note;
+    }
+
+    get selectedPayment() {
+        return this.form.controls.selectedPayment;
+    }
+    // 簡化取得控制項：ending
 }

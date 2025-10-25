@@ -55,7 +55,7 @@
                                     <label for="cardNumber" class="form-label">信用卡 / 金融卡卡號</label>
                                     <input pInputText id="cardNumber" class="input-field"
                                         aria-describedby="cardNumber-help" formControlName="cardNo" maxlength="19"
-                                        placeholder="格式：XXXX-XXXX-XXXX-XXXX" />
+                                        placeholder="請輸入卡片正面的 16 位數字" (input)="formatCardNumber($event)" />
                                     @if (cardNo.invalid && cardNo.touched) {
                                     <small id="validation">此欄位為必填</small>
                                     }
@@ -64,7 +64,7 @@
                                     <!-- 信用卡安全碼 -->
                                     <label for="cvv" class="form-label">信用卡安全碼</label>
                                     <input pInputText id="cvv" class="input-field cvv-input" aria-describedby="cvv-help"
-                                        formControlName="cardCVV2" maxlength="4" placeholder="卡片背面的 3-4 位數字" />
+                                        formControlName="cardCVV2" maxlength="4" placeholder="請輸入卡片背面的 3-4 位數字" />
                                     @if (cardCVV2.invalid && cardCVV2.touched) {
                                     <small id="validation">此欄位為必填</small>
                                     }
@@ -196,13 +196,11 @@
 
                 <!-- 送出按鈕 -->
                 <div class="submit_container">
-                    <button class="submit_button" type="submit">
+                    <button class="submit_button" type="submit" [disabled]="form.invalid">
                         送出授權
                     </button>
                 </div>
             </div>
         </div>
-
-
     </div>
 </form>

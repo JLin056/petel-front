@@ -137,6 +137,14 @@
     margin-left: 32px;
 }
 
+#validation {
+    display: block;
+    font-size: 14px;
+    color: #ff0000;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
 /* PrimeNG 輸入框樣式 - 8px 圓角，20px 高度 */
 .guest_infos_diff_input label,
 .order_note_text label {

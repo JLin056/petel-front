@@ -127,6 +127,13 @@ export class BookService {
             roomQuantity: 1,
             roomTotal: 2500,
             expanded: false
+        },{
+            roomId: 'R000000002',
+            roomName: '豪華寵物房',
+            roomPrice: 2700,
+            roomQuantity: 1,
+            roomTotal: 2700,
+            expanded: false
         }]
     };
 

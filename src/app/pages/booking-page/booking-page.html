@@ -42,7 +42,7 @@
                         <label for="ingredient1" class="guestType">同會員資料：使用該帳號註冊紀錄之姓名、Email、手機號碼</label>
                     </div>
 
-                    @if (form.controls.guestType.value === 'y') {
+                    @if (guestType.value === 'y') {
                     <div class="member_data">
                         <table class="member-data-table">
                             <tr>
@@ -64,23 +64,30 @@
 
                 <div class="guest_infos_diff radio-option">
                     <div class="radio-wrapper">
-                        <p-radiobutton formControlName="guestType" name="guest" value="n" inputId="ingredient2" />
+                        <p-radiobutton formControlName="guestType" name="guest" value="n" inputId="ingredient2"
+                            (onClick)="cleanTouched()" />
                         <label for="ingredient2" class="guestType">自行輸入</label>
                     </div>
 
-                    @if (form.controls.guestType.value === 'n') {
+                    @if (guestType.value === 'n') {
                     <div class="guest_infos_diff_input">
                         <div class="flex flex-col gap-2">
-                            <label for="guestName">訂購人姓名</label>
+                            <label for="guestName">訂購人完整姓名</label>
                             <input pInputText id="guestName" aria-describedby="guestName-help"
                                 formControlName="guestName" class="input-field" />
-                            <small id="guestName-help">請輸入訂購人的完整姓名</small>
+                            @if ((guestName.getRawValue() === null || guestName.getRawValue() === '') &&
+                            guestName.touched) {
+                            <small id="validation">此欄位為必填</small>
+                            }
                         </div>
                         <div class="flex flex-col gap-2">
-                            <label for="guestPhone">訂購人手機</label>
+                            <label for="guestPhone">訂購人手機號碼</label>
                             <input pInputText id="guestPhone" aria-describedby="guestPhone-help"
                                 formControlName="guestPhone" class="input-field" />
-                            <small id="guestPhone-help">請輸入訂購人的手機號碼</small>
+                            @if ((guestPhone.getRawValue() === null || guestPhone.getRawValue() === '') &&
+                            guestPhone.touched) {
+                            <small id="validation">此欄位為必填</small>
+                            }
                         </div>
                     </div>
                     }
