@@ -1,10 +1,9 @@
-import { BookService } from './../../core/services/book-service';
+import { UserService } from './../../core/services/user-service';
+import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
-import { DatePicker } from 'primeng/datepicker';
-import { FloatLabel } from 'primeng/floatlabel';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -14,114 +13,187 @@ import { RadioButton } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { HotelService } from '../../core/services/hotel-service';
 import { BOOK001Tranrq, OrderDetail, OrderInfo } from '../../core/interfaces/BOOK001Req.interface';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EditorModule } from 'primeng/editor';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { PricePipe } from "../../shared/pipes/price-pipe";
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-booking-page',
-    imports: [FormsModule, ButtonModule, IftaLabelModule, CarouselModule, FormsModule, ReactiveFormsModule, RadioButton, InputGroupModule, InputGroupAddonModule, InputTextModule, SelectModule, InputNumberModule, EditorModule, ButtonModule, PricePipe],
+    imports: [
+        FormsModule,
+        ButtonModule,
+        IftaLabelModule,
+        CarouselModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RadioButton,
+        InputGroupModule,
+        InputGroupAddonModule,
+        InputTextModule,
+        SelectModule,
+        InputNumberModule,
+        EditorModule,
+        ButtonModule,
+        PricePipe,
+        CommonModule
+    ],
     templateUrl: './booking-page.html',
     styleUrl: './booking-page.css'
 })
 export class BookingPage implements OnInit {
 
-    // 旅館相關屬性
-    propertyName = '';
-    propertyTel = '';
-    propertyAddress = '';
-    propertyInfo = '';
+    // <div class="hotel_infos section-card">
+    propertyName: string = '';
+    propertyAddress: string = '';
+    propertyTel: string = '';
+    propertyInfo: string = '';
+
+    // <div class="guest_infos section-card">
+    memberName: string = '';
+    memberEmail: string = '';
+    memberPhone: string = '';
+
+    // <div class="order_infos section-card">
+    orderData: OrderData = {
+        propertyId: '',
+        checkIn: '',
+        checkOut: '',
+        rooms: []
+    };
+
+    // <div class="additional_infos section-card">
     checkNotice = '';
     petNotice = '';
     propertyNotice = '';
-    // 其餘無法在這個頁面被用戶編輯的屬性
-    totalAmount = 2500;
-    memberName = 'William Huang';
-    memberEmail = 'asdfg@gmail.com';
-    memberPhone = '0912345678';
-    roomName = '超大型犬尊榮套房';
-    roomPrice = 2500;
-    roomQuantity = 1;
-    selectedPayment = '';
-    checkIn = '2025-10-22';
-    checkOut = '2025-10-23';
-    totalPrice = 2500;
-    // 只有兩筆資料，直接在前端建資料
+
+    // <div class="payment_options section-card">
+    totalAmount = 0;
     paymentOptions = [
         { label: '現場付款', value: 'Y000000001', statement: '須提供信用卡資訊預先授權' },
         { label: '線上刷卡', value: 'Y000000002', statement: '信用卡一次付清（將轉導至綠界付款頁面）' }
     ];
 
+    /** FormGroup */
     form = new FormGroup({
-        // 日期相關
-        rangeDates: new FormControl<Date[]>([new Date(), this.getTomorrowDate()]),
-        lengthOfStay: new FormControl<string>('1'),
-        // 訂單相關
-        roomQuantity: new FormControl<number>(0),
-        // 入住者相關
         guestType: new FormControl<string>('y'),
         guestName: new FormControl<string | null>(null),
         guestPhone: new FormControl<string | null>(null),
-        // 其他
-        note: new FormControl<string>(''),
+        note: new FormControl<string | null>(null),
         selectedPayment: new FormControl<string>('')
     });
 
-    constructor(private hotelService: HotelService, private bookService: BookService, private http: HttpClient, private router: Router, private messageService: MessageService) { };
+    /**
+     * 建構子注入
+     */
+    constructor(private router: Router, private hotelService: HotelService, private bookService: BookService, private messageService: MessageService, private userService: UserService) { };
 
+    /**
+     * 初始化頁面內容
+     */
     ngOnInit(): void {
-        this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用固定的旅館編號
+
+        this.orderData = this.bookService.getSharedOrderData();
+
+        if (!this.orderData) {
+            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+            this.router.navigateByUrl('/');
+        }
+
+        this.userService.getUserInfo().subscribe({
+            next: (response) => {
+                if (response.MWHEADER.RETURNCODE !== '0000') {
+                    this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '預訂房間需要登入會員，將導至登入頁' });
+                    this.router.navigateByUrl('/login');
+                }
+                const tranrs = response.TRANRS;
+                this.memberName = tranrs.name;
+                this.memberEmail = tranrs.email;
+                this.memberPhone = tranrs.phone;
+            },
+            error: (error) => {
+                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '預訂房間需要登入會員，將導至登入頁' });
+                this.router.navigateByUrl('/login');
+            }
+        });
+
+        this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
+
             next: (response) => {
 
                 if (response.MWHEADER.RETURNCODE !== '0000') {
-                    return;
+                    this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '旅館資訊異常，將導回 PETEL 首頁' });
+                    this.router.navigateByUrl('/');
                 }
 
                 const propertyDetail = response.TRANRS.property_details.at(0);
                 this.propertyName = propertyDetail!.name;
-                this.propertyTel = propertyDetail!.tel;
                 this.propertyAddress = propertyDetail!.address;
+                this.propertyTel = propertyDetail!.tel;
                 this.propertyInfo = propertyDetail!.info;
                 this.checkNotice = propertyDetail!.checkNotice;
                 this.petNotice = propertyDetail!.petNotice;
                 this.propertyNotice = propertyDetail!.propertyNotice;
             }
         });
+
+        for (let room of this.orderData.rooms) {
+            this.totalAmount += room.roomTotal;
+        }
     }
 
-    setDataForCreateOrder() {
+    /**
+     * 重置控制項狀態
+     */
+    cleanTouched(): void {
+        this.guestName.markAsUntouched();
+        this.guestPhone.markAsUntouched();
+    }
+
+    /**
+     * 設定建立訂單的相關輸入參數
+     * @returns 建立訂單的相關輸入參數
+     */
+    setDataForCreateOrder(): BOOK001Tranrq {
         const orderInfo: OrderInfo = {
-            property_id: 'P000000001',
+            property_id: this.orderData.propertyId,
             payment_id: this.form.controls.selectedPayment.value!,
-            check_in: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
-            check_out: this.dateToString(this.form.controls.rangeDates.value!.at(-1)!),
+            check_in: this.orderData.checkIn,
+            check_out: this.orderData.checkOut,
             status: '未付款',
-            guest: this.form.controls.guestType.value!,
-            guest_name: this.form.controls.guestName.value,
-            guest_phone: this.form.controls.guestPhone.value,
-            note: this.form.controls.note.value
+            guest: this.guestType.value!,
+            guest_name: this.guestName.value,
+            guest_phone: this.guestPhone.value,
+            note: this.note.value
         }
 
-        const orderDetails: OrderDetail[] = [{ // 先使用假資料
-            room_id: 'R000000001',
-            arrival_date: this.dateToString(this.form.controls.rangeDates.value!.at(0)!),
-            room_quantity: 1,
-            room_price: 2500
-        }]
+        const orderDetails: OrderDetail[] = [];
+        const dates: string[] = this.getDatesBetween(this.orderData.checkIn, this.orderData.checkOut);
 
-        const tranrq: BOOK001Tranrq = {
+        for (let item of this.orderData.rooms) {
+            for (let date of dates) {
+                orderDetails.push({
+                    room_id: item.roomId,
+                    arrival_date: date,
+                    room_quantity: item.roomQuantity,
+                    room_price: item.roomTotal
+                })
+            }
+        }
+
+        return {
             order_info: orderInfo,
             order_detail: orderDetails
         };
-
-        return tranrq
     }
 
-    onSubmit() {
+    /**
+     * 送出訂單
+     */
+    onSubmit(): void {
 
-        if (this.form.controls.guestType.value === 'n' && (this.form.controls.guestName === null || this.form.controls.guestPhone === null)) {
+        if (this.guestType.value === 'n' && (this.guestName.value === null || this.guestPhone.value === null)) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '請填入主人姓名和電話' });
             return;
         }
@@ -131,27 +203,32 @@ export class BookingPage implements OnInit {
             case this.paymentOptions.at(0)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
-                        if (response.MWHEADER.RETURNCODE !== "0000") {
+                        if (!(response.MWHEADER.RETURNCODE === "0000")) {
+                            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                             return;
                         }
+                        this.router.navigate(['/book/authorize'], {
+                            state: { orderId: response.TRANRS.order_id }
+                        });
+                    },
+                    error: (error) => {
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        return;
                     }
                 });
-                // TODO 把資料帶過去
-                this.router.navigateByUrl('/book/authorize');
                 break;
             }
 
             case this.paymentOptions.at(1)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
-                        if (response.MWHEADER.RETURNCODE !== "0000") {
+                        if (!(response.MWHEADER.RETURNCODE === "0000")) {
+                            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                             return;
                         }
                         // 呼叫綠界信用卡API
                         this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
                             next: (response) => {
-
-                                const params = response.TRANRS.ecPay_params;
 
                                 // 建立form
                                 const form = document.createElement('form');
@@ -159,7 +236,7 @@ export class BookingPage implements OnInit {
                                 form.action = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';
 
                                 // 將所有參數加入form的hidden input中
-                                Object.entries(params).forEach(([key, value]) => {
+                                Object.entries(response.TRANRS.ecPay_params).forEach(([key, value]) => {
                                     const input = document.createElement('input');
                                     input.type = 'hidden';
                                     input.name = key;
@@ -171,6 +248,10 @@ export class BookingPage implements OnInit {
                                 form.submit();
                             }
                         });
+                    },
+                    error: (error) => {
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        return;
                     }
                 });
                 break;
@@ -183,13 +264,60 @@ export class BookingPage implements OnInit {
         }
     }
 
-    dateToString(date: Date): string {
-        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    /**
+     * 是否展開訂購房型的詳細資訊
+     * @params index：第幾個訂購房型
+     */
+    toggleRoom(index: number): void {
+        this.orderData.rooms[index].expanded = !this.orderData.rooms[index].expanded;
     }
 
-    getTomorrowDate(): Date {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        return tomorrow;
+    /**
+     * 設定 selectedPayment 的值
+     * @params value：selectedPayment.value，格式：'Y000000001'
+     */
+    selectPayment(value: string): void {
+        this.form.get('selectedPayment')?.setValue(value);
     }
+
+    /**
+     * 獲取兩個日期之間的所有日期（包含起始日，不含結束日）
+     * @params startDate：起始日，格式：'yyyy-MM-dd'
+     * @params endDate：結束日，格式：'yyyy-MM-dd'
+     * @returns 日期序列，如：['2025-10-22', '2025-10-23', '2025-10-24']
+     */
+    getDatesBetween(startDate: string, endDate: string): string[] {
+        const dates = [];
+        const currentDate = new Date(startDate);
+        const stopDate = new Date(endDate);
+
+        while (currentDate < stopDate) {
+            dates.push(currentDate.toISOString().slice(0, 10));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return dates;
+    }
+
+    // 簡化取得控制項：beginning
+    get guestType() {
+        return this.form.controls.guestType;
+    }
+
+    get guestName() {
+        return this.form.controls.guestName;
+    }
+
+    get guestPhone() {
+        return this.form.controls.guestPhone;
+    }
+
+    get note() {
+        return this.form.controls.note;
+    }
+
+    get selectedPayment() {
+        return this.form.controls.selectedPayment;
+    }
+    // 簡化取得控制項：ending
 }
