@@ -91,14 +91,15 @@ export class BookingPage implements OnInit {
             }
         });
 
-        this.orderData = history.state.orderData;
+        // this.orderData = history.state.orderData;
 
-        if (!this.orderData) {
-            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
-            this.router.navigateByUrl('/');
-        }
+        // if (!this.orderData) {
+        //     this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+        //     this.router.navigateByUrl('/');
+        // }
 
-        this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
+        // this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
+        this.hotelService.queryHotelDetail('P000000001').subscribe({
 
             next: (response) => {
 
@@ -118,20 +119,22 @@ export class BookingPage implements OnInit {
             }
         });
 
-        this.checkIn = this.orderData.checkIn;
-        this.checkOut = this.orderData.checkOut;
+        this.checkIn = '2025-10-25';
+        this.checkOut = '2025-10-26';
+        // this.checkIn = this.orderData.checkIn;
+        // this.checkOut = this.orderData.checkOut;
 
-        for (let item of this.orderData.rooms) {
-            this.roomsData.push({
-                roomId: item.roomId,
-                roomName: item.roomName,
-                roomPrice: item.roomPrice,
-                roomQuantity: item.roomQuantity,
-                roomTotal: item.roomPrice * item.roomQuantity,
-                expanded: false
-            });
-            this.totalAmount += item.roomPrice * item.roomQuantity;
-        }
+        // for (let item of this.orderData.rooms) {
+        //     this.roomsData.push({
+        //         roomId: item.roomId,
+        //         roomName: item.roomName,
+        //         roomPrice: item.roomPrice,
+        //         roomQuantity: item.roomQuantity,
+        //         roomTotal: item.roomPrice * item.roomQuantity,
+        //         expanded: false
+        //     });
+        //     this.totalAmount += item.roomPrice * item.roomQuantity;
+        // }
     }
 
     /**
