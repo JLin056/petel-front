@@ -149,6 +149,10 @@ export class AuthorizingPage implements OnInit {
                     return;
                 }
                 this.router.navigateByUrl('/book/finish');
+            },
+            error: (error) => {
+                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '送出授權有問題，請稍後再試' });
+                return;
             }
         });
     }
