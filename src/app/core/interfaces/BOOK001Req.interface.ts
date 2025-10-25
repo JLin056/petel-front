@@ -11,7 +11,6 @@ export interface OrderDetail {
 }
 
 export interface OrderInfo {
-    user_id:     string;
     property_id: string;
     payment_id:  string;
     check_in:    string;
