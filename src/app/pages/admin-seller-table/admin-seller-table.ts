@@ -10,7 +10,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { Seller, SellerStatus } from '../../core/interfaces/ADMIN005Res.interface';
+import { Seller, SellerStatus, ADMIN002Req, ADMIN002Res } from '../../core/interfaces/ADMIN002Res.interface';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 
 @Component({
@@ -36,59 +36,105 @@ export class AdminSellerTable implements OnInit {
 
   sellerList: Seller[] = [];
   statuses: SellerStatus[] = [];
-  loading: boolean = true;
 
-  // Filter variables
-  searchValue: string = '';
-  sellerIdFilter: string = '';
+  // Search filter variables
   accountIdFilter: string = '';
   emailFilter: string = '';
   nameFilter: string = '';
   businessCodeFilter: string = '';
+
+  // Pagination
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalCount: number = 0;
+  totalPages: number = 0;
 
   // Confirm dialog
   deleteConfirmVisible: boolean = false;
   selectedSeller: Seller | null = null;
 
   ngOnInit() {
-    // 模擬資料載入
-    this.sellerList = [
-      {
-        "SELLER_ID": "S000000001",
-        "ACCOUNT_ID": "A000000006",
-        "EMAIL": "seller1@pethotel.com",
-        "NAME": "快樂毛孩寵物旅館",
-        "BUSINESS_CODE": "特寵業繁字第U1130696號",
-        "ROLE": "SELLER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "SELLER_ID": "S0003",
-        "ACCOUNT_ID": "A0008",
-        "EMAIL": "seller3@pethotel.com",
-        "NAME": "溫馨小窩寵物旅館",
-        "BUSINESS_CODE": "34567890",
-        "ROLE": "SELLER",
-        "STATUS": "ACTIVE"
-      },
-      {
-        "SELLER_ID": "S0004",
-        "ACCOUNT_ID": "A0009",
-        "EMAIL": "seller4@pethotel.com",
-        "NAME": "寵愛一生寵物飯店",
-        "BUSINESS_CODE": "45678901",
-        "ROLE": "SELLER",
-        "STATUS": "ACTIVE"
-      }
-    ];
-
     this.statuses = [
       { label: '啟用', value: 'ACTIVE' },
       { label: '停用', value: 'INACTIVE' },
       { label: '暫停', value: 'SUSPENDED' }
     ];
 
-    this.loading = false;
+    this.loadSellers();
+  }
+
+  /**
+   * 載入賣家列表
+   */
+  loadSellers() {
+    const request: ADMIN002Req = {
+      MWHEADER: {
+        MSGID: 'ADMIN-002'
+      },
+      TRANRQ: {
+        page: {
+          pageNumber: this.currentPage,
+          pageSize: this.pageSize
+        }
+      }
+    };
+
+    // 添加搜尋條件
+    if (this.accountIdFilter) {
+      request.TRANRQ.Account_Id = this.accountIdFilter;
+    }
+    if (this.nameFilter) {
+      request.TRANRQ.Name = this.nameFilter;
+    }
+    if (this.emailFilter) {
+      request.TRANRQ.Email = this.emailFilter;
+    }
+
+    console.log('發送 API 請求:', request);
+
+    this.http.post<ADMIN002Res>('http://localhost:8080/admin/merchant/query', request)
+      .subscribe({
+        next: (response) => {
+          console.log('收到 API 回應:', response);
+          if (response.MWHEADER.RETURNCODE === '0000') {
+            this.sellerList = response.TRANRS.sellers;
+            this.totalCount = response.TRANRS.totalCount;
+            this.totalPages = response.TRANRS.totalPages;
+            this.currentPage = response.TRANRS.currentPage;
+            console.log('賣家列表:', this.sellerList);
+            console.log('總筆數:', this.totalCount);
+          } else {
+            console.error('API 錯誤:', response.MWHEADER.RETURNDESC);
+            this.sellerList = [];
+            this.totalCount = 0;
+          }
+        },
+        error: (error) => {
+          console.error('API 呼叫失敗:', error);
+          this.sellerList = [];
+          this.totalCount = 0;
+        }
+      });
+  }
+
+  /**
+   * 執行搜尋
+   */
+  onSearch() {
+    this.currentPage = 1; // 重置到第一頁
+    this.loadSellers();
+  }
+
+  /**
+   * 分頁改變
+   */
+  onPageChange(event: any) {
+    console.log('分頁事件:', event);
+    // PrimeNG 的 onPage 事件使用 first (第一筆的索引) 和 rows (每頁筆數)
+    this.currentPage = (event.first / event.rows) + 1;
+    this.pageSize = event.rows;
+    console.log('切換到第', this.currentPage, '頁，每頁', this.pageSize, '筆');
+    this.loadSellers();
   }
 
   getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
@@ -148,5 +194,14 @@ export class AdminSellerTable implements OnInit {
   onDeleteCancelled() {
     this.selectedSeller = null;
     this.deleteConfirmVisible = false;
+  }
+
+  /**
+   * 前往該賣家的旅館列表
+   */
+  goToHotels(sellerId: string) {
+    console.log('前往 Seller ID 的旅館列表:', sellerId);
+    // TODO: 導航到旅館列表頁面，並帶上 sellerId 參數
+    // this.router.navigate(['/hotels'], { queryParams: { sellerId: sellerId } });
   }
 }
