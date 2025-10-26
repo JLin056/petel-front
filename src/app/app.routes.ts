@@ -23,6 +23,7 @@ import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-pa
 import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
 import { ResetPasswordPage } from './pages/reset-password-page/reset-password-page';
 import { ForgotPasswordPage } from './pages/forgot-password-page/forgot-password-page';
+import { ChatDemo } from './pages/chat-demo/chat-demo';
 
 export const routes: Routes = [
     {
@@ -64,6 +65,10 @@ export const routes: Routes = [
     {
         path: 'resetPassword',
         component: ResetPasswordPage
+    },
+    {
+        path: 'chatDemo',
+        component: ChatDemo
     },
     {
         path: 'merchants/login',

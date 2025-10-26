@@ -1,0 +1,21 @@
+ <h3>Chat WS Demo</h3>
+
+    <div style="display:flex; gap:12px; align-items:center;">
+      <label>Thread ID:
+        <input [(ngModel)]="threadId" style="width: 180px" />
+      </label>
+      <button (click)="connect()">連線</button>
+      <button (click)="join()">訂閱</button>
+      <button (click)="disconnect()">斷線</button>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:12px; align-items:center;">
+      <label>訊息:
+        <input [(ngModel)]="message" style="width: 240px" />
+      </label>
+      <button (click)="send()">送出</button>
+    </div>
+
+    <pre style="border:1px solid #ccc; padding:8px; height:280px; overflow:auto; margin-top:12px;">
+        {{ logs.join('\n') }}
+    </pre>
