@@ -1,7 +1,7 @@
 import { UserService } from './../../core/services/user-service';
 import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -158,7 +158,7 @@ export class BookingPage implements OnInit {
     setDataForCreateOrder(): BOOK001Tranrq {
         const orderInfo: OrderInfo = {
             property_id: this.orderData.propertyId,
-            payment_id: this.form.controls.selectedPayment.value!,
+            payment_id: this.selectedPayment.value!,
             check_in: this.orderData.checkIn,
             check_out: this.orderData.checkOut,
             status: '未付款',
@@ -198,7 +198,7 @@ export class BookingPage implements OnInit {
             return;
         }
 
-        switch (this.form.controls.selectedPayment.value) {
+        switch (this.selectedPayment.value) {
 
             case this.paymentOptions.at(0)?.value: {
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
