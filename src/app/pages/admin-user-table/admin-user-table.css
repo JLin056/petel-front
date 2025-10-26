@@ -41,7 +41,7 @@
 }
 
 .custom-input {
-  height: 20px;
+  height: 40px;
   border-radius: 8px;
 }
 
@@ -59,27 +59,27 @@
 }
 
 .text-large {
-  font-size: 1.3rem; 
+  font-size: 1.3rem;
   font-weight: 500;
 }
 
 .icon-large {
-  font-size: 1.5rem; 
+  font-size: 1.5rem;
 }
 
 /* 調整表格整體字體大小 */
 ::ng-deep .p-datatable {
-  font-size: 1.1rem;      
+  font-size: 1.1rem;
 }
 
 /* 調整表頭字體 */
 ::ng-deep .p-datatable th {
-  font-size: 1.5rem;      
+  font-size: 1.5rem;
 }
 
 /* 調整輸入框字體 */
 ::ng-deep .p-datatable input {
-  font-size: 1.1rem;      
+  font-size: 1.1rem;
 }
 
 /*
