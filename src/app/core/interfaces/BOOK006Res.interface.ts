@@ -14,4 +14,5 @@ export interface EcPayParams {
     MerchantTradeNo:   string;
     TradeDesc:         string;
     ChoosePayment:     string;
+    ClientBackURL:     string;
 }
