@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { FloatLabel } from "primeng/floatlabel";
 import { SelectModule } from "primeng/select";
 import { DatePicker } from "primeng/datepicker";
@@ -8,6 +9,7 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { ButtonModule } from "primeng/button";
 import { TabsModule } from "primeng/tabs";
 import { GalleryImage } from '../../core/interfaces/gallery-image';
+import { Option } from '../../core/interfaces/option.interface';
 import { RatingModule } from "primeng/rating";
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
@@ -19,6 +21,9 @@ import { SplitterModule } from 'primeng/splitter';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SortOption } from '../../core/interfaces/sort-option';
 import { GalleriaModule } from 'primeng/galleria';
+import { HotelService } from '../../core/services/hotel-service';
+import { PropertyDetail } from '../../core/interfaces/HOTEL002Res.interface';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-hotel-single-page',
@@ -45,8 +50,15 @@ import { GalleriaModule } from 'primeng/galleria';
     styleUrl: './hotel-single-page.css'
 })
 export class HotelSinglePage implements OnInit {
-    // 注入 HttpClient
+    // 注入服務
     private http = inject(HttpClient);
+    private route = inject(ActivatedRoute);
+    private hotelService = inject(HotelService);
+    private messageService = inject(MessageService);
+
+    // 旅館詳情資料
+    hotelDetail: PropertyDetail | null = null;
+    propertyId: string = '';
 
     cities: Option[] | undefined;
     date: Date | undefined;
@@ -84,6 +96,50 @@ export class HotelSinglePage implements OnInit {
             { name: '價格由高到低', code: 'price_desc' },
             { name: '評價分數由高到低', code: 'rating_desc' }
         ];
+    }
+
+    /**
+     * 載入旅館詳情
+     * @param propertyId 旅館 ID
+     */
+    loadHotelDetail(propertyId: string): void {
+        this.hotelService.queryHotelDetail(propertyId).subscribe({
+            next: (response) => {
+                console.log('=== API 回應 ===');
+                console.log('回應資料:', response);
+
+                if (response.MWHEADER.RETURNCODE === '0000') {
+                    // 取得旅館詳情（假設只有一筆資料）
+                    if (response.TRANRS.property_details && response.TRANRS.property_details.length > 0) {
+                        this.hotelDetail = response.TRANRS.property_details[0];
+                        console.log('旅館詳情:', this.hotelDetail);
+                    } else {
+                        console.warn('未找到旅館詳情');
+                        this.messageService.add({
+                            severity: 'warn',
+                            summary: '提醒',
+                            detail: '未找到旅館詳情'
+                        });
+                    }
+                } else {
+                    console.warn('API 返回錯誤:', response.MWHEADER);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: response.MWHEADER.RETURNDESC || '查詢失敗'
+                    });
+                }
+            },
+            error: (error) => {
+                console.error('=== API 錯誤 ===');
+                console.error('錯誤詳情:', error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: '錯誤',
+                    detail: '連接後端 API 失敗，請稍後再試'
+                });
+            }
+        });
     }
 
     /**
@@ -168,6 +224,24 @@ export class HotelSinglePage implements OnInit {
     starValue: number = 4; // 範例：預設為 4 顆星
 
     ngOnInit(): void {
+        // 從 query 參數獲取 propertyId
+        this.route.queryParams.subscribe(params => {
+            this.propertyId = params['propertyId'];
+
+            if (this.propertyId) {
+                console.log('=== Hotel Single Page - 獲取旅館詳情 ===');
+                console.log('propertyId:', this.propertyId);
+                this.loadHotelDetail(this.propertyId);
+            } else {
+                console.warn('未提供 propertyId');
+                this.messageService.add({
+                    severity: 'warn',
+                    summary: '提醒',
+                    detail: '未提供旅館 ID'
+                });
+            }
+        });
+
         this.cities = [
             { id: 'TPE', name: '臺北市' },
             { id: 'KEE', name: '基隆市' },
