@@ -2,12 +2,11 @@ import { BookService, OrderData } from './../../core/services/book-service';
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { HotelService } from '../../core/services/hotel-service';
-import { Rating } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-booking-done-page',
-    imports: [ButtonModule, Rating, FormsModule],
+    imports: [ButtonModule, FormsModule],
     templateUrl: './booking-done-page.html',
     styleUrl: './booking-done-page.css'
 })

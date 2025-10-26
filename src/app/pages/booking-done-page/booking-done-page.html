@@ -8,22 +8,22 @@
     <!-- 訂單內容區域 -->
     <div class="order_content">
         <!-- 住宿資訊 -->
-        <div class="info_section">
-            <h2 class="section_title">您的住宿資訊：</h2>
-            <div class="info_list">
-                <div class="info_item">
+        <div class="hotel-info-card">
+            <p class="section-title">您的住宿資訊</p>
+            <ul class="hotel-info-list">
+                <li class="hotel-info-item">
                     <span class="info_item_title"> 旅館名稱 </span>
                     <span class="info_item_text"> {{ propertyName }} </span>
-                </div>
-                <div class="info_item">
+                </li>
+                <li class="hotel-info-item">
                     <span class="info_item_title"> 旅館電話 </span>
                     <span class="info_item_text"> {{ propertyTel }} </span>
-                </div>
-                <div class="info_item">
+                </li>
+                <li class="hotel-info-item">
                     <span class="info_item_title"> 旅館地址 </span>
                     <span class="info_item_text"> {{ propertyAddress }} </span>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
 
         <!-- 訂單資訊 -->
@@ -49,21 +49,23 @@
                         <div class="room-basic-info">
                             <span class="room-number">訂購房型 {{ i + 1 }}</span>
                             <span class="room-name">{{ room.roomName }}</span>
-                            <span class="room-quantity">{{ room.roomQuantity }}間</span>
+                            <span class="room-quantity">x {{ room.roomQuantity }}</span>
                         </div>
                     </div>
                 </div>
                 }
             </div>
         </div>
-
-        <!-- 按鈕群組 -->
-        <div class="button_group">
-            <p-button label="聊聊" icon="pi pi-comments" styleClass="btn_chat" (onClick)="onChat()">
-            </p-button>
-
-            <p-button label="查看歷史訂單" icon="pi pi-history" styleClass="btn_history" (onClick)="onViewHistory()">
-            </p-button>
-        </div>
+    </div>
+    <!-- 按鈕群組 -->
+    <div class="button_group">
+        <button class="petel-btn orange" type="button" onclick="onChat()">
+            <i class="pi pi-comments"></i>
+            聊聊
+        </button>
+        <button class="petel-btn orange" type="button" onclick="onViewHistory()">
+            <i class="pi pi-history"></i>
+            查看歷史訂單
+        </button>
     </div>
 </div>
