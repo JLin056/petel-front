@@ -26,7 +26,6 @@ import { CommonModule } from '@angular/common';
         ButtonModule,
         IftaLabelModule,
         CarouselModule,
-        FormsModule,
         ReactiveFormsModule,
         RadioButton,
         InputGroupModule,
