@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, Observable, tap } from 'rxjs';
 import { AUTH002Res } from '../interfaces/AUTH002Res.interface';
 import { environment } from '../../../environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -12,11 +12,19 @@ import { AUTH004Res } from '../interfaces/AUTH004Res.interface';
 import { AUTH004Req } from '../interfaces/AUTH004Req.interface';
 import { AUTH005Req } from '../interfaces/AUTH005Req.interface';
 import { AUTH005Res } from '../interfaces/AUTH005Res.interface';
+import { AUTH010Res } from '../interfaces/AUTH010Res.interface';
+import { AUTH006Res } from '../interfaces/AUTH006Res.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Auth {
+
+    /** accessToken */
+    private accessToken: string | null = null;
+
+    private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+    public readonly isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
     /** 注入 HttpClient */
     constructor(private http: HttpClient){}
@@ -32,12 +40,41 @@ export class Auth {
     /** 忘記密碼 API URL */
     forgotUrl = `${environment.BASE_URL}/auth/forgot`;
     /** 重設密碼 API URL */
-    resettUrl = `${environment.BASE_URL}/auth/reset`;
+    resetUrl = `${environment.BASE_URL}/auth/reset`;
+    /** 取得登入資訊 API URL */
+    meUrl = `${environment.BASE_URL}/auth/me`;
+    /** refresh token API URL */
+    refreshUrl = `${environment.BASE_URL}/auth/refresh`;
 
     /** headers */
-    private headers = new HttpHeaders({
+    private readonly headers = new HttpHeaders({
         'Content-Type': 'application/json'
     });
+
+    /**
+     * 設定 access Token
+     * @param token
+     */
+    setAccessToken(token: string | null): void {
+        this.accessToken = token;
+        this.isLoggedInSubject.next(!!token);
+    }
+
+    /**
+     * 取得 access Token
+     * @returns
+     */
+    getAccessToken(): string | null {
+        return this.accessToken;
+    }
+
+    /**
+     * 清除 access Token
+     */
+    clearAccessToken(): void {
+        this.accessToken = null;
+        this.isLoggedInSubject.next(false);
+    }
 
     /**
      * 註冊 API
@@ -59,7 +96,8 @@ export class Auth {
         return this.http.post<AUTH002Res>(this.loginUrl, postData, {
             headers: this.headers,
             withCredentials: true
-        });
+        })
+        .pipe(tap(res => this.setAccessToken(res?.TRANRS.accessToken ?? null)));
     }
 
     /**
@@ -68,11 +106,31 @@ export class Auth {
      */
     onLogoutApi(): Observable<AUTH003Res> {
         return this.http.post<AUTH003Res>(this.logoutUrl, null, {
-            headers: this.headers,
+            withCredentials: true
+        })
+        .pipe(tap(() => this.clearAccessToken()));
+    }
+
+    /**
+     * 用 Refresh token 換新 Access Token
+     * @returns AUTH010Res
+     */
+    onRefreshToken(): Observable<AUTH010Res> {
+        return this.http.post<AUTH010Res>(this.refreshUrl, null, {
+            withCredentials: true
+        })
+        .pipe(tap(res => this.setAccessToken(res?.TRANRS?.accessToken ?? null)));
+    }
+
+    /**
+     * 取得用戶資訊
+     * @returns
+     */
+    onGetInfo(): Observable<AUTH006Res> {
+        return this.http.post<AUTH006Res>(this.meUrl, null, {
             withCredentials: true
         })
     }
-
 
     /**
      * 確認登入狀態 API
@@ -80,7 +138,6 @@ export class Auth {
      */
     onCheckLoginStatus(): Observable<AUTH008Res> {
         return this.http.post<AUTH008Res>(this.checkLoginUrl, null, {
-            headers: this.headers,
             withCredentials: true
         })
     }
@@ -100,8 +157,16 @@ export class Auth {
      * @returns
      */
     onResetPassword(postData: AUTH005Req): Observable<AUTH005Res> {
-        return this.http.post<AUTH005Res>(this.resettUrl, postData, {
+        return this.http.post<AUTH005Res>(this.resetUrl, postData, {
             headers: this.headers
         });
+    }
+
+    async bootstrap(): Promise<void> {
+        try {
+            await lastValueFrom(this.onRefreshToken());
+        } catch {
+            this.clearAccessToken();
+        }
     }
 }
