@@ -10,6 +10,9 @@ import { MERCH006Tranrs } from '../interfaces/MERCH006Res.interface';
 import { Res } from '../interfaces/Res.interface';
 import { MERCH002Tranrq } from '../interfaces/MERCH002Req.interface';
 import { MERCH002Tranrs } from '../interfaces/MERCH002Res.interface';
+import { MERCH012Tranrq } from '../interfaces/MERCH012Req.interface';
+import { MERCH012Tranrs } from '../interfaces/MERCH012Res.interface';
+import { MERCH011Tranrs } from '../interfaces/MERCH011Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -96,5 +99,48 @@ export class MerchService {
     }
 
     return this.http.post<Res<MERCH006Tranrs>>('http://localhost:8080/merchants/rooms/delete', postData);
+  }
+
+  /**
+   * 💡 新增方法: 取得商家會員資訊 (MERCH011)
+   * API 路徑: /sellers/get
+   * 由於後端使用 @AuthenticationPrincipal，前端發送空 Body 即可
+   * @returns Observable<any>
+   */
+  getSellerInfo() {
+    // 💡 修正 1: MSGID 應為 MERCH-011
+    const header: Mwheader = {
+      MSGID: 'MERCH-011'
+    };
+    
+    // 💡 修正 2: TRANRQ 類型設為 {}，並傳遞空物件
+    const tranrq: {} = {};
+
+    // 💡 修正 3: Request Payload 的泛型類型設為 {}
+    const postData: Req<{}> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    // 💡 修正 4: URL 應為 /sellers/get，並使用 MERCH011Tranrs 作為回傳型別
+    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/get', postData);
+  }
+
+  /**
+   * MERCH-012 查詢單房間資訊
+   * @param roomId 房間編號
+   * @returns
+   */
+  getRoomDetail(tranrq: MERCH012Tranrq) {
+    const header: Mwheader = {
+      MSGID: 'MERCH-002'
+    };
+
+    const postData: Req<MERCH012Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH012Tranrs>>('http://localhost:8080/merchants/rooms/get', postData);
   }
 }

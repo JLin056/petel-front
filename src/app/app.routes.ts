@@ -8,10 +8,8 @@ import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page'
 import { UserPage } from './pages/user-page/user-page';
 import { BookingDonePage } from './pages/booking-done-page/booking-done-page';
 import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
-
 import { AuthorizingPage } from './pages/authorizing-page/authorizing-page';
 import { ChatPage } from './pages/chat-page/chat-page';
-
 import { BookingPage } from './pages/booking-page/booking-page';
 import { OrderTableComponent } from './pages/order-table-component/order-table-component';
 import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
@@ -22,6 +20,8 @@ import { RegisterPage } from './pages/register-page/register-page';
 import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
 import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
 import { UserMerchantPage } from './pages/user-merchant-page/user-merchant-page';
+import { MerchantOrderTablePage } from './pages/merchant-order-table-page/merchant-order-table-page';
+import { RoomInfoPage } from './pages/room-info-page/room-info-page';
 
 export const routes: Routes = [
     {
@@ -57,6 +57,10 @@ export const routes: Routes = [
         component: MerchantRegisterPage
     },
     {
+        path: 'merchants/property/roomInfo',
+        component: RoomInfoPage
+    },
+    {
         path: 'merchants/property/roomInfo/edit',
         component: RoomInfoEditPage
     },
@@ -71,6 +75,10 @@ export const routes: Routes = [
     {
         path: 'merchants/property/reviewList',
         component: MerchantReviewListPage
+    },
+    {
+        path: 'merchants/property/bookings',
+        component: MerchantOrderTablePage
     },
     {
         path: 'merchants/userPage',

@@ -1,0 +1,115 @@
+<h3 class="title">訂單列表</h3>
+<div class="card">
+  <p-table
+    #dt
+    [value]="orderList"
+    dataKey="ORDER_ID"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 15, 20]"
+    [loading]="loading"
+    [paginator]="true"
+    [globalFilterFields]="['ORDER_ID', 'STAY_DATE', 'CHECK_IN', 'CHECK_OUT', 'USER_NAME', 'PROPERTY_NAME', 'ROOM', 'STATUS']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+  >
+    <ng-template #caption>
+      <div class="flex">
+        <p-iconfield iconPosition="left" class="ml-auto">
+          <p-inputicon>
+            <i class="pi pi-search"></i>
+          </p-inputicon>
+          <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="搜尋關鍵字" />
+        </p-iconfield>
+      </div>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        <th style="width:12.5%">訂單編號</th>
+        <th style="width:12.5%">入住日期</th>
+        <th style="width:12.5%">退房日期</th>
+        <th style="width:12.5%">主人姓名</th>
+        <th style="width:12.5%">房型</th>
+        <th style="width:12.5%">總價格</th>
+        <th style="width:12.5%">狀態</th>
+        <th style="width:12.5%">操作</th>
+      </tr>
+      <tr>
+        <th>
+          <p-columnFilter type="text" field="ORDER_ID" placeholder="訂單號" ariaLabel="Filter Order ID" filterOn="input"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="CHECK_IN" placeholder="入住日" ariaLabel="Filter Check In" filterOn="input"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="CHECK_OUT" placeholder="退房日" ariaLabel="Filter Check Out" filterOn="input"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="USER_NAME" placeholder="姓名" ariaLabel="Filter User Name" filterOn="input"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="ROOM" placeholder="房間" ariaLabel="Filter Room" filterOn="input"></p-columnFilter>
+        </th>
+        <th></th>
+        <th>
+          <p-columnFilter field="STATUS" matchMode="equals" [showMenu]="false">
+            <ng-template #filter let-value let-filter="filterCallback">
+              <p-select
+                [ngModel]="value"
+                (ngModelChange)="filter($event)"
+                [options]="statuses"
+                placeholder="選擇狀態"
+                [showClear]="true"
+                optionLabel="label"
+                optionValue="value"
+                style="min-width: 10rem">
+                <ng-template let-option #item>
+                  <p-tag [value]="option.label" [severity]="getSeverity(option.value) || undefined" />
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-order>
+      <tr>
+        <td>{{ order.ORDER_ID }}</td>
+        <td>{{ order.CHECK_IN }}</td>
+        <td>{{ order.CHECK_OUT }}</td>
+        <td>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-user"></i>
+            <span>{{ order.USER_NAME }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-building"></i>
+            <span>{{ order.ROOM }}</span>
+          </div>
+        </td>
+        <td>${{ order.HOTEL_CHARGES }}</td>
+        <td>
+          <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined" />
+        </td>
+        <td>
+          <p-button label="詳細" size="small" severity="info" (onClick)="showOrderDetail(order)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="11">查無訂單資料</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- 訂單詳細資料彈窗 -->
+<app-order-detail-dialog
+  [(visible)]="showDetailDialog"
+  [order]="selectedOrder"
+  (noteUpdated)="onNoteUpdated($event)">
+</app-order-detail-dialog>
+

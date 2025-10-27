@@ -1,0 +1,24 @@
+.search-container {
+  padding: 20px;
+}
+
+.search-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.search-row p-floatlabel {
+  flex: 1;
+}
+
+.card {
+  padding: 30px;
+}
+
+.title{
+  text-align: center;
+  font-weight: 700;
+  font-size: 30px;
+  margin-top: 20px;
+}

@@ -16,16 +16,15 @@ export class MerchantHomePage implements OnInit {
   /** roomToDelete */
   roomToDelete: any = null;
   /** propertyId */
-  // propertyId: string = '';
   propertyId: string = 'P000000001'
   /** roomList */
   roomList: any[] = [];
   /** stats 先寫死*/
   stats: Stat[] = [
-    { label: '本月營業額', value: '$55,000', change: '+10% (較上月)', icon: 'pi pi-chart-line', color: '#b7a298' },
-    { label: '本月預約數', value: '45', change: '+8% (較上月)', icon: 'pi pi-book', color: '#b7a298' },
-    { label: '本月平均評價', value: '4.8/5', change: '+0.3 (較上月)', icon: 'pi pi-star-fill', color: '#b7a298' },
-    { label: '本月取消率', value: '5%', change: '-1% (較上月)', icon: 'pi pi-times-circle', color: '#b7a298' }
+    { label: '營業額', value: '$55,000', change: '+10% (較上月)', icon: 'pi pi-chart-line', color: '#b7a298' },
+    { label: '預約數', value: '45', change: '+8% (較上月)', icon: 'pi pi-book', color: '#b7a298' },
+    { label: '平均評價', value: '4.8/5', change: '+0.3 (較上月)', icon: 'pi pi-star-fill', color: '#b7a298' },
+    { label: '取消率', value: '5%', change: '-1% (較上月)', icon: 'pi pi-times-circle', color: '#b7a298' }
   ];
   /** isLoading */
   isLoading = false;
@@ -70,19 +69,18 @@ export class MerchantHomePage implements OnInit {
         console.log('API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
-          // 如果 API 沒有返回 stats 數據，或返回空陣列，則保留預設值
           this.roomList = (res.TRANRS?.rooms || []).map((room: any) => ({
             ...room,
             // 轉換 petTypeId 成 petTypeName
-            petTypeName: this.petTypeMap[room.petTypeId] || '未知寵物'
+            petTypeName: this.petTypeMap[room.petTypeId] || '未知寵物',
+            // 格式化 roomSize，將 "100x200x300" 轉換成 "100公分 x 200公分 x 300公分"
+            formattedRoomSize: this.formatRoomSize(room.roomSize)
           }));
-          this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats; // 如果API有返回，則使用API數據，否則保持預設
+          this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats;
           console.log('房間列表載入成功', this.roomList);
         } else {
           this.errorMessage = '載入房型列表失敗';
           this.roomList = [];
-          // *** 確保這裡即使失敗也保留預設 stats ***
-          // this.stats = []; // 移除這行，保持預設值
         }
         this.isLoading = false;
       },
@@ -91,10 +89,24 @@ export class MerchantHomePage implements OnInit {
         this.errorMessage = '無法載入房型列表，請稍後再試';
         this.isLoading = false;
         this.roomList = [];
-        // *** 確保這裡即使失敗也保留預設 stats ***
-        // this.stats = []; // 移除這行，保持預設值
       }
     });
+  }
+
+  /**
+   * 格式化房間尺寸
+   * 將 "100x200x300" 轉換成 "100公分 x 200公分 x 300公分"
+   * @param roomSize 原始尺寸字串
+   * @returns 格式化後的尺寸字串
+   */
+  private formatRoomSize(roomSize: string): string {
+    if (!roomSize) return '';
+
+    const sizes = roomSize.split('x');
+    if (sizes.length !== 3) return roomSize; // 如果格式不對，返回原值
+
+    const [height, length, width] = sizes;
+    return `${height}cm x ${length}cm x ${width}cm`;
   }
 
   /**
@@ -169,5 +181,30 @@ export class MerchantHomePage implements OnInit {
       }
     });
   }
-}
 
+  /**
+   * 查看房型詳細資料 (點擊卡片主要區域觸發)
+   * @param room 
+   */
+  onDetail(room: any): void {
+    // 💡 新增 Log，輸出完整的 room 物件，用於除錯
+    console.log('點擊房型詳細資料，完整的 Room 物件:', room); 
+
+    // 檢查 room.id 是否存在
+    if (!room || !room.id) {
+      // 💡 提示使用者檢查後端傳回的資料結構
+      this.errorMessage = '無法取得房型 ID (room.id 遺失)。請檢查後端 API 返回的房型物件中 ID 欄位的名稱。';
+      console.error(this.errorMessage, room);
+      return;
+    }
+    
+    console.log('導航到詳細頁面，房型 ID:', room.id);
+
+    // 傳遞 roomId
+    this.router.navigate(['/merchants/property/roomInfo'], {
+      state: {
+        roomId: room.id,
+      }
+    });
+  }
+}

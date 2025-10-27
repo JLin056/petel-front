@@ -3,13 +3,33 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EditorModule } from 'primeng/editor';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SelectModule } from 'primeng/select'; // 👈 改成 SelectModule
+import { InputTextModule } from 'primeng/inputtext'; // 👈 加入
+import { MessageModule } from 'primeng/message'; // 👈 加入
 import { MerchService } from '../../core/services/merch-service';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 
+interface PetTypeOption {
+  name: string;
+  id: string;
+}
+
+interface UnitOption {
+  label: string;
+  value: number;
+}
+
 @Component({
   selector: 'app-room-info-edit-page',
-  imports: [CommonModule, ReactiveFormsModule, EditorModule, AutoCompleteModule, SharedConfirmDialog],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    EditorModule,
+    SelectModule,  // 👈 改成 SelectModule
+    InputTextModule,  // 👈 加入
+    MessageModule,  // 👈 加入
+    SharedConfirmDialog
+  ],
   templateUrl: './room-info-edit-page.html',
   styleUrl: './room-info-edit-page.css',
   encapsulation: ViewEncapsulation.None
@@ -17,8 +37,7 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
 export class RoomInfoEditPage implements OnInit {
   /** roomForm */
   roomForm!: FormGroup;
-  /** filteredPetTypes */
-  filteredPetTypes: PetTypeOption[] = [];
+
   /** petTypes */
   petTypes: PetTypeOption[] = [
     { name: '貓', id: 'W001' },
@@ -28,14 +47,28 @@ export class RoomInfoEditPage implements OnInit {
     { name: '大型犬', id: 'W005' },
     { name: '超大型犬', id: 'W006' }
   ];
+
+  // 👈 新增：房間數選項 1-20
+  unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
+    label: `${i + 1} 間`,
+    value: i + 1
+  }));
+
   /** cancelConfirmVisible */
   cancelConfirmVisible: boolean = false;
+
   /** isSubmitting */
   isSubmitting: boolean = false;
+
+  /** isSubmitted - 新增 */
+  isSubmitted: boolean = false;
+
   /** errorMessage */
   errorMessage: string = '';
+
   /** roomData - 從首頁傳來的房型資料 */
   roomData: any = null;
+
   /** roomId */
   roomId: string = '';
 
@@ -61,7 +94,7 @@ export class RoomInfoEditPage implements OnInit {
    */
   ngOnInit(): void {
     this.initForm();
-    
+
     // 如果沒有房型資料，導回首頁
     if (!this.roomData || !this.roomId) {
       console.warn('沒有房型資料，導回首頁');
@@ -71,7 +104,7 @@ export class RoomInfoEditPage implements OnInit {
       }, 2000);
       return;
     }
-    
+
     // 填入表單資料
     this.populateForm();
   }
@@ -83,10 +116,12 @@ export class RoomInfoEditPage implements OnInit {
     this.roomForm = this.fb.group({
       petTypeObject: [null, Validators.required],
       name: ['', Validators.required],
-      size: ['', Validators.required],
+      height: ['', [Validators.required, Validators.min(1)]],  // 👈 改成三個欄位
+      length: ['', [Validators.required, Validators.min(1)]],  // 👈 改成三個欄位
+      width: ['', [Validators.required, Validators.min(1)]],   // 👈 改成三個欄位
       description: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(1)]],
-      unit: ['', [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]]
+      unit: [null, Validators.required]  // 👈 改成 null（下拉選單）
     });
   }
 
@@ -99,33 +134,29 @@ export class RoomInfoEditPage implements OnInit {
     // 找到對應的寵物種類物件
     const petType = this.petTypes.find(pt => pt.id === this.roomData.petTypeId);
 
+    // 👈 解析尺寸字串 (例如: "100x200x300")
+    const sizes = this.roomData.roomSize?.split('x') || ['', '', ''];
+
     // 填入表單
     this.roomForm.patchValue({
       petTypeObject: petType || null,
       name: this.roomData.name || '',
-      size: this.roomData.roomSize || '',
+      height: sizes[0] || '',   // 👈 高度
+      length: sizes[1] || '',   // 👈 長度
+      width: sizes[2] || '',    // 👈 寬度
       description: this.roomData.info || '',
       price: this.roomData.basePrice || '',
-      unit: this.roomData.totalUnits || ''
+      unit: this.roomData.totalUnits || null  // 👈 改成 null
     });
 
     console.log('表單已填入資料:', this.roomForm.value);
   }
 
   /**
-   * 過濾寵物種類
-   */
-  filterPetTypes(event: any): void {
-    const query = event.query.toLowerCase();
-    this.filteredPetTypes = this.petTypes.filter(type =>
-      type.name.toLowerCase().includes(query)
-    );
-  }
-
-  /**
    * 提交表單 - 修改
    */
   onSubmit(): void {
+    this.isSubmitted = true;  // 👈 設定已提交
     this.roomForm.markAllAsTouched();
 
     if (this.roomForm.invalid) {
@@ -145,13 +176,16 @@ export class RoomInfoEditPage implements OnInit {
 
     const formData = this.roomForm.value;
 
+    // 👈 組合尺寸字串
+    const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
+
     // 構建發送給後端的資料
     const tranrq = {
       id: this.roomId,  // 必須傳房間 ID
       propertyId: this.roomData.propertyId,  // 從原資料取得
       petTypeId: formData.petTypeObject?.id || '',
       name: formData.name,
-      roomSize: formData.size,
+      roomSize: roomSizeText,  // 👈 使用組合後的尺寸字串
       info: formData.description,
       basePrice: Number(formData.price),
       totalUnits: Number(formData.unit)
@@ -213,7 +247,7 @@ export class RoomInfoEditPage implements OnInit {
    */
   getErrorMessage(controlName: string): string {
     const control = this.roomForm.get(controlName);
-    
+
     if (control?.hasError('required')) {
       return '此欄位為必填';
     }
@@ -223,7 +257,7 @@ export class RoomInfoEditPage implements OnInit {
     if (control?.hasError('pattern')) {
       return '請輸入有效的數字';
     }
-    
+
     return '';
   }
 }

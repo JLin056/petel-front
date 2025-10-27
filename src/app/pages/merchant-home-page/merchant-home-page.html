@@ -51,14 +51,16 @@
     <div class="room-list">
         @for (room of roomList; track room) {
         <div class="room-card">
-            <img src="https://image.bvshop.tw/3430/home/3430_68e0ffea2e896.png.webp" alt="房型圖片" class="room-image" />
-            <div class="room-info">
+            <img src="https://image.bvshop.tw/3430/home/3430_68e103220d5d5.png.webp" alt="房型圖片" class="room-image"
+                (click)="onDetail(room)" />
+
+            <div class="room-info" (click)="onDetail(room)">
                 <div class="room-name">{{ room.name }}</div>
                 <div class="room-detail">寵物種類：{{ room.petTypeName }}</div>
-                <div class="room-detail">空間大小：{{ room.roomSize }}</div>
+                <div class="room-detail">空間大小：{{ room.formattedRoomSize }}</div>
                 <div class="room-detail">房間價格：${{ room.basePrice }}/天</div>
-                <div class="room-buttons">
-                    <button class="btn-detail">詳細資料</button>
+
+                <div class="room-buttons" (click)="$event.stopPropagation()">
                     <button class="btn-edit" (click)="onEdit(room)">修改房型</button>
                     <button class="btn-delete" (click)="showDeleteConfirm(room)">刪除房型</button>
                 </div>

@@ -1,23 +1,44 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditorModule } from 'primeng/editor';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select'; // 👈 改成 SelectModule
+import { MessageModule } from 'primeng/message';
 import { MerchService } from '../../core/services/merch-service';
 import { Router } from '@angular/router';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
+import { MessageService } from 'primeng/api';
+
+interface PetTypeOption {
+  name: string;
+  id: string;
+}
+
+interface UnitOption {
+  label: string;
+  value: number;
+}
 
 @Component({
   selector: 'app-room-info-insert-page',
-  imports: [CommonModule, ReactiveFormsModule, EditorModule, AutoCompleteModule, SharedConfirmDialog],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    EditorModule,
+    SharedConfirmDialog,
+    InputTextModule,
+    MessageModule,
+    SelectModule
+  ],
   templateUrl: './room-info-insert-page.html',
   styleUrl: './room-info-insert-page.css',
   encapsulation: ViewEncapsulation.None
 })
 export class RoomInfoInsertPage implements OnInit {
-  // 所有屬性定義
   roomForm!: FormGroup;
-  filteredPetTypes: PetTypeOption[] = [];
+  messageService = inject(MessageService);
+
   petTypes: PetTypeOption[] = [
     { name: '貓', id: 'W001' },
     { name: '迷你犬', id: 'W002' },
@@ -26,16 +47,24 @@ export class RoomInfoInsertPage implements OnInit {
     { name: '大型犬', id: 'W005' },
     { name: '超大型犬', id: 'W006' }
   ];
+
+  // 房間數選項 1-20
+  unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
+    label: `${i + 1} 間`,
+    value: i + 1
+  }));
+
   cancelConfirmVisible: boolean = false;
-  isSubmitting: boolean = false;  // 明確指定型別
-  errorMessage: string = '';      // 明確指定型別
-  propertyId: string = 'P000000001'; // 明確指定型別
+  isSubmitting: boolean = false;
+  isSubmitted: boolean = false;
+  errorMessage: string = '';
+  propertyId: string = 'P000000001';
 
   constructor(
     private fb: FormBuilder,
     private merchService: MerchService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -45,21 +74,17 @@ export class RoomInfoInsertPage implements OnInit {
     this.roomForm = this.fb.group({
       petTypeObject: [null, Validators.required],
       name: ['', Validators.required],
-      size: ['', Validators.required],
+      height: ['', [Validators.required, Validators.min(1)]],
+      length: ['', [Validators.required, Validators.min(1)]],
+      width: ['', [Validators.required, Validators.min(1)]],
       description: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(1)]],
-      unit: ['', [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]]
+      unit: [null, Validators.required]
     });
   }
 
-  filterPetTypes(event: any): void {
-    const query = event.query.toLowerCase();
-    this.filteredPetTypes = this.petTypes.filter(type =>
-      type.name.toLowerCase().includes(query)
-    );
-  }
-
   onSubmit(): void {
+    this.isSubmitted = true;
     this.roomForm.markAllAsTouched();
 
     if (this.roomForm.invalid) {
@@ -73,12 +98,13 @@ export class RoomInfoInsertPage implements OnInit {
     this.isSubmitting = true;
 
     const formData = this.roomForm.value;
+    const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
 
     const tranrq = {
       propertyId: this.propertyId,
       petTypeId: formData.petTypeObject?.id || '',
       name: formData.name,
-      roomSize: formData.size,
+      roomSize: roomSizeText,
       info: formData.description,
       basePrice: Number(formData.price),
       totalUnits: Number(formData.unit)
@@ -87,18 +113,36 @@ export class RoomInfoInsertPage implements OnInit {
     console.log('發送資料:', tranrq);
 
     this.merchService.createRoomDetail(tranrq).subscribe({
-      next: (res) => {
+      next: (res: any) => { // 這裡將 res 類型設為 any 以方便處理
         console.log('API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           console.log('房型新增成功！');
-          this.router.navigate(['/merchants/property/homepage']);
+          const newRoomId = res.DATA?.roomId || res.DATA?.id;
+
+          if (newRoomId) {
+            console.log('導航到新增房型的詳細頁面，房型 ID:', newRoomId);
+            // 🚨 步驟 2: 導航到詳細資訊頁面，並傳遞 ID
+            this.router.navigate(['/merchants/property/roomInfo'], {
+              state: {
+                roomId: newRoomId,
+              }
+            });
+            this.messageService.add({ severity: 'success', summary: '成功', detail: '房型新增成功，正在導航至詳細頁...' });
+          } else {
+            // 如果成功但沒有 ID，導航回列表頁並提示
+            console.warn('新增成功，但無法取得新的房型 ID，導航回列表頁。');
+            this.messageService.add({ severity: 'warn', summary: '成功', detail: '房型新增成功，但無法導航至詳細頁。' });
+            this.router.navigate(['/merchants/property/homepage']);
+          }
+
         } else {
-          this.errorMessage = '新增失敗';
+          this.errorMessage = res.MWHEADER.RETURNMSG || '新增失敗';
           console.warn('新增失敗:', this.errorMessage);
         }
 
         this.isSubmitting = false;
+
       },
       error: (err) => {
         console.error('API 錯誤:', err);
@@ -127,7 +171,7 @@ export class RoomInfoInsertPage implements OnInit {
 
   getErrorMessage(controlName: string): string {
     const control = this.roomForm.get(controlName);
-    
+
     if (control?.hasError('required')) {
       return '此欄位為必填';
     }
@@ -137,7 +181,7 @@ export class RoomInfoInsertPage implements OnInit {
     if (control?.hasError('pattern')) {
       return '請輸入有效的數字';
     }
-    
+
     return '';
   }
 }

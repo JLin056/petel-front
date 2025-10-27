@@ -1,0 +1,103 @@
+<p-dialog header="訂單詳細資料" [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true"
+    [style]="{width: '950px', 'max-width': '95vw'}" [dismissableMask]="true" [draggable]="false" [resizable]="false">
+
+    <div class="order-detail-content" *ngIf="order">
+        <div class="detail-row full-width">
+            <div class="detail-item">
+                <label class="detail-label">訂單編號</label>
+                <div class="detail-value">
+                    <i class="pi pi-hashtag"></i>
+                    <span>{{ order.ORDER_ID || 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-row full-width">
+            <div class="detail-item">
+                <label class="detail-label">會員/訂購人</label>
+                <div class="detail-value clickable" (click)="navigateToMember()">
+                    <i class="pi pi-user"></i>
+                    <span class="member-name">{{ order.USER_NAME }}</span>
+                    <span class="member-phone">({{ order.USER_PHONE }})</span>
+                    <i class="pi pi-external-link"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-item">
+                <label class="detail-label">旅館名稱</label>
+                <div class="detail-value clickable" (click)="navigateToHotel()">
+                    <i class="pi pi-building"></i>
+                    <span>{{ order.PROPERTY_NAME }}</span>
+                    <i class="pi pi-external-link"></i>
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">房型名稱</label>
+                <div class="detail-value">
+                    <i class="pi pi-home"></i>
+                    <span>{{ order.ROOM }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-item">
+                <label class="detail-label">入住日期</label>
+                <div class="detail-value">
+                    <i class="pi pi-calendar-plus"></i> <span>{{ order.CHECK_IN }}</span>
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">退房日期</label>
+                <div class="detail-value">
+                    <i class="pi pi-calendar-minus"></i> <span>{{ order.CHECK_OUT }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-item">
+                <label class="detail-label">總價格</label>
+                <div class="detail-value price">
+                    <i class="pi pi-dollar"></i>
+                    <span class="price-amount">NT$ {{ order.HOTEL_CHARGES }}</span>
+                </div>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">訂單狀態</label>
+                <div class="detail-value status" [ngClass]="'status-' + getStatusClass(order.STATUS)">
+                    <i class="pi pi-info-circle"></i>
+                    <span class="status-text">{{ order.STATUS }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-row full-width note-section">
+            <label class="detail-label">訂單備註</label>
+            <div class="note-content">
+                <div *ngIf="!isEditingNote" class="note-display">
+                    <div class="note-text">
+                        {{ order.NOTE || '無備註' }}
+                    </div>
+                    <p-button icon="pi pi-pencil" severity="secondary" label="編輯備註" [text]="true" size="small"
+                        (onClick)="onEditNote()" />
+                </div>
+                <div *ngIf="isEditingNote" class="note-edit">
+                    <textarea pInputTextarea [(ngModel)]="editedNote" rows="4" class="note-textarea"
+                        placeholder="請輸入備註..."></textarea>
+                    <div class="note-actions">
+                        <p-button label="取消" severity="secondary" [outlined]="true" size="small"
+                            (onClick)="onCancelEdit()" />
+                        <p-button label="儲存" severity="primary" size="small" (onClick)="onSaveNote()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <p-button label="關閉" (onClick)="onHideDialog()" severity="secondary" />
+    </ng-template>
+</p-dialog>

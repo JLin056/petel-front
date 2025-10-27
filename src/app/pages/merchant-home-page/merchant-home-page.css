@@ -1,4 +1,4 @@
-/* merchant-home-page.css - 整合優化版 (浮動感、排滿、大圖標) */
+/* merchant-home-page.css - 最終整合優化版 */
 
 .merchant-dashboard {
     background-color: #f8f1e9;
@@ -19,20 +19,16 @@
 /* 錯誤訊息橫幅 (Error Banner) 樣式 */
 /* ------------------------------------- */
 .error-banner {
-    /* 配合整體風格，使用柔和的橘棕色警告 */
     background-color: #fff3e0;
-    /* 淺橘棕色背景 */
     color: #a4642b;
-    /* 深棕色文字 */
     border: 1px solid #c17a4a;
     padding: 15px 20px;
-    border-radius: 8px;
+    border-radius: 20px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 500;
-    /* 增加一點點陰影效果 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -42,56 +38,48 @@
 
 
 /* ------------------------------------- */
-/* 統計卡片 (Stats Cards) 優化 (符合圖片排版) */
+/* 統計卡片 (Stats Cards) 優化：滿版均分 */
 /* ------------------------------------- */
 .stats-cards {
     display: flex;
-    gap: 45px;
+    gap: 25px;
     /* 卡片間距 */
     margin-bottom: 45px;
     margin-top: 5px;
+    width: 100%;
+    /* 確保容器佔滿父級寬度 */
 }
 
+/* merchant-home-page.css (卡片樣式) */
 .card {
-    flex: 1;
-    min-width: 316.7px;
+    /* 🚨 滿版均分關鍵：flex: 1 1 0% */
+    flex: 1 1 0%;
     background-color: #fffdf8;
     border: 1px solid #d8b39a;
-    border-radius: 8px;
+    border-radius: 20px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* gap: 5px; */
-    margin-bottom: 0;
-    /* 浮動感效果 */
     transition: all 0.3s ease-in-out;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .card:hover {
     transform: translateY(-5px);
-    /* 向上輕微移動 */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    /* 增加陰影深度 */
 }
 
 .card-icon {
     font-size: 45px;
-    /* 設定基準大小 */
-    transform: scale(0.9);
-    /* 縮小到 80% */
-    /* 或 */
     transform: scale(2.6);
-    /* 放大到 150% */
     color: #b7a298;
     margin-left: 15px;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 /* 確保卡片內容對齊 */
 .card-content {
-    /* 保持垂直排列 */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -102,27 +90,21 @@
     font-size: 33px;
     color: #3a1f0b;
     margin-top: 5px;
-    /* 與上方圖標增加間距 */
     margin-bottom: 4px;
 }
 
 .card-label {
-    /* 調整標籤樣式，字體較小 */
     font-size: 21px;
-    /* 第二行字體大小 */
     color: #6c5443;
     margin-bottom: 4px;
     font-weight: normal;
 }
 
 .card-change {
-    /* 圖片中變動資訊在最底部，顏色為主題色 (偏藍/灰藍) */
     font-size: 17px;
     color: #4b80b3;
-    /* 使用藍色或灰藍色模擬圖片效果 */
     font-weight: 500;
     margin-top: 5px;
-    /* 與上方內容增加間距 */
 }
 
 /* ------------------------------------- */
@@ -135,7 +117,7 @@
     justify-content: center;
     padding: 50px;
     background-color: #fffdf8;
-    border-radius: 12px;
+    border-radius: 20px;
     margin-bottom: 30px;
     color: #8b5e3c;
     border: 1px dashed #d8b39a;
@@ -147,7 +129,6 @@
     font-weight: 500;
 }
 
-
 /* ------------------------------------- */
 /* 房型資訊與按鈕 (Section Header) */
 /* ------------------------------------- */
@@ -155,9 +136,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    /* 底部對齊 */
     border-bottom: 3px solid #3a1f0b;
-    /* 整行加底線 */
     padding-bottom: 8px;
     margin-bottom: 24px;
 }
@@ -166,18 +145,15 @@
     font-size: 35px;
     font-weight: bold;
     margin: 0;
-    /* 移除預設 margin */
 }
 
-/* 移除原本的 btn-add-container，因為按鈕已經在 section-header-row 裡 */
+/* 新增房型按鈕 */
 .btn-add {
-    background-color: transparent;
-    /* 改成透明 */
-    color: #974b2c;
-    border: 2px solid #974b2c;
-    /* 加上邊框 */
+    background-color: #974b2c;
+    border: 1px solid #974b2c;
+    color: white;
     padding: 10px 20px;
-    border-radius: 4px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 18px;
     font-weight: 500;
@@ -186,10 +162,8 @@
 
 .btn-add:hover {
     background-color: #974b2c;
-    /* hover 時填滿 */
     color: white;
 }
-
 
 /* ------------------------------------- */
 /* 房型列表與卡片 (Room List) */
@@ -206,20 +180,26 @@
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    /* 改成 stretch，讓高度一致 */
     background-color: #fffdf8;
-    border: 1px solid #d8b39a;
+    border: 1.5px solid #d8b39a;
     border-radius: 8px;
     padding: 16px;
     gap: 16px;
-    /* 加上間距 */
+    /* 🚨 新增/修改: 讓卡片可點擊查看詳細資料 */
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.room-card:hover {
+    /* 增加懸停陰影效果，表示可點擊 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 .room-image {
     width: 285px;
     height: 190px;
     object-fit: cover;
-    border-radius: 6px;
     margin-left: 15px;
     margin-top: 5px;
 }
@@ -227,6 +207,13 @@
 .room-info {
     flex: 1;
     margin-left: 21px;
+    /* 🚨 讓資訊區塊顯示可點擊游標 */
+    cursor: pointer;
+}
+
+/* 確保點擊操作按鈕時，游標是正常的 */
+.room-buttons button {
+    cursor: pointer !important;
 }
 
 .room-name {
@@ -244,70 +231,82 @@
 .room-buttons {
     margin-top: 8px;
     display: flex;
-    gap: 8px;
+    gap: 12px;
+    /* 縮小間距，只剩兩個按鈕 */
 }
 
-.btn-detail,
-.btn-edit,
-.btn-delete {
-    background-color: #974b2c;
-    color: white;
-    border: none;
+
+/* ------------------------------------- */
+/* 修正後的按鈕樣式 (只保留兩個) */
+/* ------------------------------------- */
+
+/* --- 修改房型: 主要/實色按鈕 (Primary Brown) --- */
+.btn-edit {
+    background-color: transparent;
+    /* 透明背景 */
+    color: #974b2c;
+    /* 警告紅色文字 */
+    border: 2px solid #974b2c;
+    /* 警告紅色邊框 */
     padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.2s;
+    border-radius: 10px;
+    font-size: 17px;
+    transition: all 0.2s;
 }
 
-.btn-detail:hover,
 .btn-edit:hover {
-    background-color: #a4642b;
+    background-color: #974b2c;
+    /* Hover 時實色填充警告色 */
+    color: white;
 }
 
+
+/* --- 刪除房型: 危險操作/警告色線框 (Danger Red Border) --- */
 .btn-delete {
-    background-color: #974B2C;
+    background-color: transparent;
+    /* 透明背景 */
+    color: #974b2c;
+    /* 警告紅色文字 */
+    border: 2px solid #974b2c;
+    /* 警告紅色邊框 */
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 17px;
+    transition: all 0.2s;
 }
 
 .btn-delete:hover {
-    background-color: #7d3d23;
+    background-color: #974b2c;
+    /* Hover 時實色填充警告色 */
+    color: white;
 }
+
 
 /* 優化 room-units 排版 */
 .room-units {
     text-align: center;
     min-width: 100px;
-    /* 給予適當寬度 */
     padding: 0 10px 10px 10px;
-    /* 右邊預留一點空間 */
-    /* 核心佈局調整：使內容垂直靠底部對齊 */
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* 關鍵：讓內容靠底部 */
     align-items: flex-end;
-    /* 關鍵：讓文字靠右邊 */
     font-size: 22px;
-    /* 稍微縮小字體 */
     color: #6c5443;
-    /* 使用較柔和的顏色 */
     font-weight: 500;
 }
 
-/* 優化分隔線 */
+/* 優化分隔線 (如果不需要分隔線，可以移除此段) */
 .units-divider {
     height: 1px;
     background-color: #c5b09b;
-    /* 顏色深一點 */
     margin: 10px 0;
     width: 60px;
-    /* 固定寬度，不要用百分比 */
 }
 
 /* 改成橘棕色 */
 .available-count {
     color: #c17a4a;
-    /* 橘棕色 */
     font-size: 26px;
 }
 
