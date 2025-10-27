@@ -29,7 +29,7 @@
             <!-- 判斷登入 -->
             <button *ngIf="!isLoggedIn" pButton class="LoginLogout" label="登入" (click)="onClickLogin()" [outlined]="true"></button>
             <!-- 判斷登出 -->
-            <button *ngIf="isLoggedIn" pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true"></button>
+            <button *ngIf="isLoggedIn" pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true" [disabled]="isLoggedOut"></button>
         </div>
     </div>
 </div>

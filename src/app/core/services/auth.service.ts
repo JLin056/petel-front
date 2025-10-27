@@ -1,4 +1,4 @@
-import { BehaviorSubject, lastValueFrom, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap, tap, catchError, lastValueFrom } from 'rxjs';
 import { AUTH002Res } from '../interfaces/AUTH002Res.interface';
 import { environment } from '../../../environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -25,6 +25,9 @@ export class Auth {
 
     private isLoggedInSubject = new BehaviorSubject<boolean>(false);
     public readonly isLoggedIn$ = this.isLoggedInSubject.asObservable();
+
+    private roleSubject = new BehaviorSubject<string | null>(null);
+    public readonly role$ = this.roleSubject.asObservable();
 
     /** 注入 HttpClient */
     constructor(private http: HttpClient){}
@@ -57,7 +60,9 @@ export class Auth {
      */
     setAccessToken(token: string | null): void {
         this.accessToken = token;
-        this.isLoggedInSubject.next(!!token);
+        const loggedIn = !!token;
+        this.isLoggedInSubject.next(loggedIn);
+        if (!loggedIn) this.setRole(null);
     }
 
     /**
@@ -74,6 +79,20 @@ export class Auth {
     clearAccessToken(): void {
         this.accessToken = null;
         this.isLoggedInSubject.next(false);
+        this.setRole(null);
+    }
+
+    /** 角色 */
+    private setRole(role: string | null): void {
+        this.roleSubject.next(role ?? null);
+    }
+
+    getRoleSync(): string | null {
+        return this.roleSubject.value;
+    }
+
+    hasRole(role: string): boolean {
+        return this.roleSubject.value === role;
     }
 
     /**
@@ -97,7 +116,20 @@ export class Auth {
             headers: this.headers,
             withCredentials: true
         })
-        .pipe(tap(res => this.setAccessToken(res?.TRANRS.accessToken ?? null)));
+        .pipe(
+            tap(res => this.setAccessToken(res?.TRANRS.accessToken ?? null)),
+            switchMap(res => {
+                const roleFromLogin = res?.TRANRS?.Role as string | undefined;
+                if (roleFromLogin) {
+                    this.setRole(roleFromLogin);
+                    return of(res);
+                }
+                return this.onGetInfo().pipe(
+                    tap(me => this.setRole(extractSingleRole(me))),
+                    map(() => res)
+                );
+            })
+        );
     }
 
     /**
@@ -130,6 +162,10 @@ export class Auth {
         return this.http.post<AUTH006Res>(this.meUrl, null, {
             withCredentials: true
         })
+        .pipe(tap(res => {
+            const role = extractSingleRole(res);
+            if (role) this.setRole(role);
+        }))
     }
 
     /**
@@ -140,6 +176,11 @@ export class Auth {
         return this.http.post<AUTH008Res>(this.checkLoginUrl, null, {
             withCredentials: true
         })
+        .pipe(tap(res => {
+            const valid = !!res?.TRANRS?.valid;
+            this.isLoggedInSubject.next(valid);
+            if (!valid) this.clearAccessToken();
+        }))
     }
 
     /**
@@ -164,9 +205,38 @@ export class Auth {
 
     async bootstrap(): Promise<void> {
         try {
-            await lastValueFrom(this.onRefreshToken());
+            await lastValueFrom(
+                this.onRefreshToken().pipe(
+                    switchMap(() => this.onGetInfo()),
+                    catchError(() => {
+                        this.clearAccessToken();
+                        return of(null);
+                    })
+                )
+            );
         } catch {
             this.clearAccessToken();
         }
     }
+
+    forceLogout$(): Observable<void> {
+        return this.onLogoutApi().pipe(
+            map(() => void 0),
+            catchError(() => {
+                this.clearAccessToken();
+                return of(void 0);
+            })
+        )
+    }
+}
+
+
+/** 抽出「單一角色字串」 */
+function extractSingleRole(res: any): string | null {
+  const role =
+    res?.TRANRS?.Role ??
+    null;
+
+  if (typeof role === 'string') return role;
+  return null;
 }
