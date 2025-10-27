@@ -139,6 +139,14 @@
     border: 1px solid #A24522;
     padding: 20px;
 }
+
+.hotel-list-item img {
+    width: 300px;
+    height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
 /* 單個旅館列表右側字體區 */
 .hotel-list-text {
     display: flex;
@@ -154,6 +162,16 @@
 }
 .hotel-list-item h4 {
     color: #A24522;
+}
+
+.hotel-name-link {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.hotel-name-link:hover {
+    color: #EDA33A;
+    text-decoration: underline;
 }
 .hotel-list-review {
     display: flex;
