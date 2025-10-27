@@ -4,26 +4,26 @@
         <div class="search-container">
             <div class="search-bar">
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select [options]="cities" optionLabel="name" class="search-item"/>
+                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item"/>
                     <label class="search-label">縣市</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkIn" (onSelect)="onCheckInChange()"/>
                     <label class="search-label">入住日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkOut" [minDate]="minCheckOutDate"/>
                     <label class="search-label">退房日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select class="search-item" [options]="types" optionLabel="typeName" />
+                    <p-select class="search-item" [options]="types" optionLabel="name" optionValue="id" [(ngModel)]="searchParams.petType" />
                     <label class="search-label">寵物種類</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" />
+                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" [(ngModel)]="searchParams.petCount" />
                     <label class="search-label">寵物數量</label>
                 </p-floatlabel>
-                <p-button label="搜尋" styleClass="petel-search-btn"></p-button>
+                <p-button label="搜尋" styleClass="petel-search-btn" (onClick)="onSearch()"></p-button>
             </div>
         </div>
     </div>

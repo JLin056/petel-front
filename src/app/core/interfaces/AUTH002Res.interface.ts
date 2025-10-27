@@ -11,7 +11,8 @@ export interface Mwheader {
 }
 
 export interface Tranrs {
-    AccountId: string;
-    Email:     string;
-    Role:      string;
+    AccountId:   string;
+    Email:       string;
+    Role:        string;
+    accessToken: string;
 }

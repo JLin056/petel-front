@@ -28,8 +28,13 @@
 }
 
 /* 右側卡片（表單） */
-.auth-card {
+.auth {
     flex: 1 1 40%;
+    display: flex;
+    justify-content: center;
+}
+.auth-card {
+    width: 90%;
     background: #fff;
     border-radius: 16px;
     border: 2px solid #f0e4d8;

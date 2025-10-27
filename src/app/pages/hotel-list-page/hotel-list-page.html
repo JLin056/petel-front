@@ -4,26 +4,26 @@
         <div class="search-container">
             <div class="search-bar">
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select [options]="cities" optionLabel="name" class="search-item"/>
+                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item"/>
                     <label class="search-label">縣市</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkIn" (onSelect)="onCheckInChange()"/>
                     <label class="search-label">入住日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkOut" [minDate]="minCheckOutDate"/>
                     <label class="search-label">退房日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select class="search-item" [options]="types" optionLabel="name" />
+                    <p-select class="search-item" [options]="types" optionLabel="name" optionValue="id" [(ngModel)]="searchParams.petType" />
                     <label class="search-label">寵物種類</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" />
+                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" [(ngModel)]="searchParams.petCount" />
                     <label class="search-label">寵物數量</label>
                 </p-floatlabel>
-                <p-button label="搜尋" styleClass="petel-search-btn"></p-button>
+                <p-button label="搜尋" styleClass="petel-search-btn" (onClick)="onSearch()"></p-button>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
                    <p>評價以上我才要</p>
                 </div>
                 <div class="rating-select-search">
-                    <p-rating />
+                    <p-rating [(ngModel)]="selectedRating" (onRate)="performSearch()" />
                 </div>
             </div>
             <!-- 熱門搜尋條件 -->
@@ -87,108 +87,40 @@
         <!-- 右側列表 -->
         <div class="hotel-container">
             <div class="tab-container">
-                <h4>中山區：12 個搜尋結果</h4>
+                <h4>{{ getCityName() }}：{{ totalRecords }} 個搜尋結果</h4>
                 <div class="sort-items">
                     <p-floatlabel variant="in" class="sort-label">
-                        <p-select [options]="sortSelect" optionLabel="name" class="sort-selectbox"/>
+                        <p-select [options]="sortSelect" optionLabel="name" [(ngModel)]="selectedSort" (onChange)="onSortChange()" class="sort-selectbox"/>
                         <label class="sort-label">排序</label>
                     </p-floatlabel>
                 </div>
             </div>
             <!-- 旅館列表 -->
             <div class="hotel-list-container">
-                <!-- 單個旅館列表 -->
-                <div class="hotel-list-item">
-                    <img src="img/hotelImg.png" alt="旅館照片">
-                    <div class="hotel-list-text">
-                        <div class="hotel-list-info">
-                            <h4>萌寵大冒險</h4>
-                            <div class="hotel-list-review">
-                                <p-rating [(ngModel)]="value" [readonly]="true" />
-                                <span>4.5</span>
-                                <span> （1200 則評論）</span>
-                            </div>
-                            <p class="hotel-list-content">
-                                Live a little and celbrate with champagne<br>
-                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
-                            </p>
-                        </div>
-                        <div class="hotel-list-price">
-                            <div class="hotel-list-price-detail">
-                                <h4>$240</h4>
-                                <p>（已含稅）</p>
-                            </div>
-                        </div>
-                    </div>
+                <!-- 如果沒有結果 -->
+                <div *ngIf="hotels.length === 0" class="no-results">
+                    <p>沒有找到符合條件的旅館，請嘗試調整搜尋條件</p>
                 </div>
                 <!-- 單個旅館列表 -->
-                <div class="hotel-list-item">
-                    <img src="img/hotelImg.png" alt="旅館照片">
+                <div class="hotel-list-item" *ngFor="let hotel of hotels">
+                    <img [src]="getHotelImage(hotel)" [alt]="hotel.name">
                     <div class="hotel-list-text">
                         <div class="hotel-list-info">
-                            <h4>萌寵大冒險</h4>
+                            <h4 class="hotel-name-link" (click)="navigateToDetail(hotel.propertyId)">{{ hotel.name }}</h4>
                             <div class="hotel-list-review">
-                                <p-rating [(ngModel)]="value" [readonly]="true" />
-                                <span>4.5</span>
-                                <span> （1200 則評論）</span>
+                                <p-rating [(ngModel)]="hotel.avgRating" [readonly]="true" />
+                                <span>{{ hotel.avgRating | number:'1.1-1' }}</span>
                             </div>
                             <p class="hotel-list-content">
-                                Live a little and celbrate with champagne<br>
-                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
+                                {{ hotel.info }}<br>
+                                {{ hotel.address }}
                             </p>
                         </div>
                         <div class="hotel-list-price">
                             <div class="hotel-list-price-detail">
-                                <h4>$240</h4>
+                                <h4>${{ hotel.minPrice | number:'1.0-0' }}</h4>
                                 <p>（已含稅）</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 單個旅館列表 -->
-                <div class="hotel-list-item">
-                    <img src="img/hotelImg.png" alt="旅館照片">
-                    <div class="hotel-list-text">
-                        <div class="hotel-list-info">
-                            <h4>萌寵大冒險</h4>
-                            <div class="hotel-list-review">
-                                <p-rating [(ngModel)]="value" [readonly]="true" />
-                                <span>4.5</span>
-                                <span> （1200 則評論）</span>
-                            </div>
-                            <p class="hotel-list-content">
-                                Live a little and celbrate with champagne<br>
-                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
-                            </p>
-                        </div>
-                        <div class="hotel-list-price">
-                            <div class="hotel-list-price-detail">
-                                <h4>$240</h4>
-                                <p>（已含稅）</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 單個旅館列表 -->
-                <div class="hotel-list-item">
-                    <img src="img/hotelImg.png" alt="旅館照片">
-                    <div class="hotel-list-text">
-                        <div class="hotel-list-info">
-                            <h4>萌寵大冒險</h4>
-                            <div class="hotel-list-review">
-                                <p-rating [(ngModel)]="value" [readonly]="true" />
-                                <span>4.5</span>
-                                <span> （1200 則評論）</span>
-                            </div>
-                            <p class="hotel-list-content">
-                                Live a little and celbrate with champagne<br>
-                                Reats include a glass of French champagne, parking and a late checkout. Gym included. Flexible cancellation applies
-                            </p>
-                        </div>
-                        <div class="hotel-list-price">
-                            <div class="hotel-list-price-detail">
-                                <h4>$240</h4>
-                                <p>（已含稅）</p>
+                                <p class="available-qty">剩餘 {{ hotel.availableQty }} 間</p>
                             </div>
                         </div>
                     </div>
@@ -198,6 +130,6 @@
     </div>
      <!-- 分頁器 -->
     <div class="card flex justify-center">
-        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120" [rowsPerPageOptions]="[10, 20, 30]" />
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 30]" />
     </div>
 </div>
