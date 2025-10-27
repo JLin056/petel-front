@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { Seller, SellerStatus } from '../../core/interfaces/ADMIN005Res.interface';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 
@@ -26,13 +29,21 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
     CommonModule,
     FormsModule,
     ButtonModule,
-    SharedConfirmDialog
+    SharedConfirmDialog,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './admin-seller-table.html',
   styleUrl: './admin-seller-table.css'
 })
 export class AdminSellerTable implements OnInit {
-  constructor(private http: HttpClient) {}
+  @ViewChild('dt') table!: Table;
+
+  constructor(
+    private http: HttpClient,
+    private messageService: MessageService,
+    private route: ActivatedRoute
+  ) {}
 
   sellerList: Seller[] = [];
   statuses: SellerStatus[] = [];
@@ -89,6 +100,21 @@ export class AdminSellerTable implements OnInit {
     ];
 
     this.loading = false;
+
+    // 檢查是否有查詢參數
+    this.route.queryParams.subscribe(params => {
+      const sellerName = params['sellerName'];
+      if (sellerName) {
+        // 設置賣家名稱過濾器
+        this.nameFilter = sellerName;
+        // 延遲執行過濾，確保 table 已經初始化
+        setTimeout(() => {
+          if (this.table) {
+            this.table.filter(sellerName, 'NAME', 'contains');
+          }
+        }, 100);
+      }
+    });
   }
 
   getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
@@ -131,11 +157,20 @@ export class AdminSellerTable implements OnInit {
   onDeleteConfirmed() {
     if (this.selectedSeller) {
       console.log('刪除賣家:', this.selectedSeller.SELLER_ID);
+      const sellerName = this.selectedSeller.NAME;
+
       // TODO: 呼叫 API 刪除賣家
       // this.http.delete(`/api/sellers/${this.selectedSeller.SELLER_ID}`).subscribe(...);
 
       // 從列表中移除
       this.sellerList = this.sellerList.filter(s => s.SELLER_ID !== this.selectedSeller!.SELLER_ID);
+
+      // 顯示成功訊息
+      this.messageService.add({
+        severity: 'success',
+        summary: '刪除成功',
+        detail: `已成功刪除賣家 ${sellerName}`
+      });
 
       this.selectedSeller = null;
     }

@@ -11,6 +11,8 @@ import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { Member as ADMIN007Member } from '../../core/interfaces/ADMIN007Res.interface';
 import { UserStatus, UserRole } from '../../core/interfaces/ADMIN004Res.interface';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
@@ -32,13 +34,19 @@ import { ADMIN008Req } from '../../core/interfaces/ADMIN008Req.interface';
     FormsModule,
     ButtonModule,
     SharedConfirmDialog,
-    TooltipModule
+    TooltipModule,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './admin-user-table.html',
   styleUrl: './admin-user-table.css'
 })
 export class AdminUserTable implements OnInit {
-  constructor(private http: HttpClient, private adminService: AdminService) {}
+  constructor(
+    private http: HttpClient,
+    private adminService: AdminService,
+    private messageService: MessageService
+  ) {}
 
   memberList: ADMIN007Member[] = [];
   statuses: UserStatus[] = [];
@@ -60,6 +68,7 @@ export class AdminUserTable implements OnInit {
   selectedMember: ADMIN007Member | null = null;
 
   private isFirstLoad = true; // 追蹤是否為第一次載入
+  private isSearching = false; // 追蹤是否為搜尋操作
 
   ngOnInit() {
     this.statuses = [
@@ -109,10 +118,30 @@ export class AdminUserTable implements OnInit {
           this.memberList = response.TRANRS.members;
           this.totalRecords = response.TRANRS.totalCount;
           this.currentPage = response.TRANRS.currentPage;
+
+          // 如果是搜尋操作，顯示成功提示
+          if (this.isSearching) {
+            this.messageService.add({
+              severity: 'success',
+              summary: '搜尋成功',
+              detail: `找到 ${this.totalRecords} 筆會員資料`
+            });
+            this.isSearching = false;
+          }
         } else {
           console.error('API 回傳錯誤:', response.MWHEADER.RETURNDESC);
           this.memberList = [];
           this.totalRecords = 0;
+
+          // 如果是搜尋操作，顯示錯誤提示
+          if (this.isSearching) {
+            this.messageService.add({
+              severity: 'error',
+              summary: '搜尋失敗',
+              detail: response.MWHEADER.RETURNDESC
+            });
+            this.isSearching = false;
+          }
         }
         this.loading = false;
       },
@@ -121,6 +150,16 @@ export class AdminUserTable implements OnInit {
         this.memberList = [];
         this.totalRecords = 0;
         this.loading = false;
+
+        // 如果是搜尋操作，顯示錯誤提示
+        if (this.isSearching) {
+          this.messageService.add({
+            severity: 'error',
+            summary: '搜尋失敗',
+            detail: '網路錯誤，請稍後再試'
+          });
+          this.isSearching = false;
+        }
       }
     });
   }
@@ -149,6 +188,7 @@ export class AdminUserTable implements OnInit {
    */
   onSearch() {
     this.currentPage = 1; // 重置到第一頁
+    this.isSearching = true; // 標記為搜尋操作
     this.loadMembers();
   }
 
@@ -225,12 +265,18 @@ export class AdminUserTable implements OnInit {
             this.loadMembers();
           }
 
-          // TODO: 顯示成功訊息給使用者
-          alert('刪除成功：' + response.TRANRS.message);
+          this.messageService.add({
+            severity: 'success',
+            summary: '刪除成功',
+            detail: response.TRANRS.message
+          });
         } else {
           console.error('刪除失敗:', response.MWHEADER.RETURNDESC);
-          // TODO: 顯示錯誤訊息給使用者
-          alert('刪除失敗：' + response.MWHEADER.RETURNDESC);
+          this.messageService.add({
+            severity: 'error',
+            summary: '刪除失敗',
+            detail: response.MWHEADER.RETURNDESC
+          });
         }
 
         this.selectedMember = null;
@@ -238,8 +284,11 @@ export class AdminUserTable implements OnInit {
       },
       error: (error) => {
         console.error('刪除 API 呼叫失敗:', error);
-        // TODO: 顯示錯誤訊息給使用者
-        alert('刪除失敗：' + (error.error?.MWHEADER?.RETURNDESC || '網路錯誤，請稍後再試'));
+        this.messageService.add({
+          severity: 'error',
+          summary: '刪除失敗',
+          detail: error.error?.MWHEADER?.RETURNDESC || '網路錯誤，請稍後再試'
+        });
 
         this.selectedMember = null;
         this.deleteConfirmVisible = false;
