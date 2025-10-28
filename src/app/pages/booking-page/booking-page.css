@@ -148,7 +148,7 @@
 /* PrimeNG 輸入框樣式 - 8px 圓角，20px 高度 */
 .guest_infos_diff_input label,
 .order_note_text label {
-    font-size: 17.5px;
+    font-size: 16px;
     font-weight: 500;
     color: #374151;
     margin-bottom: 8px;
@@ -156,7 +156,7 @@
 
 .input-field {
     width: 100%;
-    height: 50px;
+    height: 40px;
     padding: 0 14px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
