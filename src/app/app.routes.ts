@@ -117,10 +117,6 @@ export const routes: Routes = [
         component: MerchantOrderTablePage
     },
     {
-        path: 'merchants/reviewList',
-        component: MerchantReviewListPage
-    },
-    {
         path: 'merchants/property/reviewList',
         component: MerchantReviewListPage
     },
