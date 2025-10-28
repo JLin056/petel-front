@@ -109,19 +109,19 @@ export const routes: Routes = [
         component: ChatPage
     },
     {
-        path:'admin/orderTable',
-        component:OrderTableComponent
+        path: 'admin/orderTable',
+        component: OrderTableComponent
     },
-      {
-        path:'admin/userTable',
-        component:AdminUserTable
+    {
+        path: 'admin/userTable',
+        component: AdminUserTable
     },
-      {
-        path:'admin/sellerTable',
-        component:AdminSellerTable
+    {
+        path: 'admin/sellerTable',
+        component: AdminSellerTable
     },
-      {
-        path:'admin/hotelTable',
-        component:AdminHotelTable
+    {
+        path: 'admin/hotelTable',
+        component: AdminHotelTable
     }
 ];

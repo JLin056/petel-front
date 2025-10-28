@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { BookService, OrderData } from './../../core/services/book-service';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -123,6 +123,11 @@ export class AuthorizingPage implements OnInit {
      */
     onSubmit(): void {
 
+        if (this.form.invalid) {
+            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '請確認表單所有欄位皆已填寫並且格式正確' });
+            return;
+        }
+
         if (this.isExpired()) {
             return;
         }
@@ -155,6 +160,16 @@ export class AuthorizingPage implements OnInit {
                 return;
             }
         });
+    }
+
+    /**
+    * 使用者如果要重整頁面，跳出警告
+    * @params event
+    */
+    @HostListener('window:beforeunload', ['$event'])
+    beforeUnloadHander(event: any): void {
+        event.preventDefault();
+        event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
     }
 
     // 簡化取得控制項：beginning

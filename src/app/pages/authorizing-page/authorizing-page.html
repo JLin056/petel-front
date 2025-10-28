@@ -31,7 +31,8 @@
                                     <input pInputText id="cardholderName" class="input-field"
                                         aria-describedby="cardholderName-help" formControlName="cardName" maxlength="20"
                                         placeholder="請輸入卡片上的英文姓名" />
-                                    @if (cardName.invalid && cardName.touched) {
+                                    @if (cardName.invalid && (cardName.dirty || cardName.touched) &&
+                                    cardName.value?.length === 0) {
                                     <small id="validation">此欄位為必填</small>
                                     }
                                 </div>
@@ -41,7 +42,8 @@
                                     <input pInputText id="cardholderPhone" class="input-field"
                                         aria-describedby="cardholderPhone-help" formControlName="cardPhone"
                                         maxlength="15" placeholder="請輸入卡片持有人的手機號碼" />
-                                    @if (cardPhone.invalid && cardPhone.touched) {
+                                    @if (cardPhone.invalid && (cardPhone.dirty || cardPhone.touched) &&
+                                    cardPhone.value?.length === 0) {
                                     <small id="validation">此欄位為必填</small>
                                     }
                                 </div>
@@ -56,7 +58,8 @@
                                     <input pInputText id="cardNumber" class="input-field"
                                         aria-describedby="cardNumber-help" formControlName="cardNo" maxlength="19"
                                         placeholder="請輸入卡片正面的 16 位數字" (input)="formatCardNumber($event)" />
-                                    @if (cardNo.invalid && cardNo.touched) {
+                                    @if (cardNo.invalid && (cardNo.dirty || cardNo.touched) && cardNo.value?.length ===
+                                    0) {
                                     <small id="validation">此欄位為必填</small>
                                     }
                                 </div>
@@ -65,7 +68,8 @@
                                     <label for="cvv" class="form-label">信用卡安全碼</label>
                                     <input pInputText id="cvv" class="input-field cvv-input" aria-describedby="cvv-help"
                                         formControlName="cardCVV2" maxlength="4" placeholder="請輸入卡片背面的 3-4 位數字" />
-                                    @if (cardCVV2.invalid && cardCVV2.touched) {
+                                    @if (cardCVV2.invalid && (cardCVV2.dirty || cardCVV2.touched) &&
+                                    cardCVV2.value?.length === 0) {
                                     <small id="validation">此欄位為必填</small>
                                     }
                                 </div>
@@ -128,8 +132,8 @@
 
                     <div class="notice_content">
                         <ol class="notice_list">
-                            <li class="notice_item red">本預訂修改服務僅提供修改備註,下單前請務必確認相關資訊</li>
-                            <li class="notice_item red">逾時入住或提前退房,恕不退還任何費用</li>
+                            <li class="notice_item red">本預訂修改服務僅提供修改備註，下單前請務必確認相關資訊</li>
+                            <li class="notice_item red">逾時入住或提前退房，恕不退還任何費用</li>
                             <li class="notice_item">延長住宿需重新訂房</li>
                             <li class="notice_item">櫃檯人員將於入住時為客人辦理報到</li>
                         </ol>
@@ -196,7 +200,7 @@
 
                 <!-- 送出按鈕 -->
                 <div class="submit_container">
-                    <button class="submit_button" type="submit" [disabled]="form.invalid">
+                    <button class="submit_button" type="submit">
                         送出授權
                     </button>
                 </div>
