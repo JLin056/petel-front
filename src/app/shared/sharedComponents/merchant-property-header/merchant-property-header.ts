@@ -37,6 +37,8 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
   confirmVisible = false;
   /** 是否登出中 */
   isLoggedOut = false;
+  /**第一次登入檢查 */
+  isFirstCheck = true;
 
   private destroy$ = new Subject<void>();
 
@@ -54,7 +56,14 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
     // 監聽路由事件，導航結束時檢查登入狀態
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe(() => this.onCheckLoginStatus());
+      .subscribe(() => {
+        if (this.isFirstCheck) {
+          // 初始化已經檢查過，跳過第一次 Router.events
+          this.isFirstCheck = false;
+          return;
+        }
+        this.onCheckLoginStatus();
+      });
 
     // 訂閱 service 的登入狀態，保持元件狀態與 Auth service 同步
     this.authService.isLoggedIn$
@@ -97,15 +106,12 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
       },
       error: () => {
         this.confirmVisible = false;
-        // 即使 API 失敗，也清空本地 Token，強制登出
         this.authService.clearAccessToken();
-
         this.toast.add({
           severity: 'error',
           summary: '登出失敗',
           detail: '請稍後再試'
         });
-
         this.isLoggedOut = false;
       }
     });
@@ -118,19 +124,27 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
     this.authService.onCheckLoginStatus().subscribe({
       next: (res) => {
         const valid = !!res?.TRANRS.valid;
-        // 如果 API 回傳無效，則清空本地 Token (讓 isLoggedIn$ 轉為 false)
         if (!valid) {
           this.authService.clearAccessToken();
+          this.toast.add({
+            severity: 'warn',
+            summary: '未登入',
+            detail: '請先登入後再進入商家頁面'
+          });
+          this.router.navigate(['/merchants/login']);
         }
-        // 💡 由於 constructor 中已訂閱 isLoggedIn$，這裡不再需要手動設置 this.isLoggedIn
       },
       error: () => {
-        // API 連線失敗，強制清空 Token
         this.authService.clearAccessToken();
+        this.toast.add({
+          severity: 'warn',
+          summary: '未登入',
+          detail: '請先登入後再進入商家頁面'
+        });
+        this.router.navigate(['/merchants/login']);
       }
     });
   }
-
 
   onClickHome() {
     this.router.navigate(['/merchants/property/homepage']);
