@@ -8,6 +8,8 @@ import { Res } from '../interfaces/Res.interface';
 import { BOOK001Tranrq } from './../interfaces/BOOK001Req.interface';
 import { BOOK006Tranrq } from '../interfaces/BOOK006Req.interface';
 import { BOOK006Tranrs } from '../interfaces/BOOK006Res.interface';
+import { BOOK005Tranrq } from '../interfaces/BOOK005Req.interface';
+import { BOOK005Tranrs } from '../interfaces/BOOK005Res.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -61,6 +63,25 @@ export class BookService {
     }
 
     /**
+     * BOOK-005 組合付款參數 (現場付款)
+     * @param tranrq 信用卡相關資訊
+     * @returns
+     */
+    getAuthorizeParams(tranrq: BOOK005Tranrq) {
+
+        const header: Mwheader = {
+            MSGID: 'BOOK-005'
+        };
+
+        const postData: Req<BOOK005Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        }
+
+        return this.http.post<Res<BOOK005Tranrs>>('http://localhost:8080/bookings/authorize', postData);
+    }
+
+    /**
      * BOOK-006 組合付款參數 (線上刷卡)
      * @param orderId 訂單編號
      * @returns
@@ -83,4 +104,60 @@ export class BookService {
 
         return this.http.post<Res<BOOK006Tranrs>>('http://localhost:8080/bookings/credit', postData);
     }
+
+    // -----
+
+    // Normal Setting
+    // sharedOrderData: OrderData = {
+    //     propertyId: '',
+    //     checkIn: '',
+    //     checkOut: '',
+    //     rooms: []
+    // };
+
+    // Test set
+    sharedOrderData: OrderData = {
+        propertyId: 'P000000001',
+        checkIn: '2025-10-26',
+        checkOut: '2025-10-27',
+        rooms: [{
+            roomId: 'R000000001',
+            roomName: '高級寵物房',
+            roomPrice: 2500,
+            roomQuantity: 1,
+            roomTotal: 2500,
+            expanded: false
+        },{
+            roomId: 'R000000002',
+            roomName: '豪華寵物房',
+            roomPrice: 2700,
+            roomQuantity: 1,
+            roomTotal: 2700,
+            expanded: false
+        }]
+    };
+
+    setSharedOrderData(data: OrderData): void {
+        this.sharedOrderData = data;
+    }
+
+    getSharedOrderData(): OrderData {
+        return this.sharedOrderData;
+    }
+}
+
+export interface OrderData {
+    propertyId: string;
+    checkIn: string;
+    checkOut: string;
+    rooms: OrderRoom[];
+}
+
+export interface OrderRoom {
+    roomId: string;
+    roomName: string;
+    roomPrice: number;
+    roomQuantity: number;
+    roomTotal: number;
+    expanded: boolean;
 }
