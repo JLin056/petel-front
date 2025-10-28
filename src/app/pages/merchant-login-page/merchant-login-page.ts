@@ -1,20 +1,22 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { Auth } from '../../core/services/auth.service';
 import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
-import { AUTH002Res } from '../../core/interfaces/AUTH002Res.interface';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { USER001Req } from '../../core/interfaces/USER001Req.interface';
+import { Auth } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { AddSellerInfoDialog } from '../add-seller-info-dialog/add-seller-info-dialog';
 
 @Component({
-  selector: 'app-merchant-login-page',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
-  templateUrl: './merchant-login-page.html',
-  styleUrl: './merchant-login-page.css'
+    selector: 'app-merchant-login-page',
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, AddSellerInfoDialog],
+    templateUrl: './merchant-login-page.html',
+    styleUrl: './merchant-login-page.css'
 })
 export class MerchantLoginPage {
     /** 登入表單 */
@@ -23,6 +25,11 @@ export class MerchantLoginPage {
     isLoading = false;
     /** 錯誤訊息 */
     errorMessage = '';
+    /** 填寫會員資訊 dialog */
+    showFillDialog = false;
+    dialogName = '';
+    dialogPhone = '';
+    dialogAvatarUrl: string | null = null;
 
     /**
      * 注入
@@ -35,10 +42,25 @@ export class MerchantLoginPage {
     constructor(
         private fb: FormBuilder,
         private authService: Auth,
+        private userService: UserService,
         private route: ActivatedRoute,
         private router: Router,
         private toast: MessageService
-    ) {}
+    ) { }
+
+
+    /**
+     * 前往之前點擊登入頁的前一頁
+     * @returns
+     */
+    private getRedirectUrl(): string {
+        // 先看 query param
+        const q = this.route.snapshot.queryParamMap.get('redirect');
+        // 或從 navigation state（可當備援）
+        const s = history.state?.redirect as string | undefined;
+        // 預設首頁
+        return q || s || '/';
+    }
 
     /**
      * 取得 email
@@ -63,7 +85,7 @@ export class MerchantLoginPage {
      * @param ctrl
      * @returns
      */
-    getErrorMessage(ctrl: 'email'|'password'): string {
+    getErrorMessage(ctrl: 'email' | 'password'): string {
         const c = this.loginForm.get(ctrl);
         if (c?.hasError('required')) return `${ctrl === 'email' ? '信箱' : '密碼'}為必填欄位`;
         if (ctrl === 'email' && c?.hasError('email')) return '請輸入有效的信箱格式';
@@ -75,7 +97,11 @@ export class MerchantLoginPage {
      * 前往註冊頁
      */
     goRegister() {
-        this.router.navigate(['merchants/register']);
+        // 確保不被阻擋，直接導航
+        this.showFillDialog = false; // 如果 dialog 打開，先關閉
+        this.router.navigate(['merchants/register']).then(() => {
+            window.scrollTo(0, 0);
+        });
     }
 
     /**
@@ -103,17 +129,71 @@ export class MerchantLoginPage {
         };
 
         this.authService.onLoginApi(payload).subscribe({
-            next: (res: AUTH002Res) => {
+            next: (res) => {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
-                    this.router.navigate(['/merchants/userPage']);
+                    this.authService.onProfileCheck().subscribe({
+                        next: (chk) => {
+                            if (chk?.TRANRS?.filled === false) {
+                                // 尚未填 → 打開 dialog
+                                this.toast.add({
+                                    severity: 'info',
+                                    summary: '請完成會員資料',
+                                    detail: '請填寫姓名與電話以繼續使用服務'
+                                });
+                                this.showFillDialog = true;
+                            } else {
+                                // 已填 → 直接導頁
+                                this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
+                                this.router.navigate(['/merchants/userPage']);
+                            }
+                        },
+                        error: () => {
+                            this.isLoading = false;
+                            this.toast.add({ severity: 'error', summary: '資料檢查失敗', detail: '請稍後再試' });
+                        }
+                    })
                 } else {
                     this.toast.add({ severity: 'error', summary: '登入失敗', detail: '帳號或密碼錯誤' });
                 }
             },
             error: () => {
                 this.isLoading = false;
+                this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
+            }
+        });
+    }
+
+    /**
+    * 送出會員資訊
+    */
+    onDialogSave(e: { name: string; phone: string; file?: File | null }) {
+        const req: USER001Req = {
+            MWHEADER: {
+                MSGID: 'USER-001'
+            },
+            TRANRQ: {
+                name: e.name,
+                phone: e.phone,
+                mediaId: 'M000000001' // 暫時用
+            }
+        };
+
+        this.userService.onAddUserApi(req).subscribe({
+            next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                    this.toast.add({ severity: 'success', summary: '會員資料已建立', detail: '感謝您的填寫' });
+                    this.showFillDialog = false;
+                    this.router.navigate(['/merchants/userPage']);
+                } else {
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '建立失敗',
+                        detail: res.MWHEADER.RETURNDESC
+                    });
+                }
+            },
+            error: () => {
                 this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
             }
         });
@@ -128,5 +208,5 @@ export class MerchantLoginPage {
             password: ['', [Validators.required, Validators.minLength(6)]],
         });
     }
-}
 
+}

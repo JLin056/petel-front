@@ -84,11 +84,6 @@ export class UserMerchantPage implements OnInit { // 實作 OnInit 介面
       error: (err) => {
         this.isLoading = false;
         console.error('API 錯誤:', err);
-        this.toast.add({
-          severity: 'error',
-          summary: '網路錯誤',
-          detail: '無法連接伺服器，請稍後再試。'
-        });
       }
     });
   }

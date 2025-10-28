@@ -14,9 +14,10 @@ import { AUTH005Req } from '../interfaces/AUTH005Req.interface';
 import { AUTH005Res } from '../interfaces/AUTH005Res.interface';
 import { AUTH010Res } from '../interfaces/AUTH010Res.interface';
 import { AUTH006Res } from '../interfaces/AUTH006Res.interface';
+import { AUTH009Res } from '../interfaces/AUTH009Res.interface';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class Auth {
 
@@ -30,7 +31,7 @@ export class Auth {
     public readonly role$ = this.roleSubject.asObservable();
 
     /** 注入 HttpClient */
-    constructor(private http: HttpClient){}
+    constructor(private http: HttpClient) { }
 
     /** 註冊 API URL */
     registerUrl = `${environment.BASE_URL}/auth/register`;
@@ -48,6 +49,8 @@ export class Auth {
     meUrl = `${environment.BASE_URL}/auth/me`;
     /** refresh token API URL */
     refreshUrl = `${environment.BASE_URL}/auth/refresh`;
+    /** 檢查個人資訊是否填寫 */
+    profileCheckUrl = `${environment.BASE_URL}/auth/profile/check`;
 
     /** headers */
     private readonly headers = new HttpHeaders({
@@ -116,20 +119,20 @@ export class Auth {
             headers: this.headers,
             withCredentials: true
         })
-        .pipe(
-            tap(res => this.setAccessToken(res?.TRANRS.accessToken ?? null)),
-            switchMap(res => {
-                const roleFromLogin = res?.TRANRS?.Role as string | undefined;
-                if (roleFromLogin) {
-                    this.setRole(roleFromLogin);
-                    return of(res);
-                }
-                return this.onGetInfo().pipe(
-                    tap(me => this.setRole(extractSingleRole(me))),
-                    map(() => res)
-                );
-            })
-        );
+            .pipe(
+                tap(res => this.setAccessToken(res?.TRANRS.accessToken ?? null)),
+                switchMap(res => {
+                    const roleFromLogin = res?.TRANRS?.Role as string | undefined;
+                    if (roleFromLogin) {
+                        this.setRole(roleFromLogin);
+                        return of(res);
+                    }
+                    return this.onGetInfo().pipe(
+                        tap(me => this.setRole(extractSingleRole(me))),
+                        map(() => res)
+                    );
+                })
+            );
     }
 
     /**
@@ -140,7 +143,7 @@ export class Auth {
         return this.http.post<AUTH003Res>(this.logoutUrl, null, {
             withCredentials: true
         })
-        .pipe(tap(() => this.clearAccessToken()));
+            .pipe(tap(() => this.clearAccessToken()));
     }
 
     /**
@@ -151,7 +154,7 @@ export class Auth {
         return this.http.post<AUTH010Res>(this.refreshUrl, null, {
             withCredentials: true
         })
-        .pipe(tap(res => this.setAccessToken(res?.TRANRS?.accessToken ?? null)));
+            .pipe(tap(res => this.setAccessToken(res?.TRANRS?.accessToken ?? null)));
     }
 
     /**
@@ -162,10 +165,10 @@ export class Auth {
         return this.http.post<AUTH006Res>(this.meUrl, null, {
             withCredentials: true
         })
-        .pipe(tap(res => {
-            const role = extractSingleRole(res);
-            if (role) this.setRole(role);
-        }))
+            .pipe(tap(res => {
+                const role = extractSingleRole(res);
+                if (role) this.setRole(role);
+            }))
     }
 
     /**
@@ -176,11 +179,22 @@ export class Auth {
         return this.http.post<AUTH008Res>(this.checkLoginUrl, null, {
             withCredentials: true
         })
-        .pipe(tap(res => {
-            const valid = !!res?.TRANRS?.valid;
-            this.isLoggedInSubject.next(valid);
-            if (!valid) this.clearAccessToken();
-        }))
+            .pipe(tap(res => {
+                const valid = !!res?.TRANRS?.valid;
+                this.isLoggedInSubject.next(valid);
+                if (!valid) this.clearAccessToken();
+            }))
+    }
+
+    /**
+    * 檢查用戶是否填寫過會員資訊 API
+    * @returns
+    */
+    onProfileCheck(): Observable<AUTH009Res> {
+        return this.http.post<AUTH009Res>(this.profileCheckUrl, null, {
+            headers: this.headers,
+            withCredentials: true
+        })
     }
 
     /**
@@ -233,10 +247,10 @@ export class Auth {
 
 /** 抽出「單一角色字串」 */
 function extractSingleRole(res: any): string | null {
-  const role =
-    res?.TRANRS?.Role ??
-    null;
+    const role =
+        res?.TRANRS?.Role ??
+        null;
 
-  if (typeof role === 'string') return role;
-  return null;
+    if (typeof role === 'string') return role;
+    return null;
 }
