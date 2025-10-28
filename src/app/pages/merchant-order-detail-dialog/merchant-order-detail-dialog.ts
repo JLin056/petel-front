@@ -26,7 +26,6 @@ export class MerchantOrderDetailDialog {
   ngOnChanges(): void {
     if (this.order) {
       this.editedNote = this.order.NOTE || '';
-      this.isEditingNote = false;
     }
   }
 
@@ -51,7 +50,6 @@ export class MerchantOrderDetailDialog {
         orderId: this.order.ORDER_ID,
         note: this.editedNote
       });
-      this.isEditingNote = false;
     }
   }
 

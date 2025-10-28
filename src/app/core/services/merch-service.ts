@@ -13,6 +13,10 @@ import { MERCH002Tranrs } from '../interfaces/MERCH002Res.interface';
 import { MERCH012Tranrq } from '../interfaces/MERCH012Req.interface';
 import { MERCH012Tranrs } from '../interfaces/MERCH012Res.interface';
 import { MERCH011Tranrs } from '../interfaces/MERCH011Res.interface';
+import { MERCH009Tranrs } from '../interfaces/MERCH009Res.interface';
+import { MERCH010Tranrs } from '../interfaces/MERCH010Res.interface';
+import { MERCH009Tranrq } from '../interfaces/MERCH009Req.interface';
+import { MERCH010Tranrq } from '../interfaces/MERCH010Req.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -105,44 +109,35 @@ export class MerchService {
    * MERCH-009 新增商家會員資訊
    * @returns 
    */
-  createSellerInfo(accountId: string) {
+  createSellerInfo(tranrq: MERCH009Tranrq) {
     const header: Mwheader = {
       MSGID: 'MERCH-009'
     };
-    const actualAccountId = accountId || localStorage.getItem('accountId') || '';
 
-    const tranrq = {
-      accountId: actualAccountId
-    };
-
-    const postData: Req<any> = {
+    const postData: Req<MERCH009Tranrq> = {
       MWHEADER: header,
       TRANRQ: tranrq
-    }
+    };
 
-    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/edit', postData, { withCredentials: true });
+    return this.http.post<Res<MERCH009Tranrs>>('http://localhost:8080/merchants/sellers/create', postData, { withCredentials: true });
   }
+
 
   /**
    * MERCH-010 修改商家會員資訊
    * @returns 
    */
-  editSellerInfo(accountId: string) {
+  editSellerInfo(tranrq: MERCH010Tranrq) {
     const header: Mwheader = {
       MSGID: 'MERCH-010'
     };
-    const actualAccountId = accountId || localStorage.getItem('accountId') || '';
 
-    const tranrq = {
-      accountId: actualAccountId
-    };
-
-    const postData: Req<any> = {
+    const postData: Req<MERCH010Tranrq> = {
       MWHEADER: header,
       TRANRQ: tranrq
     }
 
-    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/edit', postData, { withCredentials: true });
+    return this.http.post<Res<MERCH010Tranrs>>('http://localhost:8080/merchants/sellers/edit', postData, { withCredentials: true });
   }
 
   /**
@@ -159,7 +154,7 @@ export class MerchService {
       accountId: actualAccountId
     };
 
-    const postData: Req<any> = {
+    const postData: Req<{}> = {
       MWHEADER: header,
       TRANRQ: tranrq
     }
@@ -174,7 +169,7 @@ export class MerchService {
    */
   getRoomDetail(tranrq: MERCH012Tranrq) {
     const header: Mwheader = {
-      MSGID: 'MERCH-002'
+      MSGID: 'MERCH-012'
     };
 
     const postData: Req<MERCH012Tranrq> = {
