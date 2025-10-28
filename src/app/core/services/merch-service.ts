@@ -102,28 +102,69 @@ export class MerchService {
   }
 
   /**
-   * 💡 新增方法: 取得商家會員資訊 (MERCH011)
-   * API 路徑: /sellers/get
-   * 由於後端使用 @AuthenticationPrincipal，前端發送空 Body 即可
-   * @returns Observable<any>
+   * MERCH-009 新增商家會員資訊
+   * @returns 
    */
-  getSellerInfo() {
-    // 💡 修正 1: MSGID 應為 MERCH-011
+  createSellerInfo(accountId: string) {
     const header: Mwheader = {
-      MSGID: 'MERCH-011'
+      MSGID: 'MERCH-009'
     };
-    
-    // 💡 修正 2: TRANRQ 類型設為 {}，並傳遞空物件
-    const tranrq: {} = {};
+    const actualAccountId = accountId || localStorage.getItem('accountId') || '';
 
-    // 💡 修正 3: Request Payload 的泛型類型設為 {}
-    const postData: Req<{}> = {
+    const tranrq = {
+      accountId: actualAccountId
+    };
+
+    const postData: Req<any> = {
       MWHEADER: header,
       TRANRQ: tranrq
     }
 
-    // 💡 修正 4: URL 應為 /sellers/get，並使用 MERCH011Tranrs 作為回傳型別
-    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/get', postData);
+    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/edit', postData, { withCredentials: true });
+  }
+
+  /**
+   * MERCH-010 修改商家會員資訊
+   * @returns 
+   */
+  editSellerInfo(accountId: string) {
+    const header: Mwheader = {
+      MSGID: 'MERCH-010'
+    };
+    const actualAccountId = accountId || localStorage.getItem('accountId') || '';
+
+    const tranrq = {
+      accountId: actualAccountId
+    };
+
+    const postData: Req<any> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/edit', postData, { withCredentials: true });
+  }
+
+  /**
+   * MERCH-011 取得商家會員資訊
+   * @returns 
+   */
+  getSellerInfo(accountId: string) {
+    const header: Mwheader = {
+      MSGID: 'MERCH-011'
+    };
+    const actualAccountId = accountId || localStorage.getItem('accountId') || '';
+
+    const tranrq = {
+      accountId: actualAccountId
+    };
+
+    const postData: Req<any> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/get', postData, { withCredentials: true });
   }
 
   /**

@@ -132,10 +132,27 @@ export class MerchantLoginPage {
             next: (res) => {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
+                    console.log('=== 登入成功 ===');
+                    console.log('完整回應:', res);
+                    console.log('TRANRS:', res.TRANRS);
+                    console.log('accountId:', res.TRANRS.AccountId);
+                    if (res.TRANRS.AccountId) {
+                        localStorage.setItem('accountId', res.TRANRS.AccountId);
+                        console.log('已儲存 accountId 到 localStorage:', res.TRANRS.AccountId);
+                    } else {
+                        console.error('警告：API 回應中沒有 accountId！');
+                    }
+                    const savedAccountId = localStorage.getItem('accountId');
+                    console.log('驗證儲存結果:', savedAccountId);
+
+                    if (res.TRANRS.accessToken) {
+                        localStorage.setItem('token', res.TRANRS.accessToken);
+                        this.authService.setAccessToken(res.TRANRS.accessToken);
+                    }
+
                     this.authService.onProfileCheck().subscribe({
                         next: (chk) => {
                             if (chk?.TRANRS?.filled === false) {
-                                // 尚未填 → 打開 dialog
                                 this.toast.add({
                                     severity: 'info',
                                     summary: '請完成會員資料',
@@ -144,22 +161,38 @@ export class MerchantLoginPage {
                                 this.showFillDialog = true;
                             } else {
                                 // 已填 → 直接導頁
-                                this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
+                                this.toast.add({
+                                    severity: 'success',
+                                    summary: '登入成功',
+                                    detail: '歡迎回來！'
+                                });
                                 this.router.navigate(['/merchants/userPage']);
                             }
                         },
                         error: () => {
                             this.isLoading = false;
-                            this.toast.add({ severity: 'error', summary: '資料檢查失敗', detail: '請稍後再試' });
+                            this.toast.add({
+                                severity: 'error',
+                                summary: '資料檢查失敗',
+                                detail: '請稍後再試'
+                            });
                         }
                     })
                 } else {
-                    this.toast.add({ severity: 'error', summary: '登入失敗', detail: '帳號或密碼錯誤' });
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '登入失敗',
+                        detail: '帳號或密碼錯誤'
+                    });
                 }
             },
             error: () => {
                 this.isLoading = false;
-                this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
+                this.toast.add({
+                    severity: 'error',
+                    summary: '系統錯誤',
+                    detail: '請稍後再試'
+                });
             }
         });
     }
@@ -182,7 +215,11 @@ export class MerchantLoginPage {
         this.userService.onAddUserApi(req).subscribe({
             next: (res) => {
                 if (res.MWHEADER.RETURNCODE === '0000') {
-                    this.toast.add({ severity: 'success', summary: '會員資料已建立', detail: '感謝您的填寫' });
+                    this.toast.add({
+                        severity: 'success',
+                        summary: '會員資料已建立',
+                        detail: '感謝您的填寫'
+                    });
                     this.showFillDialog = false;
                     this.router.navigate(['/merchants/userPage']);
                 } else {
@@ -194,7 +231,11 @@ export class MerchantLoginPage {
                 }
             },
             error: () => {
-                this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
+                this.toast.add({
+                    severity: 'error',
+                    summary: '系統錯誤',
+                    detail: '請稍後再試'
+                });
             }
         });
     }

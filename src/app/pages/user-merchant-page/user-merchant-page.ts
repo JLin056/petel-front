@@ -7,44 +7,40 @@ import { UpdateUserDialog } from "../update-user-dialog/update-user-dialog";
 import { Router } from '@angular/router';
 import { MerchService } from '../../core/services/merch-service';
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
+import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
 
 
 @Component({
   selector: 'app-user-merchant-page',
-  imports: [Button, Toast, SharedConfirmDialog, UpdateUserDialog],
+  imports: [Button, Toast, SharedConfirmDialog, UpdateSellerInfoDialog],
   templateUrl: './user-merchant-page.html',
   styleUrl: './user-merchant-page.css',
-  providers: [MessageService] // 確保 Toast 使用的 MessageService 可用
+  providers: [MessageService]
 })
-export class UserMerchantPage implements OnInit { // 實作 OnInit 介面
+export class UserMerchantPage implements OnInit {
   editVisible = false;
   deleteUserVisible = false;
   deleteOrderVisible = false;
-  isLoading = true; // 新增 loading 狀態
+  isLoading = true;
 
-  // 修正 user 屬性的型別，匹配 API 介面，並給予預設值
-  // Partial<MERCH011Tranrs & { avatarUrl: string }> 表示它是部分 MERCH011Tranrs 資料加上 avatarUrl
   user: Partial<MERCH011Tranrs & { avatarUrl: string }> = {
     accountId: '',
     name: '載入中...',
     email: '載入中...',
     phone: '載入中...',
-    avatarUrl: 'img/avatar.png', // 預設頭貼路徑
+    avatarUrl: 'img/avatar.png',
   };
-
-
-  // 要操作的 訂單ID
-  currentOrderId?: string;
 
   constructor(
     private confirm: ConfirmationService,
     private toast: MessageService,
     private router: Router,
-    private merchService: MerchService // 注入 MerchService
+    private merchService: MerchService
   ) { }
 
   ngOnInit(): void {
-    this.fetchSellerInfo(); // 在元件初始化時取得商家資訊
+    this.fetchSellerInfo();
+
   }
 
   /**
@@ -52,58 +48,85 @@ export class UserMerchantPage implements OnInit { // 實作 OnInit 介面
    */
   fetchSellerInfo(): void {
     this.isLoading = true;
-    this.merchService.getSellerInfo().subscribe({
+
+    const accountId = localStorage.getItem('accountId');
+
+    console.log('=== 開始取得商家資訊 ===');
+    console.log('1. 從 localStorage 取得的 accountId:', accountId);
+    console.log('2. accountId 類型:', typeof accountId);
+    console.log('3. accountId 長度:', accountId?.length);
+
+    if (!accountId) {
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: '無法取得帳號資訊，請重新登入'
+      });
+      this.isLoading = false;
+      setTimeout(() => {
+        this.router.navigate(['/merchants/login']);
+      }, 2000);
+      return;
+    }
+
+    // 👈 在這裡加入 console.log 看實際發送的內容
+    console.log('4. 準備發送 API 請求');
+
+    this.merchService.getSellerInfo(accountId).subscribe({
       next: (res) => {
+        console.log('5. API 回應成功:', res);
         this.isLoading = false;
-        // 檢查回傳碼和資料是否存在
+
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
           const data = res.TRANRS;
-          console.log('商家資訊取得成功:', data);
+          console.log('商家資訊取得成功', data);
 
-          // 💡 使用 API 取得的資料更新 user 物件
           this.user = {
             accountId: data.accountId,
             name: data.name,
             email: data.email || '無電子郵件',
             phone: data.phone || '無電話號碼',
-            // 處理 mediaId，這裡假設如果 mediaId 存在，就建立頭貼路徑
-            avatarUrl: data.mediaId ? `img/avatars/${data.mediaId}.png` : 'img/avatar.png',
+            avatarUrl: data.mediaId
+              ? `assets/img/avatars/${data.mediaId}.png`
+              : 'assets/img/avatar.png',
             id: data.id,
             mediaId: data.mediaId
+              ? `assets/img/avatars/${data.mediaId}.png`
+              : 'assets/img/avatar.png'
           };
 
         } else {
-          // 顯示 API 錯誤訊息
+          console.log('7. API 回傳錯誤:', res.MWHEADER);
           this.toast.add({
             severity: 'error',
             summary: '錯誤',
-            detail: `取得商家資訊失敗: '未知錯誤'`
+            detail: `取得商家資訊失敗`
           });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('API 錯誤:', err);
+        console.error('8. API 錯誤:', err);
+        console.error('錯誤詳情:', err.error);
       }
     });
   }
 
-
   openEdit() {
     this.editVisible = true;
   }
+
   onEditSaved(updated: any) {
     this.user = { ...this.user, ...updated };
+    this.fetchSellerInfo(); // 如果想立即重新抓 API 更新資料
   }
+
 
   showConfirm() {
     this.deleteUserVisible = true;
   }
 
-  // 確認刪除會員
   onDeleteUserConfirmed() {
-    // 執行刪除會員的邏輯
-    console.log('刪除會員');
     // 呼叫你的 service 來刪除會員
     // this.userService.deleteUser(this.user.id).subscribe(...);
 
@@ -115,29 +138,13 @@ export class UserMerchantPage implements OnInit { // 實作 OnInit 介面
       summary: '成功',
       detail: '會員已刪除'
     });
-  }
 
-  // 顯示取消訂單確認
-  confirmDeleteOrder(event: Event, orderId?: string) {
-    this.currentOrderId = orderId;
-    this.deleteOrderVisible = true;
-  }
-
-  // 確認取消訂單
-  onDeleteOrderConfirmed() {
-    // 執行取消訂單的邏輯
-    console.log('取消訂單', this.currentOrderId);
-    // 呼叫你的 service 來取消訂單
-    // this.orderService.cancelOrder(this.currentOrderId).subscribe(...);
-
-    this.deleteOrderVisible = false;
-
-    // 顯示成功訊息
-    this.toast.add({
-      severity: 'success',
-      summary: '成功',
-      detail: '訂單已取消'
-    });
+    // 👈 刪除後清除 localStorage 並導回登入頁
+    localStorage.removeItem('accountId');
+    localStorage.removeItem('token');
+    setTimeout(() => {
+      this.router.navigate(['/merchants/login']);
+    }, 1500);
   }
 
   onPropertyClick(): void {

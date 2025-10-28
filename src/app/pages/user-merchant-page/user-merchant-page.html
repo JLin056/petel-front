@@ -1,5 +1,5 @@
 <div class="wrap">
-    <!-- 商家會員資訊 -->
+    <!-- 商家會員資訊區 -->
     <div class="user-info-container">
         <div class="image">
             <img class="avatar" [src]="user.avatarUrl || 'img/avatar.png'" alt="頭貼">
@@ -29,29 +29,20 @@
                     </div>
                 </div>
             </div>
-            <div class="button-container">
-                <p-button
-                    label="修改會員資訊"
-                    styleClass="button"
-                    (click)="openEdit()"
-                    [outlined]="true"
-                />
-                <p-button
-                    label="刪除會員"
-                    styleClass="button"
-                    (click)="showConfirm()"
-                    [outlined]="true"
-                />
-                <!-- <button type="button" class="button" (click)="openEdit()">修改會員資訊</button>
-                <button type="button" class="button" (click)="confirmDelete()">刪除會員</button> -->
-            </div>
         </div>
     </div>
+
+    <!-- 按鈕區：置中 -->
+    <div class="button-container">
+        <p-button label="修改會員資訊" styleClass="button" (click)="openEdit()" [outlined]="true"></p-button>
+    </div>
+
+    <!-- 分隔線 -->
+    <div class="divider"></div>
 
     <!-- 我的旅館 -->
     <div class="hotel-list-section">
         <h3 class="section-title">我的旅館</h3>
-
         <div class="hotel-list">
             <div class="hotel-card" (click)="onPropertyClick()">
                 <img src="img/hotelImg.png" alt="旅館照片" class="hotel-img" />
