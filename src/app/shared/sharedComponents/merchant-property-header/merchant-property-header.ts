@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core'; // 導入 OnDestroy 和 OnInit
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -29,12 +29,16 @@ import { filter, Subject, takeUntil } from 'rxjs';
   templateUrl: './merchant-property-header.html',
   styleUrl: './merchant-property-header.css'
 })
-export class MerchantPropertyHeader {
-<<<<<<< HEAD
-  /** 確認登入狀態 */
-  isLoggedIn = false; /** 確認登入狀態 */
+// 實作 OnInit 和 OnDestroy
+export class MerchantPropertyHeader implements OnInit, OnDestroy {
+  /** 是否登入（service 推播） */
+  isLoggedIn = false;
   /** confirmVisible */
   confirmVisible = false;
+  /** 是否登出中 */
+  isLoggedOut = false;
+
+  private destroy$ = new Subject<void>();
 
   /**
    * 注入
@@ -47,41 +51,23 @@ export class MerchantPropertyHeader {
     private authService: Auth,
     private toast: MessageService
   ) {
+    // 監聽路由事件，導航結束時檢查登入狀態
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => this.onCheckLoginStatus());
+
+    // 訂閱 service 的登入狀態，保持元件狀態與 Auth service 同步
+    this.authService.isLoggedIn$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(v => this.isLoggedIn = v)
   }
-=======
-    /** 是否登入（service 推播） */
-    isLoggedIn = false;
-    /** confirmVisible */
-    confirmVisible = false;
-    /** 是否登出中 */
-    isLoggedOut = false;
 
-    private destroy$ = new Subject<void>();
-
-    /**
-     * 注入
-     * @param router
-     * @param authService
-     * @param toast
-     */
-    constructor(
-        private router: Router,
-        private authService: Auth,
-        private toast: MessageService
-    ) {
-        this.router.events
-            .pipe(filter(e => e instanceof NavigationEnd))
-            .subscribe(() => this.onCheckLoginStatus());
-
-        // 訂閱 service 的登入狀態
-        this.authService.isLoggedIn$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(v => this.isLoggedIn = v)
-    }
->>>>>>> dev
+  /**
+   * 元件初始化時執行一次登入狀態檢查
+   */
+  ngOnInit() {
+    this.onCheckLoginStatus();
+  }
 
   /**
    * 跳出 login
@@ -90,120 +76,62 @@ export class MerchantPropertyHeader {
     this.router.navigate(['/login']);
   }
 
-<<<<<<< HEAD
   /**
    * 登出
    */
   onLogout() {
+    if (this.isLoggedOut) return; // 防止重複點擊
+    this.isLoggedOut = true;
+
     this.authService.onLogoutApi().subscribe({
-      next: (res) => {
-        this.isLoggedIn = false;
+      next: () => {
         this.confirmVisible = false;
-        console.log('登出成功');
+        this.toast.add({
+          severity: 'success',
+          summary: '登出成功',
+          detail: '期待您再次光臨！'
+        });
+        // 登出成功後，AuthService 應會清空 token，並透過 isLoggedIn$ 通知元件狀態更新
         this.router.navigate(['']);
+        this.isLoggedOut = false;
       },
-      error: (err) => {
+      error: () => {
         this.confirmVisible = false;
+        // 即使 API 失敗，也清空本地 Token，強制登出
+        this.authService.clearAccessToken();
 
         this.toast.add({
           severity: 'error',
           summary: '登出失敗',
           detail: '請稍後再試'
-=======
-    /**
-     * 登出
-     */
-    onLogout() {
-        if (this.isLoggedOut) return;
-        this.isLoggedOut = true;
-
-        this.authService.onLogoutApi().subscribe({
-            next: () => {
-                this.confirmVisible = false;
-                this.toast.add({
-                    severity: 'success',
-                    summary: '登出成功',
-                    detail: '期待您再次光臨！'
-                });
-                this.router.navigate(['']);
-                this.isLoggedOut = false;
-            },
-            error: () => {
-                this.confirmVisible = false;
-                this.authService.clearAccessToken();
-
-                this.toast.add({
-                    severity: 'error',
-                    summary: '登出失敗',
-                    detail: '請稍後再試'
-                });
-
-                this.isLoggedOut = false;
-            }
->>>>>>> dev
         });
+
+        this.isLoggedOut = false;
       }
     });
   }
 
-
-<<<<<<< HEAD
   /**
    * 確認登入狀態
    */
   onCheckLoginStatus() {
     this.authService.onCheckLoginStatus().subscribe({
       next: (res) => {
-        if (res.TRANRS.valid) {
-          this.isLoggedIn = true;
-        } else {
-          this.isLoggedIn = false;
-=======
-    /**
-     * 確認登入狀態
-     */
-    onCheckLoginStatus() {
-        this.authService.onCheckLoginStatus().subscribe({
-            next: (res) => {
-                const valid = !!res?.TRANRS.valid;
-                if (!valid) this.authService.clearAccessToken();
-            }
-        });
-    }
-
-
-    onClickHome() {
-        this.router.navigate(['/merchants/property/homepage']);
-    }
-
-    onClickReview() {
-        this.router.navigate(['/merchants/property/reviewList']);
-    }
-
-    /**
-     * 前往聊天頁
-     * @returns
-     */
-    onClickChat() {
-        if (!this.isLoggedIn) {
-            this.toast.add({
-                severity: 'warn',
-                summary: '尚未登入',
-                detail: '請先登入後再使用聊天室功能'
-            });
-            this.router.navigate(['/login'], { queryParams: { redirect: '/chat' } });
-            return;
->>>>>>> dev
+        const valid = !!res?.TRANRS.valid;
+        // 如果 API 回傳無效，則清空本地 Token (讓 isLoggedIn$ 轉為 false)
+        if (!valid) {
+          this.authService.clearAccessToken();
         }
+        // 💡 由於 constructor 中已訂閱 isLoggedIn$，這裡不再需要手動設置 this.isLoggedIn
       },
       error: () => {
-        this.isLoggedIn = false;
+        // API 連線失敗，強制清空 Token
+        this.authService.clearAccessToken();
       }
     });
   }
 
 
-<<<<<<< HEAD
   onClickHome() {
     this.router.navigate(['/merchants/property/homepage']);
   }
@@ -215,6 +143,7 @@ export class MerchantPropertyHeader {
   onClickBooking() {
     this.router.navigate(['/merchants/property/bookings'])
   }
+
   /**
    * 前往聊天頁
    * @returns
@@ -228,11 +157,6 @@ export class MerchantPropertyHeader {
       });
       this.router.navigate(['/login'], { queryParams: { redirect: '/chat' } });
       return;
-=======
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
->>>>>>> dev
     }
     this.router.navigate(['/chat']);
   }
@@ -248,14 +172,17 @@ export class MerchantPropertyHeader {
         summary: '尚未登入',
         detail: '請先登入後再看會員資訊'
       });
-      this.router.navigate(['/login'], { queryParams: { redirect: '/history' } });
+      this.router.navigate(['/login'], { queryParams: { redirect: '/merchants/userPage' } }); // 修正導向路徑
       return;
     }
     this.router.navigate(['/merchants/userPage']);
   }
 
-
-  ngOnInit() {
-    this.onCheckLoginStatus();
+  /**
+   * 元件銷毀時取消訂閱
+   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

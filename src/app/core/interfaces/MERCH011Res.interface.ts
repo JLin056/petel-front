@@ -1,8 +1,8 @@
 export interface MERCH011Tranrs {
+    id: string;
+    accountId: string;
     name: string;
-    totalUnits: number;
-    basePrice: number;
-    petTypeId: string;
-    roomSize: string;
-    info: string;
+    phone: string;
+    email: string;
+    mediaId: string;
 }
