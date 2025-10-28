@@ -14,6 +14,10 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
 .items-center {
   align-items: center;
 }
@@ -22,40 +26,68 @@
   gap: 0.5rem;
 }
 
+.search-container {
+  padding: 20px 30px;
+}
+
+.search-fields {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.search-btn-container {
+  margin-left: auto;
+}
+
+.custom-input {
+  height: 40px;
+  border-radius: 8px;
+}
+
+::ng-deep .admin-search-btn.p-button {
+  background-color: #EDA33A;
+  color: #A24522;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 40px;
+  min-width: 120px;
+}
+
 .ml-auto {
   margin-left: auto;
 }
 
 .text-large {
-  font-size: 1.3rem; 
+  font-size: 1.3rem;
   font-weight: 500;
 }
 
 .icon-large {
-  font-size: 1.5rem; 
+  font-size: 1.5rem;
 }
 
 /* 調整表格整體字體大小 */
 ::ng-deep .p-datatable {
-  font-size: 1.1rem;      
+  font-size: 1.1rem;
 }
 
 /* 調整表頭字體 */
 ::ng-deep .p-datatable th {
-  font-size: 1.5rem;      
+  font-size: 1.5rem;
 }
 
 /* 調整輸入框字體 */
 ::ng-deep .p-datatable input {
-  font-size: 1.1rem;      
+  font-size: 1.1rem;
 }
 
-/* 
+/*
 ::ng-deep : 可以穿透到p-tag內部
 */
 ::ng-deep .tag-large {
-  font-size: 1.5rem ;
-  padding: 0.5rem 0.75rem ;
+  font-size: 1rem;
+  padding: 0.35rem 0.5rem;
 }
 
 /*

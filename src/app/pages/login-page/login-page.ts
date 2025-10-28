@@ -9,6 +9,7 @@ import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
 import { AUTH002Res } from '../../core/interfaces/AUTH002Res.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-login-page',
@@ -92,6 +93,13 @@ export class LoginPage {
     }
 
     /**
+     * 前往忘記密碼頁
+    */
+    goForgotPassword() {
+        this.router.navigate(['forgotPassword']);
+    }
+
+    /**
      * 登入
      * @returns
      */
@@ -115,9 +123,11 @@ export class LoginPage {
             }
         };
 
-        this.authService.onLoginApi(payload).subscribe({
+        this.authService.onLoginApi(payload).pipe(
+            take(1),
+            finalize(() => (this.isLoading = false))
+        ).subscribe({
             next: (res: AUTH002Res) => {
-                this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
                     const redirect = this.getRedirectUrl();
                     this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
