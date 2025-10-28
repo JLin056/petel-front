@@ -11,7 +11,7 @@ import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared
 import { NavigationEnd, Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
-import { filter } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-merchant-property-header',
@@ -30,10 +30,14 @@ import { filter } from 'rxjs';
     styleUrl: './merchant-property-header.css'
 })
 export class MerchantPropertyHeader {
-    /** 確認登入狀態 */
-    isLoggedIn = false; /** 確認登入狀態 */
+    /** 是否登入（service 推播） */
+    isLoggedIn = false;
     /** confirmVisible */
     confirmVisible = false;
+    /** 是否登出中 */
+    isLoggedOut = false;
+
+    private destroy$ = new Subject<void>();
 
     /**
      * 注入
@@ -47,8 +51,13 @@ export class MerchantPropertyHeader {
         private toast: MessageService
     ) {
         this.router.events
-        .pipe(filter(e => e instanceof NavigationEnd))
-        .subscribe(() => this.onCheckLoginStatus());
+            .pipe(filter(e => e instanceof NavigationEnd))
+            .subscribe(() => this.onCheckLoginStatus());
+
+        // 訂閱 service 的登入狀態
+        this.authService.isLoggedIn$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(v => this.isLoggedIn = v)
     }
 
     /**
@@ -62,21 +71,31 @@ export class MerchantPropertyHeader {
      * 登出
      */
     onLogout() {
+        if (this.isLoggedOut) return;
+        this.isLoggedOut = true;
+
         this.authService.onLogoutApi().subscribe({
-            next: (res) => {
-                this.isLoggedIn = false;
+            next: () => {
                 this.confirmVisible = false;
-                console.log('登出成功');
+                this.toast.add({
+                    severity: 'success',
+                    summary: '登出成功',
+                    detail: '期待您再次光臨！'
+                });
                 this.router.navigate(['']);
+                this.isLoggedOut = false;
             },
-            error: (err) => {
+            error: () => {
                 this.confirmVisible = false;
+                this.authService.clearAccessToken();
 
                 this.toast.add({
                     severity: 'error',
                     summary: '登出失敗',
                     detail: '請稍後再試'
                 });
+
+                this.isLoggedOut = false;
             }
         });
     }
@@ -88,14 +107,8 @@ export class MerchantPropertyHeader {
     onCheckLoginStatus() {
         this.authService.onCheckLoginStatus().subscribe({
             next: (res) => {
-                if (res.TRANRS.valid) {
-                    this.isLoggedIn = true;
-                } else {
-                    this.isLoggedIn = false;
-                }
-            },
-            error: () => {
-                this.isLoggedIn = false;
+                const valid = !!res?.TRANRS.valid;
+                if (!valid) this.authService.clearAccessToken();
             }
         });
     }
@@ -144,7 +157,8 @@ export class MerchantPropertyHeader {
     }
 
 
-    ngOnInit() {
-        this.onCheckLoginStatus();
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }
