@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
@@ -10,10 +11,12 @@ import { InputIconModule } from 'primeng/inputicon';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
-
-
+import { AdminService } from '../../core/services/admin.service';
+import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
 
 @Component({
   selector: 'app-order-table-component',
@@ -28,214 +31,176 @@ import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
     CommonModule,
     FormsModule,
     ButtonModule,
-    OrderDetailDialog
+    OrderDetailDialog,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './order-table-component.html',
   styleUrl: './order-table-component.css'
 })
 export class OrderTableComponent implements OnInit {
-  constructor(private http : HttpClient){}
+  constructor(
+    private http: HttpClient,
+    private adminService: AdminService,
+    private messageService: MessageService,
+    private route: ActivatedRoute
+  ) {}
+
   orderList: Order[] = [];
   statuses: Status[] = [];
   loading: boolean = true;
+
+  // Filter variables - 用於後端查詢
+  orderIdFilter: string = '';
+  checkInFilter: string = '';
+  userNameFilter: string = '';
+  propertyNameFilter: string = '';
+
+  // Pagination
+  totalRecords: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 5;
 
   // 詳細資料彈窗相關
   showDetailDialog = false;
   selectedOrder: Order | null = null;
 
-  ngOnInit() {
-    // 模擬資料載入
-    this.orderList = [
-      {
-        "ORDER_ID": "O010",
-        "STAY_DATE": "2025-11-10",
-        "CHECK_IN": "2025-11-10",
-        "CHECK_OUT": "2025-11-12",
-        "USER_NAME": "林志強",
-        "USER_PHONE": "0956000000",
-        "PROPERTY_NAME": "愛心寶貝-新北板橋館",
-        "PROPERTY_PHONE": "02-29501234",
-        "ROOM": "大型犬總統套房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 7000,
-        "PRICE_EVERYNIGHT": 3500,
-        "STATUS": "待付款",
-        "NOTE": "測試",
-        "CREATED_AT": "2025-10-22",
-        "UPDATED_AT": "2025-10-22"
-      },
-      {
-        "ORDER_ID": "O010",
-        "STAY_DATE": "2025-11-11",
-        "CHECK_IN": "2025-11-10",
-        "CHECK_OUT": "2025-11-12",
-        "USER_NAME": "林志強",
-        "USER_PHONE": "0956000000",
-        "PROPERTY_NAME": "愛心寶貝-新北板橋館",
-        "PROPERTY_PHONE": "02-29501234",
-        "ROOM": "大型犬總統套房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 7000,
-        "PRICE_EVERYNIGHT": 3500,
-        "STATUS": "待付款",
-        "NOTE": null,
-        "CREATED_AT": "2025-10-22",
-        "UPDATED_AT": "2025-10-22"
-      },
-      {
-        "ORDER_ID": "O009",
-        "STAY_DATE": "2025-11-03",
-        "CHECK_IN": "2025-11-03",
-        "CHECK_OUT": "2025-11-04",
-        "USER_NAME": "陳雅婷",
-        "USER_PHONE": "0945678901",
-        "PROPERTY_NAME": "貓咪天堂-台中北區館",
-        "PROPERTY_PHONE": "04-22501234",
-        "ROOM": "貓咪經濟房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 3600,
-        "PRICE_EVERYNIGHT": 3600,
-        "STATUS": "已確認",
-        "NOTE": "貓咪有服藥需求，請聯繫我",
-        "CREATED_AT": "2025-10-21",
-        "UPDATED_AT": "2025-10-21"
-      },
-      {
-        "ORDER_ID": "O009",
-        "STAY_DATE": "2025-11-02",
-        "CHECK_IN": "2025-11-02",
-        "CHECK_OUT": "2025-11-03",
-        "USER_NAME": "陳雅婷",
-        "USER_PHONE": "0945678901",
-        "PROPERTY_NAME": "貓咪天堂-台中北區館",
-        "PROPERTY_PHONE": "04-22501234",
-        "ROOM": "貓咪經濟房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 3600,
-        "PRICE_EVERYNIGHT": 3600,
-        "STATUS": "已確認",
-        "NOTE": "貓咪有服藥需求，請聯繫我",
-        "CREATED_AT": "2025-10-21",
-        "UPDATED_AT": "2025-10-21"
-      },
-      {
-        "ORDER_ID": "O009",
-        "STAY_DATE": "2025-11-01",
-        "CHECK_IN": "2025-11-01",
-        "CHECK_OUT": "2025-11-02",
-        "USER_NAME": "陳雅婷",
-        "USER_PHONE": "0945678901",
-        "PROPERTY_NAME": "貓咪天堂-台中北區館",
-        "PROPERTY_PHONE": "04-22501234",
-        "ROOM": "貓咪經濟房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 3600,
-        "PRICE_EVERYNIGHT": 3600,
-        "STATUS": "已確認",
-        "NOTE": "貓咪有服藥需求，請聯繫我",
-        "CREATED_AT": "2025-10-21",
-        "UPDATED_AT": "2025-10-21"
-      },
-      {
-        "ORDER_ID": "O008",
-        "STAY_DATE": "2025-10-28",
-        "CHECK_IN": "2025-10-28",
-        "CHECK_OUT": "2025-10-31",
-        "USER_NAME": "陳小芳",
-        "USER_PHONE": "0945000000",
-        "PROPERTY_NAME": "快樂毛孩-台北大安館",
-        "PROPERTY_PHONE": "02-27001235",
-        "ROOM": "小型犬標準房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 13500,
-        "PRICE_EVERYNIGHT": 4500,
-        "STATUS": "待付款",
-        "NOTE": "小型犬，請提供玩具",
-        "CREATED_AT": "2025-10-20",
-        "UPDATED_AT": "2025-10-20"
-      },
-      {
-        "ORDER_ID": "O008",
-        "STAY_DATE": "2025-10-30",
-        "CHECK_IN": "2025-10-28",
-        "CHECK_OUT": "2025-10-31",
-        "USER_NAME": "陳小芳",
-        "USER_PHONE": "0945000000",
-        "PROPERTY_NAME": "快樂毛孩-台北大安館",
-        "PROPERTY_PHONE": "02-27001235",
-        "ROOM": "小型犬標準房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 13500,
-        "PRICE_EVERYNIGHT": 4500,
-        "STATUS": "待付款",
-        "NOTE": "小型犬，請提供玩具",
-        "CREATED_AT": "2025-10-20",
-        "UPDATED_AT": "2025-10-20"
-      },
-      {
-        "ORDER_ID": "O008",
-        "STAY_DATE": "2025-10-29",
-        "CHECK_IN": "2025-10-28",
-        "CHECK_OUT": "2025-10-31",
-        "USER_NAME": "陳小芳",
-        "USER_PHONE": "0945000000",
-        "PROPERTY_NAME": "快樂毛孩-台北大安館",
-        "PROPERTY_PHONE": "02-27001235",
-        "ROOM": "小型犬標準房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 13500,
-        "PRICE_EVERYNIGHT": 4500,
-        "STATUS": "待付款",
-        "NOTE": "小型犬，請提供玩具",
-        "CREATED_AT": "2025-10-20",
-        "UPDATED_AT": "2025-10-20"
-      },
-      {
-        "ORDER_ID": "O007",
-        "STAY_DATE": "2025-10-21",
-        "CHECK_IN": "2025-10-21",
-        "CHECK_OUT": "2025-10-23",
-        "USER_NAME": "李美玲",
-        "USER_PHONE": "0923456789",
-        "PROPERTY_NAME": "寵愛之家-高雄左營館",
-        "PROPERTY_PHONE": "07-58612345",
-        "ROOM": "貓咪經濟房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 3200,
-        "PRICE_EVERYNIGHT": 1600,
-        "STATUS": "已完成",
-        "NOTE": "我的貓有病，請小心照顧",
-        "CREATED_AT": "2025-10-10",
-        "UPDATED_AT": "2025-10-23"
-      },
-      {
-        "ORDER_ID": "O007",
-        "STAY_DATE": "2025-10-22",
-        "CHECK_IN": "2025-10-21",
-        "CHECK_OUT": "2025-10-23",
-        "USER_NAME": "李美玲",
-        "USER_PHONE": "0923456789",
-        "PROPERTY_NAME": "寵愛之家-高雄左營館",
-        "PROPERTY_PHONE": "07-58612345",
-        "ROOM": "貓咪經濟房",
-        "QUANTITY": 1,
-        "HOTEL_CHARGES": 3200,
-        "PRICE_EVERYNIGHT": 1600,
-        "STATUS": "已完成",
-        "NOTE": null,
-        "CREATED_AT": "2025-10-10",
-        "UPDATED_AT": "2025-10-23"
-      }
-    ];
+  private isFirstLoad = true; // 追蹤是否為第一次載入
+  private isSearching = false; // 追蹤是否為搜尋操作
 
+  ngOnInit() {
     this.statuses = [
       { label: '待付款', value: '待付款' },
       { label: '已確認', value: '已確認' },
       { label: '已完成', value: '已完成' },
-      { label: '已取消', value: '已取消' }
+      { label: '已取消', value: '已取消' },
+      { label: '未付款', value: '未付款' }
     ];
 
-    this.loading = false;
+    // 檢查 URL 查詢參數
+    this.route.queryParams.subscribe(params => {
+      if (params['userName']) {
+        this.userNameFilter = params['userName'];
+        // 延遲執行搜尋，等待表格初始化完成
+        setTimeout(() => {
+          this.onSearch();
+        }, 100);
+      }
+    });
+  }
+
+  /**
+   * 載入訂單列表
+   */
+  loadOrders() {
+    this.loading = true;
+
+    // 建立請求資料
+    const requestData: ADMIN003Req = {
+      MWHEADER: {
+        MSGID: 'ADMIN-003'
+      },
+      TRANRQ: {
+        page: {
+          pageNumber: this.currentPage,
+          pageSize: this.pageSize
+        }
+      }
+    };
+
+    // 加入篩選條件（只有在有值的時候才加入）
+    if (this.orderIdFilter) {
+      requestData.TRANRQ.ORDER_ID = this.orderIdFilter;
+    }
+    if (this.checkInFilter) {
+      requestData.TRANRQ.CHECK_IN = this.checkInFilter;
+    }
+    if (this.userNameFilter) {
+      requestData.TRANRQ.userName = this.userNameFilter;
+    }
+    if (this.propertyNameFilter) {
+      requestData.TRANRQ.propertyName = this.propertyNameFilter;
+    }
+
+    // 呼叫 API
+    this.adminService.queryOrders(requestData).subscribe({
+      next: (response) => {
+        if (response.MWHEADER.RETURNCODE === '0000') {
+          this.orderList = response.TRANRS.orders;
+          this.totalRecords = response.TRANRS.totalCount;
+          this.currentPage = response.TRANRS.currentPage;
+
+          // 如果是搜尋操作，顯示成功提示
+          if (this.isSearching) {
+            this.messageService.add({
+              severity: 'success',
+              summary: '搜尋成功',
+              detail: `找到 ${this.totalRecords} 筆訂單資料`
+            });
+            this.isSearching = false;
+          }
+        } else {
+          console.error('API 回傳錯誤:', response.MWHEADER.RETURNDESC);
+          this.orderList = [];
+          this.totalRecords = 0;
+
+          // 如果是搜尋操作，顯示錯誤提示
+          if (this.isSearching) {
+            this.messageService.add({
+              severity: 'error',
+              summary: '搜尋失敗',
+              detail: response.MWHEADER.RETURNDESC
+            });
+            this.isSearching = false;
+          }
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('API 呼叫失敗:', error);
+        this.orderList = [];
+        this.totalRecords = 0;
+        this.loading = false;
+
+        // 如果是搜尋操作，顯示錯誤提示
+        if (this.isSearching) {
+          this.messageService.add({
+            severity: 'error',
+            summary: '搜尋失敗',
+            detail: '網路錯誤，請稍後再試'
+          });
+          this.isSearching = false;
+        }
+      }
+    });
+  }
+
+  /**
+   * 分頁切換事件（PrimeNG lazy loading）
+   */
+  onPageChange(event: any) {
+    // PrimeNG lazy table 使用 event.first (起始索引) 和 event.rows (每頁筆數)
+    // 需要計算當前頁碼：page = first / rows
+    const page = event.first !== undefined ? Math.floor(event.first / event.rows) : (event.page || 0);
+    const rows = event.rows || this.pageSize;
+
+    // 第一次載入由 lazy table 觸發
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+    }
+
+    this.currentPage = page + 1; // PrimeNG 的 page 是從 0 開始，後端從 1 開始
+    this.pageSize = rows;
+    this.loadOrders();
+  }
+
+  /**
+   * 搜尋按鈕點擊事件
+   */
+  onSearch() {
+    this.currentPage = 1; // 重置到第一頁
+    this.isSearching = true; // 標記為搜尋操作
+    this.loadOrders();
   }
 
   getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
@@ -245,6 +210,7 @@ export class OrderTableComponent implements OnInit {
       case '已確認':
         return 'info';
       case '待付款':
+      case '未付款':
         return 'warn';
       case '已取消':
         return 'danger';

@@ -1,115 +1,91 @@
+<p-toast></p-toast>
+<div class = "wrap">
 <h3 class="title">訂單列表</h3>
+
+<div class="search-container">
+    <div class="search-fields">
+        <div class="flex flex-col gap-2">
+            <label for="orderId">訂單編號</label>
+            <input pInputText id="orderId" class="custom-input" [(ngModel)]="orderIdFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="checkIn">入住日期</label>
+            <input pInputText id="checkIn" class="custom-input" [(ngModel)]="checkInFilter" placeholder="YYYY-MM-DD" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="userName">訂購人姓名</label>
+            <input pInputText id="userName" class="custom-input" [(ngModel)]="userNameFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="propertyName">旅館名稱</label>
+            <input pInputText id="propertyName" class="custom-input" [(ngModel)]="propertyNameFilter" />
+        </div>
+        <div class="search-btn-container">
+            <p-button label="搜尋" styleClass="admin-search-btn" (onClick)="onSearch()"></p-button>
+        </div>
+    </div>
+</div>
+
 <div class="card">
   <p-table
     #dt
     [value]="orderList"
     dataKey="ORDER_ID"
-    [rows]="5"
-    [rowsPerPageOptions]="[5, 10, 15, 20]"
-    [loading]="loading"
+    [rows]="pageSize"
+    [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
     [paginator]="true"
-    [globalFilterFields]="['ORDER_ID', 'STAY_DATE', 'CHECK_IN', 'CHECK_OUT', 'USER_NAME', 'PROPERTY_NAME', 'ROOM', 'STATUS']"
+    [lazy]="true"
+    [totalRecords]="totalRecords"
+    (onLazyLoad)="onPageChange($event)"
     [tableStyle]="{ 'min-width': '75rem' }"
   >
-    <ng-template #caption>
-      <div class="flex">
-        <p-iconfield iconPosition="left" class="ml-auto">
-          <p-inputicon>
-            <i class="pi pi-search"></i>
-          </p-inputicon>
-          <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="搜尋關鍵字" />
-        </p-iconfield>
-      </div>
-    </ng-template>
-    <ng-template #header>
+    <ng-template pTemplate="header">
       <tr>
-        <th style="width:12.5%">訂單編號</th>
-        <th style="width:12.5%">入住日期</th>
-        <th style="width:12.5%">退房日期</th>
-        <th style="width:12.5%">主人姓名</th>
-        <th style="width:12.5%">旅館名稱</th>
-        <th style="width:12.5%">總價格</th>
-        <th style="width:12.5%">狀態</th>
-        <th style="width:12.5%">操作</th>
-      </tr>
-      <tr>
-        <th>
-          <p-columnFilter type="text" field="ORDER_ID" placeholder="訂單號" ariaLabel="Filter Order ID" filterOn="input"></p-columnFilter>
+        <th style="width:11%">訂單編號</th>
+        <th style="width:11%">入住日期</th>
+        <th style="width:11%">退房日期</th>
+        <th style="width:11%">
+          <i class="pi pi-user icon-large"></i>
+          訂購人姓名
         </th>
-        <th>
-          <p-columnFilter type="text" field="CHECK_IN" placeholder="入住日" ariaLabel="Filter Check In" filterOn="input"></p-columnFilter>
+        <th style="width:11%">
+          <i class="pi pi-building icon-large"></i>
+          旅館名稱
         </th>
-        <th>
-          <p-columnFilter type="text" field="CHECK_OUT" placeholder="退房日" ariaLabel="Filter Check Out" filterOn="input"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="text" field="USER_NAME" placeholder="姓名" ariaLabel="Filter User Name" filterOn="input"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="text" field="PROPERTY_NAME" placeholder="旅館" ariaLabel="Filter Property" filterOn="input"></p-columnFilter>
-        </th>
-        <th></th>
-        <th>
-          <p-columnFilter field="STATUS" matchMode="equals" [showMenu]="false">
-            <ng-template #filter let-value let-filter="filterCallback">
-              <p-select
-                [ngModel]="value"
-                (ngModelChange)="filter($event)"
-                [options]="statuses"
-                placeholder="選擇狀態"
-                [showClear]="true"
-                optionLabel="label"
-                optionValue="value"
-                style="min-width: 10rem">
-                <ng-template let-option #item>
-                  <p-tag [value]="option.label" [severity]="getSeverity(option.value) || undefined" />
-                </ng-template>
-              </p-select>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th></th>
-        <th></th>
+        <th style="width:11%">總價格</th>
+        <th style="width:11%">付款方式</th>
+        <th style="width:11%">狀態</th>
+        <th style="width:12%">操作</th>
       </tr>
     </ng-template>
-    <ng-template #body let-order>
+    <ng-template pTemplate="body" let-order>
       <tr>
-        <td>{{ order.ORDER_ID }}</td>
-        <td>{{ order.CHECK_IN }}</td>
-        <td>{{ order.CHECK_OUT }}</td>
+        <td><span class="text-large">{{ order.ORDER_ID }}</span></td>
+        <td><span class="text-large">{{ order.CHECK_IN }}</span></td>
+        <td><span class="text-large">{{ order.CHECK_OUT }}</span></td>
+        <td><span class="text-large">{{ order.FINAL_USER_NAME }}</span></td>
+        <td><span class="text-large">{{ order.PROPERTY_NAME }}</span></td>
+        <td><span class="text-large">${{ order.HOTEL_CHARGES }}</span></td>
+        <td><span class="text-large">{{ order.PAYMENT_METHOD || '-' }}</span></td>
         <td>
-          <div class="flex items-center gap-2">
-            <i class="pi pi-user"></i>
-            <span>{{ order.USER_NAME }}</span>
-          </div>
+          <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined" class="tag-large" />
         </td>
         <td>
-          <div class="flex items-center gap-2">
-            <i class="pi pi-building"></i>
-            <span>{{ order.PROPERTY_NAME }}</span>
-          </div>
-        </td>
-        <td>${{ order.HOTEL_CHARGES }}</td>
-        <td>
-          <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined" />
-        </td>
-        <td>
-          <p-button label="詳細" size="small" severity="info" (onClick)="showOrderDetail(order)" />
+          <p-button styleClass="detailBtn" label="詳細"  severity="info" (onClick)="showOrderDetail(order)" />
         </td>
       </tr>
     </ng-template>
-    <ng-template #emptymessage>
+    <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="11">查無訂單資料</td>
+        <td colspan="9">查無訂單資料</td>
       </tr>
     </ng-template>
   </p-table>
 </div>
-
+</div>
 <!-- 訂單詳細資料彈窗 -->
 <app-order-detail-dialog
   [(visible)]="showDetailDialog"
   [order]="selectedOrder"
   (noteUpdated)="onNoteUpdated($event)">
 </app-order-detail-dialog>
-

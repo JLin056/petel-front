@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
+import { ADMIN001Req } from '../interfaces/ADMIN001Req.interface';
+import { ADMIN001Res } from '../interfaces/ADMIN001Res.interface';
+import { ADMIN003Req } from '../interfaces/ADMIN003Req.interface';
+import { ADMIN003Res } from '../interfaces/ADMIN003Res.interface';
 import { ADMIN007Req } from '../interfaces/ADMIN007Req.interface';
 import { ADMIN007Res } from '../interfaces/ADMIN007Res.interface';
 import { ADMIN008Req } from '../interfaces/ADMIN008Req.interface';
@@ -15,6 +19,12 @@ export class AdminService {
   /** 注入 HttpClient */
   constructor(private http: HttpClient) {}
 
+  /** 查詢旅館列表 API URL */
+  queryHotelsUrl = `${environment.BASE_URL}/admin/hotels/queryStore`;
+
+  /** 查詢訂單列表 API URL */
+  queryOrdersUrl = `${environment.BASE_URL}/admin/bookings/list`;
+
   /** 查詢會員列表 API URL */
   queryMembersUrl = `${environment.BASE_URL}/admin/queryMembers`;
 
@@ -25,6 +35,30 @@ export class AdminService {
   private headers = new HttpHeaders({
     'Content-Type': 'application/json'
   });
+
+  /**
+   * 查詢旅館列表 API (ADMIN-001)
+   * @param postData ADMIN001Req
+   * @returns ADMIN001Res
+   */
+  queryHotels(postData: ADMIN001Req): Observable<ADMIN001Res> {
+    return this.http.post<ADMIN001Res>(this.queryHotelsUrl, postData, {
+      headers: this.headers,
+      withCredentials: true
+    });
+  }
+
+  /**
+   * 查詢訂單列表 API (ADMIN-003)
+   * @param postData ADMIN003Req
+   * @returns ADMIN003Res
+   */
+  queryOrders(postData: ADMIN003Req): Observable<ADMIN003Res> {
+    return this.http.post<ADMIN003Res>(this.queryOrdersUrl, postData, {
+      headers: this.headers,
+      withCredentials: true
+    });
+  }
 
   /**
    * 查詢會員列表 API (ADMIN-007)
