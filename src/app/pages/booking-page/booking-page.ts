@@ -1,6 +1,6 @@
 import { UserService } from './../../core/services/user-service';
 import { BookService, OrderData } from './../../core/services/book-service';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
@@ -296,6 +296,16 @@ export class BookingPage implements OnInit {
         }
 
         return dates;
+    }
+
+    /**
+     * 使用者如果要重整頁面，跳出警告
+     * @params event
+     */
+    @HostListener('window:beforeunload', ['$event'])
+    beforeUnloadHander(event: any): void {
+        event.preventDefault();
+        event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
     }
 
     // 簡化取得控制項：beginning
