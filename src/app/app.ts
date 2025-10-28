@@ -7,17 +7,19 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MerchantPropertyHeader } from './shared/sharedComponents/merchant-property-header/merchant-property-header';
 import { filter } from 'rxjs';
+import { MerchantUserpageHeader } from "./shared/sharedComponents/merchant-userpage-header/merchant-userpage-header";
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, MerchantPropertyHeader, Footer, ToastModule, ConfirmDialogModule, ReactiveFormsModule],
+  imports: [RouterOutlet, Header, MerchantPropertyHeader, Footer, ToastModule, ConfirmDialogModule, ReactiveFormsModule, MerchantUserpageHeader],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit{
+export class App implements OnInit {
   protected readonly title = signal('petelFrontTest');
   isMerchantRoute = false;
+  isMerchantUserpageRoute = false;
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -25,9 +27,9 @@ export class App implements OnInit{
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      // 如果路由包含 /merchants 或 /orderTable，就顯示商家 header
-      this.isMerchantRoute = event.url.includes('/merchants') ||
+      this.isMerchantRoute = event.url.includes('/merchants/property') ||
         event.url.includes('/orderTable');
+      this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage')
     });
   }
 }
