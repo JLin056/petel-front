@@ -1,0 +1,3 @@
+interface Facility {
+  facilityName: string;
+}

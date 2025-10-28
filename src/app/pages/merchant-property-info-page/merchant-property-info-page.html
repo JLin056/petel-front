@@ -1,1 +1,108 @@
-<p>merchant-property-info-page works!</p>
+<div class="room-form-container">
+    <h2 class="page-title">旅館詳細資訊</h2>
+
+    <!-- 載入中 -->
+    <div class="loading-container" *ngIf="isLoading">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #974b2c;"></i>
+        <p>載入中...</p>
+    </div>
+
+    <!-- 旅館資料 -->
+    <div class="form-body" *ngIf="!isLoading && hotel">
+        <div class="form-main-content sequential-layout">
+
+            <!-- 1. 旅館圖片 -->
+            <div class="form-section full-width image-upload-section">
+                <label class="section-label">旅館圖片</label>
+                <div class="image-preview-area gallery-preview">
+                    <!-- 有圖片 -->
+                    <div class="image-gallery" *ngIf="hotel.propertyImages && hotel.propertyImages.length > 0">
+                        <img *ngFor="let img of hotel.propertyImages" [src]="img.base64Data" alt="旅館圖片" />
+                    </div>
+                    <!-- 無圖片 -->
+                    <div class="image-placeholder" *ngIf="!hotel.propertyImages || hotel.propertyImages.length === 0">
+                        <i class="pi pi-images"></i>
+                        <span>暫無圖片</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 第一列：旅館名稱 & 電話 -->
+            <div class="form-row-2col">
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">旅館名稱</label>
+                    <div class="info-text">{{ hotel.name || '未提供' }}</div>
+                </div>
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">電話</label>
+                    <div class="info-text">{{ hotel.tel || '未提供' }}</div>
+                </div>
+            </div>
+
+            <!-- 3. 第二列：特許寵物業許可證號 & 銀行帳號 -->
+            <div class="form-row-2col">
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">特許寵物業許可證號</label>
+                    <div class="info-text">{{ hotel.businessCode || '未提供' }}</div>
+                </div>
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">銀行帳號</label>
+                    <div class="info-text">{{ hotel.bankAccount || '未提供' }}</div>
+                </div>
+            </div>
+
+            <!-- 4. 地址 -->
+            <div class="form-section full-width info-section">
+                <label class="section-label">地址</label>
+                <div class="info-text">{{ hotel.address || '未提供' }}</div>
+            </div>
+
+            <!-- 5. 設施 -->
+            <div class="form-section full-width info-section">
+                <label class="section-label">設施</label>
+                <!-- 有設施 -->
+                <ul class="facility-list" *ngIf="hotel.facilities && hotel.facilities.length > 0">
+                    <li *ngFor="let f of hotel.facilities">
+                        <i class="pi pi-check-circle"></i> {{ f.facilityName }}
+                    </li>
+                </ul>
+                <!-- 無設施 -->
+                <span class="info-text" *ngIf="!hotel.facilities || hotel.facilities.length === 0">
+                    暫無設施資訊
+                </span>
+            </div>
+
+            <!-- 6. 介紹或須知 -->
+            <div class="form-section full-width info-section" *ngIf="hotel.info">
+                <label class="section-label">旅館介紹</label>
+                <div class="description-content">{{ hotel.info }}</div>
+            </div>
+
+            <div class="form-section full-width info-section" *ngIf="hotel.checkNotice">
+                <label class="section-label">入住須知</label>
+                <div class="description-content">{{ hotel.checkNotice }}</div>
+            </div>
+
+            <div class="form-section full-width info-section" *ngIf="hotel.petNotice">
+                <label class="section-label">寵物須知</label>
+                <div class="description-content">{{ hotel.petNotice }}</div>
+            </div>
+
+            <div class="form-section full-width info-section" *ngIf="hotel.propertyNotice">
+                <label class="section-label">旅館規範</label>
+                <div class="description-content">{{ hotel.propertyNotice }}</div>
+            </div>
+
+        </div>
+
+        <!-- 按鈕 -->
+        <div class="form-buttons full-width">
+            <button type="button" class="btn-cancel" (click)="onBack()">
+                <i class="pi pi-arrow-left"></i> 返回列表
+            </button>
+            <button type="button" class="btn-save" (click)="onEdit()">
+                <i class="pi pi-pencil"></i> 修改旅館資訊
+            </button>
+        </div>
+    </div>
+</div>

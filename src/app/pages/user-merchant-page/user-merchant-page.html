@@ -43,24 +43,64 @@
     <!-- 我的旅館 -->
     <div class="hotel-list-section">
         <h3 class="section-title">我的旅館</h3>
-        <div class="hotel-list">
-            <div class="hotel-card" (click)="onPropertyClick()">
-                <img src="img/hotelImg.png" alt="旅館照片" class="hotel-img" />
-                <div class="hotel-info">
-                    <h4>汪汪小站</h4>
-                    <p class="hotel-address">台北市大安區和平東路200號</p>
-                </div>
-            </div>
 
-            <div class="hotel-card" (click)="onPropertyClick()">
-                <img src="img/hotelImg.png" alt="旅館照片" class="hotel-img" />
-                <div class="hotel-info">
-                    <h4>毛孩樂園寵物旅館</h4>
-                    <p class="hotel-address">台北市中正區幸福路100號</p>
-                </div>
-            </div>
+        <!-- 載入中 -->
+        <div class="loading-container" *ngIf="isLoadingHotels">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #974b2c;"></i>
+            <p>載入中...</p>
         </div>
-    </div>
 
+        <!-- 旅館列表 -->
+        @if (!isLoading) {
+        <div class="hotel-list">
+            @for (hotel of hotelList; track hotel.id) {
+            <div class="hotel-card">
+                <!-- 旅館圖片 -->
+                <img [src]="hotel.imageUrl || 'img/hotelImg.png'" [alt]="hotel.name" class="hotel-image"
+                    (click)="onHotelDetail(hotel)" />
+
+                <!-- 旅館資訊 -->
+                <div class="hotel-info" (click)="onHotelDetail(hotel)">
+                    <div class="hotel-name">{{ hotel.name }}</div>
+                    <div class="hotel-detail">電話：{{ hotel.tel || '未提供' }}</div>
+                    <div class="hotel-detail">地址：{{ hotel.address || '未提供' }}</div>
+                    <div class="hotel-detail">許可證號：{{ hotel.businessCode || '未提供' }}</div>
+
+                    <!-- 按鈕區 -->
+                    <div class="hotel-buttons" (click)="$event.stopPropagation()">
+                        <button class="btn-edit" (click)="onEditHotel(hotel)">
+                            <i class="pi pi-pencil"></i> 修改旅館
+                        </button>
+                        <button class="btn-delete" (click)="showDeleteHotelConfirm(hotel)">
+                            <i class="pi pi-trash"></i> 刪除旅館
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 房型數量 -->
+                <div class="hotel-rooms">
+                    房型數<br />{{ hotel.totalRoomTypes || 0 }} 種
+                </div>
+            </div>
+            }
+
+            <!-- 沒有旅館資料 -->
+            @if (hotelList.length === 0) {
+            <div class="empty-state">
+                <i class="pi pi-inbox" style="font-size: 3rem; color: #8b5e3c;"></i>
+                <p>目前沒有旅館資料</p>
+                <button class="btn-add" (click)="onAddHotel()">
+                    <i class="pi pi-plus"></i> 立即新增旅館
+                </button>
+            </div>
+            }
+        </div>
+        }
+    </div>
     <p-toast></p-toast>
 </div>
+
+<!-- 登出 dialog -->
+<app-shared-confirm-dialog [(visible)]="deletePropertyVisible" header="刪除確認"
+    [message]="'確定要刪除房型「' + (propertyToDelete?.name || '') + '」嗎？'" confirmLabel="確定" cancelLabel="取消"
+    (confirm)="onDelete()" (cancel)="deletePropertyVisible = false"></app-shared-confirm-dialog>

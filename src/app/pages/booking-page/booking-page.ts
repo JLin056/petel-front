@@ -1,4 +1,4 @@
-import { UserService } from './../../core/services/user-service';
+
 import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { PricePipe } from "../../shared/pipes/price-pipe";
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
     selector: 'app-booking-page',

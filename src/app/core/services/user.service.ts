@@ -43,7 +43,7 @@ export class UserService {
    * 取得會員資訊 API
    * @returns
    */
-  onGetUserInfoApi(): Observable<USER004Res> {
+  getUserInfo(): Observable<USER004Res> {
     return this.http.post<USER004Res>(this.getUserInfoUrl, null, {
       headers: this.headers,
       withCredentials: true

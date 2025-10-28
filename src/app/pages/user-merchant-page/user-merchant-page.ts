@@ -21,7 +21,19 @@ export class UserMerchantPage implements OnInit {
   editVisible = false;
   deleteUserVisible = false;
   deleteOrderVisible = false;
-  isLoading = true;
+  /** deleteRoomVisible */
+  deletePropertyVisible = false;
+  /** roomToDelete */
+  propertyToDelete: any = null;
+  /** roomList */
+  hotelList: any[] = [];
+
+  /** isLoading */
+  isLoading = false;
+  /** isDeleting */
+  isDeleting = false;
+  /** errorMessage */
+  errorMessage = '';
 
   user: Partial<MERCH011Tranrs & { avatarUrl: string }> = {
     accountId: '',
@@ -150,4 +162,110 @@ export class UserMerchantPage implements OnInit {
   onPropertyClick(): void {
     this.router.navigate(['/merchants/property/homepage']);
   }
-}
+
+  onAddHotel() {
+    this.router.navigate(['/merchants/property/insert']);
+  }
+
+  onEditHotel(property: any): void {
+    if (!property || !property.id) {
+      this.errorMessage = '無法取得房型資料';
+      return;
+    }
+    this.router.navigate(['/merchants/property/edit'], {
+      state: { property: property }
+    });
+  }
+
+  onHotelDetail(property: any): void {
+    if (!property || !property.id) {
+      this.errorMessage = '無法取得旅館 ID (property.id 遺失)。請檢查後端 API 返回的旅館物件中 ID 欄位的名稱。';
+      console.error(this.errorMessage, property);
+      return;
+    }
+    this.router.navigate(['/merchants/property/info'], { state: { propertyId: property.id } });
+  }
+
+  showDeleteHotelConfirm(property: any) {
+    if (!property || !property.id) {
+      this.errorMessage = '無法取得旅館';
+      return;
+    }
+    this.propertyToDelete = property;
+    this.deletePropertyVisible = true;
+    this.errorMessage = '';
+  }
+
+  /**
+   * 刪除
+   */
+  onDelete() {
+    if (!this.propertyToDelete || !this.propertyToDelete.id) {
+      this.errorMessage = '無法取得旅館，請稍後再試';
+      return;
+    }
+    this.isDeleting = true;
+    this.errorMessage = '';
+
+    this.merchService.deleteRoomDetail(this.propertyToDelete.id).subscribe({
+      next: (res) => {
+        console.log('刪除API回應', res);
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          const index = this.hotelList.indexOf(this.propertyToDelete);
+          if (index > -1) {
+            this.hotelList.splice(index, 1);
+          }
+          console.log('已成功刪除旅館', this.propertyToDelete.name)
+          this.propertyToDelete = null;
+          this.deletePropertyVisible = false;
+        } else {
+          this.errorMessage = '刪除失敗';
+        }
+        this.isDeleting = false;
+      },
+      error: (err) => {
+        console.error('刪除失敗', err);
+        this.errorMessage = err.error?.TRANRS?.message || '刪除旅館時發生錯誤，請稍後再試';
+        this.isDeleting = false;
+        this.deletePropertyVisible = false;
+        this.propertyToDelete = null;
+      }
+    });
+  }
+
+  // loadHotels(): void {
+  //   this.isLoading = true;
+  //   this.errorMessage = '';
+
+  //   const tranrq = {
+  //     propertyId: this.confirm
+  //   };
+
+  //   this.merchService.queryPropertyRooms(tranrq).subscribe({
+  //     next: (res) => {
+  //       console.log('API 回應:', res);
+
+  //       if (res.MWHEADER.RETURNCODE === '0000') {
+  //         this.roomList = (res.TRANRS?.rooms || []).map((room: any) => ({
+  //           ...room,
+  //           // 轉換 petTypeId 成 petTypeName
+  //           petTypeName: this.petTypeMap[room.petTypeId] || '未知寵物',
+  //           // 格式化 roomSize，將 "100x200x300" 轉換成 "100公分 x 200公分 x 300公分"
+  //           formattedRoomSize: this.formatRoomSize(room.roomSize)
+  //         }));
+  //         this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats;
+  //         console.log('房間列表載入成功', this.roomList);
+  //       } else {
+  //         this.errorMessage = '載入房型列表失敗';
+  //         this.roomList = [];
+  //       }
+  //       this.isLoading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('載入房間列表失敗', err);
+  //       this.errorMessage = '無法載入房型列表，請稍後再試';
+  //       this.isLoading = false;
+  //       this.roomList = [];
+  //     }
+  //   });
+  }

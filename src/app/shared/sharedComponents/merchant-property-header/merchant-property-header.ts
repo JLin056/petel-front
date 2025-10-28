@@ -150,6 +150,10 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
     this.router.navigate(['/merchants/property/homepage']);
   }
 
+  onClickProperty(){
+    this.router.navigate(['/merchants/property/info']);
+  }
+
   onClickReview() {
     this.router.navigate(['/merchants/property/reviewList']);
   }

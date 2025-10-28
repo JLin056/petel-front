@@ -1,20 +1,20 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './pages/home-page/home-page';
 import { HotelListPage } from './pages/hotel-list-page/hotel-list-page';
-import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page'; 
+import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page';
 import { UserPage } from './pages/user-page/user-page';
 import { ChatPage } from './pages/chat-page/chat-page';
 import { LoginPage } from './pages/login-page/login-page';
 import { RegisterPage } from './pages/register-page/register-page';
-import { ForgotPasswordPage } from './pages/forgot-password-page/forgot-password-page'; 
-import { ResetPasswordPage } from './pages/reset-password-page/reset-password-page'; 
+import { ForgotPasswordPage } from './pages/forgot-password-page/forgot-password-page';
+import { ResetPasswordPage } from './pages/reset-password-page/reset-password-page';
 import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
 import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
-import { UserMerchantPage } from './pages/user-merchant-page/user-merchant-page'; 
-import { MerchantOrderTablePage } from './pages/merchant-order-table-page/merchant-order-table-page'; 
+import { UserMerchantPage } from './pages/user-merchant-page/user-merchant-page';
+import { MerchantOrderTablePage } from './pages/merchant-order-table-page/merchant-order-table-page';
 import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
-import { RoomInfoPage } from './pages/room-info-page/room-info-page'; 
+import { RoomInfoPage } from './pages/room-info-page/room-info-page';
 import { RoomInfoEditPage } from './pages/room-info-edit-page/room-info-edit-page';
 import { RoomInfoInsertPage } from './pages/room-info-insert-page/room-info-insert-page';
 import { BookingPage } from './pages/booking-page/booking-page';
@@ -25,7 +25,10 @@ import { AdminUserTable } from './pages/admin-user-table/admin-user-table';
 import { AdminSellerTable } from './pages/admin-seller-table/admin-seller-table';
 import { AdminHotelTable } from './pages/admin-hotel-table/admin-hotel-table';
 import { UploadImg } from './shared/sharedComponents/upload-img/upload-img';
-import { UploadPropertyImage } from './pages/sellers-property-page/upload-property-image/upload-property-image'; 
+import { UploadPropertyImage } from './pages/sellers-property-page/upload-property-image/upload-property-image';
+import { MerchantPropertyInfoPage } from './pages/merchant-property-info-page/merchant-property-info-page';
+import { MerchantPropertyInsertPage } from './pages/merchant-property-insert-page/merchant-property-insert-page';
+import { MerchantPropertyEditPage } from './pages/merchant-property-edit-page/merchant-property-edit-page';
 
 export const routes: Routes = [
     {
@@ -95,6 +98,18 @@ export const routes: Routes = [
     {
         path: 'merchants/property/homepage',
         component: MerchantHomePage
+    },
+    {
+        path: 'merchants/property/info',
+        component: MerchantPropertyInfoPage
+    },
+        {
+        path: 'merchants/property/insert',
+        component: MerchantPropertyInsertPage
+    },
+        {
+        path: 'merchants/property/edit',
+        component: MerchantPropertyEditPage
     },
     {
         path: 'merchants/property/roomInfo',
