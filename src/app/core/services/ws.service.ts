@@ -34,7 +34,7 @@ export class WsService {
 
             onConnect: () => {
                 this.connected = true;
-                console.log('✅ WebSocket 已連線');
+                console.log('WebSocket 已連線');
 
                 client.subscribe('/user/queue/chat', (msg: IMessage) => {
                     try {
@@ -70,12 +70,12 @@ export class WsService {
             },
 
             onStompError: (frame) => {
-                console.error('❌ STOMP 錯誤', frame.headers['message'], frame.body);
+                console.error('STOMP 錯誤', frame.headers['message'], frame.body);
             },
 
             onWebSocketClose: () => {
                 this.connected = false;
-                console.warn('⚠️ WS 已關閉');
+                console.warn('WS 已關閉');
                 this.tryRefreshAndReconnect();
             },
         });
@@ -111,7 +111,7 @@ export class WsService {
     /** 發送訊息 */
     sendMessage(threadId: string, content: string, type = 'TEXT'): void {
         if (!this.connected) {
-            console.warn('❗ 尚未連線，請先呼叫 connect()');
+            console.warn('尚未連線，請先呼叫 connect()');
             return;
         }
         const body = JSON.stringify({ content: (content ?? '').trim(), type });
@@ -125,7 +125,7 @@ export class WsService {
             body
         });
 
-        console.log('➡️ 已送出訊息', { threadId, body });
+        console.log('已送出訊息', { threadId, body });
     }
 
     disconnect(): void {
