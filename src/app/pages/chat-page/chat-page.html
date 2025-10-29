@@ -1,1 +1,96 @@
-<p>chat-page works!</p>
+<div class="wrap">
+    <aside class="list">
+        <div class="search-bar">
+            <input type="text" placeholder="搜尋聊天室或關鍵字..." />
+            <i class="pi pi-search"></i>
+        </div>
+
+        <div class="chat-list">
+            <div class="chat-item" *ngIf="loadingThreads">
+                <div class="content">
+                    <h4>載入中...</h4>
+                    <p>請稍候</p>
+                </div>
+            </div>
+
+
+            <div
+                class="chat-item"
+                *ngFor="let t of threads; trackBy: trackByThread"
+                [class.active]="selectedThread?.threadId === t.threadId"
+                (click)="selectThread(t)"
+            >
+                <div class="img">
+                    <img
+                        src="https://petelcathay-user.s3.us-east-1.amazonaws.com/User_Profile/dog_avatar003.png"
+                        alt="頭貼"
+                    />
+                </div>
+                <div class="content">
+                    <h4>{{ t.displayName }} - 訂單 {{ t.orderId }}</h4>
+                    <p>{{ t.lastMessage || '—' }}</p>
+                </div>
+            </div>
+
+            <div class="chat-item" *ngIf="!loadingThreads && threads.length === 0">
+                <div class="content">
+                    <h4>目前沒有聊天室</h4>
+                    <p>去訂購旅館體驗一下我們的服務吧！</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <section class="room">
+        <div class="room-header">
+            <h3>
+                {{ selectedThread?.displayName || '選擇一個聊天室' }}
+                <ng-container *ngIf="selectedThread"> - 訂單 {{ selectedThread.orderId }}</ng-container>
+            </h3>
+        </div>
+
+        <div class="messages">
+            <!-- 顯示訊息（舊→新，最新在最下） -->
+            <div
+                class="msg"
+                *ngFor="let m of messages; trackBy: trackByMsg"
+                [ngClass]="isMine(m) ? 'msg-right' : 'msg-left'"
+            >
+                <!-- 對方 -->
+                <ng-container *ngIf="!isMine(m); else mineTpl">
+                    <div class="msg-row">
+                        <div class="avatar">
+                            <img
+                                src="https://petelcathay-user.s3.us-east-1.amazonaws.com/User_Profile/dog_avatar003.png"
+                                alt="旅館頭貼"
+                            />
+                        </div>
+                        <div class="msg-content">
+                            <div class="sender">{{ room?.displayName }}</div>
+                            <div class="bubble">{{ m.content }}</div>
+                            <div class="meta meta-left">
+                                <span class="time">{{ formatTime(m.createdAt) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- 自己 -->
+                <ng-template #mineTpl>
+                    <div class="bubble">{{ m.content }}</div>
+                    <div class="meta time-right">{{ formatTime(m.createdAt) }}</div>
+                </ng-template>
+            </div>
+
+            <!-- 無訊息 -->
+            <div class="msg" *ngIf="!loadingMessages && messages.length === 0 && selectedThread">
+                <div class="bubble">還沒有任何訊息，來打個招呼吧！</div>
+            </div>
+        </div>
+
+        <div class="composer">
+            <input type="text" placeholder="寫些什麼吧！" />
+            <button type="button">送出</button>
+        </div>
+    </section>
+</div>

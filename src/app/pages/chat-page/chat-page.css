@@ -1,0 +1,289 @@
+.wrap {
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    height: calc(100dvh - 190px);
+    min-height: 0;
+    flex: 1 1 auto;
+}
+
+.list {
+    width: 25%;
+    min-width: 260px;
+    border-right: 1px solid #ddd;
+    background: #fff9f3;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* 搜尋列 */
+.search-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fff9f3;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 22px;
+    outline: none;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.search-bar input:focus {
+    border-color: #d49b67;
+}
+
+.search-bar i {
+    margin-left: 10px;
+    color: #888;
+    font-size: 1.8rem;
+}
+
+/* 聊天室列表 */
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 28px;
+    margin: 4px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.chat-item:hover {
+    background-color: #f5ece4;
+    transform: translateY(-1px);
+}
+
+.img {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    margin-right: 18px;
+}
+
+.img img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.content h4 {
+    font-size: 26px;
+    color: #333;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    letter-spacing: 0.3px;
+}
+
+.content p {
+    font-size: 20px;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* 右側聊天室區 */
+.room {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+}
+
+/* 標題列 */
+.room-header {
+    flex: 0 0 auto;
+    background: #ede1d3;
+    padding: 21.5px 20px;
+    border-bottom: 1px solid #e5d6c5;
+}
+
+.room-header h3 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: #3b2d22;
+}
+
+/* 訊息區 */
+.messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 24px 28px 32px;
+    background: #fff;
+}
+
+/* 單則訊息容器 */
+.msg {
+    display: flex;
+    flex-direction: column;
+    margin: 18px 0;
+    gap: 6px;
+}
+
+/* 左右對齊規則 */
+.msg-left {
+    align-self: flex-start;      /* 整塊靠左 */
+    align-items: flex-start;     /* 內容向左對齊 */
+    text-align: left;
+}
+
+.msg-right {
+    align-self: flex-end;        /* 整塊靠右 */
+    align-items: flex-end;       /* 內容向右對齊 */
+    text-align: right;
+}
+
+/* 對方訊息 */
+.msg-left .msg-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.avatar {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+}
+.avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.msg-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 500px;
+}
+
+/* 泡泡樣式 */
+.bubble {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: #f0f0f0;        /* 對方泡泡 */
+    color: #222;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.msg-right .bubble {
+    background: #f7f7f7;        /* 自己泡泡 */
+}
+
+/* 名稱（只在左側顯示） */
+.sender {
+    font-size: 13px;
+    color: #7a6a5d;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+/* 時間／已讀列 */
+.meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    color: #8b8b8b;
+    margin-top: 4px;
+}
+
+/* 左右各自貼齊 */
+.meta-left {
+    align-self: flex-start;
+    margin-left: 6px;
+}
+
+.meta-right {
+    align-self: flex-end;
+    margin-right: 6px;
+}
+
+.read {
+    color: #8d7f72;
+}
+
+
+/* 輸入區 */
+.composer {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 18px;
+    background: #ede1d3;
+    border-top: 1px solid #e5d6c5;
+}
+
+.composer input {
+    flex: 1;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    background: #f4f4f4;
+    outline: none;
+    font-size: 20px;
+}
+
+.composer input:focus {
+    border-color: #d4a166;
+}
+
+.composer button {
+    height: 44px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 10px;
+    background: #d89547;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.composer button:hover {
+    filter: brightness(0.95);
+}
+
+@media (max-width: 900px) {
+
+    .room-header h3 {
+        font-size: 18px;
+    }
+}
+
