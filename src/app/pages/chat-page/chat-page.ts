@@ -9,6 +9,7 @@ import { filter, finalize, Subject, takeUntil } from 'rxjs';
 import { ChatMessage } from '../../core/interfaces/ChatMessage.interface';
 import { WsService } from '../../core/services/ws.service';
 import { FormsModule } from '@angular/forms';
+import { ThreadUpdate } from '../../core/interfaces/ThreadUpdate.interface';
 
 @Component({
   selector: 'app-chat-page',
@@ -142,6 +143,18 @@ export class ChatPage {
         };
     }
 
+    private bumpThreadToTop(threadId: string, lastMessage: string, time: Date): void {
+        const idx = this.threads.findIndex(t => t.threadId === threadId);
+        if (idx === -1) return;
+
+        const item = this.threads[idx];
+        item.lastMessage = lastMessage as any;
+        item.lastMessageTime = time.toISOString() as any;
+
+        this.threads.splice(idx, 1);
+        this.threads = [item, ...this.threads];
+    }
+
     onSend(): void {
         const threadId = this.selectedThread?.threadId;
         const content = (this.draft ?? '').trim();
@@ -149,7 +162,16 @@ export class ChatPage {
 
         this.ws.sendMessage(threadId, content, 'TEXT');
         this.draft = '';
+
+        this.bumpThreadToTop(threadId, content, new Date());
         this.scrollToBottom();
+    }
+
+    onEnterKey(event: any): void {
+        if (event.ctrlKey) {
+            event.preventDefault();
+            this.onSend();
+        }
     }
 
 
@@ -221,14 +243,20 @@ export class ChatPage {
         this.ws.connect();
 
         this.ws.messages$
-        .pipe(
-            takeUntil(this.destroy$),
-            filter(m => !!this.selectedThread&& m.threadId === this.selectedThread.threadId)
-        )
-        .subscribe(m => {
-            this.messages = [...this.messages, m];
-            this.scrollToBottom();
-        });
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(m => !!this.selectedThread&& m.threadId === this.selectedThread.threadId)
+            )
+            .subscribe(m => {
+                this.messages = [...this.messages, m];
+                this.scrollToBottom();
+            });
+
+        this.ws.threadUpdates$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(ev => {
+                this.bumpThreadToTop(ev.threadId, ev.lastMessage, ev.lastMessageTime);
+            });
     }
 
     /**

@@ -94,7 +94,6 @@
             placeholder="寫些什麼吧！"
             [(ngModel)]="draft"
             [disabled]="!selectedThread"
-            (keyup.enter)="onSend()"
             />
             <button type="button" (click)="onSend()" [disabled]="!selectedThread || !draft.trim()">送出</button>
         </div>
