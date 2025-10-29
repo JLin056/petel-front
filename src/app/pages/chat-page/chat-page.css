@@ -123,17 +123,26 @@
 
 /* 標題列 */
 .room-header {
-    flex: 0 0 auto;
+    /* flex: 0 0 auto; */
     background: #ede1d3;
     padding: 21.5px 20px;
     border-bottom: 1px solid #e5d6c5;
 }
 
 .room-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     margin: 0;
     font-size: 30px;
     font-weight: 700;
     color: #3b2d22;
+}
+
+.status-tag {
+    font-size: 20px;
+    padding: 4px 10px;
+    border-radius: 6px;
 }
 
 /* 訊息區 */

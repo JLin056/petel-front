@@ -27,9 +27,18 @@
                     />
                 </div>
                 <div class="content">
-                    <h4>{{ t.displayName }} - 訂單 {{ t.orderId }}</h4>
+                    <h4>
+                        {{ t.displayName }} - 訂單 {{ t.orderId }}
+                    </h4>
                     <p>{{ t.lastMessage || '—' }}</p>
                 </div>
+
+                <!-- <p-tag
+                    [value]="t.orderStatus"
+                    [severity]="getSeverity(t.orderStatus)"
+                    class="status-tag sm">
+                </p-tag> -->
+
             </div>
 
             <div class="chat-item" *ngIf="!loadingThreads && threads.length === 0">
@@ -45,7 +54,14 @@
         <div class="room-header">
             <h3>
                 {{ selectedThread?.displayName || '選擇一個聊天室' }}
-                <ng-container *ngIf="selectedThread"> - 訂單 {{ selectedThread.orderId }}</ng-container>
+                <ng-container *ngIf="selectedThread">
+                    - 訂單 {{ selectedThread.orderId }}
+                    <p-tag
+                        [value]="selectedThread.orderStatus"
+                        [severity]="getSeverity(selectedThread.orderStatus)"
+                        class="status-tag sm">
+                    </p-tag>
+                </ng-container>
             </h3>
         </div>
 

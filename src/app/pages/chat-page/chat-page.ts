@@ -10,11 +10,12 @@ import { ChatMessage } from '../../core/interfaces/ChatMessage.interface';
 import { WsService } from '../../core/services/ws.service';
 import { FormsModule } from '@angular/forms';
 import { ThreadUpdate } from '../../core/interfaces/ThreadUpdate.interface';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-chat-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TagModule],
   templateUrl: './chat-page.html',
   styleUrl: './chat-page.css'
 })
@@ -218,6 +219,16 @@ export class ChatPage {
             const el = this.messagesBox.nativeElement;
             el.scrollTop = el.scrollHeight;
         });
+    }
+
+    getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
+        switch (status) {
+            case '已完成': return 'success';
+            case '已確認': return 'info';
+            case '待付款': case '未付款': return 'warn';
+            case '已取消': return 'danger';
+            default: return null;
+        }
     }
 
     /**
