@@ -1,7 +1,7 @@
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { BookService, OrderData } from './../../core/services/book-service';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { HotelService } from '../../core/services/hotel-service';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './booking-done-page.html',
     styleUrl: './booking-done-page.css'
 })
-export class BookingDonePage {
+export class BookingDonePage implements OnInit, OnDestroy {
 
     /** 旅館相關屬性 */
     propertyName = '';
@@ -37,12 +37,15 @@ export class BookingDonePage {
      */
     ngOnInit(): void {
 
-        this.orderData = this.bookService.getSharedOrderData();
-
-        if (!this.orderData) {
-            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
-            this.router.navigateByUrl('/');
+        if (this.bookService.getSharedOrderData().propertyId === '') {
+            if (!localStorage.getItem('sharedOrderData')) {
+                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+                this.router.navigateByUrl('/');
+            }
+            this.bookService.setSharedOrderData(JSON.parse(localStorage.getItem('sharedOrderData')!));
         }
+
+        this.orderData = this.bookService.getSharedOrderData();
 
         this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
             next: (response) => {
@@ -60,6 +63,13 @@ export class BookingDonePage {
                 return;
             }
         });
+    }
+
+    /**
+     * 頁面關閉後的業務邏輯
+     */
+    ngOnDestroy(): void {
+        localStorage.clear();
     }
 
     /**
