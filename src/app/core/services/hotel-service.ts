@@ -8,6 +8,8 @@ import { HOTEL002Tranrs } from '../interfaces/HOTEL002Res.interface';
 import { Mwheader, Req } from '../interfaces/Req.interface';
 import { Res } from '../interfaces/Res.interface';
 import { environment } from '../../../environment';
+import { HOTEL004Tranrq } from '../interfaces/HOTEL004Req.interface';
+import { HOTEL004Tranrs } from '../interfaces/HOTEL004Res.interface';
 
 
 @Injectable({
@@ -79,8 +81,8 @@ export class HotelService {
         };
 
         const tranrq: HOTEL002Tranrq = {
-            id: propertyId
-        };
+            id: propertyId,
+        }
 
         const postData: Req<HOTEL002Tranrq> = {
             MWHEADER: header,
@@ -89,4 +91,28 @@ export class HotelService {
 
         return this.http.post<Res<HOTEL002Tranrs>>(`${environment.BASE_URL}/hotels/detail`, postData);
     }
+
+    /**
+     * HOTEL-004 查詢單筆旅館設備資訊
+     * @param propertyId 旅館編號
+     * @returns
+     */
+    queryHotelFacilities(propertyId: string) {
+
+        const header: Mwheader = {
+            MSGID: 'HOTEL-004'
+        };
+
+        const tranrq: HOTEL004Tranrq = {
+            propertyId: propertyId,
+        }
+
+        const postData: Req<HOTEL004Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        }
+
+        return this.http.post<Res<HOTEL004Tranrs>>(`${environment.BASE_URL}/hotels/facilities`, postData);
+    }
 }
+

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 import { Router } from '@angular/router';
-import { MerchService } from '../../core/services/merch-service';
 import { CommonModule } from '@angular/common';
+import { MerchService } from '../../core/services/merch-service';
 
 @Component({
   selector: 'app-merchant-home-page',
@@ -188,7 +188,7 @@ export class MerchantHomePage implements OnInit {
    */
   onDetail(room: any): void {
     // 💡 新增 Log，輸出完整的 room 物件，用於除錯
-    console.log('點擊房型詳細資料，完整的 Room 物件:', room); 
+    console.log('點擊房型詳細資料，完整的 Room 物件:', room);
 
     // 檢查 room.id 是否存在
     if (!room || !room.id) {
@@ -197,7 +197,7 @@ export class MerchantHomePage implements OnInit {
       console.error(this.errorMessage, room);
       return;
     }
-    
+
     console.log('導航到詳細頁面，房型 ID:', room.id);
 
     // 傳遞 roomId
