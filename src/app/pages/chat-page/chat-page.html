@@ -65,7 +65,7 @@
             </h3>
         </div>
 
-        <div class="messages" #messagesBox>
+        <div class="messages" #messagesBox (scroll)="onMessagesScroll()">
             <!-- 顯示訊息（舊→新，最新在最下） -->
             <div
                 class="msg"
