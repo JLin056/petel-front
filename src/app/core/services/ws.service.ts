@@ -3,6 +3,7 @@ import { Client, IMessage } from '@stomp/stompjs';
 import { Auth } from './auth.service';
 import { catchError, firstValueFrom, of, Subject } from 'rxjs';
 import { ChatMessage } from '../interfaces/ChatMessage.interface';
+import { ThreadUpdate } from '../interfaces/ThreadUpdate.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class WsService {
 
     private incoming$ = new Subject<ChatMessage>();
     public readonly messages$ = this.incoming$.asObservable();
+
+    private threadUpdatesSub$ = new Subject<ThreadUpdate>();
+    public readonly threadUpdates$ = this.threadUpdatesSub$.asObservable();
 
     constructor(private authService: Auth) {
         this.client = this.createClient();
@@ -46,6 +50,21 @@ export class WsService {
                         this.incoming$.next(data);
                     } catch {
                         console.warn('[WS] 無法解析訊息：', msg.body);
+                    }
+                });
+
+                client.subscribe('/user/queue/thread-updates', (msg: IMessage) => {
+                    try {
+                        const raw = JSON.parse(msg.body);
+                        const ev: ThreadUpdate = {
+                            threadId: raw.threadId,
+                            lastMessage: raw.lastMessage,
+                            lastMessageTime: new Date(raw.lastMessageTime),
+                            senderId: raw.senderId
+                        };
+                        this.threadUpdatesSub$.next(ev);
+                    } catch (e) {
+                        console.warn('[WS] 無法解析 thread-updates：', e, msg.body);
                     }
                 });
             },
