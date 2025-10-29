@@ -29,6 +29,7 @@ import { UploadPropertyImage } from './pages/sellers-property-page/upload-proper
 import { MerchantPropertyInfoPage } from './pages/merchant-property-info-page/merchant-property-info-page';
 import { MerchantPropertyInsertPage } from './pages/merchant-property-insert-page/merchant-property-insert-page';
 import { MerchantPropertyEditPage } from './pages/merchant-property-edit-page/merchant-property-edit-page';
+import { MerchantChatPage } from './pages/merchant-chat-page/merchant-chat-page';
 
 export const routes: Routes = [
     {
@@ -94,6 +95,10 @@ export const routes: Routes = [
     {
         path: 'merchants/register',
         component: MerchantRegisterPage
+    },
+    {
+        path: 'merchants/userPage/chat',
+        component: MerchantChatPage
     },
     {
         path: 'merchants/property/homepage',

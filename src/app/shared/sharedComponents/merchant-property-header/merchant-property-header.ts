@@ -173,10 +173,10 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
         summary: '尚未登入',
         detail: '請先登入後再使用聊天室功能'
       });
-      this.router.navigate(['/login'], { queryParams: { redirect: '/chat' } });
+      this.router.navigate(['/merchants/login'], { queryParams: { redirect: 'merchants/userPage/chat' } });
       return;
     }
-    this.router.navigate(['/chat']);
+    this.router.navigate(['merchants/userPage/chat']);
   }
 
   /**
@@ -190,7 +190,7 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
         summary: '尚未登入',
         detail: '請先登入後再看會員資訊'
       });
-      this.router.navigate(['/login'], { queryParams: { redirect: '/merchants/userPage' } }); // 修正導向路徑
+      this.router.navigate(['/merchants/login'], { queryParams: { redirect: '/merchants/userPage' } }); // 修正導向路徑
       return;
     }
     this.router.navigate(['/merchants/userPage']);
