@@ -1,18 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';  // 👈 加入這個
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from "primeng/button";
 import { Toast } from "primeng/toast";
-import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
-import { UpdateUserDialog } from "../update-user-dialog/update-user-dialog";
-import { Router } from '@angular/router';
-import { MerchService } from '../../core/services/merch-service';
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
+import { propertyList } from '../../core/interfaces/MERCH013Res.interface';
+import { MerchService } from '../../core/services/merch-service';
+import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
 import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
-
 
 @Component({
   selector: 'app-user-merchant-page',
-  imports: [Button, Toast, SharedConfirmDialog, UpdateSellerInfoDialog],
+  imports: [
+    CommonModule,  // 👈 加入這個，支援 *ngIf 和 *ngFor
+    Button,
+    Toast,
+    SharedConfirmDialog,
+    UpdateSellerInfoDialog
+  ],
   templateUrl: './user-merchant-page.html',
   styleUrl: './user-merchant-page.css',
   providers: [MessageService]
@@ -21,18 +27,14 @@ export class UserMerchantPage implements OnInit {
   editVisible = false;
   deleteUserVisible = false;
   deleteOrderVisible = false;
-  /** deleteRoomVisible */
   deletePropertyVisible = false;
-  /** roomToDelete */
   propertyToDelete: any = null;
-  /** roomList */
-  hotelList: any[] = [];
 
-  /** isLoading */
-  isLoading = false;
-  /** isDeleting */
+  // 👇 修正：統一變數名
+  hotelList: propertyList[] = [];
+  isLoading = false;  // 使用者資訊載入狀態
+  isLoadingHotels = false;  // 👈 新增：旅館列表載入狀態
   isDeleting = false;
-  /** errorMessage */
   errorMessage = '';
 
   user: Partial<MERCH011Tranrs & { avatarUrl: string }> = {
@@ -52,7 +54,6 @@ export class UserMerchantPage implements OnInit {
 
   ngOnInit(): void {
     this.fetchSellerInfo();
-
   }
 
   /**
@@ -60,13 +61,10 @@ export class UserMerchantPage implements OnInit {
    */
   fetchSellerInfo(): void {
     this.isLoading = true;
-
     const accountId = localStorage.getItem('accountId');
 
     console.log('=== 開始取得商家資訊 ===');
-    console.log('1. 從 localStorage 取得的 accountId:', accountId);
-    console.log('2. accountId 類型:', typeof accountId);
-    console.log('3. accountId 長度:', accountId?.length);
+    console.log('1. accountId:', accountId);
 
     if (!accountId) {
       this.toast.add({
@@ -81,18 +79,13 @@ export class UserMerchantPage implements OnInit {
       return;
     }
 
-    // 👈 在這裡加入 console.log 看實際發送的內容
-    console.log('4. 準備發送 API 請求');
-
     this.merchService.getSellerInfo(accountId).subscribe({
       next: (res) => {
-        console.log('5. API 回應成功:', res);
+        console.log('商家資訊 API 回應:', res);
         this.isLoading = false;
 
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
           const data = res.TRANRS;
-          console.log('商家資訊取得成功', data);
-
           this.user = {
             accountId: data.accountId,
             name: data.name,
@@ -103,23 +96,26 @@ export class UserMerchantPage implements OnInit {
               : 'assets/img/avatar.png',
             id: data.id,
             mediaId: data.mediaId
-              ? `assets/img/avatars/${data.mediaId}.png`
-              : 'assets/img/avatar.png'
           };
-
+          if (data.id) {
+            this.loadHotels(data.id);
+          }
         } else {
-          console.log('7. API 回傳錯誤:', res.MWHEADER);
           this.toast.add({
             severity: 'error',
             summary: '錯誤',
-            detail: `取得商家資訊失敗`
+            detail: '取得商家資訊失敗'
           });
         }
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('8. API 錯誤:', err);
-        console.error('錯誤詳情:', err.error);
+        console.error('API 錯誤:', err);
+        this.toast.add({
+          severity: 'error',
+          summary: '錯誤',
+          detail: '載入失敗，請稍後再試'
+        });
       }
     });
   }
@@ -130,46 +126,104 @@ export class UserMerchantPage implements OnInit {
 
   onEditSaved(updated: any) {
     this.user = { ...this.user, ...updated };
-    this.fetchSellerInfo(); // 如果想立即重新抓 API 更新資料
+    this.fetchSellerInfo();
   }
 
-
-  showConfirm() {
-    this.deleteUserVisible = true;
+  /**
+   * 旅館圖片
+   */
+  getHotelImage(hotelId: string): string {
+    // 之後可改為實際 API
+    return 'img/hotelImg.png';
   }
 
-  onDeleteUserConfirmed() {
-    // 呼叫你的 service 來刪除會員
-    // this.userService.deleteUser(this.user.id).subscribe(...);
+  trackByHotelId(index: number, hotel: any): string {
+    return hotel.id;
+  }
 
-    this.deleteUserVisible = false;
+  /**
+   * 載入商家底下的旅館列表 (MERCH-013)
+   */
+  loadHotels(sellerId: string): void {
+    this.isLoadingHotels = true;
+    this.errorMessage = '';
 
-    // 顯示成功訊息
-    this.toast.add({
-      severity: 'success',
-      summary: '成功',
-      detail: '會員已刪除'
+    console.log('=== 開始載入旅館列表 ===');
+    console.log('sellerId:', sellerId);
+
+    if (!sellerId) {
+      this.errorMessage = '無法取得商家帳號資訊';
+      this.isLoadingHotels = false;
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: this.errorMessage
+      });
+      return;
+    }
+
+    const tranrq = { sellerId };
+
+    this.merchService.querySellerProperties(tranrq).subscribe({
+      next: (res) => {
+        console.log('旅館列表 API 回應:', res);
+
+        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
+          this.hotelList = res.TRANRS.properties || [];
+          console.log('旅館列表載入成功，數量:', this.hotelList.length);
+          console.log('旅館列表內容:', this.hotelList);
+        } else {
+          this.errorMessage = res.MWHEADER.RETURNDESC || '載入旅館列表失敗';
+          this.hotelList = [];
+          this.toast.add({
+            severity: 'error',
+            summary: '錯誤',
+            detail: this.errorMessage
+          });
+        }
+        this.isLoadingHotels = false;
+      },
+      error: (err) => {
+        console.error('載入旅館列表失敗:', err);
+        this.errorMessage = '無法載入旅館列表，請稍後再試';
+        this.isLoadingHotels = false;
+        this.hotelList = [];
+        this.toast.add({
+          severity: 'error',
+          summary: '錯誤',
+          detail: this.errorMessage
+        });
+      }
     });
-
-    // 👈 刪除後清除 localStorage 並導回登入頁
-    localStorage.removeItem('accountId');
-    localStorage.removeItem('token');
-    setTimeout(() => {
-      this.router.navigate(['/merchants/login']);
-    }, 1500);
   }
 
+  /**
+   * 進入單筆旅館首頁
+   */
   onPropertyClick(): void {
     this.router.navigate(['/merchants/property/homepage']);
   }
 
+  /**
+   * 新增旅館
+   */
   onAddHotel() {
     this.router.navigate(['/merchants/property/insert']);
   }
 
+  /**
+   * 修改旅館
+   * @param property 
+   * @returns 
+   */
   onEditHotel(property: any): void {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得房型資料';
+      this.errorMessage = '無法取得旅館資料';
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: this.errorMessage
+      });
       return;
     }
     this.router.navigate(['/merchants/property/edit'], {
@@ -177,18 +231,40 @@ export class UserMerchantPage implements OnInit {
     });
   }
 
+  /**
+   * 詳細旅館資訊頁
+   * @param property 
+   * @returns 
+   */
   onHotelDetail(property: any): void {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館 ID (property.id 遺失)。請檢查後端 API 返回的旅館物件中 ID 欄位的名稱。';
+      this.errorMessage = '無法取得旅館 ID';
       console.error(this.errorMessage, property);
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: this.errorMessage
+      });
       return;
     }
-    this.router.navigate(['/merchants/property/info'], { state: { propertyId: property.id } });
+    this.router.navigate(['/merchants/property/info'], {
+      state: { propertyId: property.id }
+    });
   }
 
+  /**
+   * 刪除旅館確認框
+   * @param property 
+   * @returns 
+   */
   showDeleteHotelConfirm(property: any) {
     if (!property || !property.id) {
       this.errorMessage = '無法取得旅館';
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: this.errorMessage
+      });
       return;
     }
     this.propertyToDelete = property;
@@ -197,7 +273,7 @@ export class UserMerchantPage implements OnInit {
   }
 
   /**
-   * 刪除
+   * 刪除旅館
    */
   onDelete() {
     if (!this.propertyToDelete || !this.propertyToDelete.id) {
@@ -209,63 +285,42 @@ export class UserMerchantPage implements OnInit {
 
     this.merchService.deleteRoomDetail(this.propertyToDelete.id).subscribe({
       next: (res) => {
-        console.log('刪除API回應', res);
+        console.log('刪除 API 回應:', res);
         if (res.MWHEADER.RETURNCODE === '0000') {
           const index = this.hotelList.indexOf(this.propertyToDelete);
           if (index > -1) {
             this.hotelList.splice(index, 1);
           }
-          console.log('已成功刪除旅館', this.propertyToDelete.name)
+          console.log('已成功刪除旅館:', this.propertyToDelete.name);
+          this.toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: '旅館已刪除'
+          });
           this.propertyToDelete = null;
           this.deletePropertyVisible = false;
         } else {
-          this.errorMessage = '刪除失敗';
+          this.errorMessage = res.MWHEADER.RETURNDESC || '刪除失敗';
+          this.toast.add({
+            severity: 'error',
+            summary: '錯誤',
+            detail: this.errorMessage
+          });
         }
         this.isDeleting = false;
       },
       error: (err) => {
-        console.error('刪除失敗', err);
-        this.errorMessage = err.error?.TRANRS?.message || '刪除旅館時發生錯誤，請稍後再試';
+        console.error('刪除失敗:', err);
+        this.errorMessage = err.error?.MWHEADER?.RETURNDESC || '刪除旅館時發生錯誤，請稍後再試';
         this.isDeleting = false;
         this.deletePropertyVisible = false;
         this.propertyToDelete = null;
+        this.toast.add({
+          severity: 'error',
+          summary: '錯誤',
+          detail: this.errorMessage
+        });
       }
     });
   }
-
-  // loadHotels(): void {
-  //   this.isLoading = true;
-  //   this.errorMessage = '';
-
-  //   const tranrq = {
-  //     propertyId: this.confirm
-  //   };
-
-  //   this.merchService.queryPropertyRooms(tranrq).subscribe({
-  //     next: (res) => {
-  //       console.log('API 回應:', res);
-
-  //       if (res.MWHEADER.RETURNCODE === '0000') {
-  //         this.roomList = (res.TRANRS?.rooms || []).map((room: any) => ({
-  //           ...room,
-  //           // 轉換 petTypeId 成 petTypeName
-  //           petTypeName: this.petTypeMap[room.petTypeId] || '未知寵物',
-  //           // 格式化 roomSize，將 "100x200x300" 轉換成 "100公分 x 200公分 x 300公分"
-  //           formattedRoomSize: this.formatRoomSize(room.roomSize)
-  //         }));
-  //         this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats;
-  //         console.log('房間列表載入成功', this.roomList);
-  //       } else {
-  //         this.errorMessage = '載入房型列表失敗';
-  //         this.roomList = [];
-  //       }
-  //       this.isLoading = false;
-  //     },
-  //     error: (err) => {
-  //       console.error('載入房間列表失敗', err);
-  //       this.errorMessage = '無法載入房型列表，請稍後再試';
-  //       this.isLoading = false;
-  //       this.roomList = [];
-  //     }
-  //   });
-  }
+}

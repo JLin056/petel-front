@@ -17,6 +17,8 @@ import { MERCH009Tranrs } from '../interfaces/MERCH009Res.interface';
 import { MERCH010Tranrs } from '../interfaces/MERCH010Res.interface';
 import { MERCH009Tranrq } from '../interfaces/MERCH009Req.interface';
 import { MERCH010Tranrq } from '../interfaces/MERCH010Req.interface';
+import { MERCH013Tranrq } from '../interfaces/MERCH013Req.interface';
+import { MERCH013Tranrs } from '../interfaces/MERCH013Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -178,5 +180,23 @@ export class MerchService {
     }
 
     return this.http.post<Res<MERCH012Tranrs>>('http://localhost:8080/merchants/rooms/get', postData);
+  }
+
+  /**
+   * MERCH-013 查詢特定商家旗下旅館資訊
+   * @param tranrq 單商家所有旅館資訊
+   * @returns
+   */
+  querySellerProperties(tranrq: MERCH013Tranrq) {
+    const header: Mwheader = {
+      MSGID: 'MERCH-013'
+    };
+
+    const postData: Req<MERCH013Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH013Tranrs>>('http://localhost:8080/merchants/properties/get', postData);
   }
 }

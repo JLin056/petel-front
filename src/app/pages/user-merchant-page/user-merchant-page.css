@@ -1,326 +1,458 @@
-/* === 商家會員資訊區 === */
-.user-info-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-    padding: 45px 10px;
-    flex-wrap: wrap;
+/* 整體容器 */
+.wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
-/* 頭貼 */
-.image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.image img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* 右側會員資訊 */
-.user-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-    max-width: 400px;
-}
-
-.title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.pi-info-circle {
-    font-size: 2.5rem;
-}
-
-.title h3 {
-    font-size: 2.5rem;
-}
-
-.content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.item {
+/* ========== 商家會員資訊卡片 ========== */
+.user-card {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
     gap: 30px;
+    margin-bottom: 40px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 按鈕區：置中整個畫面 */
-.button-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 5px;
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
 }
 
-::ng-deep .p-button.button {
-    font-size: 1.4rem;
-    font-weight: 600;
-    padding: 6px 20px;
-    border-radius: 10px;
-}
-
-/* 分隔線 */
-.divider {
-    width: 100%;
-    height: 1px;
-    background-color: #e0e0e0;
-    margin: 20px 0;
-}
-
-/* ===== 我的旅館 ===== */
-.hotel-list-section {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #333;
-    padding-left: 20px;
-    /* 👈 往右移一點點 */
-}
-
-.hotel-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* 浮動式旅館卡片 */
-.hotel-card {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    cursor: pointer;
-    overflow: hidden;
+/* 頭像 */
+.user-avatar {
     position: relative;
-}
-
-.hotel-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-/* 旅館圖片 */
-.hotel-image {
-    width: 200px;
-    height: 180px;
-    object-fit: cover;
     flex-shrink: 0;
-    transition: transform 0.3s ease;
 }
 
-.hotel-card:hover .hotel-image {
-    transform: scale(1.05);
+.user-avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 旅館資訊 */
-.hotel-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 8px;
-    padding: 20px;
-    flex: 1;
-}
-
-.hotel-name {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 4px;
-}
-
-.hotel-detail {
-    font-size: 1.3rem;
-    color: #666;
-    line-height: 1.6;
-}
-
-/* 按鈕區 */
-.hotel-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #eee;
-}
-
-.btn-edit,
-.btn-delete {
-    flex: 1;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.3rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-.btn-edit {
-    background-color: #974b2c;
-    color: white;
-}
-
-.btn-edit:hover {
-    background-color: #7d3e23;
-}
-
-.btn-delete {
-    background-color: #dc3545;
-    color: white;
-}
-
-.btn-delete:hover {
-    background-color: #c82333;
-}
-
-/* 房型數量標籤 */
-.hotel-rooms {
+.avatar-badge {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(151, 75, 44, 0.9);
+    bottom: 5px;
+    right: 5px;
+    background: #974b2c;
     color: white;
-    padding: 10px 14px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 600;
-    line-height: 1.4;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* 空狀態 - 👈 重點修改：完全居中 */
-.empty-state {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     display: flex;
-    /* 👈 改成 flex */
-    flex-direction: column;
-    /* 👈 垂直排列 */
     align-items: center;
-    /* 👈 水平居中 */
     justify-content: center;
-    /* 👈 垂直居中 */
-    padding: 60px 20px;
-    text-align: center;
-    /* 👈 文字也居中 */
+    border: 3px solid #fff;
 }
 
-.empty-state i {
-    margin-bottom: 16px;
-    color: #8b5e3c;
+.avatar-badge i {
+    font-size: 14px;
 }
 
-.empty-state p {
-    font-size: 1.6rem;
-    color: #666;
-    margin-bottom: 24px;
+/* 使用者詳情 */
+.user-details {
+    flex: 1;
 }
 
-.btn-add {
-    padding: 12px 28px;
-    background-color: #974b2c;
+.user-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 16px 0;
+}
+
+.user-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #5a6c7d;
+    font-size: 15px;
+}
+
+.info-item i {
+    color: #974b2c;
+    font-size: 16px;
+}
+
+/* 使用者操作 */
+.user-actions {
+    flex-shrink: 0;
+}
+
+.btn-edit-user {
+    background: #974b2c;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 1.4rem;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
+    transition: all 0.3s ease;
 }
 
-.btn-add:hover {
-    background-color: #7d3e23;
+.btn-edit-user:hover {
+    background: #7d3e23;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
 }
 
-.btn-add i {
-    font-size: 1.4rem;
+/* 分隔區 */
+.section-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+    margin: 50px 0;
 }
 
-/* 載入中 - 👈 也要居中 */
-.loading-container {
+/* ========== 旅館區域 ========== */
+.hotels-section {
+    margin-top: 20px;
+}
+
+/* 標題列 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #974b2c;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: #974b2c;
+}
+
+.hotel-count {
+    background: #f0f0f0;
+    color: #666;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-add-hotel {
+    background: #974b2c;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-add-hotel:hover {
+    background: #7d3e23;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
+}
+
+/* ========== 旅館網格 ========== */
+.hotels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+/* 旅館卡片 */
+.hotel-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.hotel-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 圖片區 */
+.hotel-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.hotel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.hotel-card:hover .hotel-image {
+    transform: scale(1.1);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(151, 75, 44, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.hotel-card:hover .image-overlay {
+    background: rgba(151, 75, 44, 0.85);
+}
+
+.image-overlay span {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.hotel-card:hover .image-overlay span {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 內容區 */
+.hotel-content {
+    padding: 24px;
+}
+
+.hotel-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 16px 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.hotel-name:hover {
+    color: #974b2c;
+}
+
+.hotel-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #5a6c7d;
+    font-size: 14px;
+}
+
+.info-row i {
+    color: #974b2c;
+    font-size: 14px;
+    width: 16px;
+}
+
+/* 按鈕組 */
+.hotel-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.btn-detail {
+    flex: 1;
+    background: #974b2c;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-detail:hover {
+    background: #7d3e23;
+}
+
+.btn-delete {
+    background: #fff;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* ========== 載入與空狀態 ========== */
+.loading-state {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* 👈 水平居中 */
     justify-content: center;
-    /* 👈 垂直居中 */
-    padding: 60px 20px;
+    padding: 80px 20px;
 }
 
-.loading-container i {
+.loading-state i {
+    font-size: 48px;
+    color: #974b2c;
     margin-bottom: 16px;
 }
 
-.loading-container p {
-    font-size: 1.4rem;
+.loading-state p {
+    font-size: 16px;
     color: #666;
 }
 
-/* 舊的樣式（保留作為備用） */
-.empty-text,
-.error {
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
     text-align: center;
-    color: #888;
-    font-size: 1.75rem;
-    margin-top: 30px;
-    font-weight: 400;
 }
 
-/* 響應式設計 */
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.empty-icon i {
+    font-size: 56px;
+    color: #974b2c;
+}
+
+.empty-state h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 12px 0;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 32px 0;
+}
+
+.btn-add-first {
+    background: #974b2c;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-add-first:hover {
+    background: #7d3e23;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(151, 75, 44, 0.4);
+}
+
+/* ========== 響應式設計 ========== */
 @media (max-width: 768px) {
-    .hotel-card {
+    .user-card {
         flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
     }
 
-    .hotel-image {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
         width: 100%;
-        height: 200px;
     }
 
-    .hotel-buttons {
-        flex-direction: column;
+    .btn-add-hotel {
+        width: 100%;
+        justify-content: center;
     }
 
-    .hotel-rooms {
-        top: auto;
-        bottom: 16px;
-        right: 16px;
+    .hotels-grid {
+        grid-template-columns: 1fr;
     }
 
     .section-title {
-        padding-left: 20px;
-        margin-left: 20px;
-        /* 👈 手機版縮小一點 */
+        font-size: 24px;
     }
 }
