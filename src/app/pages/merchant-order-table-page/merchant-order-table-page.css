@@ -1,0 +1,132 @@
+body {
+  background-color: #ffffff;
+  /* 整體白底 */
+}
+
+.title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 35px;
+  margin-bottom: 1px;
+  margin-top: 35px;
+  color: black;
+}
+
+/* 搜尋框區塊 */
+.search-container {
+  background-color: #ffffff;
+  padding: 10px 40px 30px;
+}
+
+/* 搜尋列置中 */
+.search-row {
+  display: flex;
+  justify-content: right;
+  margin-bottom: 25px;
+}
+
+/* 搜尋框本體 */
+.search-input {
+  position: relative;
+  width: 130px;
+}
+
+.search-input input {
+  width: 100%;
+  border-radius: 24px;
+  border: 1.5px solid #f6eae0;
+  padding: 10px 15px 10px 38px;
+  background-color: #fdfdfc;
+  font-size: 15px;
+  color: #5c4a3f;
+  box-shadow: 0 2px 6px rgba(227, 185, 143, 0.2);
+  transition: all 0.2s ease;
+}
+
+.search-input input:focus {
+  outline: none;
+  border-color: #f3d2b5;
+  box-shadow: 0 3px 8px rgba(227, 164, 110, 0.3);
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #cf9d6a;
+  font-size: 1rem;
+}
+
+/* 表格外框 */
+.table-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(220, 190, 150, 0.15);
+  border: 1px solid #f1dfcf;
+}
+
+/* 表格樣式 */
+:host ::ng-deep .p-datatable-thead>tr>th {
+  background-color: #ffffff;
+  color: #6b4f3f;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 2px solid #f1dfcf;
+}
+
+:host ::ng-deep .p-datatable-tbody>tr>td {
+  text-align: center;
+  vertical-align: middle;
+  color: #5c4a3f;
+  white-space: nowrap;
+  /* 不換行 */
+  overflow: hidden;
+  /* 超出隱藏 */
+  text-overflow: ellipsis;
+  /* 超出顯示 ... */
+}
+
+/* 按鈕 */
+:host ::ng-deep .button {
+  background-color: #ebae88 !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  transition: 0.2s ease;
+}
+
+:host ::ng-deep .button:hover {
+  background-color: #d69772 !important;
+}
+
+/* 狀態標籤（柔和莫蘭迪系） */
+:host ::ng-deep .p-tag.custom-tag {
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 3px 10px;
+}
+
+:host ::ng-deep .p-tag-success.custom-tag {
+  background-color: #d4ead7;
+  color: #315c41;
+}
+
+:host ::ng-deep .p-tag-info.custom-tag {
+  background-color: #dce3ef;
+  color: #36485a;
+}
+
+:host ::ng-deep .p-tag-warn.custom-tag {
+  background-color: #f9e8c0;
+  color: #665029;
+}
+
+:host ::ng-deep .p-tag-danger.custom-tag {
+  background-color: #f8c7c7;
+  color: #703b3b;
+}

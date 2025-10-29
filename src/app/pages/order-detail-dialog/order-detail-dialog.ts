@@ -1,14 +1,16 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { Dialog } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TagModule } from 'primeng/tag';
 import { Order } from '../../core/interfaces/ADMIN003Res.interface';
 
 @Component({
   selector: 'app-order-detail-dialog',
-  imports: [CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule],
+  imports: [CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule, TagModule],
   templateUrl: './order-detail-dialog.html',
   styleUrl: './order-detail-dialog.css'
 })
@@ -18,6 +20,8 @@ export class OrderDetailDialog {
 
   @Input() order: Order | null = null;
   @Output() noteUpdated = new EventEmitter<{ orderId: string, note: string }>();
+
+  constructor(private router: Router) {}
 
   // 備註編輯狀態
   isEditingNote = false;
@@ -55,16 +59,24 @@ export class OrderDetailDialog {
     }
   }
 
-  // 導航到會員列表(暫時用 console.log，之後可以串接路由)
+  // 導航到會員列表
   navigateToMember() {
-    console.log('導航到會員:', this.order?.USER_NAME);
-    // TODO: 實作導航到會員列表並搜尋該會員
+    if (this.order?.USER_NAME) {
+      this.router.navigate(['/admin/userTable'], {
+        queryParams: { search: this.order.USER_NAME }
+      });
+      this.onHideDialog();
+    }
   }
 
-  // 導航到旅館列表(暫時用 console.log，之後可以串接路由)
+  // 導航到旅館列表
   navigateToHotel() {
-    console.log('導航到旅館:', this.order?.PROPERTY_NAME);
-    // TODO: 實作導航到旅館列表並搜尋該旅館
+    if (this.order?.PROPERTY_NAME) {
+      this.router.navigate(['/admin/hotelTable'], {
+        queryParams: { search: this.order.PROPERTY_NAME }
+      });
+      this.onHideDialog();
+    }
   }
 
   // 取得狀態顏色

@@ -1,0 +1,326 @@
+/* room-info-page.css - 完整版 */
+
+/* ------------------------------------- */
+/* 基礎設定與容器 */
+/* ------------------------------------- */
+
+.room-form-container {
+    background-color: #f8f1e9;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 25px 60px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    min-height: 85vh;
+    font-family: 'Arial', sans-serif;
+}
+
+.page-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: #3a1f0b;
+    border-bottom: 3px solid #3a1f0b;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* ------------------------------------- */
+/* 表單佈局 */
+/* ------------------------------------- */
+
+.form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-main-content.sequential-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-row-2col {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+.form-row-2col .flex-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ------------------------------------- */
+/* 標籤樣式 */
+/* ------------------------------------- */
+
+.section-label {
+    font-size: 32px;
+    display: block;
+    font-weight: 600;
+    color: #3a1f0b;
+    margin-bottom: 6px;
+}
+
+/* ------------------------------------- */
+/* 圖片上傳區塊 */
+/* ------------------------------------- */
+
+.image-upload-section {
+    gap: 15px;
+    padding-bottom: 0;
+}
+
+.image-preview-area {
+    width: 100%;
+    height: 200px;
+    background-color: #f1e9e0;
+    border: 2px dashed #a4642b;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #a4642b;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.image-placeholder i {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+/* ------------------------------------- */
+/* 資訊顯示區塊（純文字顯示）*/
+/* ------------------------------------- */
+
+.info-section {
+    padding-bottom: 0 !important;
+}
+
+.info-text {
+    width: 100%;
+    padding: 10px 0;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    color: #3a1f0b;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.price-text {
+    font-weight: bold;
+    color: #3a1f0b;
+    font-size: 26px;
+}
+
+/* ------------------------------------- */
+/* 房間介紹內容區塊 */
+/* ------------------------------------- */
+
+.description-content {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px 0;
+    background-color: transparent;
+    border: none;
+    color: #3a1f0b;
+    font-size: 22px;
+    line-height: 1.8;
+    overflow-wrap: break-word;
+}
+
+.description-content:empty::before {
+    content: '暫無房間介紹';
+    color: #999;
+    font-style: italic;
+}
+
+.description-content h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #3a1f0b;
+}
+
+.description-content h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #3a1f0b;
+}
+
+.description-content p {
+    margin: 8px 0;
+}
+
+.description-content ul,
+.description-content ol {
+    margin: 8px 0;
+    padding-left: 35px;
+}
+
+.description-content li {
+    margin: 5px 0;
+}
+
+.description-content strong {
+    font-weight: bold;
+}
+
+.description-content em {
+    font-style: italic;
+}
+
+.description-content u {
+    text-decoration: underline;
+}
+
+/* ------------------------------------- */
+/* 按鈕區塊 */
+/* ------------------------------------- */
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin-bottom: 20px;
+}
+
+.btn-save,
+.btn-cancel {
+    background-color: #974B2C;
+    color: white;
+    border: none;
+    padding: 14px 45px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    min-width: 200px;
+}
+
+.btn-save {
+    background-color: #974B2C;
+}
+
+.btn-save:hover {
+    background-color: #a4642b;
+}
+
+.btn-cancel {
+    background-color: #6c5443;
+}
+
+.btn-cancel:hover {
+    background-color: #554133;
+}
+
+.btn-save:disabled,
+.btn-cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-buttons button i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* ------------------------------------- */
+/* Loading 容器 */
+/* ------------------------------------- */
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 15px;
+}
+
+.loading-container p {
+    font-size: 20px;
+    color: #6c5443;
+    margin: 0;
+}
+
+/* ------------------------------------- */
+/* 錯誤訊息顯示 */
+/* ------------------------------------- */
+
+.error-message {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* ------------------------------------- */
+/* 響應式優化 */
+/* ------------------------------------- */
+
+@media (max-width: 1024px) {
+    .form-main-content.sequential-layout {
+        gap: 15px;
+    }
+
+    .form-row-2col {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .room-form-container {
+        padding: 20px 30px;
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+
+    .section-label {
+        font-size: 26px;
+    }
+
+    .info-text {
+        font-size: 20px;
+    }
+
+    .description-content {
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,60 @@
+<h3 class="title">訂單列表</h3>
+
+<div class="search-container">
+  <div class="search-row">
+    <div class="search-input">
+      <i class="pi pi-search search-icon"></i>
+      <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+        placeholder="搜尋訂單" />
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <p-table #dt [value]="orderList" dataKey="ORDER_ID" [rows]="5" [rowsPerPageOptions]="[5,10,15]" [loading]="loading"
+      [paginator]="true"
+      [globalFilterFields]="['ORDER_ID','CHECK_IN','CHECK_OUT','USER_NAME','HOTEL_CHARGES','ROOM','STATUS']"
+      [tableStyle]="{ 'min-width': '75rem', 'table-layout': 'fixed' }">
+
+      <ng-template #header>
+        <tr>
+          <th style="width: 90px">訂單編號</th>
+          <th style="width: 120px">入住日期</th>
+          <th style="width: 120px">退房日期</th>
+          <th style="width: 110px">主人姓名</th>
+          <th style="width: 150px">房型</th>
+          <th style="width: 100px">總價格</th>
+          <th style="width: 100px">狀態</th>
+          <th style="width: 100px">操作</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-order>
+        <tr>
+          <td>{{ order.ORDER_ID }}</td>
+          <td>{{ order.CHECK_IN }}</td>
+          <td>{{ order.CHECK_OUT }}</td>
+          <td>{{ order.USER_NAME }}</td>
+          <td>{{ order.ROOM }}</td>
+          <td>${{ order.HOTEL_CHARGES }}</td>
+          <td>
+            <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)" class="custom-tag" />
+          </td>
+          <td>
+            <p-button label="詳細資訊" size="small" styleClass="button" (onClick)="showOrderDetail(order)" />
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="8" class="text-center py-4">目前沒有訂單資料</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Dialog -->
+<app-merchant-order-detail-dialog [(visible)]="showDetailDialog" [order]="selectedOrder"
+  (noteUpdated)="onNoteUpdated($event)">
+</app-merchant-order-detail-dialog>

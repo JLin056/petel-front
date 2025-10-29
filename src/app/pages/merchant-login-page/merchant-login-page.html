@@ -24,11 +24,8 @@
 
             <div class="input-container-password">
                 <label for="password">密碼</label>
-                <p-password
-                formControlName="password"
-                [feedback]="false"
-                inputStyleClass="petel-input"
-                placeholder="請輸入密碼">
+                <p-password formControlName="password" [feedback]="false" inputStyleClass="petel-input"
+                    placeholder="請輸入密碼">
                 </p-password>
             </div>
             <div *ngIf="passwordControl?.invalid && passwordControl?.touched" class="error-text">
@@ -41,13 +38,8 @@
 
             <div class="button-container">
                 <button pButton type="button" class="p-button-secondary ghost">取消</button>
-                <button
-                    pButton
-                    type="submit"
-                    [disabled]="isLoading || loginForm.invalid || loginForm.pending"
-                    [loading]="isLoading"
-                    label="登入"
-                ></button>
+                <button pButton type="submit" [disabled]="isLoading || loginForm.invalid || loginForm.pending"
+                    [loading]="isLoading" label="登入"></button>
             </div>
         </form>
 
@@ -58,3 +50,6 @@
     </div>
 </div>
 
+<app-add-seller-info-dialog [(visible)]="showFillDialog" (save)="onDialogSave($event)"
+    (cancel)="showFillDialog = false">
+</app-add-seller-info-dialog>

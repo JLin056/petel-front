@@ -1,74 +1,367 @@
-.review {
+/* ------------------------------------- */
+/* 頁面整體佈局 */
+/* ------------------------------------- */
+
+.reviews-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* 頁面標題區塊 */
+.page-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #3a1f0b;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.page-title i {
+    color: #fbbf24;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: #6c5443;
+    margin: 0;
+}
+
+/* ------------------------------------- */
+/* 評價卡片樣式 */
+/* ------------------------------------- */
+
+.review-card {
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* PrimeNG Card 內部覆蓋 - 卡片框：20px */
+::ng-deep .review-card .p-card {
+    border-radius: 20px;
+    /* 👈 卡片框：20px */
+    box-shadow: none;
+}
+
+::ng-deep .review-card .p-card-header {
+    border-radius: 20px 20px 0 0;
+    /* 👈 卡片上方圓角：20px */
+}
+
+::ng-deep .review-card .p-card-body {
+    padding: 0;
+}
+
+::ng-deep .review-card .p-card-content {
+    padding: 0;
+}
+
+::ng-deep .review-card .p-card-footer {
+    border-radius: 0 0 20px 20px;
+    /* 👈 卡片下方圓角：20px */
+}
+
+.review-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* 卡片頭部 */
+.review-card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8f1e9 0%, #f2ebe5 100%);
+    border-radius: 20px 20px 0 0;
+    /* 👈 卡片上方圓角：20px */
 }
 
-.review-text-content {
-    flex-basis: 80%;
-    margin-right: 30px;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-.stars-rating {
-    /* 確保評分區塊不會太寬 */
-    flex-basis: 20%;
-    /* 設置一個基礎寬度，讓它佔右邊 20% */
-    flex-shrink: 0;
-    /* 防止被擠壓 */
+.review-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6c5443;
+    font-size: 14px;
+}
 
-    /* 讓星星評分的小項目在右邊垂直堆疊，並靠右對齊 */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #3a1f0b;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* 卡片內容區塊 */
+.review-content-wrapper {
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+    min-height: 200px;
+}
+
+/* 左側評價文字區塊 */
+.review-text-section {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    /* 讓分數靠右對齊 */
-
-    font-size: 25px;
-    /* 調整字體大小 */
-    line-height: 1.2;
+    gap: 16px;
 }
 
-.page-title{
-    font-size: 35px;
-    margin-top: 45px;
-    margin-bottom: 25px;
-    margin-left: 15px;
-}
-.review-card {
-    background-color: #fffdf8;
-    border: 1px solid #d8b39a;
+.average-rating {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: #fff9f0;
     border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    position: relative;
-    /* 如果 .review-header 需要絕對定位，保留它 */
+    /* 👈 列表框：8px */
+    border: 1px solid #fbbf24;
 }
 
-.review-header {
-    margin-top: 15px;
-    margin-bottom: 15px;
+.avg-score {
+    font-size: 32px;
+    font-weight: bold;
+    color: #f59e0b;
 }
 
-.order-number {
-    font-size: 28px;
-}
-
-/* 確保評價內容的字體大小，現在它在 .review-text-content 內 */
-.review-content {
+.review-comment {
+    font-size: 16px;
+    line-height: 1.8;
     color: #3a1f0b;
-    font-size: 25px;
-    /* 這裡不再需要 margin-bottom，間距由 .review 容器控制 */
-    margin-bottom: 0;
+    padding: 16px;
+    background-color: #fffdf8;
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+    border-left: 4px solid #974B2C;
+    position: relative;
+    flex: 1;
 }
 
-/* 按鈕靠左對齊 */
-.btn-detail {
-    background-color: #974B2C;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    display: block;
+.quote-icon {
+    color: #c5b09b;
+    font-size: 14px;
+}
+
+.pi-quote-left {
+    margin-right: 8px;
+}
+
+.pi-quote-right {
+    margin-left: 8px;
+}
+
+/* 分隔線 */
+.review-divider {
+    margin: 0;
+}
+
+/* 右側評分區塊 */
+.rating-section {
+    flex: 0 0 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+}
+
+.rating-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rating-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #3a1f0b;
+}
+
+.rating-label i {
+    color: #974B2C;
+}
+
+.rating-value {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.rating-number {
+    font-size: 18px;
+    font-weight: bold;
+    color: #f59e0b;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* PrimeNG Rating 組件樣式覆蓋 */
+::ng-deep .rating-display .p-rating-item {
     font-size: 20px;
 }
 
+::ng-deep .rating-value .p-rating-item {
+    font-size: 18px;
+}
+
+/* 卡片底部 */
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 20px;
+    background-color: #fafafa;
+    border-radius: 0 0 20px 20px;
+    /* 👈 卡片下方圓角：20px */
+}
+
+/* PrimeNG Button 圓角覆蓋 - 按鈕：10px */
+::ng-deep .card-footer .p-button {
+    border-radius: 10px;
+    /* 👈 按鈕：10px */
+}
+
+/* ------------------------------------- */
+/* PrimeNG Tag 樣式覆蓋 - 列表框：8px */
+/* ------------------------------------- */
+
+::ng-deep .header-left .p-tag {
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+/* ------------------------------------- */
+/* 無評價狀態 */
+/* ------------------------------------- */
+
+.no-reviews-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 60px 0;
+}
+
+.no-reviews-card {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* 無評價卡片圓角 - 卡片框：20px */
+::ng-deep .no-reviews-card .p-card {
+    border-radius: 20px;
+    /* 👈 卡片框：20px */
+}
+
+.no-reviews-content {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.no-reviews-icon {
+    font-size: 64px;
+    color: #c5b09b;
+    margin-bottom: 20px;
+}
+
+.no-reviews-content h3 {
+    font-size: 24px;
+    color: #3a1f0b;
+    margin: 0 0 12px 0;
+}
+
+.no-reviews-content p {
+    font-size: 16px;
+    color: #6c5443;
+    margin: 0;
+}
+
+/* ------------------------------------- */
+/* 分頁器 */
+/* ------------------------------------- */
+
+.paginator-wrapper {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+/* PrimeNG Paginator 按鈕圓角覆蓋 - 列表框：8px */
+::ng-deep .paginator-wrapper .p-paginator .p-paginator-pages .p-paginator-page {
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+}
+
+::ng-deep .paginator-wrapper .p-paginator .p-paginator-first,
+::ng-deep .paginator-wrapper .p-paginator .p-paginator-prev,
+::ng-deep .paginator-wrapper .p-paginator .p-paginator-next,
+::ng-deep .paginator-wrapper .p-paginator .p-paginator-last {
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+}
+
+::ng-deep .paginator-wrapper .p-dropdown {
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+}
+
+::ng-deep .paginator-wrapper .p-dropdown-panel {
+    border-radius: 8px;
+    /* 👈 列表框：8px */
+}
+
+/* ------------------------------------- */
+/* 響應式設計 */
+/* ------------------------------------- */
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 28px;
+    }
+
+    .review-content-wrapper {
+        flex-direction: column;
+    }
+
+    .review-divider {
+        display: none;
+    }
+
+    .rating-section {
+        flex: 1;
+    }
+
+    .review-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

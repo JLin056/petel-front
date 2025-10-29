@@ -1,166 +1,217 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="hotel_infos">
-        <div class="hotel_infos_photo">
-            <img class="hotel_photo"
-                src="https://blog-static.kkday.com/zh-tw/blog/wp-content/uploads/2025/03/Snapinst.app_278024614_170723668634791_2379235125175504030_n_1080.jpg" />
-        </div>
-        <div class="hotel_infos_text">
+    <div class="booking-container">
 
-            <p class="hotel_infos_text_title"> 您的住宿資訊： </p>
-
-            <table class="hotel_infos_text_table">
-                <tr>
-                    <td> 旅館名稱 </td>
-                    <td> {{ propertyName }} </td>
-                </tr>
-                <tr>
-                    <td> 旅館地址 </td>
-                    <td> {{ propertyAddress }} </td>
-                </tr>
-                <tr>
-                    <td> 旅館電話 </td>
-                    <td> {{ propertyTel }} </td>
-                </tr>
-                <tr>
-                    <td> 旅館資訊 </td>
-                    <td> {{ propertyInfo }} </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="order_infos">
-        <div class="order_infos_titie">
-            您的訂單資訊
-        </div>
-        <div class="order_infos_detail">
-            <table class="order_infos_detail_table">
-                <tr>
-                    <td> 入住日期 </td>
-                    <td> {{ checkIn }} </td>
-                </tr>
-                <tr>
-                    <td> 退房日期 </td>
-                    <td> {{ checkOut }} </td>
-                </tr>
-                <tr>
-                    <td> 房型名稱 </td>
-                    <td> {{ roomName }} </td>
-                </tr>
-                <tr>
-                    <td> 房型金額 </td>
-                    <td> {{ roomPrice | price }} </td>
-                </tr>
-                <tr>
-                    <td> 房型數量 </td>
-                    <td> {{ roomQuantity }} </td>
-                </tr>
-                <tr>
-                    <td> 房型總金額 </td>
-                    <td> {{ totalPrice | price }} </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="additional_infos">
-        <div class="additional_infos_titie">
-            其它重要資訊
-        </div>
-        <div class="additional_infos_text">
-            <table class="additional_infos_text_table">
-                <tr>
-                    <td> 入住時間 </td>
-                    <td> {{ checkNotice }} </td>
-                </tr>
-                <tr>
-                    <td> 旅館注意事項 </td>
-                    <td> {{ propertyNotice }} </td>
-                </tr>
-                <tr>
-                    <td> 寵物注意事項 </td>
-                    <td> {{ petNotice }} </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="guest_infos">
-
-        <div class="guest_infos_title">
-            訂購人資訊
-        </div>
-
-        <div class="guest_infos_same">
-
-            <p-radiobutton formControlName="guestType" name="guest" value="y" inputId="ingredient1" />
-            <label for="ingredient1" class="guestType"> 同會員資料：使用該帳號註冊紀錄之姓名、Email、手機號碼 </label>
-
-            @if (form.controls.guestType.value === 'y') {
-            <div class="member_data">
-                <p class="member_data_p"> 訂購人姓名：{{ memberName }} </p>
-                <p class="member_data_p"> 訂購人Email：{{ memberEmail }} </p>
-                <p class="member_data_p"> 訂購人手機號碼：{{ memberPhone }} </p>
+        <!-- 左側區域 -->
+        <div class="left-section">
+            <!-- 住宿資訊 -->
+            <div class="hotel_infos section-card">
+                <div class="hotel_infos_photo">
+                    <img class="hotel_photo"
+                        src="https://blog-static.kkday.com/zh-tw/blog/wp-content/uploads/2025/03/Snapinst.app_278024614_170723668634791_2379235125175504030_n_1080.jpg" />
+                </div>
+                <div class="hotel_infos_text">
+                    <p class="section-title">您的住宿資訊</p>
+                    <table class="info-table">
+                        <tr>
+                            <td class="label-col">旅館名稱</td>
+                            <td>{{ propertyName }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">旅館地址</td>
+                            <td>{{ propertyAddress }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">旅館電話</td>
+                            <td>{{ propertyTel }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">旅館資訊</td>
+                            <td>{{ propertyInfo }}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            }
 
-        </div>
+            <!-- 訂購人資訊 -->
+            <div class="guest_infos section-card">
+                <p class="section-title">訂購人資訊</p>
 
-        <div class="guest_infos_diff">
+                <div class="guest_infos_same radio-option">
+                    <div class="radio-wrapper">
+                        <p-radiobutton formControlName="guestType" name="guest" value="y" inputId="ingredient1" />
+                        <label for="ingredient1" class="guestType">同會員資料：使用該帳號註冊紀錄之姓名、Email、手機號碼</label>
+                    </div>
 
-            <p-radiobutton formControlName="guestType" name="guest" value="n" inputId="ingredient2" />
-            <label for="ingredient2" class="guestType">自行輸入</label>
+                    @if (guestType.value === 'y') {
+                    <div class="member_data">
+                        <table class="member-data-table">
+                            <tr>
+                                <td class="label-col">訂購人姓名</td>
+                                <td>{{ memberName }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">訂購人Email</td>
+                                <td>{{ memberEmail }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label-col">訂購人手機號碼</td>
+                                <td>{{ memberPhone }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    }
+                </div>
 
-            @if (form.controls.guestType.value === 'n') {
-            <div class="guest_infos_diff_input">
-                <p-inputgroup>
-                    <input pInputText placeholder="請輸入訂購人的姓名" formControlName="guestName" />
-                </p-inputgroup>
-                <p-inputgroup>
-                    <input pInputText placeholder="請輸入訂購人的手機號碼" formControlName="guestPhone" />
-                </p-inputgroup>
+                <div class="guest_infos_diff radio-option">
+                    <div class="radio-wrapper">
+                        <p-radiobutton formControlName="guestType" name="guest" value="n" inputId="ingredient2"
+                            (onClick)="cleanTouched()" />
+                        <label for="ingredient2" class="guestType">自行輸入</label>
+                    </div>
+
+                    @if (guestType.value === 'n') {
+                    <div class="guest_infos_diff_input">
+                        <div class="flex flex-col gap-2">
+                            <label for="guestName">訂購人完整姓名</label>
+                            <input pInputText id="guestName" aria-describedby="guestName-help"
+                                formControlName="guestName" class="input-field" />
+                            @if ((guestName.getRawValue() === null || guestName.getRawValue() === '') &&
+                            guestName.touched) {
+                            <small id="validation">此欄位為必填</small>
+                            }
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="guestPhone">訂購人手機號碼</label>
+                            <input pInputText id="guestPhone" aria-describedby="guestPhone-help"
+                                formControlName="guestPhone" class="input-field" />
+                            @if ((guestPhone.getRawValue() === null || guestPhone.getRawValue() === '') &&
+                            guestPhone.touched) {
+                            <small id="validation">此欄位為必填</small>
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
             </div>
-            }
 
-        </div>
-
-    </div>
-
-    <div class="order_note">
-        <div class="order_note_title">
-            其餘需求
-        </div>
-        <div class="order_note_text">
-            <p-editor class="input_square_frame" placeholder="例如：客製化飲食、餵藥照顧、即時狀態回報、預計抵達時間、其他需求等" formControlName="note"
-                [style]="{ height: '320px' }">
-                <ng-template #header>
-                    <span class="ql-formats">
-                        <button type="button" class="ql-bold" aria-label="Bold"></button>
-                        <button type="button" class="ql-italic" aria-label="Italic"></button>
-                        <button type="button" class="ql-underline" aria-label="Underline"></button>
-                    </span>
-                </ng-template>
-            </p-editor>
-        </div>
-    </div>
-
-    <div class="payment_options">
-        <div class="total_price">
-            <p class="title"> 總金額 </p>
-            <p class="amount"> ${{ totalAmount }} </p>
-        </div>
-        <div class="payment_ways">
-            <div class="flex flex-col gap-4">
-                @for (paymentOption of paymentOptions; track $index) {
-                <p-radiobutton [inputId]="paymentOption.label" name="paymentMethod" [value]="paymentOption.value"
-                    formControlName="selectedPayment" />
-                <label [for]="paymentOption.label" class="ml-2"> {{ paymentOption.label }} </label>
-                <p class="payment_statement"> {{ paymentOption.statement }} </p>
-                }
+            <!-- 其餘需求 -->
+            <div class="order_note section-card">
+                <p class="section-title">其餘需求</p>
+                <div class="order_note_text">
+                    <div class="flex flex-col gap-2">
+                        <label for="note">特殊需求說明</label>
+                        <textarea id="note" aria-describedby="note-help" class="order_note_textarea"
+                            formControlName="note" rows="5"></textarea>
+                        <small id="note-help">例如：客製化飲食、餵藥照顧、即時狀態回報、預計抵達時間、其他需求等</small>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- 右側區域 -->
+        <div class="right-section">
+            <!-- 訂單資訊 -->
+            <div class="order_infos section-card">
+                <p class="section-title">您的訂單資訊</p>
+
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>入住日期</span>
+                        <span>{{ this.orderData.checkIn }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>退房日期</span>
+                        <span>{{ this.orderData.checkOut }}</span>
+                    </div>
+                </div>
+
+                <div class="room-items">
+                    @for (room of this.orderData.rooms; track room.roomName; let i = $index) {
+                    <div class="room-item">
+                        <div class="room-header" (click)="toggleRoom(i)">
+                            <div class="room-basic-info">
+                                <span class="room-number">訂購房型 {{ i + 1 }}</span>
+                                <span class="room-name">{{ room.roomName }}</span>
+                            </div>
+                            <div class="room-price-summary">
+                                <i class="pi" [ngClass]="room.expanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+                            </div>
+                        </div>
+
+                        @if (room.expanded) {
+                        <div class="room-details">
+                            <table class="room-detail-table">
+                                <tr>
+                                    <td class="label-col">房型金額</td>
+                                    <td>{{ room.roomPrice | price }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">房型數量</td>
+                                    <td>{{ room.roomQuantity }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-col">房型總額</td>
+                                    <td>{{ room.roomTotal | price }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="order-total">
+                    <span class="total-label">總金額</span>
+                    <span class="total-amount">{{ totalAmount | price }}</span>
+                </div>
+            </div>
+
+            <!-- 其它重要資訊 -->
+            <div class="additional_infos section-card">
+                <p class="section-title">其它重要資訊</p>
+                <div class="additional_infos_text">
+                    <table class="info-table">
+                        <tr>
+                            <td class="label-col">入住時間</td>
+                            <td>{{ checkNotice }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">旅館注意事項</td>
+                            <td>{{ propertyNotice }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">寵物注意事項</td>
+                            <td>{{ petNotice }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 總金額 & 付款方式 -->
+            <div class="payment_options section-card">
+                <div class="total_price">
+                    <p class="price-label">總金額</p>
+                    <p class="total-amount">{{ totalAmount | price }}</p>
+                </div>
+                <div class="payment_ways">
+                    <div class="payment-methods">
+                        @for (paymentOption of paymentOptions; track $index) {
+                        <div class="payment-option" (click)="selectPayment(paymentOption.value)"
+                            [class.selected]="form.get('selectedPayment')?.value === paymentOption.value">
+                            <div class="radio-wrapper">
+                                <p-radiobutton [inputId]="paymentOption.label" name="paymentMethod"
+                                    [value]="paymentOption.value" formControlName="selectedPayment" />
+                                <label [for]="paymentOption.label">{{ paymentOption.label }}</label>
+                            </div>
+                            <p class="payment_statement">{{ paymentOption.statement }}</p>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- 送出訂單按鈕 -->
+            <button class="submit_button" type="submit">送出訂單</button>
+        </div>
     </div>
-
-    <button class="submit_button" type="submit"> 送出訂單 </button>
-
 </form>

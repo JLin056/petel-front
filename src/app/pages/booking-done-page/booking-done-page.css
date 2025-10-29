@@ -1,266 +1,248 @@
-.component {
-  background-color: #f8f1e9;
-  padding: 40px;
-}
-
-/* ===== 訂單成功容器 ===== */
+/* 主卡片外框區域 */
 .order_success_container {
-  max-width: 900px;
-  margin: 40px auto;
-  background-color: #d8b39a;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-height: 95vh;
+    overflow-y: auto;
+    max-width: 1625px;
+    margin: 0 auto;
+    padding: 28px;
+    margin-top: 32px;
 }
 
-/* ===== 成功標題區域 ===== */
+/* 成功標題區域不異動 */
 .success_header {
-  background: linear-gradient(135deg, #974B2C 0%, #974B2C 100%);
-  padding: 40px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
 }
-
-.success_header i {
-  font-size: 40px;
-  color: white;
+.success_header .pi-check-circle {
+    font-size: 50px;
+    color: #22c55e;
+    margin-bottom: 10px;
+    display: block;
 }
-
 .success_header h1 {
-  font-size: 31px;
-  font-weight: 700;
-  color: white;
-  margin: 0;
+    font-size: 32px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
 }
 
-/* ===== 訂單內容區域 ===== */
+/* 雙欄 Grid */
 .order_content {
-  padding: 40px;
-  background-color: #fafafa;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
 }
 
-/* ===== 資訊區塊（卡片化設計） ===== */
+/* 卡片外框統一20px */
+.hotel-info-card,
 .info_section {
-  margin-bottom: 24px;
-  background-color: white;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease;
+    border-radius: 20px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 10px rgba(100,100,128,0.05);
+    padding: 22px 24px;
 }
 
-.info_section:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+/* 標題維持設計 */
+.section-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 14px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.info_section:last-of-type {
-  margin-bottom: 32px;
-}
-
-.section_title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #ca8a04;
-}
-
-.info_list {
-  padding-left: 0;
-}
-
-/* ===== info_item 布局（適用於住宿資訊） ===== */
-.info_item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #e0e0e0;
-  gap: 16px;
-  font-size: 18px;
-  color: #666;
-  line-height: 1.8;
-}
-
-.info_item:last-child {
-  margin-bottom: 0;
-  border-bottom: none;
-}
-
-/* ===== 標題部分（左側） ===== */
-.info_item_title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  min-width: 120px;
-  flex-shrink: 0;
-}
-
-/* ===== 內容部分（中間） ===== */
-.info_item_text {
-  font-size: 18px;
-  color: #666;
-  flex-grow: 1;
-  text-align: left;
-}
-
-/* ===== 第一個 info_item 特殊布局（包含評分） ===== */
-.info_section:first-of-type .info_item:first-child {
-  display: grid;
-  grid-template-columns: 120px 1fr auto;
-  align-items: center;
-}
-
-/* ===== 評價區域（右側） ===== */
-.rating_section {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-/* PrimeNG Rating 組件樣式調整 */
-::ng-deep .rating_section .p-rating {
-  gap: 4px;
-}
-
-::ng-deep .rating_section .p-rating .p-rating-icon {
-  font-size: 20px;
-  color: #ffc107;
-}
-
-::ng-deep .rating_section .p-rating .p-rating-icon.pi-star {
-  color: #ddd;
-}
-
-::ng-deep .rating_section .p-rating .p-rating-icon.pi-star-fill {
-  color: #ffc107;
-}
-
-/* ===== 按鈕群組 ===== */
-.button_group {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 32px;
-}
-
-/* PrimeNG 按鈕基礎樣式 */
-::ng-deep .button_group .p-button {
-  padding: 12px 24px !important;
-  font-size: 18px !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-::ng-deep .button_group .p-button:hover {
-  transform: translateY(-2px);
-}
-
-::ng-deep .button_group .p-button:active {
-  transform: translateY(0);
-}
-
-/* 所有按鈕統一樣式 */
-::ng-deep .btn_chat,
-::ng-deep .btn_history,
-::ng-deep .btn_edit,
-::ng-deep .btn_cancel {
-  background-color: #ca8a04 !important;
-  border-color: #ca8a04 !important;
-  color: white !important;
-}
-
-::ng-deep .btn_chat:hover,
-::ng-deep .btn_history:hover,
-::ng-deep .btn_edit:hover,
-::ng-deep .btn_cancel:hover {
-  background-color: #a67003 !important;
-  border-color: #a67003 !important;
-  box-shadow: 0 4px 12px rgba(202, 138, 4, 0.4) !important;
-}
-
-/* 按鈕圖標樣式 */
-::ng-deep .button_group .p-button-icon {
-  font-size: 18px;
-  margin-right: 8px;
-}
-
-/* ===== 響應式設計 ===== */
-@media (max-width: 768px) {
-  .order_success_container {
-    margin: 20px;
-    border-radius: 8px;
-  }
-
-  .success_header {
-    padding: 30px 20px;
-    flex-direction: column;
-  }
-
-  .success_header h1 {
-    font-size: 24px;
-  }
-
-  .success_header i {
-    font-size: 31px;
-  }
-
-  .order_content {
-    padding: 24px 16px;
-  }
-
-  .info_section {
-    padding: 20px;
-  }
-
-  .section_title {
-    font-size: 18px;
-  }
-
-  .info_item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    font-size: 17px;
-  }
-
-  .info_item_title {
-    min-width: auto;
-    font-size: 16px;
-    font-weight: 700;
-    color: #ca8a04;
-  }
-
-  .info_item_text {
-    font-size: 17px;
-    padding-left: 0;
-  }
-
-  .rating_section {
-    align-self: flex-end;
-  }
-
-  .info_section:first-of-type .info_item:first-child {
+/* 住宿資訊列表化, 列表+8px radius */
+.hotel-info-list {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .button_group {
-    flex-direction: column;
     gap: 12px;
-  }
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.hotel-info-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(140,140,140,0.06);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    font-size: 20px;
+    color: #111827;
+}
 
-  ::ng-deep .button_group .p-button {
-    width: 100%;
-  }
+/* 內文固定欄寬 */
+/* 標籤、值 */
+.info_item_title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #6b7280;
+    min-width: 90px;
+}
+.info_item_text {
+    font-size: 20px;
+    color: #111827;
+    text-align: right;
+    flex: 1;
+}
+
+/* 訂單摘要框, 8px */
+.order-summary {
+    background: #ffffff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    border: 1px solid #e5e7eb;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+.summary-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 20px;
+}
+.summary-row span:first-child {
+    color: #6b7280;
+    font-weight: 500;
+    font-size: 20px;
+}
+.summary-row span:last-child {
+    color: #111827;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+/* 房型項目列表 8px */
+.room-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+.room-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+}
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: #ffffff;
+    transition: background 0.2s;
+}
+.room-header:hover {
+    background: #fafafa;
+}
+.room-basic-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+/* 房型icon外觀變淺，像標籤不可互動 */
+.room-number {
+    background: #f3f4f6;
+    color: #bababa;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 5px 14px;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    border: none;
+    box-shadow: none;
+}
+.room-number i {
+    color: #bababa !important;
+    margin-right: 3px;
+    font-size: 15px;
+}
+.room-name {
+    font-weight: 500;
+    color: #111827;
+    font-size: 20px;
+}
+.room-quantity {
+    color: #6b7280;
+    font-size: 17.5px;
+}
+
+/* 按鈕區 - 左右置中，圓角20px，陰影 */
+.button_group {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 38px;
+    margin-bottom: 8px;
+}
+.button_group .petel-btn,
+.button_group button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: orange;
+    color: #fff;
+    border: 2px solid orange;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 12px 34px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    box-shadow: 0 4px 18px rgba(249, 115, 22, 0.25);
+}
+.button_group .petel-btn:hover,
+.button_group button:hover {
+    background: #ea580c;
+    border-color: #ea580c;
+}
+.button_group .petel-btn i,
+.button_group button i {
+    font-size: 20px;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+}
+
+/* RWD 響應式：手機與平板 */
+@media (max-width: 1024px) {
+    .order_content {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .button_group {
+        grid-column: 1;
+    }
+}
+@media (max-width: 768px) {
+    .order_success_container {
+        padding: 20px;
+        border-radius: 20px;
+        max-height: 100vh;
+    }
+    .order_content { gap: 14px; }
+    .hotel-info-card { padding: 12px 6px; }
+    .room-items { max-height: 200px; }
+    .room-header { padding: 10px 12px; }
+    .room-number { font-size: 12px; padding: 4px 12px;}
+    .button_group { flex-direction: column; gap: 13px;}
+}
+@media (max-width: 480px) {
+    .order_success_container { padding: 18px; }
 }

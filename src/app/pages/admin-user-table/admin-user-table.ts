@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -45,8 +46,12 @@ export class AdminUserTable implements OnInit {
   constructor(
     private http: HttpClient,
     private adminService: AdminService,
+    private route: ActivatedRoute,
+    private router: Router,
     private messageService: MessageService
   ) {}
+   
+ 
 
   memberList: ADMIN007Member[] = [];
   statuses: UserStatus[] = [];
@@ -76,6 +81,17 @@ export class AdminUserTable implements OnInit {
       { label: '停用', value: 'INACTIVE' },
       { label: '暫停', value: 'SUSPENDED' }
     ];
+
+    // 檢查 URL 查詢參數
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.nameFilter = params['search'];
+        // 延遲執行搜尋，等待表格初始化完成
+        setTimeout(() => {
+          this.onSearch();
+        }, 100);
+      }
+    });
   }
 
   /**
@@ -308,13 +324,8 @@ export class AdminUserTable implements OnInit {
    * 查看會員的歷史訂單
    */
   viewMemberOrders(member: ADMIN007Member) {
-    console.log('查看會員歷史訂單:', member.ACCOUNT_ID, member.NAME);
-    // TODO: 實作導航到訂單列表頁面，並根據會員 ID 進行篩選
-    // 方式 1: 使用 Router 導航並傳遞參數
-    // this.router.navigate(['/orders'], { queryParams: { memberId: member.ACCOUNT_ID, memberName: member.NAME } });
-
-    // 方式 2: 使用狀態管理或 Service 傳遞篩選條件
-    // this.orderService.setMemberFilter(member.ACCOUNT_ID);
-    // this.router.navigate(['/orders']);
+    this.router.navigate(['/admin/orderTable'], {
+      queryParams: { userName: member.NAME }
+    });
   }
 }

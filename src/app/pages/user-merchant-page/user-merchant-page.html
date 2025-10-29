@@ -1,0 +1,126 @@
+<div class="wrap">
+    <!-- 商家會員資訊卡片 -->
+    <div class="user-card">
+        <div class="user-avatar">
+            <img [src]="user.avatarUrl || 'img/avatar.png'" alt="商家頭像">
+            <div class="avatar-badge">
+                <i class="pi pi-verified"></i>
+            </div>
+        </div>
+
+        <div class="user-details">
+            <h2 class="user-title">{{ user.name }}</h2>
+            <div class="user-info-grid">
+                <div class="info-item">
+                    <i class="pi pi-envelope"></i>
+                    <span>{{ user.email }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="pi pi-phone"></i>
+                    <span>{{ user.phone }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-actions">
+            <button class="btn-edit-user" (click)="openEdit()">
+                <i class="pi pi-pencil"></i>
+                修改資料
+            </button>
+        </div>
+    </div>
+
+    <!-- 分隔區 -->
+    <div class="section-divider"></div>
+
+    <!-- 我的旅館區域 -->
+    <div class="hotels-section">
+        <!-- 標題列 -->
+        <div class="section-header">
+            <div class="header-left">
+                <h2 class="section-title">
+                    <i class="pi pi-building"></i>
+                    我的旅館
+                </h2>
+                <span class="hotel-count" *ngIf="hotelList.length > 0">
+                    共 {{ hotelList.length }} 間旅館
+                </span>
+            </div>
+            <button class="btn-add-hotel" (click)="onAddHotel()" *ngIf="hotelList.length > 0">
+                <i class="pi pi-plus"></i>
+                新增旅館
+            </button>
+        </div>
+
+        <!-- 載入中 -->
+        <div class="loading-state" *ngIf="isLoadingHotels">
+            <i class="pi pi-spin pi-spinner"></i>
+            <p>載入中...</p>
+        </div>
+
+        <!-- 旅館列表 -->
+        <div class="hotels-grid" *ngIf="!isLoadingHotels && hotelList.length > 0">
+            <div class="hotel-card" *ngFor="let hotel of hotelList; trackBy: trackByHotelId">
+                <!-- 圖片區 -->
+                <div class="hotel-image-wrapper" (click)="onPropertyClick()">
+                    <img [src]="getHotelImage(hotel.id)" [alt]="hotel.name" class="hotel-image">
+                    <div class="image-overlay">
+                        <span>查看房型</span>
+                    </div>
+                </div>
+
+                <!-- 內容區 -->
+                <div class="hotel-content">
+                    <h3 class="hotel-name" (click)="onPropertyClick()">
+                        {{ hotel.name }}
+                    </h3>
+
+                    <div class="hotel-info-list">
+                        <div class="info-row">
+                            <i class="pi pi-phone"></i>
+                            <span>{{ hotel.tel || '未提供' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <i class="pi pi-map-marker"></i>
+                            <span>{{ hotel.address || '未提供' }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 按鈕組 -->
+                    <div class="hotel-actions">
+                        <button class="btn-detail" (click)="onHotelDetail(hotel)">
+                            <i class="pi pi-info-circle"></i>
+                            詳細資訊
+                        </button>
+                        <button class="btn-delete" (click)="showDeleteHotelConfirm(hotel)">
+                            <i class="pi pi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 空狀態 -->
+        <div class="empty-state" *ngIf="!isLoadingHotels && hotelList.length === 0">
+            <div class="empty-icon">
+                <i class="pi pi-building"></i>
+            </div>
+            <h5>開始新增您的第一間旅館吧！</h5>
+            <button class="btn-add-first" (click)="onAddHotel()">
+                <i class="pi pi-plus-circle"></i>
+                立即新增
+            </button>
+        </div>
+    </div>
+
+    <p-toast></p-toast>
+</div>
+
+<!-- 刪除確認 Dialog -->
+<app-shared-confirm-dialog [(visible)]="deletePropertyVisible" header="刪除確認"
+    [message]="'確定要刪除旅館「' + (propertyToDelete?.name || '') + '」嗎？'" confirmLabel="確定刪除" cancelLabel="取消"
+    (confirm)="onDelete()" (cancel)="deletePropertyVisible = false">
+</app-shared-confirm-dialog>
+
+<app-update-seller-info-dialog [(visible)]="showFillDialog" [user]="user" (save)="onDialogSave($event)"
+    (cancel)="onDialogCancel()"></app-update-seller-info-dialog>
