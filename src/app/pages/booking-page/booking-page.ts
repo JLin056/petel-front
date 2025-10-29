@@ -231,9 +231,8 @@ export class BookingPage implements OnInit {
                             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                             return;
                         }
-                        this.router.navigate(['/book/authorize'], {
-                            state: { orderId: response.TRANRS.order_id }
-                        });
+                        localStorage.setItem('sharedOrderId', response.TRANRS.order_id);
+                        this.router.navigateByUrl('/book/authorize');
                     },
                     error: (error) => {
                         this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
@@ -253,8 +252,11 @@ export class BookingPage implements OnInit {
                             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                             return;
                         }
+                        const orderId: string = response.TRANRS.order_id;
+                        localStorage.setItem('sharedOrderId', orderId);
+
                         // 呼叫綠界信用卡API
-                        this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+                        this.bookService.getCreditParams(orderId).subscribe({
                             next: (response) => {
 
                                 // 建立form

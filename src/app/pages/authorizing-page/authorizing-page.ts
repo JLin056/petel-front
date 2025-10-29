@@ -72,12 +72,12 @@ export class AuthorizingPage implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
 
-        if (!history.state.orderId) {
+        if (!localStorage.getItem('sharedOrderId')) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
             this.router.navigateByUrl('/');
         }
 
-        this.orderId = history.state.orderId;
+        this.orderId = localStorage.getItem('sharedOrderId')!;
         this.orderData = this.bookService.getSharedOrderData();
 
         this.totalAmount = 0;

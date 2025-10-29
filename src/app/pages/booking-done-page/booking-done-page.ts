@@ -52,6 +52,22 @@ export class BookingDonePage implements OnInit, OnDestroy {
                 this.router.navigateByUrl('/');
                 return;
             }
+
+            this.bookService.updatePayStatus(localStorage.getItem('sharedOrderId')!).subscribe({
+                next: (response) => {
+                    if (response.MWHEADER.RETURNCODE !== '0000') {
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+                        this.router.navigateByUrl('/');
+                        return;
+                    }
+                },
+                error: (error) => {
+                    this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+                    this.router.navigateByUrl('/');
+                    return;
+                }
+            });
+
             this.bookService.setSharedOrderData(JSON.parse(localStorage.getItem('sharedOrderData')!));
         }
 
@@ -81,6 +97,7 @@ export class BookingDonePage implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         window.removeEventListener('popstate', this.popStateHandler);
         localStorage.removeItem('sharedOrderData');
+        localStorage.removeItem('sharedOrderId');
     }
 
     /**
