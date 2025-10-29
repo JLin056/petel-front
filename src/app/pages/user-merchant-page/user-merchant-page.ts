@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Button } from "primeng/button";
 import { Toast } from "primeng/toast";
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
 import { propertyList } from '../../core/interfaces/MERCH013Res.interface';
@@ -16,7 +15,6 @@ import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
   selector: 'app-user-merchant-page',
   imports: [
     CommonModule,
-    Button,
     Toast,
     SharedConfirmDialog,
     UpdateSellerInfoDialog

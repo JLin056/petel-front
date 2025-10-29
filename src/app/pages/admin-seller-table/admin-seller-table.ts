@@ -47,6 +47,7 @@ export class AdminSellerTable implements OnInit {
 
   sellerList: Seller[] = [];
   statuses: SellerStatus[] = [];
+  loading: boolean = false;
 
   // Search filter variables
   accountIdFilter: string = '';

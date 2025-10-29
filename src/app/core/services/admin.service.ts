@@ -10,10 +10,6 @@ import { ADMIN007Req } from '../interfaces/ADMIN007Req.interface';
 import { ADMIN007Res } from '../interfaces/ADMIN007Res.interface';
 import { ADMIN008Req } from '../interfaces/ADMIN008Req.interface';
 import { ADMIN008Res } from '../interfaces/ADMIN008Res.interface';
-import { ADMIN003Req } from '../interfaces/ADMIN003Req.interface';
-import { ADMIN001Req } from '../interfaces/ADMIN001Req.interface';
-import { ADMIN001Res } from '../interfaces/ADMIN001Res.interface';
-import { ADMIN003Res } from '../interfaces/ADMIN003Res.interface';
 import { ADMIN006Req } from '../interfaces/ADMIN006Req.interface';
 import { ADMIN006Res } from '../interfaces/ADMIN006Res.interface';
 
