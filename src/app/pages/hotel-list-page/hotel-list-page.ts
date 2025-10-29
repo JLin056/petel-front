@@ -9,12 +9,11 @@ import { DatePicker } from 'primeng/datepicker';
 import { FloatLabel } from 'primeng/floatlabel';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputNumber } from 'primeng/inputnumber';
+import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { Listbox } from 'primeng/listbox';
 import { Rating } from 'primeng/rating';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { Checkbox } from 'primeng/checkbox';
-import { RadioButton } from 'primeng/radiobutton';
 import { HotelService } from '../../core/services/hotel-service';
 import { MessageService } from 'primeng/api';
 import { Hotel as HotelResponse } from '../../core/interfaces/HOTEL001Res.interface';
@@ -33,12 +32,11 @@ import { priceRange } from '../../core/interfaces/priceRange.interface';
         FloatLabel,
         IftaLabelModule,
         InputNumber,
+        InputGroup,
         InputGroupAddonModule,
         Listbox,
         Rating,
-        PaginatorModule,
-        Checkbox,
-        RadioButton
+        PaginatorModule
     ],
     templateUrl: './hotel-list-page.html',
     styleUrl: './hotel-list-page.css'
@@ -85,7 +83,7 @@ export class HotelListPage implements OnInit, OnDestroy {
     displayCity: string = '';
 
     // 進階搜尋篩選
-    selectedPriceRange: priceRange | null = null; // 改為單選
+    selectedPriceRange: priceRange | null = null;  // 改為單選
     selectedRating: number = 0;
     selectedFilters: Option[] = [];
     hotelNameSearch: string = '';
@@ -137,6 +135,7 @@ export class HotelListPage implements OnInit, OnDestroy {
 
         this.priceRanges = [
             { min: 0,    max: 1000 },
+            { min: 800,  max: 1000 },
             { min: 1000, max: 1500 },
             { min: 1500, max: 1800 },
             { min: 1800, max: 2200 },
@@ -145,10 +144,10 @@ export class HotelListPage implements OnInit, OnDestroy {
         ]
 
         this.hotFilters = [
-            { id: 'F000000001', name: '寵物友善' },
-            { id: 'F000000002',       name: '鄰近公園' },
-            { id: 'F000000003',       name: '鄰近寵物餐廳' },
-            { id: 'F000000004',     name: '獨立房間' },
+            { id: 'F000000001',  name: '寵物友善' },
+            { id: 'F000000002',  name: '鄰近公園' },
+            { id: 'F000000003',  name: '鄰近寵物餐廳' },
+            { id: 'F000000004',  name: '獨立房間' },
             { id: 'F000000005',  name: '全天候攝影監控' },
             { id: 'F000000006',  name: '對外窗' },
             { id: 'F000000007',  name: '獨立陽台' },
@@ -306,7 +305,7 @@ export class HotelListPage implements OnInit, OnDestroy {
             return;
         }
 
-        // 獲取選擇的價格範圍（單選）
+        // 計算價格範圍（單選）
         let priceMin: number | undefined;
         let priceMax: number | undefined;
 
