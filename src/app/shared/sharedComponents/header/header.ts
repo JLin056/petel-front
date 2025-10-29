@@ -53,7 +53,10 @@ export class Header {
     ) {
         // 監聽 router 改變
         this.router.events
-            .pipe(filter(e => e instanceof NavigationEnd))
+            .pipe(
+                filter(e => e instanceof NavigationEnd),
+                filter(() => !!this.authService.getAccessToken())
+            )
             .subscribe(() => this.onCheckLoginStatus());
 
         // 訂閱 service 的登入狀態
@@ -106,12 +109,7 @@ export class Header {
      * 確認登入狀態
      */
     onCheckLoginStatus() {
-        this.authService.onCheckLoginStatus().subscribe({
-            next: (res) => {
-                const valid = !!res?.TRANRS.valid;
-                if (!valid) this.authService.clearAccessToken();
-            }
-        });
+        this.authService.onCheckLoginStatus().subscribe();
     }
 
     /**
