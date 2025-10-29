@@ -27,6 +27,12 @@ export class BookingDonePage implements OnInit, OnDestroy {
         rooms: []
     };
 
+    /** popStateHandler */
+    private popStateHandler = () => {
+        this.router.navigateByUrl('/');
+        history.pushState(null, '', location.href);
+    };
+
     /**
      * 建構子注入
      */
@@ -37,10 +43,14 @@ export class BookingDonePage implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
 
+        history.pushState(null, '', location.href);
+        window.addEventListener('popstate', this.popStateHandler);
+
         if (this.bookService.getSharedOrderData().propertyId === '') {
             if (!localStorage.getItem('sharedOrderData')) {
                 this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
                 this.router.navigateByUrl('/');
+                return;
             }
             this.bookService.setSharedOrderData(JSON.parse(localStorage.getItem('sharedOrderData')!));
         }
@@ -69,7 +79,8 @@ export class BookingDonePage implements OnInit, OnDestroy {
      * 頁面關閉後的業務邏輯
      */
     ngOnDestroy(): void {
-        localStorage.clear();
+        window.removeEventListener('popstate', this.popStateHandler);
+        localStorage.removeItem('sharedOrderData');
     }
 
     /**

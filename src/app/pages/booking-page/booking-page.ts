@@ -83,6 +83,9 @@ export class BookingPage implements OnInit {
         selectedPayment: new FormControl<string>('')
     });
 
+    /** isNavigatingAway */
+    isNavigatingAway: boolean = false;
+
     /**
      * 建構子注入
      */
@@ -267,6 +270,8 @@ export class BookingPage implements OnInit {
                                     form.appendChild(input);
                                 });
 
+                                this.isNavigatingAway = true;
+
                                 document.body.appendChild(form);
                                 form.submit();
                             }
@@ -328,6 +333,9 @@ export class BookingPage implements OnInit {
      */
     @HostListener('window:beforeunload', ['$event'])
     beforeUnloadHander(event: any): void {
+        if (this.isNavigatingAway) {
+            return;
+        }
         event.preventDefault();
         event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
     }
