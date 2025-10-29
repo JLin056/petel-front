@@ -80,12 +80,12 @@
     align-items: center;
     gap: 12px;
     color: #5a6c7d;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 .info-item i {
     color: #974b2c;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 /* 使用者操作 */
@@ -98,10 +98,10 @@
     background: #9b735e;
     /* 👈 改成淺棕色 */
     color: #ffffff;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 15px;
+    border: 2px solid #9b735e;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -165,7 +165,7 @@
     color: #666;
     padding: 6px 16px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 500;
 }
 
@@ -176,9 +176,9 @@
     color: #974b2c;
     border: 2px solid #974b2c;
     /* 👈 外框 */
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -198,14 +198,14 @@
 /* ========== 旅館網格 ========== */
 .hotels-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
 }
 
 /* 旅館卡片 */
 .hotel-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
@@ -274,7 +274,7 @@
 }
 
 .hotel-name {
-    font-size: 20px;
+    font-size: 23px;
     font-weight: 700;
     color: #2c3e50;
     margin: 0 0 16px 0;
@@ -298,12 +298,12 @@
     align-items: center;
     gap: 10px;
     color: #5a6c7d;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .info-row i {
     color: #974b2c;
-    font-size: 14px;
+    font-size: 19px;
     width: 16px;
 }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';  // 👈 加入這個
+import { CommonModule } from '@angular/common';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from "primeng/button";
 import { Toast } from "primeng/toast";
@@ -9,11 +9,13 @@ import { propertyList } from '../../core/interfaces/MERCH013Res.interface';
 import { MerchService } from '../../core/services/merch-service';
 import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
 import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
+import { AdminService } from '../../core/services/admin.service';
+import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
 
 @Component({
   selector: 'app-user-merchant-page',
   imports: [
-    CommonModule,  // 👈 加入這個，支援 *ngIf 和 *ngFor
+    CommonModule,
     Button,
     Toast,
     SharedConfirmDialog,
@@ -28,12 +30,11 @@ export class UserMerchantPage implements OnInit {
   deleteUserVisible = false;
   deleteOrderVisible = false;
   deletePropertyVisible = false;
+  showFillDialog = false;  // 👈 加入這行
   propertyToDelete: any = null;
-
-  // 👇 修正：統一變數名
   hotelList: propertyList[] = [];
-  isLoading = false;  // 使用者資訊載入狀態
-  isLoadingHotels = false;  // 👈 新增：旅館列表載入狀態
+  isLoading = false;
+  isLoadingHotels = false;
   isDeleting = false;
   errorMessage = '';
 
@@ -49,7 +50,8 @@ export class UserMerchantPage implements OnInit {
     private confirm: ConfirmationService,
     private toast: MessageService,
     private router: Router,
-    private merchService: MerchService
+    private merchService: MerchService,
+    private adminService: AdminService
   ) { }
 
   ngOnInit(): void {
@@ -120,13 +122,54 @@ export class UserMerchantPage implements OnInit {
     });
   }
 
+  /**
+   * 修改會員資訊彈跳視窗
+   */
   openEdit() {
-    this.editVisible = true;
+    this.showFillDialog = true; // 打開彈窗
   }
 
-  onEditSaved(updated: any) {
-    this.user = { ...this.user, ...updated };
-    this.fetchSellerInfo();
+  /**
+   * 儲存修改後的會員資訊
+   * @param updated 
+   * @returns 
+   */
+  onDialogSave(updated: { name: string; phone: string; file: File | null }) {
+    if (!this.user.accountId) {
+      this.toast.add({ severity: 'error', summary: '錯誤', detail: '找不到帳號資料' });
+      return;
+    }
+
+    const tranrq: MERCH010Tranrq = {
+      accountId: this.user.accountId,
+      name: updated.name,
+      phone: updated.phone,
+      // 若需要上傳檔案，可加 file 參數
+    };
+
+    this.merchService.editSellerInfo(tranrq).subscribe({
+      next: (res) => {
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          this.toast.add({ severity: 'success', summary: '成功', detail: '會員資料已更新' });
+          // 更新 user 資料
+          this.user = { ...this.user, name: updated.name, phone: updated.phone };
+          this.showFillDialog = false;
+        } else {
+          this.toast.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '修改失敗' });
+        }
+      },
+      error: (err) => {
+        console.error('修改會員失敗', err);
+        this.toast.add({ severity: 'error', summary: '錯誤', detail: '修改會員資訊失敗' });
+      }
+    });
+  }
+
+  /**
+   * 取消修改
+   */
+  onDialogCancel() {
+    this.showFillDialog = false;
   }
 
   /**
@@ -283,7 +326,12 @@ export class UserMerchantPage implements OnInit {
     this.isDeleting = true;
     this.errorMessage = '';
 
-    this.merchService.deleteRoomDetail(this.propertyToDelete.id).subscribe({
+    const postData = {
+      MWHEADER: { MSGID: 'ADMIN-006' },
+      TRANRQ: { propertyId: this.propertyToDelete.id }
+    };
+
+    this.adminService.deleteHotel(postData).subscribe({
       next: (res) => {
         console.log('刪除 API 回應:', res);
         if (res.MWHEADER.RETURNCODE === '0000') {

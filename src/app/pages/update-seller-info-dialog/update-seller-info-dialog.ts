@@ -4,6 +4,7 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
 
 @Component({
   selector: 'app-update-seller-info-dialog',
@@ -17,7 +18,7 @@ export class UpdateSellerInfoDialog {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   /** 接收 user 資料 */
-  @Input() user: { name: string; phone: string; avatarUrl?: string | null } = { name: '', phone: '', avatarUrl: null };
+  @Input() user: Partial<MERCH011Tranrs & { avatarUrl?: string | null }> = {};
 
   /** 事件：儲存 */
   @Output() save = new EventEmitter<{ name: string; phone: string; file: File | null }>();
@@ -28,6 +29,20 @@ export class UpdateSellerInfoDialog {
   previewFile: string | ArrayBuffer | null = null;
   avatarError = '';
   private file: File | null = null;
+  /** formData 用來綁定表單 */
+  formData: { name: string; phone: string } = { name: '', phone: '' };
+
+  ngOnChanges() {
+    if (this.visible && this.user) {
+      this.formData = {
+        name: this.user.name || '',
+        phone: this.user.phone || ''
+      };
+      this.previewFile = this.user.avatarUrl || null;
+      this.file = null;
+      this.avatarError = '';
+    }
+  }
 
   /** Dialog 隱藏 */
   onHideDialog() {
@@ -75,8 +90,8 @@ export class UpdateSellerInfoDialog {
 
     this.loading = true;
     this.save.emit({
-      name: this.user.name.trim(),
-      phone: this.user.phone.trim(),
+      name: this.formData.name.trim(),
+      phone: this.formData.phone.trim(),
       file: this.file
     });
     this.loading = false;

@@ -8,11 +8,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MerchantPropertyHeader } from './shared/sharedComponents/merchant-property-header/merchant-property-header';
 import { filter } from 'rxjs';
 import { MerchantUserpageHeader } from "./shared/sharedComponents/merchant-userpage-header/merchant-userpage-header";
+import { MerchantUserpageFooter } from "./shared/sharedComponents/merchant-userpage-footer/merchant-userpage-footer";
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, MerchantPropertyHeader, Footer, ToastModule, ConfirmDialogModule, ReactiveFormsModule, MerchantUserpageHeader],
+  imports: [RouterOutlet, Header, MerchantPropertyHeader, Footer, ToastModule, ConfirmDialogModule, ReactiveFormsModule, MerchantUserpageHeader, MerchantUserpageFooter],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -20,6 +21,7 @@ export class App implements OnInit {
   protected readonly title = signal('petelFrontTest');
   isMerchantRoute = false;
   isMerchantUserpageRoute = false;
+  isMerchantUserpageFooterRoute = false;
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -29,7 +31,8 @@ export class App implements OnInit {
     ).subscribe((event: NavigationEnd) => {
       this.isMerchantRoute = event.url.includes('/merchants/property') ||
         event.url.includes('/orderTable');
-      this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage')
+      this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage');
+      this.isMerchantUserpageFooterRoute = event.url.includes('/merchants/userPage');
     });
   }
 }

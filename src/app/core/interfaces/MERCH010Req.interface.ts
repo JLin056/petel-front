@@ -1,5 +1,6 @@
 export interface MERCH010Tranrq {
-    name: string;
-    phone: string;
-    mediaId: string
+    accountId: string;
+    name?: string;
+    phone?: string;
+    mediaId?: string
 }

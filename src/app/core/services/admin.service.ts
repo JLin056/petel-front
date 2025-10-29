@@ -10,6 +10,8 @@ import { ADMIN003Req } from '../interfaces/ADMIN003Req.interface';
 import { ADMIN001Req } from '../interfaces/ADMIN001Req.interface';
 import { ADMIN001Res } from '../interfaces/ADMIN001Res.interface';
 import { ADMIN003Res } from '../interfaces/ADMIN003Res.interface';
+import { ADMIN006Req } from '../interfaces/ADMIN006Req.interface';
+import { ADMIN006Res } from '../interfaces/ADMIN006Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,9 @@ export class AdminService {
 
   /** 查詢訂單列表 API URL */
   queryOrdersUrl = `${environment.BASE_URL}/admin/bookings/list`;
+
+  /** 刪除旅館 API URL */
+  deleteHotelUrl = `${environment.BASE_URL}/admin/hotels/delete`;
 
   /** 查詢會員列表 API URL */
   queryMembersUrl = `${environment.BASE_URL}/admin/queryMembers`;
@@ -55,6 +60,18 @@ export class AdminService {
    */
   queryOrders(postData: ADMIN003Req): Observable<ADMIN003Res> {
     return this.http.post<ADMIN003Res>(this.queryOrdersUrl, postData, {
+      headers: this.headers,
+      withCredentials: true
+    });
+  }
+
+  /**
+   * 查詢訂單列表 API (ADMIN-006)
+   * @param postData ADMIN006Req
+   * @returns ADMIN006Res
+   */
+  deleteHotel(postData: ADMIN006Req): Observable<ADMIN006Res> {
+    return this.http.post<ADMIN006Res>(this.deleteHotelUrl, postData, {
       headers: this.headers,
       withCredentials: true
     });

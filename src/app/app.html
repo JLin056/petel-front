@@ -15,5 +15,9 @@
     <router-outlet></router-outlet>
   </main>
 
+  @if (!isMerchantUserpageFooterRoute) {
   <app-footer></app-footer>
+  }@else{
+  <app-merchant-userpage-footer></app-merchant-userpage-footer>
+  }
 </div>
