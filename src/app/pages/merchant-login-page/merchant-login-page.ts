@@ -9,8 +9,9 @@ import { PasswordModule } from 'primeng/password';
 import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
 import { USER001Req } from '../../core/interfaces/USER001Req.interface';
 import { Auth } from '../../core/services/auth.service';
-import { UserService } from '../../core/services/user.service';
+import { MerchService } from '../../core/services/merch-service';
 import { AddSellerInfoDialog } from '../add-seller-info-dialog/add-seller-info-dialog';
+import { MERCH009Tranrq } from '../../core/interfaces/MERCH009Req.interface';
 
 @Component({
     selector: 'app-merchant-login-page',
@@ -42,7 +43,7 @@ export class MerchantLoginPage {
     constructor(
         private fb: FormBuilder,
         private authService: Auth,
-        private userService: UserService,
+        private merchService: MerchService,
         private route: ActivatedRoute,
         private router: Router,
         private toast: MessageService
@@ -201,18 +202,16 @@ export class MerchantLoginPage {
     * 送出會員資訊
     */
     onDialogSave(e: { name: string; phone: string; file?: File | null }) {
-        const req: USER001Req = {
-            MWHEADER: {
-                MSGID: 'USER-001'
-            },
-            TRANRQ: {
-                name: e.name,
-                phone: e.phone,
-                mediaId: 'M000000001' // 暫時用
-            }
+        // Step 1: 若有頭貼，先處理上傳（可串真實 API）
+        const mediaId = 'M000000001'; // 暫時先寫死或等上傳成功後取得
+
+        const req = {
+            name: e.name,
+            phone: e.phone,
+            mediaId
         };
 
-        this.userService.onAddUserApi(req).subscribe({
+        this.merchService.createSellerInfo(req).subscribe({
             next: (res) => {
                 if (res.MWHEADER.RETURNCODE === '0000') {
                     this.toast.add({

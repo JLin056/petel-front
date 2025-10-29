@@ -93,9 +93,11 @@
     flex-shrink: 0;
 }
 
+/* 修改會員資訊按鈕 */
 .btn-edit-user {
-    background: #974b2c;
-    color: white;
+    background: #9b735e;
+    /* 👈 改成淺棕色 */
+    color: #ffffff;
     border: none;
     padding: 12px 24px;
     border-radius: 12px;
@@ -109,7 +111,9 @@
 }
 
 .btn-edit-user:hover {
-    background: #7d3e23;
+    background: #974b2c;
+    /* 👈 hover 變實心 */
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
 }
@@ -165,10 +169,13 @@
     font-weight: 500;
 }
 
+/* 新增旅館按鈕 */
 .btn-add-hotel {
-    background: #974b2c;
-    color: white;
-    border: none;
+    background: white;
+    /* 👈 白色背景 */
+    color: #974b2c;
+    border: 2px solid #974b2c;
+    /* 👈 外框 */
     padding: 12px 24px;
     border-radius: 12px;
     font-size: 15px;
@@ -181,7 +188,9 @@
 }
 
 .btn-add-hotel:hover {
-    background: #7d3e23;
+    background: #974b2c;
+    /* 👈 hover 變實心 */
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
 }
@@ -308,8 +317,9 @@
 
 .btn-detail {
     flex: 1;
-    background: #974b2c;
-    color: white;
+    background: #f6e8e1;
+    /* 👈 淺棕色背景 */
+    color: #974b2c;
     border: none;
     padding: 10px 16px;
     border-radius: 10px;
@@ -324,13 +334,15 @@
 }
 
 .btn-detail:hover {
-    background: #7d3e23;
+    background: #974b2c;
+    color: white;
 }
 
 .btn-delete {
-    background: #fff;
-    color: #dc3545;
-    border: 2px solid #dc3545;
+    background: transparent;
+    /* 👈 完全透明 */
+    color: #999;
+    border: none;
     padding: 10px 16px;
     border-radius: 10px;
     font-size: 14px;
@@ -340,8 +352,8 @@
 }
 
 .btn-delete:hover {
-    background: #dc3545;
-    color: white;
+    background: #fff5f5;
+    color: #ce525f;
 }
 
 /* ========== 載入與空狀態 ========== */
@@ -402,12 +414,14 @@
     margin: 0 0 32px 0;
 }
 
+/* 空狀態的新增按鈕 */
 .btn-add-first {
-    background: #974b2c;
-    color: white;
+    background: #f7d7c7;
+    /* 👈 改成淺棕色 */
+    color: #974b2c;
     border: none;
     padding: 14px 32px;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -415,10 +429,13 @@
     align-items: center;
     gap: 10px;
     transition: all 0.3s ease;
+    margin-top: 15px;
 }
 
 .btn-add-first:hover {
-    background: #7d3e23;
+    background: #974b2c;
+    /* 👈 hover 變實心 */
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(151, 75, 44, 0.4);
 }
