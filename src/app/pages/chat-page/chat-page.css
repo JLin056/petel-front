@@ -171,6 +171,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
+    max-width: min(70%, 560px);
 }
 .avatar {
     width: 45px;
@@ -193,11 +194,13 @@
 /* 泡泡樣式 */
 .bubble {
     display: inline-block;
+    width: auto;
     padding: 10px 14px;
     border-radius: 14px;
     background: #f0f0f0;        /* 對方泡泡 */
     color: #222;
     line-height: 1.45;
+    white-space: pre-wrap;
     word-break: break-word;
 }
 

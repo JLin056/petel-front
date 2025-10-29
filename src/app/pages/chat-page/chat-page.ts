@@ -5,11 +5,15 @@ import { ChatService } from '../../core/services/chat.service';
 import { CHAT002Req } from '../../core/interfaces/CHAT002Req.interface';
 import { CHAT003Req } from '../../core/interfaces/CHAT003Req.interface';
 import { CommonModule } from '@angular/common';
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { filter, finalize, Subject, takeUntil } from 'rxjs';
+import { ChatMessage } from '../../core/interfaces/ChatMessage.interface';
+import { WsService } from '../../core/services/ws.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-chat-page',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './chat-page.html',
   styleUrl: './chat-page.css'
 })
@@ -24,10 +28,10 @@ export class ChatPage {
 
     /** 右側 */
     room: Room | null = null;
-    messages: Message[] = [];
+    messages: ChatMessage[] = [];
     loadingMessages = false;
 
-    private currentTopic: string | null = null;
+    draft = '';
 
     /** 滾軸 */
     @ViewChild('messagesBox') messagesBox!: ElementRef<HTMLDivElement>;
@@ -38,7 +42,8 @@ export class ChatPage {
 
     /** 注入 */
     constructor(
-        private chatService: ChatService
+        private chatService: ChatService,
+        private ws: WsService
     ) {}
 
     /**
@@ -69,7 +74,6 @@ export class ChatPage {
                         const tb = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
                         return tb - ta;
                     })
-
 
                     if (this.threads.length > 0 && !this.selectedThread) {
                         this.selectThread(this.threads[0]);
@@ -114,11 +118,9 @@ export class ChatPage {
                     this.room = res.TRANRS.room;
 
                     // 由舊到新
-                    this.messages = (res.TRANRS.messages ?? []).sort((a, b) => {
-                        const ta = new Date(a.createdAt).getTime();
-                        const tb = new Date(b.createdAt).getTime();
-                        return ta - tb;
-                    });
+                    this.messages = (res.TRANRS.messages ?? [])
+                        .map(m => this.mapApiMsgToChatMessage(m, threadId))
+                        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // 舊 → 新
 
                     this.scrollToBottom();
                 },
@@ -129,30 +131,42 @@ export class ChatPage {
             });
     }
 
+    private mapApiMsgToChatMessage(m: Message, threadId: string): ChatMessage {
+        return {
+            id: m.messageId,
+            threadId,
+            senderAccountId: m.senderId,
+            type: m.type,
+            content: m.content ?? '',
+            createdAt: m.createdAt instanceof Date ? m.createdAt : new Date(m.createdAt),
+        };
+    }
+
+    onSend(): void {
+        const threadId = this.selectedThread?.threadId;
+        const content = (this.draft ?? '').trim();
+        if (!threadId || !content) return;
+
+        this.ws.sendMessage(threadId, content, 'TEXT');
+        this.draft = '';
+        this.scrollToBottom();
+    }
+
+
     /**
      * 判斷是誰的訊息
      * @param msg
      * @returns
      */
-    isMine(msg: Message): boolean {
+    isMine(msg: ChatMessage): boolean {
         if (!this.room) return false;
         if (this.room.role === 'user') {
-            return msg.senderId === this.room.buyerAccountId;
+            return msg.senderAccountId === this.room.buyerAccountId;
         }
         if (this.room.role === 'seller') {
-            return msg.senderId === this.room.sellerAccountId;
+            return msg.senderAccountId === this.room.sellerAccountId;
         }
         return false;
-    }
-
-    sendMessage(content: string): void {
-        const threadId = this.selectedThread?.threadId;
-        if (!threadId) return;
-
-        const body = {
-            content,
-            messageType: 'TEXT'
-        };
     }
 
     /**
@@ -164,13 +178,13 @@ export class ChatPage {
         const d = new Date(dt);
         if (Number.isNaN(d.getTime())) return '';
 
-        const yy = d.getFullYear();
+        // const yy = d.getFullYear();
         const mm = (d.getMonth() + 1).toString().padStart(2, '0');
         const dd = d.getDate().toString().padStart(2, '0');
         const hh = d.getHours().toString().padStart(2, '0');
         const min = d.getMinutes().toString().padStart(2, '0');
 
-        return `${yy}-${mm}-${dd} ${hh}:${min}`;
+        return `${mm}-${dd} ${hh}:${min}`;
     }
 
     /**
@@ -194,8 +208,8 @@ export class ChatPage {
         return t.threadId;
     }
 
-    trackByMsg(_: number, m: Message): string {
-        return m.messageId;
+    trackByMsg(_: number, m: ChatMessage): string {
+        return m.id;
     }
 
     /**
@@ -203,6 +217,18 @@ export class ChatPage {
      */
     ngOnInit(): void {
         this.getThreads();
+
+        this.ws.connect();
+
+        this.ws.messages$
+        .pipe(
+            takeUntil(this.destroy$),
+            filter(m => !!this.selectedThread&& m.threadId === this.selectedThread.threadId)
+        )
+        .subscribe(m => {
+            this.messages = [...this.messages, m];
+            this.scrollToBottom();
+        });
     }
 
     /**
