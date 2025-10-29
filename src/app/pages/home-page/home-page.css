@@ -70,7 +70,18 @@
     font-weight: 500;
     font-size: 25px;
 }
+.hotel-name-link {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.hotel-name-link:hover {
+    color: #EDA33A;
+    text-decoration: underline;
+}
 .item img{
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
     border-radius: 10px;
 }
 .caption {
@@ -98,7 +109,12 @@
 }
 
 .choose-pet img {
-    border-radius: 35%;
+    /* border-radius: 35%; */
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .choose-pet-btn {

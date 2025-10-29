@@ -53,7 +53,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px 20px; /* 垂直間距加大，水平間距保持 */
-    padding: 30px 20px;
+    padding: 0px 20px 30px 20px;
 }
 
 /* Fieldset 外層 - 移除所有邊框 */
@@ -124,6 +124,20 @@
     margin: 0;
 }
 
+/* 評論評分行 - 星星和分數在同一行 */
+.review-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* 星星和分數之間的間距 */
+}
+
+/* 評論分數文字 */
+.review-score {
+    font-weight: 600;
+    color: #7c4200;
+    font-size: 1rem;
+}
+
 /* ---------------------------------------------------------------------- */
 /* 新增：用於評分項目並排佈局的樣式 (修正 PrimeNG Divider 的垂直顯示問題) */
 /* ---------------------------------------------------------------------- */
@@ -135,6 +149,9 @@
     justify-content: space-around;
     /* 讓項目平均分配空間 */
     /* 確保容器可以容納 PrimeNG 渲染的 p-divider 元素 */
+    background-color: #f5efe8;
+    padding: 15px 0;
+    /* 上下留一些空間 */
 }
 
 /* 調整 p 標籤的預設邊距，讓它更貼合 */
@@ -340,7 +357,39 @@
     border-radius: 0;
 }
 
+/* 讓卡片本身使用 flexbox 布局 */
+:host ::ng-deep .left-card .p-card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 讓卡片內容使用 flexbox 布局 */
+:host ::ng-deep .left-card .p-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
 /* Chip 容器：兩個一排 */
+/* 固定高度的店家資訊內容區域 */
+.info-content-fixed {
+    flex: 1;
+    /* 讓它可以彈性增長 */
+    max-height: 1000px;
+    /* 固定最大高度 */
+    overflow-y: auto;
+    /* 超出部分可捲動 */
+    margin-bottom: 10px;
+}
+
+/* 設施區塊 - 固定在底部 */
+.facilities-section {
+    flex-shrink: 0;
+    /* 不會被壓縮 */
+}
+
 .chip-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -356,28 +405,32 @@
     align-items: center;
     justify-self: start;
     /* chip 靠左對齊，不會填滿整個格子 */
-    padding: 0.25rem 0;
-    background-color: transparent;
-    /* 移除底色 */
-    border: none;
-    /* 移除外框 */
+    padding: 0.5rem 1.2rem;
+    background-color: #f5efe8;
+    /* 淺棕色背景 */
+    /* border: 1px solid #9db366; */
+    /* 邊框 */
+    border-radius: 24px;
+    /* 圓角 */
     width: auto;
     /* 不要太長，根據內容調整 */
 }
 
 /* Chip icon 和文字間隔 */
 ::ng-deep .chip-container .p-chip .p-chip-icon {
-    margin-right: 0.5rem;
+    margin-right: 0.3rem;
     /* icon 和文字之間的間隔 */
-    color: #7c4200 !important;
+    color: #acb166 !important;
     /* icon 顏色和文字一致 */
+    font-size: 1rem;
+    /* icon 大小 */
 }
 
 /* Chip 文字樣式 */
 ::ng-deep .chip-container .p-chip .p-chip-label {
-    color: #7c4200;
-    font-size: 1.5rem;
-    /* 加大文字 */
+    color: #87a734;
+    font-size: 1.2rem;
+    font-weight: 800;
 }
 
 /* 右邊的卡片容器 */
@@ -484,7 +537,7 @@
     /* 靠右對齊 */
     align-items: center;
     gap: 10px;
-    margin: 20px 0;
+    margin: 40px 0 0px 0;
     padding: 0 20px;
 }
 
@@ -528,8 +581,6 @@
     width: 25rem;
     overflow: visible;
     /* 改為 visible 讓 hover 時的陰影可以完整顯示 */
-    cursor: pointer;
-    /* 顯示滑鼠指標，提示可交互 */
     border-radius: 8px;
     border: 1px solid #cfc1b1;
     /* 淡棕框 */
@@ -583,6 +634,12 @@
     padding: 1rem;
 }
 
+/* 固定高度的內容區域 */
+.card-content-fixed {
+    height: 150px; /* 固定高度 */
+    overflow: hidden; /* 超出部分隱藏 */
+}
+
 /* 內文部分 — 縮小邊距 */
 .card-content {
     padding: 12px 16px;
@@ -608,6 +665,17 @@
     font-size: 1rem;
     margin: 0 0 0.5rem 0;
     color: #333;
+}
+
+/* 可點擊的標題 */
+.clickable-title {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.clickable-title:hover {
+    color: #7c4200;
+    text-decoration: underline;
 }
 
 /* 副標題 */
@@ -645,9 +713,42 @@
     font-weight: 500;
 }
 
+.booking-btn {
+    background-color: #d8c8f0;
+    border: none;
+    color: #5a4280;
+    font-weight: 500;
+}
+
 .order-button {
     display: flex;
     justify-content: center;
     margin-top: 10rem;
     margin-bottom: 6rem;
+}
+
+.room-quantity-select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 0.75rem;
+}
+
+.room-quantity-select label {
+    margin: 0;
+    color: #7c4200;
+    font-weight: 100;
+    font-size: 0.9rem;
+}
+
+/* 讓下拉選單有固定寬度和邊框 */
+::ng-deep .room-quantity-select .p-select {
+    min-width: 50px;
+}
+
+/* 確保 select 的邊框顯示 */
+::ng-deep .room-quantity-select .p-select .p-select-label {
+    border: 1px solid #cfc1b1;
+    border-radius: 4px;
 }

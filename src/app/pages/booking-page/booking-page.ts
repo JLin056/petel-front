@@ -123,22 +123,21 @@ export class BookingPage implements OnInit {
         if (!this.orderData) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
             this.router.navigateByUrl('/');
+            return;
         }
 
+        // 獲取會員資訊（已在 singlePage 驗證過登入狀態）
         this.userService.getUserInfo().subscribe({
             next: (response) => {
-                if (response.MWHEADER.RETURNCODE !== '0000') {
-                    this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '預訂房間需要登入會員，將導至登入頁' });
-                    this.router.navigateByUrl('/login');
+                if (response.MWHEADER.RETURNCODE === '0000') {
+                    const tranrs = response.TRANRS;
+                    this.memberName = tranrs.name;
+                    this.memberEmail = tranrs.email;
+                    this.memberPhone = tranrs.phone;
                 }
-                const tranrs = response.TRANRS;
-                this.memberName = tranrs.name;
-                this.memberEmail = tranrs.email;
-                this.memberPhone = tranrs.phone;
             },
             error: (error) => {
-                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '預訂房間需要登入會員，將導至登入頁' });
-                this.router.navigateByUrl('/login');
+                console.error('獲取會員資訊失敗:', error);
             }
         });
 
