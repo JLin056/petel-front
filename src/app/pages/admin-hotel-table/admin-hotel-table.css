@@ -14,12 +14,44 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
 .items-center {
   align-items: center;
 }
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.search-container {
+  padding: 20px 30px;
+}
+
+.search-fields {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.search-btn-container {
+  margin-left: auto;
+}
+
+.custom-input {
+  height: 40px;
+  border-radius: 8px;
+}
+
+::ng-deep .admin-search-btn.p-button {
+  background-color: #EDA33A;
+  color: #A24522;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 40px;
+  min-width: 120px;
 }
 
 .ml-auto {
@@ -35,37 +67,57 @@
   font-size: 1.5rem;
 }
 
-/* �th<t�W�' */
+/* 調整表格整體字體大小 */
 ::ng-deep .p-datatable {
   font-size: 1.1rem;
 }
 
-/* �th-W� */
+/* 調整表頭字體 */
 ::ng-deep .p-datatable th {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
-/* �t8eFW� */
+/* 調整輸入框字體 */
 ::ng-deep .p-datatable input {
   font-size: 1.1rem;
 }
 
 /*
-	'�t�
-- .deleteBtn: �6t	�h�'
-- .deleteBtn button: �	,�
-- .deleteBtn .p-button-icon: �	g�:
+::ng-deep : 可以穿透到p-tag內部
+*/
+::ng-deep .tag-large {
+  font-size: 1rem;
+  padding: 0.35rem 0.5rem;
+}
+
+/*
+按鈕大小調整說明：
+- .deleteBtn: 控制整個按鈕容器的大小
+- .deleteBtn button: 針對按鈕本身
+- .deleteBtn .p-button-icon: 針對按鈕內部的圖示
 */
 ::ng-deep .deleteBtn {
-  width: 3rem;
-  height: 3rem;
+  width: 3rem;           /* 按鈕外層容器寬度 */
+  height: 3rem;          /* 按鈕外層容器高度 */
 }
 
 ::ng-deep .deleteBtn button {
-  width: 3rem;
-  height: 3rem;
+  width: 3rem;           /* 按鈕本身寬度 */
+  height: 3rem;          /* 按鈕本身高度 */
 }
 
 ::ng-deep .deleteBtn .p-button-icon {
-  font-size: 1.5rem;
+  font-size: 1.5rem;     /* 圖示大小 */
+}
+
+/* 賣家名稱可點擊樣式 */
+.seller-name-link {
+  color: #3b82f6;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.seller-name-link:hover {
+  color: #1d4ed8;
 }
