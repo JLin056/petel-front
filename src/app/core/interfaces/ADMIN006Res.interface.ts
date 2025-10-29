@@ -8,3 +8,14 @@ export interface Hotel {
   SELLER_NAME: string;
   BUSINESS_CODE: string;
 }
+
+export interface ADMIN006Res {
+  MWHEADER: {
+    RETURNCODE: string;
+    RETURNDESC: string;
+  };
+  TRANRS: {
+    propertyId: string;
+    message: string;
+  };
+}

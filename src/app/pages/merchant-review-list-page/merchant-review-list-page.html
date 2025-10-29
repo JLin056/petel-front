@@ -1,32 +1,117 @@
 <div class="reviews-page">
-    <h2 class="page-title">評價</h2>
+    <div class="page-header">
+        <h2 class="page-title">
+            <i class="pi pi-star-fill"></i>
+            顧客評價
+        </h2>
+        <p class="page-subtitle">查看所有顧客的真實評價與回饋</p>
+    </div>
 
     @for (review of reviews; track review.orderNo) {
-    <div class="review-card">
-        <div class="review-header">
-            <div class="order-number">訂單編號：{{ review.orderNo }}</div>
-        </div>
+    <p-card class="review-card">
+        <!-- 卡片頭部 -->
+        <ng-template pTemplate="header">
+            <div class="review-card-header">
+                <div class="header-left">
+                    <p-tag [value]="review.orderNo" icon="pi pi-receipt" severity="secondary"></p-tag>
+                    @if (review.date) {
+                    <span class="review-date">
+                        <i class="pi pi-calendar"></i>
+                        {{ review.date }}
+                    </span>
+                    }
+                </div>
+                @if (review.userName) {
+                <div class="header-right">
+                    <i class="pi pi-user"></i>
+                    <span>{{ review.userName }}</span>
+                </div>
+                }
+            </div>
+        </ng-template>
 
-        <div class="review">
-            <div class="review-text-content">
-                <p class="review-content">{{ review.comment }}</p>
+        <!-- 卡片內容 -->
+        <div class="review-content-wrapper">
+            <!-- 左側：評價內容 -->
+            <div class="review-text-section">
+                <div class="average-rating">
+                    <span class="avg-score">{{ getAverageRating(review) }}</span>
+                    <!-- 👇 移除 [cancel]="false" -->
+                    <p-rating [ngModel]="getAverageRating(review)" [readonly]="true" class="rating-display"></p-rating>
+                </div>
+                <p class="review-comment">
+                    <i class="pi pi-quote-left quote-icon"></i>
+                    {{ review.comment }}
+                    <i class="pi pi-quote-right quote-icon"></i>
+                </p>
             </div>
 
-            <div class="stars-rating">
-                <span>價格：{{ review.price }}⭐</span><br>
-                <span>環境：{{ review.environment }}⭐</span><br>
-                <span>服務：{{ review.service }}⭐</span><br>
+            <p-divider layout="vertical" class="review-divider"></p-divider>
+
+            <!-- 右側：詳細評分 -->
+            <div class="rating-section">
+                <div class="rating-item">
+                    <span class="rating-label">
+                        <i class="pi pi-dollar"></i>
+                        價格
+                    </span>
+                    <div class="rating-value">
+                        <!-- 👇 移除 [cancel]="false" -->
+                        <p-rating [ngModel]="review.price" [readonly]="true"></p-rating>
+                        <span class="rating-number">{{ review.price }}.0</span>
+                    </div>
+                </div>
+
+                <div class="rating-item">
+                    <span class="rating-label">
+                        <i class="pi pi-home"></i>
+                        環境
+                    </span>
+                    <div class="rating-value">
+                        <p-rating [ngModel]="review.environment" [readonly]="true"></p-rating>
+                        <span class="rating-number">{{ review.environment }}.0</span>
+                    </div>
+                </div>
+
+                <div class="rating-item">
+                    <span class="rating-label">
+                        <i class="pi pi-users"></i>
+                        服務
+                    </span>
+                    <div class="rating-value">
+                        <p-rating [ngModel]="review.service" [readonly]="true"></p-rating>
+                        <span class="rating-number">{{ review.service }}.0</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button class="btn-detail">詳細資料</button>
-    </div>
+        <!-- 卡片底部 -->
+        <ng-template pTemplate="footer">
+            <div class="card-footer">
+                <p-button label="查看詳細資料" icon="pi pi-eye" [outlined]="true" severity="secondary" size="small">
+                </p-button>
+            </div>
+        </ng-template>
+    </p-card>
     } @empty {
-    <div class="no-reviews">目前沒有任何評價資料。</div>
+    <div class="no-reviews-wrapper">
+        <p-card class="no-reviews-card">
+            <div class="no-reviews-content">
+                <i class="pi pi-inbox no-reviews-icon"></i>
+                <h3>目前沒有評價</h3>
+                <p>尚未收到任何顧客評價，期待第一則評價的到來！</p>
+            </div>
+        </p-card>
+    </div>
     }
 
-         <!-- 分頁器 -->
-    <div class="card flex justify-center">
-        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="120" [rowsPerPageOptions]="[10, 20, 30]" />
+    <!-- 分頁器 -->
+    @if (reviews.length > 0) {
+    <div class="paginator-wrapper">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="totalRecords"
+            [rowsPerPageOptions]="[10, 20, 30]">
+        </p-paginator>
     </div>
+    }
 </div>

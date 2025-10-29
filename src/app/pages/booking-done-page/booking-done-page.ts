@@ -1,79 +1,99 @@
-import { Component } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
+import { BookService, OrderData } from './../../core/services/book-service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { HotelService } from '../../core/services/hotel-service';
-import { Rating } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-booking-done-page',
-    imports: [ButtonModule, Rating, FormsModule],
+    imports: [ButtonModule, FormsModule],
     templateUrl: './booking-done-page.html',
     styleUrl: './booking-done-page.css'
 })
-export class BookingDonePage {
+export class BookingDonePage implements OnInit, OnDestroy {
 
-    // 訂單資訊
-    numberOfRooms: number = 2;
-    roomType: string = '豪華雙人房';
-    suitablePets: string = 'different_name_of_pet(s)';
-    maxPets: number = 4;
-
-    // 旅館相關屬性：begin
-
+    /** 旅館相關屬性 */
     propertyName = '';
     propertyTel = '';
     propertyAddress = '';
-    propertyInfo = '';
-    checkNotice = '';
-    petNotice = '';
-    propertyNotice = '';
 
-    propertyScore: number = 4.8; // related to PETEL_REVIEWS
+    /** 訂單資訊 */
+    orderData: OrderData = {
+        propertyId: '',
+        checkIn: '',
+        checkOut: '',
+        rooms: []
+    };
 
-    // 旅館相關屬性：end
+    /** popStateHandler */
+    private popStateHandler = () => {
+        this.router.navigateByUrl('/');
+        history.pushState(null, '', location.href);
+    };
 
-    roomName = 'xx';
-    roomQuantity = 1
-    checkIn = '2025-10-23';
-    checkOut = '2025-10-24';
+    /**
+     * 建構子注入
+     */
+    constructor(private router: Router, private bookService: BookService, private hotelService: HotelService, private messageService: MessageService) { };
 
-    constructor(private hotelService: HotelService) {};
-
+    /**
+     * 初始化頁面內容
+     */
     ngOnInit(): void {
-        this.hotelService.queryHotelDetail('P000000001').subscribe({ // 暫時使用假資料
-            next: (response) => {
 
+        history.pushState(null, '', location.href);
+        window.addEventListener('popstate', this.popStateHandler);
+
+        if (this.bookService.getSharedOrderData().propertyId === '') {
+            if (!localStorage.getItem('sharedOrderData')) {
+                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+                this.router.navigateByUrl('/');
+                return;
+            }
+            this.bookService.setSharedOrderData(JSON.parse(localStorage.getItem('sharedOrderData')!));
+        }
+
+        this.orderData = this.bookService.getSharedOrderData();
+
+        this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
+            next: (response) => {
                 if (response.MWHEADER.RETURNCODE !== '0000') {
+                    this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '旅館資訊載入異常' });
                     return;
                 }
-
                 const propertyDetail = response.TRANRS.property_details.at(0);
                 this.propertyName = propertyDetail!.name;
                 this.propertyTel = propertyDetail!.tel;
                 this.propertyAddress = propertyDetail!.address;
-                this.propertyInfo = propertyDetail!.info;
-                this.checkNotice = propertyDetail!.checkNotice;
-                this.petNotice = propertyDetail!.petNotice;
-                this.propertyNotice = propertyDetail!.propertyNotice;
+            },
+            error: (error) => {
+                this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '旅館資訊載入異常' });
+                return;
             }
         });
     }
 
+    /**
+     * 頁面關閉後的業務邏輯
+     */
+    ngOnDestroy(): void {
+        window.removeEventListener('popstate', this.popStateHandler);
+        localStorage.removeItem('sharedOrderData');
+    }
 
-
+    /**
+     * 點擊聊聊按鈕，轉導至聊天室頁面
+     */
     onChat(): void {
-        console.log('開始聊天');
+        this.router.navigateByUrl('/chat'); // TODO Check: see whether it needs additional info.
     }
 
+    /**
+     * 點擊查看歷史訂單按鈕，轉導至會員資訊頁面
+     */
     onViewHistory(): void {
-        console.log('查看歷史訂單');
-    }
-
-    onEditOrder(): void {
-        console.log('修改訂單');
-    }
-
-    onCancelOrder(): void {
-        console.log('取消訂單');
+        this.router.navigateByUrl('/history');
     }
 }
