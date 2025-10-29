@@ -84,6 +84,9 @@ export class BookingPage implements OnInit {
         selectedPayment: new FormControl<string>('')
     });
 
+    /** isNavigatingAway */
+    isNavigatingAway: boolean = false;
+
     /**
      * 建構子注入
      */
@@ -93,6 +96,27 @@ export class BookingPage implements OnInit {
      * 初始化頁面內容
      */
     ngOnInit(): void {
+
+        this.bookService.setSharedOrderData({ // 暫時寫在這，應該要在上一頁設定
+            propertyId: 'P000000001',
+            checkIn: '2025-10-26',
+            checkOut: '2025-10-27',
+            rooms: [{
+                roomId: 'R000000001',
+                roomName: '高級寵物房',
+                roomPrice: 2500,
+                roomQuantity: 1,
+                roomTotal: 2500,
+                expanded: false
+            }, {
+                roomId: 'R000000002',
+                roomName: '豪華寵物房',
+                roomPrice: 2700,
+                roomQuantity: 1,
+                roomTotal: 2700,
+                expanded: false
+            }]
+        });
 
         this.orderData = this.bookService.getSharedOrderData();
 
@@ -220,6 +244,9 @@ export class BookingPage implements OnInit {
             }
 
             case this.paymentOptions.at(1)?.value: {
+
+                localStorage.setItem('sharedOrderData', JSON.stringify(this.orderData)); // 加這一句因為轉導到綠界 service 資料會重置
+
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
                         if (!(response.MWHEADER.RETURNCODE === "0000")) {
@@ -243,6 +270,8 @@ export class BookingPage implements OnInit {
                                     input.value = String(value);
                                     form.appendChild(input);
                                 });
+
+                                this.isNavigatingAway = true;
 
                                 document.body.appendChild(form);
                                 form.submit();
@@ -305,6 +334,9 @@ export class BookingPage implements OnInit {
      */
     @HostListener('window:beforeunload', ['$event'])
     beforeUnloadHander(event: any): void {
+        if (this.isNavigatingAway) {
+            return;
+        }
         event.preventDefault();
         event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
     }

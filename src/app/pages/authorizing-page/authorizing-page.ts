@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { BookService, OrderData } from './../../core/services/book-service';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PanelModule } from 'primeng/panel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -30,7 +30,7 @@ import { BOOK005TranrqCardInfo, BOOK005TranrqConsumerInfo } from '../../core/int
     templateUrl: './authorizing-page.html',
     styleUrl: './authorizing-page.css'
 })
-export class AuthorizingPage implements OnInit {
+export class AuthorizingPage implements OnInit, OnDestroy {
 
     /** 訂單編號 */
     orderId: string = '';
@@ -56,6 +56,12 @@ export class AuthorizingPage implements OnInit {
         cardValidYY: new FormControl<string>('', Validators.required)
     });
 
+    /** popStateHandler */
+    private popStateHandler = () => {
+        this.router.navigateByUrl('/');
+        history.pushState(null, '', location.href);
+    };
+
     /**
      * 建構子注入
      */
@@ -65,11 +71,30 @@ export class AuthorizingPage implements OnInit {
      * 初始化頁面內容
      */
     ngOnInit(): void {
+
+        if (!history.state.orderId) {
+            this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
+            this.router.navigateByUrl('/');
+        }
+
         this.orderId = history.state.orderId;
         this.orderData = this.bookService.getSharedOrderData();
+
+        this.totalAmount = 0;
+
         for (let room of this.orderData.rooms) {
             this.totalAmount += room.roomTotal;
         }
+
+        history.pushState(null, '', location.href);
+        window.addEventListener('popstate', this.popStateHandler);
+    }
+
+    /**
+     * 頁面關閉後的業務邏輯
+     */
+    ngOnDestroy(): void {
+        window.removeEventListener('popstate', this.popStateHandler);
     }
 
     /**

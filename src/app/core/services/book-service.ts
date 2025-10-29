@@ -107,42 +107,62 @@ export class BookService {
 
     // -----
 
-    // Normal Setting
-    // sharedOrderData: OrderData = {
-    //     propertyId: '',
-    //     checkIn: '',
-    //     checkOut: '',
-    //     rooms: []
-    // };
-
-    // Test set
+    /** 初始的建立訂單前的相關資料 */
     sharedOrderData: OrderData = {
-        propertyId: 'P000000001',
-        checkIn: '2025-10-26',
-        checkOut: '2025-10-27',
-        rooms: [{
-            roomId: 'R000000001',
-            roomName: '高級寵物房',
-            roomPrice: 2500,
-            roomQuantity: 1,
-            roomTotal: 2500,
-            expanded: false
-        },{
-            roomId: 'R000000002',
-            roomName: '豪華寵物房',
-            roomPrice: 2700,
-            roomQuantity: 1,
-            roomTotal: 2700,
-            expanded: false
-        }]
+        propertyId: '',
+        checkIn: '',
+        checkOut: '',
+        rooms: []
     };
 
+    // Test code
+    // this.BookService.setSharedOrderData({
+    //     propertyId: 'P000000001',
+    //     checkIn: '2025-10-26',
+    //     checkOut: '2025-10-27',
+    //     rooms: [{
+    //         roomId: 'R000000001',
+    //         roomName: '高級寵物房',
+    //         roomPrice: 2500,
+    //         roomQuantity: 1,
+    //         roomTotal: 2500,
+    //         expanded: false
+    //     }, {
+    //         roomId: 'R000000002',
+    //         roomName: '豪華寵物房',
+    //         roomPrice: 2700,
+    //         roomQuantity: 1,
+    //         roomTotal: 2700,
+    //         expanded: false
+    //     }]
+    // });
+
+    /**
+     * 設定建立訂單前的相關資料
+     * @param data 建立訂單前的相關資料
+     */
     setSharedOrderData(data: OrderData): void {
         this.sharedOrderData = data;
     }
 
+    /**
+     * 取得建立訂單前的相關資料
+     * @returns 相關資料
+     */
     getSharedOrderData(): OrderData {
         return this.sharedOrderData;
+    }
+
+    /**
+     * 清除建立訂單前的相關資料
+     */
+    clearSharedOrderData(): void {
+        this.sharedOrderData = {
+            propertyId: '',
+            checkIn: '',
+            checkOut: '',
+            rooms: []
+        };
     }
 }
 
