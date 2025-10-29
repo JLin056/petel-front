@@ -6,11 +6,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { Order } from '../../core/interfaces/ADMIN003Res.interface';
+import { AdminService } from '../../core/services/admin.service';
+import { ADMIN004Req } from '../../core/interfaces/ADMIN004Req.interface';
 
 @Component({
   selector: 'app-order-detail-dialog',
-  imports: [CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule, TagModule],
+  imports: [CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule, TagModule, ToastModule],
+  providers: [MessageService],
   templateUrl: './order-detail-dialog.html',
   styleUrl: './order-detail-dialog.css'
 })
@@ -21,7 +26,11 @@ export class OrderDetailDialog {
   @Input() order: Order | null = null;
   @Output() noteUpdated = new EventEmitter<{ orderId: string, note: string }>();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private adminService: AdminService,
+    private messageService: MessageService
+  ) {}
 
   // 備註編輯狀態
   isEditingNote = false;
@@ -50,13 +59,53 @@ export class OrderDetailDialog {
   }
 
   onSaveNote() {
-    if (this.order) {
-      this.noteUpdated.emit({
+    if (!this.order) return;
+
+    const requestData: ADMIN004Req = {
+      MWHEADER: {
+        MSGID: 'ADMIN-004'
+      },
+      TRANRQ: {
         orderId: this.order.ORDER_ID,
         note: this.editedNote
-      });
-      this.isEditingNote = false;
-    }
+      }
+    };
+
+    this.adminService.updateOrderNote(requestData).subscribe({
+      next: (response) => {
+        if (response.MWHEADER.RETURNCODE === '0000') {
+          // 更新成功
+          this.messageService.add({
+            severity: 'success',
+            summary: '更新成功',
+            detail: '備註已成功更新'
+          });
+
+          // 通知父組件更新備註
+          this.noteUpdated.emit({
+            orderId: this.order!.ORDER_ID,
+            note: this.editedNote
+          });
+
+          this.isEditingNote = false;
+        } else {
+          // API 回傳錯誤
+          this.messageService.add({
+            severity: 'error',
+            summary: '更新失敗',
+            detail: response.MWHEADER.RETURNDESC
+          });
+        }
+      },
+      error: (error) => {
+        console.error('更新備註失敗:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: '更新失敗',
+          detail: '網路錯誤，請稍後再試'
+        });
+      }
+    });
   }
 
   // 導航到會員列表

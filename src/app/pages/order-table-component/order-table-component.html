@@ -1,4 +1,4 @@
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>
 <div class = "wrap">
 <h3 class="title">訂單列表</h3>
 
@@ -27,34 +27,35 @@
 </div>
 
 <div class="card">
-  <p-table
-    #dt
-    [value]="orderList"
-    dataKey="ORDER_ID"
-    [rows]="pageSize"
-    [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
-    [paginator]="true"
-    [lazy]="true"
-    [totalRecords]="totalRecords"
-    (onLazyLoad)="onPageChange($event)"
-    [tableStyle]="{ 'min-width': '75rem' }"
-  >
+  <div class="table-responsive">
+    <p-table
+      #dt
+      [value]="orderList"
+      dataKey="ORDER_ID"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+      [paginator]="true"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="onPageChange($event)"
+      [tableStyle]="{ 'min-width': '75rem' }"
+    >
     <ng-template pTemplate="header">
       <tr>
         <th style="width:11%">訂單編號</th>
         <th style="width:11%">入住日期</th>
         <th style="width:11%">退房日期</th>
-        <th style="width:11%">
+        <th style="width:13%">
           <i class="pi pi-user icon-large"></i>
           訂購人姓名
         </th>
-        <th style="width:11%">
+        <th style="width:13%">
           <i class="pi pi-building icon-large"></i>
           旅館名稱
         </th>
-        <th style="width:11%">總價格</th>
+        <th style="width:9%">總價格</th>
         <th style="width:11%">付款方式</th>
-        <th style="width:11%">狀態</th>
+        <th style="width:9%">狀態</th>
         <th style="width:12%">操作</th>
       </tr>
     </ng-template>
@@ -81,6 +82,7 @@
       </tr>
     </ng-template>
   </p-table>
+  </div>
 </div>
 </div>
 <!-- 訂單詳細資料彈窗 -->

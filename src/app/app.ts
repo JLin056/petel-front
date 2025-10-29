@@ -9,11 +9,13 @@ import { MerchantPropertyHeader } from './shared/sharedComponents/merchant-prope
 import { filter } from 'rxjs';
 import { MerchantUserpageHeader } from "./shared/sharedComponents/merchant-userpage-header/merchant-userpage-header";
 import { MerchantUserpageFooter } from "./shared/sharedComponents/merchant-userpage-footer/merchant-userpage-footer";
+import { AdminHeader } from './pages/admin-header/admin-header';
+import { AdminFooter } from './pages/admin-footer/admin-footer';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, MerchantPropertyHeader, Footer, ToastModule, ConfirmDialogModule, ReactiveFormsModule, MerchantUserpageHeader, MerchantUserpageFooter],
+  imports: [RouterOutlet, Header, MerchantPropertyHeader, Footer, ToastModule, ConfirmDialogModule, ReactiveFormsModule, MerchantUserpageHeader, MerchantUserpageFooter, AdminHeader, AdminFooter],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -22,13 +24,15 @@ export class App implements OnInit {
   isMerchantRoute = false;
   isMerchantUserpageRoute = false;
   isMerchantUserpageFooterRoute = false;
+  isAdminRoute = false;
   constructor(private router: Router) { }
 
   ngOnInit() {
-    // 監聽路由變化，判斷是否為商家後台
+    // 監聽路由變化，判斷是否為商家後台或管理員後台
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
+      this.isAdminRoute = event.url.includes('/admin/');
       this.isMerchantRoute = event.url.includes('/merchants/property') ||
         event.url.includes('/orderTable');
       this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage');

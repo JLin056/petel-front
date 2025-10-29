@@ -1,0 +1,30 @@
+<div class="header">
+    <div class="logo">
+        <a href="#"><img src="img/Logo.png" alt="Petel Logo" class="logo-img"></a>
+    </div>
+
+    <div class="navbar">
+        <ul class="navbar-items">
+            <li (click)="onClickUserTable()">會員列表</li>
+            <li (click)="onClickSellerTable()">賣家列表</li>
+            <li (click)="onClickHotelTable()">旅館列表</li>
+            <li (click)="onClickOrderTable()">歷史訂單列表</li>
+        </ul>
+    </div>
+
+    <div class="account">
+        <div class="auth-area">
+            <button pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true" [disabled]="isLoggedOut"></button>
+        </div>
+    </div>
+</div>
+
+<!-- 登出 dialog -->
+<app-shared-confirm-dialog
+    [(visible)]="confirmVisible"
+    header="登出確認"
+    message="確定要登出嗎？"
+    confirmLabel="登出"
+    cancelLabel="取消"
+    (confirm)="onLogout()"
+></app-shared-confirm-dialog>
