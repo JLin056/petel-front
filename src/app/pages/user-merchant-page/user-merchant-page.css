@@ -2,13 +2,10 @@
 .user-info-container {
     display: flex;
     justify-content: center;
-    /* 左右置中整個區塊 */
     align-items: center;
-    /* 垂直置中 */
     gap: 50px;
     padding: 45px 10px;
     flex-wrap: wrap;
-    /* 讓按鈕移到下面時自動換行 */
 }
 
 /* 頭貼 */
@@ -94,6 +91,8 @@
     font-size: 2rem;
     font-weight: 700;
     color: #333;
+    padding-left: 20px;
+    /* 👈 往右移一點點 */
 }
 
 .hotel-list {
@@ -105,14 +104,15 @@
 /* 浮動式旅館卡片 */
 .hotel-card {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    align-items: stretch;
+    gap: 0;
     background: #fff;
-    padding: 20px;
     border-radius: 16px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
+    overflow: hidden;
+    position: relative;
 }
 
 .hotel-card:hover {
@@ -120,32 +120,174 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-.hotel-img {
-    width: 180px;
-    height: 130px;
-    border-radius: 12px;
+/* 旅館圖片 */
+.hotel-image {
+    width: 200px;
+    height: 180px;
     object-fit: cover;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
 }
 
+.hotel-card:hover .hotel-image {
+    transform: scale(1.05);
+}
+
+/* 旅館資訊 */
 .hotel-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
+    padding: 20px;
+    flex: 1;
 }
 
-.hotel-info h4 {
+.hotel-name {
     font-size: 1.5rem;
     font-weight: 700;
     color: #333;
+    margin-bottom: 4px;
 }
 
-.hotel-address {
+.hotel-detail {
     font-size: 1.3rem;
-    color: #757575;
+    color: #666;
+    line-height: 1.6;
 }
 
+/* 按鈕區 */
+.hotel-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.btn-edit,
+.btn-delete {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-edit {
+    background-color: #974b2c;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #7d3e23;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+/* 房型數量標籤 */
+.hotel-rooms {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(151, 75, 44, 0.9);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 空狀態 - 👈 重點修改：完全居中 */
+.empty-state {
+    display: flex;
+    /* 👈 改成 flex */
+    flex-direction: column;
+    /* 👈 垂直排列 */
+    align-items: center;
+    /* 👈 水平居中 */
+    justify-content: center;
+    /* 👈 垂直居中 */
+    padding: 60px 20px;
+    text-align: center;
+    /* 👈 文字也居中 */
+}
+
+.empty-state i {
+    margin-bottom: 16px;
+    color: #8b5e3c;
+}
+
+.empty-state p {
+    font-size: 1.6rem;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.btn-add {
+    padding: 12px 28px;
+    background-color: #974b2c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add:hover {
+    background-color: #7d3e23;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
+}
+
+.btn-add i {
+    font-size: 1.4rem;
+}
+
+/* 載入中 - 👈 也要居中 */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 👈 水平居中 */
+    justify-content: center;
+    /* 👈 垂直居中 */
+    padding: 60px 20px;
+}
+
+.loading-container i {
+    margin-bottom: 16px;
+}
+
+.loading-container p {
+    font-size: 1.4rem;
+    color: #666;
+}
+
+/* 舊的樣式（保留作為備用） */
 .empty-text,
 .error {
     text-align: center;
@@ -153,4 +295,32 @@
     font-size: 1.75rem;
     margin-top: 30px;
     font-weight: 400;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .hotel-card {
+        flex-direction: column;
+    }
+
+    .hotel-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .hotel-buttons {
+        flex-direction: column;
+    }
+
+    .hotel-rooms {
+        top: auto;
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .section-title {
+        padding-left: 20px;
+        margin-left: 20px;
+        /* 👈 手機版縮小一點 */
+    }
 }
