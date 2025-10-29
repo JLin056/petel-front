@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -26,7 +27,10 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
   styleUrl: './admin-hotel-table.css'
 })
 export class AdminHotelTable implements OnInit {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute
+  ) {}
 
   hotelList: Hotel[] = [];
   loading: boolean = true;
@@ -80,6 +84,13 @@ export class AdminHotelTable implements OnInit {
     ];
 
     this.loading = false;
+
+    // 檢查 URL 查詢參數
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.propertyNameFilter = params['search'];
+      }
+    });
   }
 
   /**
