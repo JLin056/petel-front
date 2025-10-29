@@ -3,15 +3,21 @@
 <p-confirmDialog></p-confirmDialog>
 
 <div class="layout">
-  @if (!isMerchantRoute) {
-  <app-header></app-header>
-  } @else {
+  @if (isMerchantRoute) {
   <app-merchant-property-header></app-merchant-property-header>
+  }@else if (isMerchantUserpageRoute) {
+  <app-merchant-userpage-header></app-merchant-userpage-header>
+  } @else {
+  <app-header></app-header>
   }
 
   <main class="content">
     <router-outlet></router-outlet>
   </main>
 
+  @if (!isMerchantUserpageFooterRoute) {
   <app-footer></app-footer>
+  }@else{
+  <app-merchant-userpage-footer></app-merchant-userpage-footer>
+  }
 </div>

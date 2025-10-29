@@ -25,11 +25,11 @@ export class Footer {
 
         const goLogin = () =>
         this.route.navigate(['/merchants/login'], {
-            queryParams: { redirect: '/merchants/property/homepage' }
+            queryParams: { redirect: '/merchants/userPage' }
         });
 
         const goPortal = () =>
-        this.route.navigate(['/merchants/property/homepage']);
+        this.route.navigate(['/merchants/userPage']);
 
         /** 根據角色決策 */
         const decide = (r: string | null): void => {
