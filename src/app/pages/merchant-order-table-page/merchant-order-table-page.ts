@@ -12,12 +12,10 @@ import { TagModule } from 'primeng/tag';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { AdminService } from '../../core/services/admin.service';
 import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merchant-order-detail-dialog";
-
-import { MerchService } from '../../core/services/merch-service';
-
-import { DatePickerModule } from 'primeng/datepicker';
 import { PropertyStateService } from '../../core/services/property-state.service';
+import { MerchService } from '../../core/services/merch-service';
 import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-merchant-order-table-page',
@@ -238,7 +236,7 @@ export class MerchantOrderTablePage implements OnInit {
 
   formatDate(date: any): string {
     if (!date) return '';
-    if (typeof date === 'string') return date;
+    if (typeof date === 'string') return date; 
     const d = new Date(date);
     const yyyy = d.getFullYear();
     const mm = ('0' + (d.getMonth() + 1)).slice(-2);

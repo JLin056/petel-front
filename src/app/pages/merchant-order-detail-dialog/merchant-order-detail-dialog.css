@@ -65,16 +65,16 @@
 }
 
 .status-select {
-  width: 180px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+    width: 180px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
 
 .note-textarea {
-  width: 100%;
-  border-radius: 6px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  resize: vertical;
+    width: 100%;
+    border-radius: 6px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
 }
