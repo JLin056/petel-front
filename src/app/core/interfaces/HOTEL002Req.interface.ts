@@ -1,3 +1,3 @@
 export interface HOTEL002Tranrq {
-    id: string;
+    propertyId: string;
 }

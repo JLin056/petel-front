@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { environment } from '../../../environment';
 import { Tranrq as HOTEL001Tranrq } from '../interfaces/HOTEL001Req.interface';
 import { Tranrs as HOTEL001Tranrs } from '../interfaces/HOTEL001Res.interface';
 import { HOTEL002Tranrq } from '../interfaces/HOTEL002Req.interface';
 import { HOTEL002Tranrs } from '../interfaces/HOTEL002Res.interface';
+import { HOTEL004Tranrq } from '../interfaces/HOTEL004Req.interface';
+import { HOTEL004Tranrs } from '../interfaces/HOTEL004Res.interface';
 import { Tranrq as HOTEL005Tranrq } from '../interfaces/HOTEL005Req.interface';
 import { Tranrs as HOTEL005Tranrs } from '../interfaces/HOTEL005Res.interface';
 import { Mwheader, Req } from '../interfaces/Req.interface';
 import { Res } from '../interfaces/Res.interface';
-import { environment } from '../../../environment';
 
 
 @Injectable({
@@ -81,8 +83,8 @@ export class HotelService {
         };
 
         const tranrq: HOTEL002Tranrq = {
-            id: propertyId
-        };
+            propertyId: propertyId,
+        }
 
         const postData: Req<HOTEL002Tranrq> = {
             MWHEADER: header,
@@ -90,6 +92,30 @@ export class HotelService {
         }
 
         return this.http.post<Res<HOTEL002Tranrs>>(`${environment.BASE_URL}/hotels/detail`, postData);
+    }
+
+    /**
+     * HOTEL-004 查詢單筆旅館設備資訊
+     * @param propertyId 旅館編號
+     * @returns
+     */
+    queryHotelFacilities(propertyId: string) {
+
+        const header: Mwheader = {
+            MSGID: 'HOTEL-004'
+        };
+
+        const tranrq: HOTEL004Tranrq = {
+            propertyId: propertyId,
+        }
+
+        const postData: Req<HOTEL004Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        }
+
+        return this.http.post<Res<HOTEL004Tranrs>>(`${environment.BASE_URL}/hotels/facilities`, postData);
+
     }
 
     /**

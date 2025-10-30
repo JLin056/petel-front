@@ -12,6 +12,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { filter, Subject, takeUntil } from 'rxjs';
+import { PropertyStateService } from '../../../core/services/property-state.service';
 
 @Component({
   selector: 'app-merchant-property-header',
@@ -42,18 +43,19 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
 
     private destroy$ = new Subject<void>();
 
-    /**
-     * 注入
-     * @param router
-     * @param authService
-     * @param toast
-     */
-    constructor(
-        private router: Router,
-        private authService: Auth,
-        private toast: MessageService
-    ) {
-    }
+  /**
+   * 注入
+   * @param router
+   * @param authService
+   * @param toast
+   * @param propertyStateService
+   */
+  constructor(
+    private router: Router,
+    private authService: Auth,
+    private toast: MessageService,
+    private propertyStateService: PropertyStateService
+  ) {}
 
     /**
      * 元件初始化時執行一次登入狀態檢查
@@ -147,9 +149,21 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
         this.router.navigate(['/merchants/property/homepage']);
     }
 
-    onClickProperty(){
-        this.router.navigate(['/merchants/property/info']);
+  onClickProperty(){
+    const propertyId = this.propertyStateService.getCurrentPropertyId();
+    if (!propertyId) {
+      this.toast.add({
+        severity: 'warn',
+        summary: '無法取得旅館資訊',
+        detail: '請先選擇旅館'
+      });
+      this.router.navigate(['/merchants/property/homepage']);
+      return;
     }
+    this.router.navigate(['/merchants/property/info'], {
+      state: { propertyId: propertyId }
+    });
+  }
 
     onClickReview() {
         this.router.navigate(['/merchants/property/reviewList']);

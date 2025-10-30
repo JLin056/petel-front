@@ -230,9 +230,6 @@ export class BookingPage implements OnInit {
             }
 
             case this.paymentOptions.at(1)?.value: {
-
-                localStorage.setItem('sharedOrderData', JSON.stringify(this.orderData)); // 加這一句因為轉導到綠界 service 資料會重置
-
                 this.bookService.createOrder(this.setDataForCreateOrder()).subscribe({
                     next: (response) => {
                         if (!(response.MWHEADER.RETURNCODE === "0000")) {
@@ -259,8 +256,6 @@ export class BookingPage implements OnInit {
                                     input.value = String(value);
                                     form.appendChild(input);
                                 });
-
-                                this.isNavigatingAway = true;
 
                                 document.body.appendChild(form);
                                 form.submit();
@@ -333,9 +328,6 @@ export class BookingPage implements OnInit {
      */
     @HostListener('window:beforeunload', ['$event'])
     beforeUnloadHander(event: any): void {
-        if (this.isNavigatingAway) {
-            return;
-        }
         event.preventDefault();
         event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
     }

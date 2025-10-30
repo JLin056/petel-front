@@ -1,6 +1,11 @@
 export interface MERCH003Tranrs {
-    stats: never[];
-    rooms: reviewList[];
+    avgPriceScore: number;
+    avgEnvScore: number;
+    avgServiceScore: number;
+    reviews: reviewList[];
+    currentPage: number;
+    totalPage: number;
+    totalCount: number;
 }
 
 export interface reviewList {
@@ -8,8 +13,8 @@ export interface reviewList {
     userName: string;
     priceScore: number;
     envScore: number;
-    serviceScore: string;
-    avgScore: string;
+    serviceScore: number;
+    avgScore: number;
     content: string;
-    createdAt: string
+    createdAt: string;
 }

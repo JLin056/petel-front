@@ -1,27 +1,33 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Order } from '../../core/interfaces/ADMIN003Res.interface';
-import { Button, ButtonModule } from "primeng/button";
 import { CommonModule } from '@angular/common';
-import { Dialog } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+
+import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 
 @Component({
   selector: 'app-merchant-order-detail-dialog',
-  imports: [Button, CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, DialogModule, ButtonModule],
   templateUrl: './merchant-order-detail-dialog.html',
   styleUrl: './merchant-order-detail-dialog.css'
 })
 export class MerchantOrderDetailDialog {
   @Input() visible = false;
-  @Output() visibleChange = new EventEmitter<boolean>();
-
   @Input() order: Order | null = null;
+  @Output() visibleChange = new EventEmitter<boolean>();
   @Output() noteUpdated = new EventEmitter<{ orderId: string, note: string }>();
+  @Output() statusUpdated = new EventEmitter<{ orderId: string, status: string }>();
 
-  // 備註編輯狀態
-  isEditingNote = false;
-  editedNote = '';
+  editedNote: string = '';
+
+  statuses: Status[] = [
+    { label: '未付款', value: '未付款' },
+    { label: '已付款', value: '已付款' },
+    { label: '已完成', value: '已完成' },
+    { label: '已取消', value: '已取消' }
+  ];
 
   ngOnChanges(): void {
     if (this.order) {
@@ -32,68 +38,14 @@ export class MerchantOrderDetailDialog {
   onHideDialog() {
     this.visible = false;
     this.visibleChange.emit(false);
-    this.isEditingNote = false;
   }
 
-  onEditNote() {
-    this.isEditingNote = true;
-  }
-
-  onCancelEdit() {
-    this.editedNote = this.order?.NOTE || '';
-    this.isEditingNote = false;
-  }
-
-  onSaveNote() {
+  onSave() {
     if (this.order) {
-      this.noteUpdated.emit({
-        orderId: this.order.ORDER_ID,
-        note: this.editedNote
-      });
-    }
-  }
-
-  // 導航到會員列表(暫時用 console.log，之後可以串接路由)
-  navigateToMember() {
-    console.log('導航到會員:', this.order?.USER_NAME);
-    // TODO: 實作導航到會員列表並搜尋該會員
-  }
-
-  // 導航到旅館列表(暫時用 console.log，之後可以串接路由)
-  navigateToHotel() {
-    console.log('導航到旅館:', this.order?.PROPERTY_NAME);
-    // TODO: 實作導航到旅館列表並搜尋該旅館
-  }
-
-  // 取得狀態顏色
-  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
-    switch (status) {
-      case '已完成':
-        return 'success';
-      case '已確認':
-        return 'info';
-      case '待付款':
-        return 'warn';
-      case '已取消':
-        return 'danger';
-      default:
-        return null;
-    }
-  }
-
-  // 取得狀態樣式類別
-  getStatusClass(status: string): string {
-    switch (status) {
-      case '已完成':
-        return 'success';
-      case '已確認':
-        return 'info';
-      case '待付款':
-        return 'warn';
-      case '已取消':
-        return 'danger';
-      default:
-        return 'default';
+      this.noteUpdated.emit({ orderId: this.order.ORDER_ID, note: this.editedNote });
+      this.statusUpdated.emit({ orderId: this.order.ORDER_ID, status: this.order.STATUS });
+      console.log('儲存成功:', this.order.ORDER_ID, this.order.STATUS, this.editedNote);
+      this.onHideDialog();
     }
   }
 }

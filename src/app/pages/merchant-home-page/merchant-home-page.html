@@ -58,7 +58,7 @@
                 <div class="room-name">{{ room.name }}</div>
                 <div class="room-detail">寵物種類：{{ room.petTypeName }}</div>
                 <div class="room-detail">空間大小：{{ room.formattedRoomSize }}</div>
-                <div class="room-detail">房間價格：${{ room.basePrice }}/天</div>
+                <div class="room-detail">房間價格：${{ room.basePrice | number:'1.0-0'}}/天</div>
 
                 <div class="room-buttons" (click)="$event.stopPropagation()">
                     <button class="btn-edit" (click)="onEdit(room)">修改房型</button>
@@ -78,9 +78,6 @@
         </div>
         }
     </div>
-    <!-- <div class="btn-more-container">
-        <button class="btn-more">更多房型</button>
-    </div> -->
     }
 </div>
 
