@@ -126,7 +126,7 @@ export class MerchantRegisterPage {
      * 前往登入頁
      */
     goLoginPage() {
-        this.router.navigate(['merchants/login']);
+        this.router.navigate(['merchants/userPage/login']);
     }
 
     /**
@@ -164,7 +164,7 @@ export class MerchantRegisterPage {
 
                 if (res.MWHEADER.RETURNCODE === '0000') {
                     this.toast.add({ severity: 'success', summary: '註冊成功', detail: '請使用新帳號登入' });
-                    this.router.navigateByUrl('merchants/login', { replaceUrl: true });
+                    this.router.navigateByUrl('merchants/userPage/login', { replaceUrl: true });
                 } else if (res.MWHEADER.RETURNDESC === 'Email 已被使用') {
                     this.toast.add({ severity: 'error', summary: '註冊失敗', detail: 'Email 已被使用' });
                 } else {
