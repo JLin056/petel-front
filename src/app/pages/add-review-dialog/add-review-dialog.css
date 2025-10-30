@@ -1,0 +1,102 @@
+/* petel-auth-dialog 是你本來就有的共用 styleClass */
+::ng-deep .p-dialog.petel-auth-dialog {
+    border-radius: 20px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+    border-radius: 0 0 20px 20px ;
+    padding: 24px 28px ;
+    background-color: #fffdf9;
+}
+
+/* 頂部標題區 */
+::ng-deep .p-dialog.petel-auth-dialog .p-dialog-header {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    background-color: #f6ede5;
+    color: #3b2d22;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+
+.review-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 4px 12px 4px;
+}
+
+.hotel {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #3b2d22;
+}
+
+.date {
+    margin: 0 0 10px;
+    color: #7c6c5b;
+    font-size: 15px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.row.column {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+label {
+    width: 120px;
+    color: #3b2d22;
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: 25px;
+}
+
+.review-textarea {
+    width: 100%;
+    min-height: 100px;
+    border: 1px solid #d4c2b2;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 15px;
+    resize: vertical;
+    line-height: 1.5;
+    color: #3b2d22;
+}
+.review-textarea:focus {
+    outline: none;
+    border-color: #c68a4a;
+    box-shadow: 0 0 0 1px #c68a4a40;
+}
+
+.hint {
+    align-self: flex-end;
+    color: #a59484;
+    font-size: 13px;
+}
+
+.btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.cancel-btn,
+.confirm-btn {
+    min-width: 100px;
+}
+
+.confirm-btn ::ng-deep .p-button {
+    background-color: #c68a4a;
+    border: none;
+}

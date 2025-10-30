@@ -1,5 +1,7 @@
+import { BookService } from './../../core/services/book-service';
+import { Review001Tranrq } from './../../core/interfaces/REVIEW001Req.interface';
 import { Tranrs } from './../../core/interfaces/USER004Res.interface';
-import { Tranrq } from './../../core/interfaces/USER002Req.interface';
+import { User002Tranrq } from './../../core/interfaces/USER002Req.interface';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
@@ -17,11 +19,13 @@ import { USER006Req } from '../../core/interfaces/USER006Req.interface';
 import { TagModule } from 'primeng/tag';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
-
+import { REVIEW001Req } from '../../core/interfaces/REVIEW001Req.interface';
+import { ReviewService } from '../../core/services/review.service';
+import { AddReviewDialog } from '../add-review-dialog/add-review-dialog';
 
 @Component({
   selector: 'app-user-page',
-  imports: [CommonModule, FormsModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule, SelectModule],
+  imports: [CommonModule, FormsModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule, SelectModule, AddReviewDialog],
   templateUrl: './user-page.html',
   styleUrl: './user-page.css',
   providers: [ConfirmationService, MessageService]
@@ -41,6 +45,11 @@ export class UserPage {
 
     user: Tranrs | null = null;
 
+    reviewVisible = false;
+    selectedOrderForReview: { orderId: string; propertyName: string; checkIn?: string; checkOut?: string } | null = null;
+
+    cancelingOrderId?: string;
+
     readonly statusOptions = [
         { label: '全部',  value: '' },
         { label: '已付款', value: '已付款' },
@@ -53,7 +62,9 @@ export class UserPage {
 
     constructor(
         private toast: MessageService,
-        private userService: UserService
+        private userService: UserService,
+        private reviewService: ReviewService,
+        private bookService: BookService
     ) {}
 
     private readonly cancellableStatuses = new Set(['已付款', '未付款']);
@@ -89,7 +100,7 @@ export class UserPage {
     onEditSaved(updated: { name: string; phone: string; avatarMediaId?: string }) {
         if (this.loading) return;
 
-        const tranrq: Tranrq = {};
+        const tranrq: User002Tranrq = {};
 
         const newName  = updated.name?.trim();
         const newPhone = updated.phone?.trim();
@@ -202,8 +213,6 @@ export class UserPage {
         }
     }
 
-
-
     // 取消訂單按鈕 disable
     isCancelDisabled(status?: string): boolean {
         return !status || !this.cancellableStatuses.has(status);
@@ -217,20 +226,111 @@ export class UserPage {
 
     // 確認取消訂單
     onDeleteOrderConfirmed() {
-        // 執行取消訂單的邏輯
-        console.log('取消訂單', this.currentOrderId);
+        if (!this.currentOrderId) {
+            this.deleteOrderVisible = false;
+            return;
+        }
 
-        // this.orderService.cancelOrder(this.currentOrderId).subscribe(...);
+        const target = this.orders.find(o => o.orderId === this.currentOrderId);
+        if (!target) {
+            this.toast.add({ severity: 'warn', summary: '找不到訂單', detail: '請重新整理後再試' });
+            this.deleteOrderVisible = false;
+            return;
+        }
+        if (this.isCancelDisabled(target.status)) {
+            this.toast.add({ severity: 'info', summary: '不可取消', detail: `狀態「${target.status}」不可取消` });
+            this.deleteOrderVisible = false;
+            return;
+        }
 
-        this.deleteOrderVisible = false;
+        this.cancelingOrderId = this.currentOrderId;
 
-        // 顯示成功訊息
-        this.toast.add({
-            severity: 'success',
-            summary: '成功',
-            detail: '訂單已取消'
+        const payload = {
+            MWHEADER: {
+                MSGID: 'BOOK-004'
+            },
+            TRANRQ: {
+                order_id: this.currentOrderId
+            }
+        }
+
+        this.bookService.onCancelBookingApi(payload)
+            .pipe(finalize(() => {
+                this.cancelingOrderId = undefined;
+                this.deleteOrderVisible = false;
+            }))
+            .subscribe({
+                next: (res) => {
+                    if (res.MWHEADER.RETURNCODE === '0000') {
+
+                        target.status = '已取消';
+
+                        this.toast.add({
+                            severity: 'success',
+                            summary: '成功',
+                            detail: '訂單已取消'
+                        });
+                    } else {
+                        this.toast.add({
+                            severity: 'warn',
+                            summary: '取消失敗',
+                            detail: res.MWHEADER.RETURNDESC || '請稍後再試'
+                        });
+                    }
+                },
+                error: () => {
+                    this.toast.add({
+                    severity: 'error',
+                    summary: '系統錯誤',
+                    detail: '取消失敗，請稍後再試'
+                    });
+                }
+            });
+    }
+
+    openReview(o: any) {
+        this.selectedOrderForReview = {
+            orderId: o.orderId,
+            propertyName: o.propertyName,
+            checkIn: o.checkIn,
+            checkOut: o.checkOut
+        };
+        this.reviewVisible = true;
+    }
+
+    onReviewSaved(form: Review001Tranrq) {
+        const req: REVIEW001Req = {
+            MWHEADER: { MSGID: 'REVIEW-001' },
+            TRANRQ: form
+        };
+
+        this.reviewService.onAddReviceApi(req).subscribe({
+            next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                    this.toast.add({
+                        severity: 'success',
+                        summary: '評論成功',
+                        detail: `謝謝你的評論～`
+                    });
+
+                    const target = this.orders?.find((x: any) => x.orderId === form.orderId);
+                    if (target) target.hasReview = true;
+                    this.reviewVisible = false;
+                    this.selectedOrderForReview = null;
+                } else {
+                this.toast.add({
+                    severity: 'warn',
+                    summary: '評論失敗',
+                    detail: res.MWHEADER.RETURNDESC
+                });
+                }
+            },
+            error: (err) => {
+                this.toast.add({ severity: 'error', summary: '伺服器錯誤', detail: '請稍後再試' });
+            }
         });
     }
+
 
     ngOnInit(): void {
         this.loadUser();

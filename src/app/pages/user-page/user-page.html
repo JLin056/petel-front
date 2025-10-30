@@ -110,20 +110,15 @@
                                 styleClass="button"
                                 [outlined]="true"
                                 (click)="confirmDeleteOrder($event, o.orderId)"
-                                [disabled]="isCancelDisabled(o.status)">
+                                [disabled]="isCancelDisabled(o.status)  || cancelingOrderId === o.orderId">
                             </p-button>
-
-                            <!-- <p-button
-                                label="聊聊"
-                                styleClass="button"
-                                >
-                            </p-button> -->
 
                             <p-button
                                 label="評論"
                                 styleClass="button"
                                 [outlined]="true"
-                                [disabled]="!o.hasReview">
+                                (onClick)="openReview(o)"
+                                [disabled]="o.hasReview">
                             </p-button>
                         </div>
                     </div>
@@ -138,6 +133,13 @@
         [user]="user"
         (saved)="onEditSaved($event)">
     </app-update-user-dialog>
+
+    <!-- 新增評論 dialog -->
+    <app-add-review-dialog
+        [(visible)]="reviewVisible"
+        [order]="selectedOrderForReview"
+        (saved)="onReviewSaved($event)">
+    </app-add-review-dialog>
 
     <!-- 取消訂單 confirm dialog -->
     <app-shared-confirm-dialog

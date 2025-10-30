@@ -2,14 +2,14 @@
 
 export interface USER002Req {
     MWHEADER: Mwheader;
-    TRANRQ:   Tranrq;
+    TRANRQ:   User002Tranrq;
 }
 
 export interface Mwheader {
     MSGID: string;
 }
 
-export interface Tranrq {
+export interface User002Tranrq {
     name?:    string;
     phone?:   string;
     mediaId?: string;
