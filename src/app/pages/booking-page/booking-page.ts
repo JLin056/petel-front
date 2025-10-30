@@ -1,4 +1,3 @@
-import { MediaService } from './../../core/services/media-service';
 import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +18,7 @@ import { MessageService } from 'primeng/api';
 import { PricePipe } from "../../shared/pipes/price-pipe";
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
+import { MediaService } from '../../core/services/media.service';
 
 @Component({
     selector: 'app-booking-page',
@@ -345,7 +345,14 @@ export class BookingPage implements OnInit {
      * @returns
      */
     getImage(propertyId: string): string {
-        this.mediaService.queryMedia({ propertyId: propertyId }).subscribe({
+        this.mediaService.onGetMediaApi({
+            MWHEADER: {
+                MSGID: 'MEDIA-004'
+            },
+            TRANRQ: {
+                propertyId: propertyId
+            }
+        }).subscribe({
             next: (response) => {
                 if (!(response.MWHEADER.RETURNCODE === "0000") || response.TRANRS.totalCount) {
                     return 'img/hotelImg.png';
