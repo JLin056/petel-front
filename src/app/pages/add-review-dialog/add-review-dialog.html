@@ -1,0 +1,53 @@
+<p-dialog
+    header="撰寫評論"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '560px' }"
+    styleClass="petel-auth-dialog"
+    (onHide)="close()"
+>
+    <div class="review-wrap" *ngIf="order">
+        <!-- 旅館名稱 -->
+        <h4 class="hotel">{{ order.propertyName }}</h4>
+        <p class="date" *ngIf="order.checkIn && order.checkOut">
+            住宿日期：{{ order.checkIn }} ~ {{ order.checkOut }}
+        </p>
+
+        <!-- 滿意度評分 -->
+        <div class="row">
+            <label>價格滿意度</label>
+            <p-rating [(ngModel)]="priceScore"></p-rating>
+        </div>
+
+        <div class="row">
+            <label>環境滿意度</label>
+            <p-rating [(ngModel)]="envScore"></p-rating>
+        </div>
+
+        <div class="row">
+            <label>服務滿意度</label>
+            <p-rating [(ngModel)]="serviceScore"></p-rating>
+        </div>
+
+        <!-- 評論內容 -->
+        <textarea
+            pInputText
+            [(ngModel)]="content"
+            rows="4"
+            maxlength="500"
+            placeholder="分享一下這次的入住體驗吧～"
+            class="review-textarea"
+        ></textarea>
+
+        <!-- 按鈕列 -->
+        <div class="btns">
+            <p-button
+                label="送出"
+                styleClass="confirm-btn"
+                (onClick)="submit()"
+                [disabled]="!isValid()"
+            ></p-button>
+        </div>
+    </div>
+</p-dialog>
+
