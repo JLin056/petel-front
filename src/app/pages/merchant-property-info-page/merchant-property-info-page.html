@@ -15,10 +15,12 @@
             <div class="form-section full-width image-upload-section">
                 <label class="section-label">旅館圖片</label>
                 <div class="image-preview-area gallery-preview">
+                    <!-- 有圖片 -->
                     <!-- <div class="image-gallery" *ngIf="hotel.propertyImages && hotel.propertyImages.length > 0">
                         <img *ngFor="let img of hotel.propertyImages" [src]="img.base64Data" alt="旅館圖片" />
-                    </div>
-                    <div class="image-placeholder" *ngIf="!hotel.propertyImages || hotel.propertyImages.length === 0">
+                    </div> -->
+                    <!-- 無圖片 -->
+                    <!-- <div class="image-placeholder" *ngIf="!hotel.propertyImages || hotel.propertyImages.length === 0">
                         <i class="pi pi-images"></i>
                         <span>暫無圖片</span>
                     </div> -->
@@ -58,15 +60,17 @@
             <!-- 5. 設施 -->
             <!-- <div class="form-section full-width info-section">
                 <label class="section-label">設施</label>
-                <ul *ngIf="facilities.length; else noFacilities">
-                    <li *ngFor="let f of facilities">
-                        <i class="pi pi-check-circle"></i> {{ f.name }}
+                <!-- 有設施 -->
+                <!-- <ul class="facility-list" *ngIf="hotel.facilities && hotel.facilities.length > 0">
+                    <li *ngFor="let f of hotel.facilities">
+                        <i class="pi pi-check-circle"></i> {{ f.facilityName }}
                     </li>
-                </ul>
-                <ng-template #noFacilities>
-                    <span class="info-text">暫無設施資訊</span>
-                </ng-template>
-            </div> -->
+                </ul> -->
+                <!-- 無設施 -->
+                <!-- <span class="info-text" *ngIf="!hotel.facilities || hotel.facilities.length === 0">
+                    暫無設施資訊
+                </span> -->
+            </div>
 
             <!-- 6. 介紹或須知 -->
             <div class="form-section full-width info-section" *ngIf="hotel.info">

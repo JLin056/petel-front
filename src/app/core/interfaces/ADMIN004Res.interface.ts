@@ -1,17 +1,8 @@
-export interface Member {
-  ACCOUNT_ID: string;
-  EMAIL: string;
-  NAME: string;
-  PHONE: string;
-  ROLE: string;
-  STATUS: string;
-}
-
+// 訂單備註更新 API
 export interface ADMIN004ResTRANRS {
-  members: Member[];
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
+  orderId: string;
+  note: string;
+  updatedAt: string;
 }
 
 export interface ADMIN004Res {
@@ -22,6 +13,7 @@ export interface ADMIN004Res {
   TRANRS: ADMIN004ResTRANRS;
 }
 
+// 會員相關類型定義（保留給 admin-user-table 使用）
 export interface UserStatus {
   label: string;
   value: string;

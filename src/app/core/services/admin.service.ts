@@ -6,6 +6,8 @@ import { ADMIN001Req } from '../interfaces/ADMIN001Req.interface';
 import { ADMIN001Res } from '../interfaces/ADMIN001Res.interface';
 import { ADMIN003Req } from '../interfaces/ADMIN003Req.interface';
 import { ADMIN003Res } from '../interfaces/ADMIN003Res.interface';
+import { ADMIN004Req } from '../interfaces/ADMIN004Req.interface';
+import { ADMIN004Res } from '../interfaces/ADMIN004Res.interface';
 import { ADMIN007Req } from '../interfaces/ADMIN007Req.interface';
 import { ADMIN007Res } from '../interfaces/ADMIN007Res.interface';
 import { ADMIN008Req } from '../interfaces/ADMIN008Req.interface';
@@ -26,6 +28,9 @@ export class AdminService {
 
   /** 查詢訂單列表 API URL */
   queryOrdersUrl = `${environment.BASE_URL}/admin/bookings/list`;
+
+  /** 更新訂單備註 API URL */
+  updateOrderNoteUrl = `${environment.BASE_URL}/admin/bookings/edit`;
 
   /** 刪除旅館 API URL */
   deleteHotelUrl = `${environment.BASE_URL}/admin/hotels/delete`;
@@ -60,6 +65,18 @@ export class AdminService {
    */
   queryOrders(postData: ADMIN003Req): Observable<ADMIN003Res> {
     return this.http.post<ADMIN003Res>(this.queryOrdersUrl, postData, {
+      headers: this.headers,
+      withCredentials: true
+    });
+  }
+
+  /**
+   * 更新訂單備註 API (ADMIN-004)
+   * @param postData ADMIN004Req
+   * @returns ADMIN004Res
+   */
+  updateOrderNote(postData: ADMIN004Req): Observable<ADMIN004Res> {
+    return this.http.post<ADMIN004Res>(this.updateOrderNoteUrl, postData, {
       headers: this.headers,
       withCredentials: true
     });

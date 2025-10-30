@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -14,7 +14,6 @@ import { TagModule } from 'primeng/tag';
 import { Seller, SellerStatus, ADMIN002Req, ADMIN002Res } from '../../core/interfaces/ADMIN002Res.interface';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 
 @Component({
   selector: 'app-admin-seller-table',
@@ -29,7 +28,6 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
     CommonModule,
     FormsModule,
     ButtonModule,
-    SharedConfirmDialog,
     ToastModule
   ],
   providers: [MessageService],
@@ -42,7 +40,8 @@ export class AdminSellerTable implements OnInit {
   constructor(
     private http: HttpClient,
     private messageService: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   sellerList: Seller[] = [];
@@ -53,17 +52,12 @@ export class AdminSellerTable implements OnInit {
   accountIdFilter: string = '';
   emailFilter: string = '';
   nameFilter: string = '';
-  businessCodeFilter: string = '';
 
   // Pagination
   currentPage: number = 1;
   pageSize: number = 5;
   totalCount: number = 0;
   totalPages: number = 0;
-
-  // Confirm dialog
-  deleteConfirmVisible: boolean = false;
-  selectedSeller: Seller | null = null;
 
   ngOnInit() {
     this.statuses = [
@@ -192,53 +186,24 @@ export class AdminSellerTable implements OnInit {
   }
 
   /**
-   * 顯示刪除確認對話框
-   */
-  confirmDelete(seller: Seller) {
-    this.selectedSeller = seller;
-    this.deleteConfirmVisible = true;
-  }
-
-  /**
-   * 確認刪除賣家
-   */
-  onDeleteConfirmed() {
-    if (this.selectedSeller) {
-      console.log('刪除賣家:', this.selectedSeller.SELLER_ID);
-      const sellerName = this.selectedSeller.NAME;
-
-      // TODO: 呼叫 API 刪除賣家
-      // this.http.delete(`/api/sellers/${this.selectedSeller.SELLER_ID}`).subscribe(...);
-
-      // 從列表中移除
-      this.sellerList = this.sellerList.filter(s => s.SELLER_ID !== this.selectedSeller!.SELLER_ID);
-
-      // 顯示成功訊息
-      this.messageService.add({
-        severity: 'success',
-        summary: '刪除成功',
-        detail: `已成功刪除賣家 ${sellerName}`
-      });
-
-      this.selectedSeller = null;
-    }
-    this.deleteConfirmVisible = false;
-  }
-
-  /**
-   * 取消刪除
-   */
-  onDeleteCancelled() {
-    this.selectedSeller = null;
-    this.deleteConfirmVisible = false;
-  }
-
-  /**
    * 前往該賣家的旅館列表
    */
   goToHotels(sellerId: string) {
     console.log('前往 Seller ID 的旅館列表:', sellerId);
-    // TODO: 導航到旅館列表頁面，並帶上 sellerId 參數
-    // this.router.navigate(['/hotels'], { queryParams: { sellerId: sellerId } });
+
+    // 找到該賣家的名稱
+    const seller = this.sellerList.find(s => s.SELLER_ID === sellerId);
+    if (seller) {
+      // 導航到旅館列表頁面，並帶上 sellerName 參數
+      this.router.navigate(['/admin/hotelTable'], {
+        queryParams: { sellerName: seller.NAME }
+      });
+
+      this.messageService.add({
+        severity: 'info',
+        summary: '正在跳轉',
+        detail: `正在查看 ${seller.NAME} 的旅館列表`
+      });
+    }
   }
 }

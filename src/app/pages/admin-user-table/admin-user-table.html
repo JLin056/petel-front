@@ -1,4 +1,4 @@
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>
 
 <h3 class="title">會員列表</h3>
 
@@ -24,18 +24,19 @@
 
 
 <div class="card">
-  <p-table
-    #dt
-    [value]="memberList"
-    dataKey="ACCOUNT_ID"
-    [rows]="pageSize"
-    [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
-    [paginator]="true"
-    [lazy]="true"
-    [totalRecords]="totalRecords"
-    (onLazyLoad)="onPageChange($event)"
-    [tableStyle]="{ 'min-width': '60rem' }"
-  >
+  <div class="table-responsive">
+    <p-table
+      #dt
+      [value]="memberList"
+      dataKey="ACCOUNT_ID"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+      [paginator]="true"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="onPageChange($event)"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
     <ng-template pTemplate="header">
       <tr>
         <th style="width:16%">帳號ID</th>
@@ -109,27 +110,12 @@
           <p-tag [value]="getStatusLabel(member.STATUS)" [severity]="getStatusSeverity(member.STATUS) || undefined" class="tag-large" />
         </td>
         <td>
-          <div class="flex gap-2">
-            <p-button
-              icon="pi pi-history"
-              [rounded]="true"
-              [outlined]="true"
-              severity="info"
-              (onClick)="viewMemberOrders(member)"
-              pTooltip="查看歷史訂單"
-              tooltipPosition="top"
-            />
-            <p-button
-              class="deleteBtn"
-              icon="pi pi-trash"
-              [rounded]="true"
-              [outlined]="true"
-              severity="danger"
-              (onClick)="confirmDelete(member)"
-              pTooltip="刪除會員"
-              tooltipPosition="top"
-            />
-          </div>
+          <p-button
+            label="歷史訂單"
+            [outlined]="true"
+            size="small"
+            (onClick)="viewMemberOrders(member)"
+          />
         </td>
       </tr>
     </ng-template>
@@ -139,15 +125,5 @@
       </tr>
     </ng-template>
   </p-table>
+  </div>
 </div>
-
-<!-- 刪除確認對話框 -->
-<app-shared-confirm-dialog
-  [(visible)]="deleteConfirmVisible"
-  header="刪除會員"
-  [message]="'確定要刪除會員 ' + (selectedMember?.NAME || '') + ' 嗎？此操作無法復原。'"
-  confirmLabel="刪除"
-  cancelLabel="取消"
-  (confirm)="onDeleteConfirmed()"
-  (cancel)="onDeleteCancelled()"
-></app-shared-confirm-dialog>
