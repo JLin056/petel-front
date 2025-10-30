@@ -1,38 +1,41 @@
 <p-dialog
-    header="修改會員資訊"
+    header="填寫會員資訊"
     [modal]="true"
+    [closable]="false"
+    [blockScroll]="true"
+    [dismissableMask]="false"
     [(visible)]="visible"
     (onHide)="onHideDialog()"
     [style]="{width: '600px'}"
-    styleClass = "petel-auth-dialog"
+    styleClass="petel-auth-dialog"
 >
-    <div class="container">
 
-    <!-- 頭貼區 -->
-    <div class="avatar-box">
+    <div class="container">
+        <!-- 頭貼區 -->
+        <div class="avatar-box">
             <img
-                [src]="previewSrc || 'img/avatar.png'"
+                [src]="previewSrc || avatarUrl || 'img/avatar.png'"
                 alt="avatar"
                 class="avatar"
             />
-            <small class="hint">喜歡其他張？</small>
+            <small class="hint">請從下方清單選擇一張頭貼</small>
         </div>
 
         <div class="avatar-grid" *ngIf="avatars.length; else emptyArea">
-            <div
-                class="avatar-item"
-                *ngFor="let a of avatars; let i = index"
-                [class.selected]="selectedIndex === i"
-                (click)="selectAvatar(i)"
-            >
-                <img [src]="toDataUrl(a)" alt="avatar-option" />
-            </div>
+        <div
+            class="avatar-item"
+            *ngFor="let a of avatars; let i = index"
+            [class.selected]="selectedIndex === i"
+            (click)="selectAvatar(i)"
+        >
+            <img [src]="toDataUrl(a)" alt="avatar-option" />
+        </div>
         </div>
 
         <ng-template #emptyArea>
-            <div class="empty">
-                <p *ngIf="!loadingAvatars">目前沒有可選頭貼，或尚未載入。</p>
-            </div>
+        <div class="empty">
+            <p *ngIf="!loadingAvatars">目前沒有可選頭貼，或尚未載入。</p>
+        </div>
         </ng-template>
 
 
@@ -57,7 +60,7 @@
     </div>
 
     <div class="button-container">
-        <p-button label="取消" severity="secondary" (click)="onHideDialog()"></p-button>
-        <p-button label="確認修改" (click)="onSave(nameCtrl, phoneCtrl)" [disabled]="loading" [loading]="loading" />
+        <!-- <p-button label="取消" severity="secondary" (click)="onHideDialog()"></p-button> -->
+        <p-button label="送出" (click)="onSave(nameCtrl, phoneCtrl)" [disabled]="loading" [loading]="loading" />
     </div>
 </p-dialog>
