@@ -12,10 +12,13 @@ import { USER004Res } from '../../core/interfaces/USER004Res.interface';
 import { finalize } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
 import { USER002Req } from '../../core/interfaces/USER002Req.interface';
+import { Order } from '../../core/interfaces/USER006Res.interface';
+import { USER006Req } from '../../core/interfaces/USER006Req.interface';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-user-page',
-  imports: [CommonModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog],
+  imports: [CommonModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule],
   templateUrl: './user-page.html',
   styleUrl: './user-page.css',
   providers: [ConfirmationService, MessageService]
@@ -27,8 +30,11 @@ export class UserPage {
 
     loading = false;
 
-    // 要操作的 訂單ID
+    isLoadingBookings = false;
+    bookingsError = '';
+
     currentOrderId?: string;
+    orders: Order[] = [];
 
     user: Tranrs | null = null;
 
@@ -36,6 +42,8 @@ export class UserPage {
         private toast: MessageService,
         private userService: UserService
     ) {}
+
+    private readonly cancellableStatuses = new Set(['已付款', '未付款']);
 
     loadUser(): void {
         if (this.loading) return;
@@ -118,6 +126,65 @@ export class UserPage {
         this.deleteUserVisible = true;
     }
 
+    price(n: number | null | undefined): string {
+        if (n == null) return '-';
+        return n.toLocaleString('zh-TW');
+    }
+
+    onGetBooking() {
+        this.isLoadingBookings = true;
+        this.bookingsError = '';
+
+        const payload : USER006Req = {
+            MWHEADER: {
+                MSGID: 'USER-006'
+            },
+            TRANRQ : {
+            }
+        }
+
+        this.userService.onGetBookingInfoApi(payload).subscribe({
+            next: (res) => {
+                this.isLoadingBookings = false;
+
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                    const list = res?.TRANRS?.orders;
+                    this.orders = Array.isArray(list) ? list : [];
+                } else {
+                    this.orders = [];
+                    this.bookingsError = res?.MWHEADER?.RETURNDESC || '讀取歷史訂單失敗';
+                    this.toast.add({ severity: 'warn', summary: '讀取失敗', detail: this.bookingsError });
+                }
+            },
+            error: () => {
+                this.isLoadingBookings = false;
+                this.orders = [];
+                this.bookingsError = '系統錯誤，請稍後再試';
+                this.toast.add({ severity:'error', summary: '系統錯誤', detail: this.bookingsError })
+            }
+        });
+    }
+
+    getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
+        switch (status) {
+        case '已付款':
+            return 'success';
+        case '未付款':
+            return 'warn';
+        case '已完成':
+            return 'info';
+        case '已取消':
+            return 'danger';
+        default:
+            return 'secondary';
+        }
+    }
+
+    // 取消訂單按鈕 disable
+    isCancelDisabled(status?: string): boolean {
+        return !status || !this.cancellableStatuses.has(status);
+    }
+
     // 顯示取消訂單確認
     confirmDeleteOrder(event: Event, orderId?: string) {
         this.currentOrderId = orderId;
@@ -143,5 +210,6 @@ export class UserPage {
 
     ngOnInit(): void {
         this.loadUser();
+        this.onGetBooking();
     }
 }

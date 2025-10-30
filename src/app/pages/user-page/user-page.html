@@ -43,84 +43,59 @@
     <!-- 歷史訂單區 -->
     <div class="order">
         <h3>您的歷史訂單紀錄</h3>
-        <div class="order-item">
+
+        <p *ngIf="isLoadingBookings">載入中...</p>
+        <p *ngIf="!isLoadingBookings && bookingsError" class="error">{{ bookingsError }}</p>
+        <p *ngIf="!isLoadingBookings && !bookingsError && ((orders?.length ?? 0) === 0)" class="empty-text">目前還沒有訂購過！快訂購看看吧</p>
+
+        <div *ngFor="let o of orders" class="order-item">
             <div class="order-item-img">
-                <img src="img/hotelImg.png" alt="旅館照片">
+                <img [src]="'img/hotelImg.png'" alt="旅館照片">
             </div>
+
             <div class="order-item-content">
-                <h4>杜家村精品旅館</h4>
+                <h4>{{ o.propertyName }}</h4>
+
                 <div class="order-content">
                     <div>
-                        <p>入住房型：迷你犬</p>
-                        <p>入住時間：2025/10/01 ~ 2025/10/03</p>
+                        <p>訂單編號：{{ o.orderId }}</p>
+                        <p>入住時間：{{ o.checkIn }} ~ {{ o.checkOut }}</p>
                     </div>
                     <div>
-                        <p>訂單狀態：已完成</p>
-                        <p>訂單金額：$300</p>
+                        <p>
+                            訂單狀態：
+                            <p-tag
+                                [value]="o.status"
+                                [severity]="getStatusSeverity(o.status)"
+                                class="status-tag">
+                            </p-tag>
+                        </p>
+                        <p>訂單金額：${{ price(o.totalPrice) }}</p>
+                        <p>旅館評分：{{ o.propertyAvg }}</p>
                     </div>
                 </div>
+
                 <div class="button-container">
-                    <!-- <button type="button" class="button" (click)="confirmDeleteOrder()">取消訂單</button> -->
-                    <p-toast />
-                    <!-- <p-confirmdialog /> -->
                     <p-button
                         label="取消訂單"
                         styleClass="button"
-                        (click)="confirmDeleteOrder($event)"
                         [outlined]="true"
-                    />
-                    <!-- <button type="button" class="button">聊聊</button>
-                    <button type="button" class="button">評論</button> -->
+                        (click)="confirmDeleteOrder($event, o.orderId)"
+                        [disabled]="isCancelDisabled(o.status)">
+                    </p-button>
+
                     <p-button
                         label="聊聊"
                         styleClass="button"
-                        [outlined]="true"
-                    />
+                        [outlined]="true">
+                    </p-button>
+
                     <p-button
                         label="評論"
                         styleClass="button"
                         [outlined]="true"
-                    />
-                </div>
-            </div>
-        </div>
-         <div class="order-item">
-            <div class="order-item-img">
-                <img src="img/hotelImg.png" alt="旅館照片">
-            </div>
-            <div class="order-item-content">
-                <h4>杜家村精品旅館</h4>
-                <div class="order-content">
-                    <div>
-                        <p>入住房型：迷你犬</p>
-                        <p>入住時間：2025/10/01 ~ 2025/10/03</p>
-                    </div>
-                    <div>
-                        <p>訂單狀態：已完成</p>
-                        <p>訂單金額：$300</p>
-                    </div>
-                </div>
-                <div class="button-container">
-                    <p-toast />
-                    <!-- <p-confirmdialog /> -->
-                    <p-button
-                        label="取消訂單"
-                        styleClass="button"
-                        (click)="confirmDeleteOrder($event)"
-                        [outlined]="true"
-                    />
-                    <!-- <button type="button" class="button">聊聊</button>
-                    <button type="button" class="button">評論</button> -->
-                    <p-button
-                        label="聊聊"
-                        styleClass="button"
-                        [outlined]="true"
-                    />
-                    <p-button
-                        label="評論"
-                        styleClass="button"
-                        [outlined]="true"
-                    />
+                        [disabled]="!o.hasReview">
+                    </p-button>
                 </div>
             </div>
         </div>
