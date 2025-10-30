@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { HOTEL002Tranrs } from '../../core/interfaces/HOTEL002Res.interface';
+import { forkJoin } from 'rxjs';
 import { HotelService } from '../../core/services/hotel-service';
 import { Router } from '@angular/router';
+import { HOTEL002Tranrs } from '../../core/interfaces/HOTEL002Res.interface';
+import { HOTEL004Tranrs } from '../../core/interfaces/HOTEL004Res.interface';
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-merchant-property-info-page',
@@ -121,7 +124,7 @@ export class MerchantPropertyInfoPage {
   };
 
   onBack() {
-    this.router.navigate(['/merchants/property/homepage']);
+    this.router.navigate(['/merchants/userPage']);
   }
 
   onEdit() {
@@ -133,13 +136,9 @@ export class MerchantPropertyInfoPage {
     const propertyForEdit = {
       id: this.propertyId,
       ...this.propertyData,
-      propertyId: (this.propertyData as any).propertyId || 'P000000001'
+      propertyId: (this.propertyData as any).propertyId
     };
 
-    console.log('導航到修改頁面，傳遞資料:', propertyForEdit);
-
-    this.router.navigate(['/merchants/property/edit'], {
-      state: { property: propertyForEdit }
-    });
+    this.router.navigate(['/merchants/property/info/edit']);
   }
 }

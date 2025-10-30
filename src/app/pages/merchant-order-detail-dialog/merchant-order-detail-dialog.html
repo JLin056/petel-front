@@ -13,7 +13,23 @@
                 </div>
                 <div class="detail-item">
                     <label>訂單狀態</label>
-                    <div class="detail-value status">{{ order.STATUS }}</div>
+                    <div class="detail-value status-selector">
+                        <p-select
+                            [(ngModel)]="order.STATUS"
+                            [options]="statuses"
+                            optionLabel="label"
+                            optionValue="value"
+                            (onChange)="onStatusChange($event)"
+                            placeholder="選擇狀態"
+                            [style]="{'width': '180px'}">
+                            <ng-template let-option #selectedItem>
+                                <p-tag [value]="option.label" [severity]="getSeverity(option.value)" />
+                            </ng-template>
+                            <ng-template let-option #item>
+                                <p-tag [value]="option.label" [severity]="getSeverity(option.value)" />
+                            </ng-template>
+                        </p-select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,12 +58,12 @@
             <h4>住宿資訊</h4>
             <div class="detail-row">
                 <div class="detail-item">
-                    <label>旅館名稱</label>
-                    <div class="detail-value">{{ order.PROPERTY_NAME }}</div>
-                </div>
-                <div class="detail-item">
                     <label>房型名稱</label>
                     <div class="detail-value">{{ order.ROOM }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>訂購房數</label>
+                    <div class="detail-value">{{ order.QUANTITY }} 間</div>
                 </div>
                 <div class="detail-item">
                     <label>入住日期</label>
@@ -57,9 +73,24 @@
                     <label>退房日期</label>
                     <div class="detail-value">{{ order.CHECK_OUT }}</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 費用資訊 -->
+        <div class="detail-section">
+            <h4>費用資訊</h4>
+            <div class="detail-row">
                 <div class="detail-item">
                     <label>總價格</label>
                     <div class="detail-value price">NT$ {{ order.HOTEL_CHARGES }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>付款方式</label>
+                    <div class="detail-value">{{ order.PAYMENT_METHOD || '未提供' }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>訂單建立時間</label>
+                    <div class="detail-value">{{ order.CREATED_AT }}</div>
                 </div>
             </div>
         </div>
@@ -73,7 +104,7 @@
 
     </div>
 
-    <ng-template #footer>
+    <ng-template pTemplate="footer">
         <p-button label="儲存" severity="primary" (onClick)="onSaveNote()" />
         <p-button label="關閉" severity="secondary" (onClick)="onHideDialog()" />
     </ng-template>

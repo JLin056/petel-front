@@ -3,6 +3,8 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MerchService } from '../../core/services/merch-service';
+import { PropertyStateService } from '../../core/services/property-state.service';
+import { HotelService } from '../../core/services/hotel-service';
 
 @Component({
   selector: 'app-merchant-home-page',
@@ -16,7 +18,7 @@ export class MerchantHomePage implements OnInit {
   /** roomToDelete */
   roomToDelete: any = null;
   /** propertyId */
-  propertyId: string = 'P000000001'
+  propertyId: string = ''
   /** roomList */
   roomList: any[] = [];
   /** stats 先寫死*/
@@ -44,13 +46,51 @@ export class MerchantHomePage implements OnInit {
 
   /**
    * 注入
-   * @param router 
-   * @param merchService 
+   * @param router
+   * @param merchService
+   * @param propertyStateService
+   * @param hotelService
    */
-  constructor(private router: Router, private merchService: MerchService) { }
+  constructor(
+    private router: Router,
+    private merchService: MerchService,
+    private propertyStateService: PropertyStateService,
+    private hotelService: HotelService
+  ) { }
 
   ngOnInit(): void {
+    // 從 PropertyStateService 取得當前旅館 ID
+    this.propertyId = this.propertyStateService.getCurrentPropertyId();
+
+    if (!this.propertyId) {
+      // 如果沒有 propertyId，使用預設值
+      this.propertyId = 'P000000001';
+      this.propertyStateService.setCurrentPropertyId(this.propertyId);
+    }
+
+    console.log('=== 旅館首頁初始化 ===');
+    console.log('propertyId:', this.propertyId);
+
     this.loadRooms();
+    this.loadPropertyName();
+  }
+
+  /**
+   * 載入旅館名稱
+   */
+  loadPropertyName(): void {
+    this.hotelService.queryHotelDetail(this.propertyId).subscribe({
+      next: (res) => {
+        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS?.property_details?.[0]?.name) {
+          const propertyName = res.TRANRS.property_details[0].name;
+          this.propertyStateService.setCurrentPropertyName(propertyName);
+          console.log('已保存旅館名稱:', propertyName);
+        }
+      },
+      error: (err) => {
+        console.error('取得旅館名稱失敗:', err);
+      }
+    });
   }
 
   /**
@@ -71,15 +111,12 @@ export class MerchantHomePage implements OnInit {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.roomList = (res.TRANRS?.rooms || []).map((room: any) => ({
             ...room,
-            // 轉換 petTypeId 成 petTypeName
-            petTypeName: this.petTypeMap[room.petTypeId] || '未知寵物',
-            // 格式化 roomSize，將 "100x200x300" 轉換成 "100公分 x 200公分 x 300公分"
+            petTypeName: this.petTypeMap[room.petTypeId],
             formattedRoomSize: this.formatRoomSize(room.roomSize)
           }));
           this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats;
           console.log('房間列表載入成功', this.roomList);
         } else {
-          this.errorMessage = '載入房型列表失敗';
           this.roomList = [];
         }
         this.isLoading = false;
@@ -95,7 +132,6 @@ export class MerchantHomePage implements OnInit {
 
   /**
    * 格式化房間尺寸
-   * 將 "100x200x300" 轉換成 "100公分 x 200公分 x 300公分"
    * @param roomSize 原始尺寸字串
    * @returns 格式化後的尺寸字串
    */
@@ -103,7 +139,7 @@ export class MerchantHomePage implements OnInit {
     if (!roomSize) return '';
 
     const sizes = roomSize.split('x');
-    if (sizes.length !== 3) return roomSize; // 如果格式不對，返回原值
+    if (sizes.length !== 3) return roomSize; 
 
     const [height, length, width] = sizes;
     return `${height}cm x ${length}cm x ${width}cm`;
@@ -187,20 +223,14 @@ export class MerchantHomePage implements OnInit {
    * @param room 
    */
   onDetail(room: any): void {
-    // 💡 新增 Log，輸出完整的 room 物件，用於除錯
     console.log('點擊房型詳細資料，完整的 Room 物件:', room);
 
-    // 檢查 room.id 是否存在
     if (!room || !room.id) {
-      // 💡 提示使用者檢查後端傳回的資料結構
       this.errorMessage = '無法取得房型 ID (room.id 遺失)。請檢查後端 API 返回的房型物件中 ID 欄位的名稱。';
       console.error(this.errorMessage, room);
       return;
     }
-
     console.log('導航到詳細頁面，房型 ID:', room.id);
-
-    // 傳遞 roomId
     this.router.navigate(['/merchants/property/roomInfo'], {
       state: {
         roomId: room.id,

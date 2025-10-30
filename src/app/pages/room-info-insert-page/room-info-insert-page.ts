@@ -9,16 +9,7 @@ import { MerchService } from '../../core/services/merch-service';
 import { Router } from '@angular/router';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 import { MessageService } from 'primeng/api';
-
-interface PetTypeOption {
-  name: string;
-  id: string;
-}
-
-interface UnitOption {
-  label: string;
-  value: number;
-}
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-room-info-insert-page',
@@ -48,7 +39,6 @@ export class RoomInfoInsertPage implements OnInit {
     { name: '超大型犬', id: 'W006' }
   ];
 
-  // 房間數選項 1-20
   unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
     label: `${i + 1} 間`,
     value: i + 1
@@ -58,15 +48,32 @@ export class RoomInfoInsertPage implements OnInit {
   isSubmitting: boolean = false;
   isSubmitted: boolean = false;
   errorMessage: string = '';
-  propertyId: string = 'P000000001';
+  propertyId: string = '';
 
   constructor(
     private fb: FormBuilder,
     private merchService: MerchService,
-    private router: Router
+    private router: Router,
+    private propertyStateService: PropertyStateService
   ) { }
 
   ngOnInit(): void {
+    // 從 PropertyStateService 取得當前旅館 ID
+    this.propertyId = this.propertyStateService.getCurrentPropertyId();
+
+    if (!this.propertyId) {
+      this.errorMessage = '無法取得旅館資訊';
+      this.messageService.add({
+        severity: 'warn',
+        summary: '無法取得旅館資訊',
+        detail: '請先選擇旅館'
+      });
+      setTimeout(() => {
+        this.router.navigate(['/merchants/property/homepage']);
+      }, 2000);
+      return;
+    }
+
     this.initForm();
   }
 
@@ -113,7 +120,7 @@ export class RoomInfoInsertPage implements OnInit {
     console.log('發送資料:', tranrq);
 
     this.merchService.createRoomDetail(tranrq).subscribe({
-      next: (res: any) => { // 這裡將 res 類型設為 any 以方便處理
+      next: (res: any) => { 
         console.log('API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
@@ -122,7 +129,6 @@ export class RoomInfoInsertPage implements OnInit {
 
           if (newRoomId) {
             console.log('導航到新增房型的詳細頁面，房型 ID:', newRoomId);
-            // 🚨 步驟 2: 導航到詳細資訊頁面，並傳遞 ID
             this.router.navigate(['/merchants/property/roomInfo'], {
               state: {
                 roomId: newRoomId,
@@ -130,7 +136,6 @@ export class RoomInfoInsertPage implements OnInit {
             });
             this.messageService.add({ severity: 'success', summary: '成功', detail: '房型新增成功，正在導航至詳細頁...' });
           } else {
-            // 如果成功但沒有 ID，導航回列表頁並提示
             console.warn('新增成功，但無法取得新的房型 ID，導航回列表頁。');
             this.messageService.add({ severity: 'warn', summary: '成功', detail: '房型新增成功，但無法導航至詳細頁。' });
             this.router.navigate(['/merchants/property/homepage']);

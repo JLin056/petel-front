@@ -48,7 +48,6 @@ export class RoomInfoEditPage implements OnInit {
     { name: '超大型犬', id: 'W006' }
   ];
 
-  // 👈 新增：房間數選項 1-20
   unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
     label: `${i + 1} 間`,
     value: i + 1
@@ -60,27 +59,23 @@ export class RoomInfoEditPage implements OnInit {
   /** isSubmitting */
   isSubmitting: boolean = false;
 
-  /** isSubmitted - 新增 */
+  /** isSubmitted */
   isSubmitted: boolean = false;
 
   /** errorMessage */
   errorMessage: string = '';
 
-  /** roomData - 從首頁傳來的房型資料 */
+  /** roomData */
   roomData: any = null;
 
   /** roomId */
   roomId: string = '';
 
-  /**
-   * 注入
-   */
   constructor(
     private fb: FormBuilder,
     private merchService: MerchService,
     private router: Router
   ) {
-    // 從 router state 取得房型資料
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.roomData = navigation.extras.state['room'];
@@ -89,13 +84,9 @@ export class RoomInfoEditPage implements OnInit {
     }
   }
 
-  /**
-   * 初始化
-   */
   ngOnInit(): void {
     this.initForm();
 
-    // 如果沒有房型資料，導回首頁
     if (!this.roomData || !this.roomId) {
       console.warn('沒有房型資料，導回首頁');
       this.errorMessage = '無法取得房型資料';
@@ -104,8 +95,6 @@ export class RoomInfoEditPage implements OnInit {
       }, 2000);
       return;
     }
-
-    // 填入表單資料
     this.populateForm();
   }
 
@@ -116,12 +105,12 @@ export class RoomInfoEditPage implements OnInit {
     this.roomForm = this.fb.group({
       petTypeObject: [null, Validators.required],
       name: ['', Validators.required],
-      height: ['', [Validators.required, Validators.min(1)]],  // 👈 改成三個欄位
-      length: ['', [Validators.required, Validators.min(1)]],  // 👈 改成三個欄位
-      width: ['', [Validators.required, Validators.min(1)]],   // 👈 改成三個欄位
+      height: ['', [Validators.required, Validators.min(1)]], 
+      length: ['', [Validators.required, Validators.min(1)]],  
+      width: ['', [Validators.required, Validators.min(1)]],   
       description: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(1)]],
-      unit: [null, Validators.required]  // 👈 改成 null（下拉選單）
+      unit: [null, Validators.required]  
     });
   }
 
@@ -130,33 +119,27 @@ export class RoomInfoEditPage implements OnInit {
    */
   private populateForm(): void {
     if (!this.roomData) return;
-
-    // 找到對應的寵物種類物件
     const petType = this.petTypes.find(pt => pt.id === this.roomData.petTypeId);
-
-    // 👈 解析尺寸字串 (例如: "100x200x300")
     const sizes = this.roomData.roomSize?.split('x') || ['', '', ''];
 
-    // 填入表單
     this.roomForm.patchValue({
       petTypeObject: petType || null,
       name: this.roomData.name || '',
-      height: sizes[0] || '',   // 👈 高度
-      length: sizes[1] || '',   // 👈 長度
-      width: sizes[2] || '',    // 👈 寬度
+      height: sizes[0] || '',  
+      length: sizes[1] || '',   
+      width: sizes[2] || '',    
       description: this.roomData.info || '',
       price: this.roomData.basePrice || '',
-      unit: this.roomData.totalUnits || null  // 👈 改成 null
+      unit: this.roomData.totalUnits || null  
     });
-
     console.log('表單已填入資料:', this.roomForm.value);
   }
 
   /**
-   * 提交表單 - 修改
+   * 提交
    */
   onSubmit(): void {
-    this.isSubmitted = true;  // 👈 設定已提交
+    this.isSubmitted = true;  
     this.roomForm.markAllAsTouched();
 
     if (this.roomForm.invalid) {
@@ -165,7 +148,6 @@ export class RoomInfoEditPage implements OnInit {
       console.log('表單值:', this.roomForm.value);
       return;
     }
-
     if (!this.roomId) {
       this.errorMessage = '無法取得房型 ID';
       return;
@@ -175,17 +157,14 @@ export class RoomInfoEditPage implements OnInit {
     this.isSubmitting = true;
 
     const formData = this.roomForm.value;
-
-    // 👈 組合尺寸字串
     const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
 
-    // 構建發送給後端的資料
     const tranrq = {
-      id: this.roomId,  // 必須傳房間 ID
-      propertyId: this.roomData.propertyId,  // 從原資料取得
+      id: this.roomId,  
+      propertyId: this.roomData.propertyId,  
       petTypeId: formData.petTypeObject?.id || '',
       name: formData.name,
-      roomSize: roomSizeText,  // 👈 使用組合後的尺寸字串
+      roomSize: roomSizeText,  
       info: formData.description,
       basePrice: Number(formData.price),
       totalUnits: Number(formData.unit)
@@ -199,13 +178,11 @@ export class RoomInfoEditPage implements OnInit {
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           console.log('房型修改成功！');
-          // 導航回房型列表頁
-          this.router.navigate(['/merchants/property/homepage']);
+          this.router.navigate(['/merchants/property/roomInfo']);
         } else {
           this.errorMessage = '修改失敗';
           console.warn('修改失敗:', this.errorMessage);
         }
-
         this.isSubmitting = false;
       },
       error: (err) => {

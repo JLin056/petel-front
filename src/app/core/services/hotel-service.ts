@@ -81,7 +81,7 @@ export class HotelService {
         };
 
         const tranrq: HOTEL002Tranrq = {
-            id: propertyId,
+            propertyId: propertyId,
         }
 
         const postData: Req<HOTEL002Tranrq> = {

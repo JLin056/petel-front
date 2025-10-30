@@ -1,0 +1,169 @@
+/* ------------------------------------- */
+/* 外層容器與標題 */
+/* ------------------------------------- */
+.hotel-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px 40px;
+    background-color: #fff9f5;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 36px;
+    color: #974b2c;
+    margin-bottom: 30px;
+}
+
+/* 區塊標題 */
+.info-section h3 {
+    font-size: 24px;
+    color: #6c3f2d;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #f0c6a4;
+    padding-bottom: 40px;
+}
+
+/* ------------------------------------- */
+/* 表單格子 */
+/* ------------------------------------- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+    margin-bottom: 25px;
+}
+
+.form-grid label {
+    font-weight: 600;
+    color: #3a1f0b;
+}
+
+input[pInputText],
+textarea[pInputTextarea] {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #d9c2b0;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+input[pInputText]:focus,
+textarea[pInputTextarea]:focus {
+    border-color: #974b2c;
+    box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
+}
+
+/* ------------------------------------- */
+/* 圖片預覽區 & 自訂按鈕 */
+/* ------------------------------------- */
+.custom-file-btn {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #974b2c;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 15px;
+    /* 與圖片間距 */
+    transition: background-color 0.2s;
+}
+
+.custom-file-btn:hover {
+    background-color: #a4642b;
+}
+
+.image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    /* 圖片間距 */
+    margin-top: 12px;
+}
+
+.image-box {
+    width: 200px;
+    height: 130px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ------------------------------------- */
+/* 設施列表 */
+/* ------------------------------------- */
+.facility-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* 設施間距加大 */
+}
+
+.facility-item {
+    display: flex;
+    gap: 15px;
+    /* input 與刪除按鈕間距 */
+    align-items: center;
+}
+
+/* ------------------------------------- */
+/* 按鈕區塊 */
+/* ------------------------------------- */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    /* 儲存與清除按鈕間距 */
+    margin-top: 35px;
+}
+
+.btn-save {
+    background-color: #974b2c;
+    color: white;
+    font-weight: 600;
+    padding: 10px 40px;
+    border-radius: 10px;
+}
+
+.btn-save:hover {
+    background-color: #a4642b;
+}
+
+.btn-clear {
+    background-color: #6c5443;
+    color: white;
+    font-weight: 600;
+    padding: 10px 40px;
+    border-radius: 10px;
+}
+
+.btn-clear:hover {
+    background-color: #554133;
+}
+
+/* ------------------------------------- */
+/* 響應式 */
+/* ------------------------------------- */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .image-box {
+        width: 100%;
+        height: 180px;
+    }
+}

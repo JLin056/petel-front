@@ -3,11 +3,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MerchService } from '../../core/services/merch-service';
 import { MERCH012Tranrs } from '../../core/interfaces/MERCH012Res.interface';
-
-interface PetTypeOption {
-  name: string;
-  id: string;
-}
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-room-info-page',
@@ -18,7 +14,6 @@ interface PetTypeOption {
   encapsulation: ViewEncapsulation.None
 })
 export class RoomInfoPage implements OnInit {
-  /** petTypes - 寵物種類列表 */
   petTypes: PetTypeOption[] = [
     { name: '貓', id: 'W001' },
     { name: '迷你犬', id: 'W002' },
@@ -34,18 +29,16 @@ export class RoomInfoPage implements OnInit {
   /** errorMessage */
   errorMessage: string = '';
 
-  /** roomData - 儲存從 API 取得的房型資料 */
+  /** roomData */
   roomData: MERCH012Tranrs | null = null;
 
   /** roomId */
   roomId: string = '';
 
-  /**
-   * 注入
-   */
   constructor(
     private merchService: MerchService,
-    private router: Router
+    private router: Router,
+    private propertyStateService: PropertyStateService
   ) {
     // 從 router state 取得房型 ID
     const navigation = this.router.getCurrentNavigation();
@@ -59,7 +52,6 @@ export class RoomInfoPage implements OnInit {
    * 初始化
    */
   ngOnInit(): void {
-    // 檢查是否有房型 ID
     if (!this.roomId) {
       console.warn('缺少房型 ID，導回首頁');
       this.errorMessage = '無法取得房型資料';
@@ -68,8 +60,6 @@ export class RoomInfoPage implements OnInit {
       }, 2000);
       return;
     }
-
-    // 載入房型資料
     this.loadRoomData();
   }
 
@@ -158,7 +148,7 @@ export class RoomInfoPage implements OnInit {
     const roomForEdit = {
       id: this.roomId,
       ...this.roomData,
-      propertyId: (this.roomData as any).propertyId || 'P000000001'
+      propertyId: this.propertyStateService.getCurrentPropertyId()
     };
 
     console.log('導航到修改頁面，傳遞資料:', roomForEdit);

@@ -12,6 +12,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { filter, Subject, takeUntil } from 'rxjs';
+import { PropertyStateService } from '../../../core/services/property-state.service';
 
 @Component({
   selector: 'app-merchant-property-header',
@@ -47,11 +48,13 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
    * @param router
    * @param authService
    * @param toast
+   * @param propertyStateService
    */
   constructor(
     private router: Router,
     private authService: Auth,
-    private toast: MessageService
+    private toast: MessageService,
+    private propertyStateService: PropertyStateService
   ) {
     // 監聽路由事件，導航結束時檢查登入狀態
     this.router.events
@@ -151,7 +154,19 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
   }
 
   onClickProperty(){
-    this.router.navigate(['/merchants/property/info']);
+    const propertyId = this.propertyStateService.getCurrentPropertyId();
+    if (!propertyId) {
+      this.toast.add({
+        severity: 'warn',
+        summary: '無法取得旅館資訊',
+        detail: '請先選擇旅館'
+      });
+      this.router.navigate(['/merchants/property/homepage']);
+      return;
+    }
+    this.router.navigate(['/merchants/property/info'], {
+      state: { propertyId: propertyId }
+    });
   }
 
   onClickReview() {

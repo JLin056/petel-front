@@ -13,23 +13,17 @@ import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
   styleUrls: ['./update-seller-info-dialog.css']
 })
 export class UpdateSellerInfoDialog {
-  /** 控制 Dialog 顯示 */
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  /** 接收 user 資料 */
   @Input() user: Partial<MERCH011Tranrs & { avatarUrl?: string | null }> = {};
-
-  /** 事件：儲存 */
   @Output() save = new EventEmitter<{ name: string; phone: string; file: File | null }>();
-  /** 事件：取消 */
   @Output() cancel = new EventEmitter<void>();
 
   loading = false;
   previewFile: string | ArrayBuffer | null = null;
   avatarError = '';
   private file: File | null = null;
-  /** formData 用來綁定表單 */
   formData: { name: string; phone: string } = { name: '', phone: '' };
 
   ngOnChanges() {

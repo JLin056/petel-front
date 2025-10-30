@@ -24,7 +24,7 @@ import { MessageService } from 'primeng/api';
   styleUrl: './merchant-register-page.css'
 })
 export class MerchantRegisterPage {
-/** 註冊表單 */
+    /** 註冊表單 */
     registerForm!: FormGroup;
     /** 是否還在跑 */
     isLoading = false;

@@ -1,27 +1,37 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Order } from '../../core/interfaces/ADMIN003Res.interface';
+import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { Button, ButtonModule } from "primeng/button";
 import { CommonModule } from '@angular/common';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-merchant-order-detail-dialog',
-  imports: [Button, CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule],
+  imports: [Button, CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule, SelectModule, TagModule],
   templateUrl: './merchant-order-detail-dialog.html',
   styleUrl: './merchant-order-detail-dialog.css'
 })
 export class MerchantOrderDetailDialog {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
-
   @Input() order: Order | null = null;
   @Output() noteUpdated = new EventEmitter<{ orderId: string, note: string }>();
+  @Output() statusUpdated = new EventEmitter<{ orderId: string, status: string }>();
 
-  // 備註編輯狀態
+  /** isEditingNote */
   isEditingNote = false;
+  /** editedNote */
   editedNote = '';
+  /** 狀態選項 */
+  statuses: Status[] = [
+    { label: '待付款', value: '待付款' },
+    { label: '已確認', value: '已確認' },
+    { label: '已完成', value: '已完成' },
+    { label: '已取消', value: '已取消' }
+  ];
 
   ngOnChanges(): void {
     if (this.order) {
@@ -46,10 +56,17 @@ export class MerchantOrderDetailDialog {
 
   onSaveNote() {
     if (this.order) {
+      // 更新本地訂單的備註
+      this.order.NOTE = this.editedNote;
+
+      // 發送事件給父元件
       this.noteUpdated.emit({
         orderId: this.order.ORDER_ID,
         note: this.editedNote
       });
+
+      this.isEditingNote = false;
+      console.log('備註已儲存:', this.editedNote);
     }
   }
 
@@ -94,6 +111,20 @@ export class MerchantOrderDetailDialog {
         return 'danger';
       default:
         return 'default';
+    }
+  }
+
+  // 狀態變更
+  onStatusChange(event: any) {
+    if (this.order) {
+      const newStatus = event.value; // 確保拿到最新選擇
+      this.order.STATUS = newStatus;
+
+      console.log('訂單狀態已變更:', this.order.ORDER_ID, '新狀態:', newStatus);
+      this.statusUpdated.emit({
+        orderId: this.order.ORDER_ID,
+        status: newStatus
+      });
     }
   }
 }

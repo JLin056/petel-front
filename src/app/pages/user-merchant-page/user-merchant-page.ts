@@ -11,12 +11,12 @@ import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dia
 import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
 import { AdminService } from '../../core/services/admin.service';
 import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-user-merchant-page',
   imports: [
     CommonModule,
-    Button,
     Toast,
     SharedConfirmDialog,
     UpdateSellerInfoDialog
@@ -26,17 +26,28 @@ import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
   providers: [MessageService]
 })
 export class UserMerchantPage implements OnInit {
+  /** editVisible */
   editVisible = false;
+  /** deleteUserVisible */
   deleteUserVisible = false;
+  /** deleteOrderVisible */
   deleteOrderVisible = false;
+  /** deletePropertyVisible */
   deletePropertyVisible = false;
-  showFillDialog = false;  // 👈 加入這行
-  propertyToDelete: any = null;
-  hotelList: propertyList[] = [];
+  /** howFillDialog */
+  showFillDialog = false;
+  /** isLoading */
   isLoading = false;
+  /** isLoadingHotels */
   isLoadingHotels = false;
+  /** isDeleting */
   isDeleting = false;
+  /** errorMessage */
   errorMessage = '';
+  /** propertyToDelete */
+  propertyToDelete: any = null;
+  /** hotelList */
+  hotelList: propertyList[] = [];
 
   user: Partial<MERCH011Tranrs & { avatarUrl: string }> = {
     accountId: '',

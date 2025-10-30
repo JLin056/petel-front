@@ -7,11 +7,9 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
-import { USER001Req } from '../../core/interfaces/USER001Req.interface';
 import { Auth } from '../../core/services/auth.service';
 import { MerchService } from '../../core/services/merch-service';
 import { AddSellerInfoDialog } from '../add-seller-info-dialog/add-seller-info-dialog';
-import { MERCH009Tranrq } from '../../core/interfaces/MERCH009Req.interface';
 
 @Component({
     selector: 'app-merchant-login-page',
@@ -98,8 +96,7 @@ export class MerchantLoginPage {
      * 前往註冊頁
      */
     goRegister() {
-        // 確保不被阻擋，直接導航
-        this.showFillDialog = false; // 如果 dialog 打開，先關閉
+        this.showFillDialog = false;
         this.router.navigate(['merchants/register']).then(() => {
             window.scrollTo(0, 0);
         });
@@ -161,7 +158,6 @@ export class MerchantLoginPage {
                                 });
                                 this.showFillDialog = true;
                             } else {
-                                // 已填 → 直接導頁
                                 this.toast.add({
                                     severity: 'success',
                                     summary: '登入成功',
@@ -202,9 +198,7 @@ export class MerchantLoginPage {
     * 送出會員資訊
     */
     onDialogSave(e: { name: string; phone: string; file?: File | null }) {
-        // Step 1: 若有頭貼，先處理上傳（可串真實 API）
-        const mediaId = 'M000000001'; // 暫時先寫死或等上傳成功後取得
-
+        const mediaId = 'M000000001';
         const req = {
             name: e.name,
             phone: e.phone,

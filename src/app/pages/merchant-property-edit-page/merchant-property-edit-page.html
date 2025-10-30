@@ -1,1 +1,54 @@
-<p>merchant-property-edit-page works!</p>
+<div class="hotel-container">
+    <h2 class="page-title">修改旅館資訊</h2>
+
+    <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
+
+        <!-- 基本資訊 -->
+        <div class="info-section">
+            <h3>基本資訊</h3>
+            <div class="form-grid">
+                <label>旅館名稱</label>
+                <input type="text" pInputText formControlName="name" >
+
+                <label>特許寵物業者編號</label>
+                <input type="text" pInputText formControlName="licenseNo" />
+
+                <label>收款帳號</label>
+                <input type="text" pInputText formControlName="bankAccount">
+
+                <label>電話</label>
+                <input type="text" pInputText formControlName="tel">
+
+                <label>地址</label>
+                <input type="text" pInputText formControlName="address">
+            </div>
+        </div>
+
+        <!-- 旅館說明 -->
+        <div class="info-section">
+            <h3>旅館介紹</h3>
+            <textarea pInputTextarea rows="3" formControlName="info"></textarea>
+
+            <h3>入住須知</h3>
+            <textarea pInputTextarea rows="3" formControlName="checkNotice"></textarea>
+
+            <h3>寵物須知</h3>
+            <textarea pInputTextarea rows="3" formControlName="petNotice"></textarea>
+
+            <h3>旅館規範</h3>
+            <textarea pInputTextarea rows="3" formControlName="propertyNotice"></textarea>
+        </div>
+
+        <!-- 按鈕 -->
+        <div class="form-actions">
+            <button pButton label="儲存" icon="pi pi-check" class="btn-save" type="submit"></button>
+            <button pButton label="取消" icon="pi pi-times" class="btn-clear" type="button"
+                (click)="onCancelClick()"></button>
+        </div>
+
+    </form>
+
+    <app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消修改嗎？已修改的資料將不會被儲存。"
+        confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()" (cancel)="onCancelCancel()">
+    </app-shared-confirm-dialog>
+</div>
