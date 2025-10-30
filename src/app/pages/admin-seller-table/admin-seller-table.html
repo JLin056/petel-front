@@ -62,9 +62,9 @@
     </ng-template>
     <ng-template pTemplate="body" let-seller>
       <tr>
-        <td><span class="text-large">{{ seller.ACCOUNT_ID }}</span></td>
-        <td><span class="text-large">{{ seller.EMAIL }}</span></td>
-        <td><span class="text-large">{{ seller.NAME }}</span></td>
+        <td [pTooltip]="seller.ACCOUNT_ID" tooltipPosition="top"><span class="text-large">{{ seller.ACCOUNT_ID }}</span></td>
+        <td [pTooltip]="seller.EMAIL" tooltipPosition="top"><span class="text-large">{{ seller.EMAIL }}</span></td>
+        <td [pTooltip]="seller.NAME" tooltipPosition="top"><span class="text-large">{{ seller.NAME }}</span></td>
         <td>
           <p-tag [value]="getStatusLabel(seller.STATUS)" [severity]="getStatusSeverity(seller.STATUS) || undefined" class="tag-large" />
         </td>

@@ -12,6 +12,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
@@ -34,6 +35,7 @@ import { PricePipe } from '../../shared/pipes/price-pipe';
     ButtonModule,
     OrderDetailDialog,
     ToastModule,
+    TooltipModule,
     PricePipe
   ],
   providers: [MessageService],

@@ -56,11 +56,11 @@
     </ng-template>
     <ng-template pTemplate="body" let-hotel>
       <tr>
-        <td><span class="text-large">{{ hotel.PROPERTY_ID }}</span></td>
-        <td><span class="text-large">{{ hotel.PROPERTY_NAME }}</span></td>
-        <td><span class="text-large">{{ hotel.TEL }}</span></td>
-        <td><span class="text-large">{{ hotel.ADDRESS }}</span></td>
-        <td>
+        <td [pTooltip]="hotel.PROPERTY_ID" tooltipPosition="top"><span class="text-large">{{ hotel.PROPERTY_ID }}</span></td>
+        <td [pTooltip]="hotel.PROPERTY_NAME" tooltipPosition="top"><span class="text-large">{{ hotel.PROPERTY_NAME }}</span></td>
+        <td [pTooltip]="hotel.TEL" tooltipPosition="top"><span class="text-large">{{ hotel.TEL }}</span></td>
+        <td [pTooltip]="hotel.ADDRESS" tooltipPosition="top"><span class="text-large">{{ hotel.ADDRESS }}</span></td>
+        <td [pTooltip]="hotel.SELLER_NAME" tooltipPosition="top">
           <span class="text-large seller-name-link" (click)="viewSellerDetails(hotel.SELLER_NAME)">
             {{ hotel.SELLER_NAME }}
           </span>
