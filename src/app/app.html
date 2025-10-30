@@ -3,7 +3,9 @@
 <p-confirmDialog></p-confirmDialog>
 
 <div class="layout">
-  @if (isMerchantRoute) {
+  @if (isAdminRoute) {
+  <app-admin-header></app-admin-header>
+  }@else if (isMerchantRoute) {
   <app-merchant-property-header></app-merchant-property-header>
   }@else if (isMerchantUserpageRoute) {
   <app-merchant-userpage-header></app-merchant-userpage-header>
@@ -15,7 +17,9 @@
     <router-outlet></router-outlet>
   </main>
 
-  @if (!isMerchantUserpageFooterRoute) {
+  @if (isAdminRoute) {
+  <app-admin-footer></app-admin-footer>
+  }@else if (!isMerchantUserpageFooterRoute) {
   <app-footer></app-footer>
   }@else{
   <app-merchant-userpage-footer></app-merchant-userpage-footer>

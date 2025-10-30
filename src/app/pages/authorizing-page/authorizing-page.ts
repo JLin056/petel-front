@@ -35,6 +35,9 @@ export class AuthorizingPage implements OnInit, OnDestroy {
     /** 訂單編號 */
     orderId: string = '';
 
+    /** 訂購天數 */
+    orderDays: number = 0;
+
     /** 訂單總金額 */
     totalAmount: number = 0;
 
@@ -72,18 +75,20 @@ export class AuthorizingPage implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
 
-        if (!history.state.orderId) {
+        this.orderDays = history.state.orderDays;
+
+        if (!localStorage.getItem('sharedOrderId')) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
             this.router.navigateByUrl('/');
         }
 
-        this.orderId = history.state.orderId;
+        this.orderId = localStorage.getItem('sharedOrderId')!;
         this.orderData = this.bookService.getSharedOrderData();
 
         this.totalAmount = 0;
 
         for (let room of this.orderData.rooms) {
-            this.totalAmount += room.roomTotal;
+            this.totalAmount += room.roomTotal * this.orderDays;
         }
 
         history.pushState(null, '', location.href);

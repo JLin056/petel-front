@@ -1,4 +1,4 @@
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>
 
 <h3 class="title">旅館列表</h3>
 
@@ -19,18 +19,19 @@
 </div>
 
 <div class="card">
-  <p-table
-    #dt
-    [value]="hotelList"
-    dataKey="PROPERTY_ID"
-    [rows]="pageSize"
-    [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
-    [paginator]="true"
-    [lazy]="true"
-    [totalRecords]="totalRecords"
-    (onLazyLoad)="onPageChange($event)"
-    [tableStyle]="{ 'min-width': '60rem' }"
-  >
+  <div class="table-responsive">
+    <p-table
+      #dt
+      [value]="hotelList"
+      dataKey="PROPERTY_ID"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+      [paginator]="true"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="onPageChange($event)"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
     <ng-template pTemplate="header">
       <tr>
         <th style="width:12%">旅館ID</th>
@@ -65,27 +66,12 @@
           </span>
         </td>
         <td>
-          <div class="flex gap-2">
-            <p-button
-              icon="pi pi-history"
-              [rounded]="true"
-              [outlined]="true"
-              severity="info"
-              (onClick)="viewHotelOrders(hotel)"
-              pTooltip="查看歷史訂單"
-              tooltipPosition="top"
-            />
-            <p-button
-              class="deleteBtn"
-              icon="pi pi-trash"
-              [rounded]="true"
-              [outlined]="true"
-              severity="danger"
-              (onClick)="confirmDelete(hotel)"
-              pTooltip="刪除旅館"
-              tooltipPosition="top"
-            />
-          </div>
+          <p-button
+            label="歷史訂單"
+            [outlined]="true"
+            size="small"
+            (onClick)="viewHotelOrders(hotel)"
+          />
         </td>
       </tr>
     </ng-template>
@@ -95,15 +81,5 @@
       </tr>
     </ng-template>
   </p-table>
+  </div>
 </div>
-
-<!-- 刪除確認對話框 -->
-<app-shared-confirm-dialog
-  [(visible)]="deleteConfirmVisible"
-  header="刪除旅館"
-  [message]="'確定要刪除旅館 ' + (selectedHotel?.PROPERTY_NAME || '') + ' 嗎？此操作無法復原。'"
-  confirmLabel="刪除"
-  cancelLabel="取消"
-  (confirm)="onDeleteConfirmed()"
-  (cancel)="onDeleteCancelled()"
-></app-shared-confirm-dialog>

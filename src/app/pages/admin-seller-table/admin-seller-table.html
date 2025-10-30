@@ -1,58 +1,25 @@
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>
 
 <h3 class="title">賣家列表</h3>
 
-<!-- 搜尋區域 -->
-<div class="search-section">
-  <div class="search-grid">
-    <div class="search-field">
-      <label for="accountId">帳號ID</label>
-      <input
-        id="accountId"
-        pInputText
-        type="text"
-        [(ngModel)]="accountIdFilter"
-        class="w-full"
-      />
+<div class="search-container">
+    <div class="search-fields">
+        <div class="flex flex-col gap-2">
+            <label for="accountid">帳號ID</label>
+            <input pInputText id="accountid" class="custom-input" [(ngModel)]="accountIdFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="email">電子郵件</label>
+            <input pInputText id="email" class="custom-input" [(ngModel)]="emailFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="name">賣家名稱</label>
+            <input pInputText id="name" class="custom-input" [(ngModel)]="nameFilter" />
+        </div>
+        <div class="search-btn-container">
+            <p-button label="搜尋" styleClass="admin-search-btn" (onClick)="onSearch()"></p-button>
+        </div>
     </div>
-    <div class="search-field">
-      <label for="email">電子郵件</label>
-      <input
-        id="email"
-        pInputText
-        type="text"
-        [(ngModel)]="emailFilter"
-        class="w-full"
-      />
-    </div>
-    <div class="search-field">
-      <label for="name">賣家名稱</label>
-      <input
-        id="name"
-        pInputText
-        type="text"
-        [(ngModel)]="nameFilter"
-        class="w-full"
-      />
-    </div>
-    <div class="search-field">
-      <label for="businessCode">特定寵物業許可證號</label>
-      <input
-        id="businessCode"
-        pInputText
-        type="text"
-        [(ngModel)]="businessCodeFilter"
-        class="w-full"
-      />
-    </div>
-  </div>
-  <div class="search-actions">
-    <p-button
-      label="搜尋"
-      icon="pi pi-search"
-      (onClick)="onSearch()"
-    />
-  </div>
 </div>
 
 <div class="card">
@@ -71,27 +38,26 @@
     >
     <ng-template pTemplate="header">
       <tr>
-        <th style="width:16%">
+        <th style="width:20%">
           <div class="flex items-center gap-2">
             <i class="pi pi-id-card icon-large"></i>
             <span>帳號ID</span>
           </div>
         </th>
-        <th style="width:20%">
+        <th style="width:30%">
           <div class="flex items-center gap-2">
             <i class="pi pi-envelope icon-large"></i>
             <span>電子郵件</span>
           </div>
         </th>
-        <th style="width:20%">
+        <th style="width:25%">
           <div class="flex items-center gap-2">
             <i class="pi pi-building icon-large"></i>
             <span>賣家名稱</span>
           </div>
         </th>
-        <th style="width:24%">特定寵物業許可證號</th>
-        <th style="width:8%">狀態</th>
-        <th style="width:12%">操作</th>
+        <th style="width:10%">狀態</th>
+        <th style="width:15%">操作</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-seller>
@@ -99,46 +65,24 @@
         <td><span class="text-large">{{ seller.ACCOUNT_ID }}</span></td>
         <td><span class="text-large">{{ seller.EMAIL }}</span></td>
         <td><span class="text-large">{{ seller.NAME }}</span></td>
-        <td><span class="text-large">{{ seller.BUSINESS_CODE }}</span></td>
         <td>
           <p-tag [value]="getStatusLabel(seller.STATUS)" [severity]="getStatusSeverity(seller.STATUS) || undefined" class="tag-large" />
         </td>
         <td>
-          <div class="flex gap-2">
-            <p-button
-              label="前往旅館"
-              [outlined]="true"
-              size="small"
-              (onClick)="goToHotels(seller.SELLER_ID)"
-            />
-            <p-button
-              class="deleteBtn"
-              icon="pi pi-trash"
-              [rounded]="true"
-              [outlined]="true"
-              severity="danger"
-              (onClick)="confirmDelete(seller)"
-            />
-          </div>
+          <p-button
+            label="前往旅館"
+            [outlined]="true"
+            size="small"
+            (onClick)="goToHotels(seller.SELLER_ID)"
+          />
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="6">查無賣家資料</td>
+        <td colspan="5">查無賣家資料</td>
       </tr>
     </ng-template>
   </p-table>
   </div>
 </div>
-
-<!-- 刪除確認對話框 -->
-<app-shared-confirm-dialog
-  [(visible)]="deleteConfirmVisible"
-  header="刪除賣家"
-  [message]="'確定要刪除賣家 ' + (selectedSeller?.NAME || '') + ' 嗎？此操作無法復原。'"
-  confirmLabel="刪除"
-  cancelLabel="取消"
-  (confirm)="onDeleteConfirmed()"
-  (cancel)="onDeleteCancelled()"
-></app-shared-confirm-dialog>
