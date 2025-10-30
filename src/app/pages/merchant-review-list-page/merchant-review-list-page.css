@@ -150,6 +150,7 @@
 /* 評價內容截斷（預設顯示 4 行）*/
 .review-comment.collapsed {
     display: -webkit-box;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
