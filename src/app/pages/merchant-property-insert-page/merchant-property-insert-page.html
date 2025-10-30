@@ -1,65 +1,147 @@
 <div class="hotel-container">
-
     <h2>新增旅館資訊</h2>
+
+    <!-- 錯誤訊息 -->
+    @if (errorMessage) {
+    <div class="error-message">
+        <i class="pi pi-exclamation-circle"></i>
+        {{ errorMessage }}
+    </div>
+    }
 
     <!-- 基本資訊 -->
     <div class="info-section">
-        <h3>基本資訊</h3>
+        <h3>基本資訊 <span class="required">*</span></h3>
         <div class="form-grid">
-            <label>旅館名稱</label>
-            <input type="text" pInputText [(ngModel)]="hotel.name" placeholder="請輸入旅館名稱">
+            <label>旅館名稱 <span class="required">*</span></label>
+            <input type="text" pInputText [(ngModel)]="name" placeholder="請輸入旅館名稱" required>
 
-            <label>電話</label>
-            <input type="text" pInputText [(ngModel)]="hotel.tel" placeholder="請輸入電話">
+            <label>電話 <span class="required">*</span></label>
+            <input type="text" pInputText [(ngModel)]="tel" placeholder="請輸入電話（例：02-2233-5566）" required>
 
-            <label>地址</label>
-            <input type="text" pInputText [(ngModel)]="hotel.address" placeholder="請輸入地址">
+            <label>特寵業編號 <span class="required">*</span></label>
+            <input type="text" pInputText [(ngModel)]="businessCode" placeholder="請輸入特寵業編號" required>
+
+            <label>縣市區域 <span class="required">*</span></label>
+            <p-select
+                [options]="cityDistrictOptions"
+                [(ngModel)]="selectedCityDistrict"
+                optionLabel="label"
+                placeholder="請選擇縣市區域"
+                [filter]="true"
+                filterPlaceholder="搜尋縣市區域"
+                [loading]="isLoading"
+                required>
+            </p-select>
+
+            <label>詳細地址 <span class="required">*</span></label>
+            <input type="text" pInputText [(ngModel)]="addressDetail" placeholder="請輸入詳細地址（路名、街道、門牌號碼等）" required>
+
+            <label>銀行帳號 <span class="required">*</span></label>
+            <input type="text" pInputText [(ngModel)]="bankAccount" placeholder="請輸入銀行帳號" required>
         </div>
     </div>
 
     <!-- 旅館圖片 -->
-    <div class="info-section">
+    <div class="info-section image-upload-section">
         <h3>旅館圖片</h3>
-        <input type="file" (change)="onFileSelect($event)" multiple>
-        <div class="image-preview" *ngIf="hotel.propertyImages.length">
-            <img *ngFor="let img of hotel.propertyImages" [src]="img.base64Data" alt="旅館圖片">
+
+        <!-- 原生檔案選擇 -->
+        <input
+            type="file"
+            accept="image/*"
+            multiple
+            hidden
+            #fileInput
+            (change)="onImageSelect($event)">
+        <button type="button" class="btn-upload" (click)="fileInput.click()" [disabled]="isSubmitting">
+            <i class="pi pi-images"></i>
+            選擇圖片
+        </button>
+
+        <!-- 圖片預覽區 -->
+        @if (uploadedImages.length > 0) {
+        <div class="image-preview-area">
+            <div class="image-grid" cdkDropList (cdkDropListDropped)="onImageDrop($event)">
+                @for (img of uploadedImages; track img.previewUrl; let i = $index) {
+                <div class="image-item" cdkDrag>
+                    <img [src]="img.previewUrl" alt="預覽圖片">
+                    <div class="image-overlay">
+                        <span class="sort-number">{{ img.sortOrder }}</span>
+                        <button type="button"
+                                class="btn-remove"
+                                (click)="removeImage(i)"
+                                [disabled]="isSubmitting">
+                            <i class="pi pi-times"></i>
+                        </button>
+                    </div>
+                    <!-- CDK 拖拉預覽 -->
+                    <div class="drag-placeholder" *cdkDragPlaceholder></div>
+                </div>
+                }
+            </div>
+            <p class="hint-text"><i class="pi pi-arrows-alt"></i> 拖拉圖片可調整順序</p>
         </div>
+        }
     </div>
-    <!-- <div class="upload-test">
-<app-upload-img></app-upload-img>
-    </div> -->
 
     <!-- 旅館說明 -->
     <div class="info-section">
-        <h3>旅館介紹</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.info"></textarea>
+        <h3>旅館介紹 <span class="required">*</span></h3>
+        <textarea pInputTextarea rows="4" [(ngModel)]="info" placeholder="請介紹您的旅館特色與服務" required></textarea>
 
-        <h3>入住須知</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.checkNotice"></textarea>
+        <h3>入住須知 <span class="required">*</span></h3>
+        <textarea pInputTextarea rows="3" [(ngModel)]="checkNotice" placeholder="例：入住時間、退房時間等相關規定" required></textarea>
 
-        <h3>寵物須知</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.petNotice"></textarea>
+        <h3>寵物須知 <span class="required">*</span></h3>
+        <textarea pInputTextarea rows="3" [(ngModel)]="petNotice" placeholder="例：疫苗證明要求、寵物種類限制等" required></textarea>
 
         <h3>旅館規範</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.propertyNotice"></textarea>
+        <textarea pInputTextarea rows="3" [(ngModel)]="propertyNotice" placeholder="例：禁菸規定、禁止事項等（選填）"></textarea>
     </div>
 
     <!-- 設施 -->
     <div class="info-section">
-        <h3>設施</h3>
-        <div class="facility-list">
-            <div class="facility-item" *ngFor="let f of hotel.facilities; let i = index">
-                <input type="text" pInputText [(ngModel)]="f.facilityName" placeholder="輸入設施名稱">
-                <button pButton icon="pi pi-trash" severity="danger" (click)="removeFacility(i)"></button>
-            </div>
-            <button pButton label="新增設施" icon="pi pi-plus" (click)="addFacility()"></button>
+        <h3>旅館設施</h3>
+        <p class="hint-text">請選擇您的旅館提供的設施</p>
+        <p-multiSelect
+            [options]="facilityOptions"
+            [(ngModel)]="selectedFacilities"
+            optionLabel="name"
+            placeholder="請選擇設施"
+            display="chip"
+            [filter]="true"
+            filterPlaceholder="搜尋設施">
+        </p-multiSelect>
+
+        @if (selectedFacilities.length > 0) {
+        <div class="selected-facilities">
+            <span class="facility-chip" *ngFor="let facility of selectedFacilities">
+                <i class="pi pi-check-circle"></i>
+                {{ facility.name }}
+            </span>
         </div>
+        }
     </div>
 
     <!-- 儲存按鈕 -->
     <div class="form-actions">
-        <button pButton label="儲存" icon="pi pi-check" class="p-button-success" (click)="saveHotel()"></button>
-        <button pButton label="清除" icon="pi pi-refresh" class="p-button-secondary" (click)="resetForm()"></button>
+        <button
+            pButton
+            label="儲存"
+            icon="pi pi-check"
+            class="p-button-success"
+            (click)="saveHotel()"
+            [disabled]="isSubmitting"
+            [loading]="isSubmitting">
+        </button>
+        <button
+            pButton
+            label="清除"
+            icon="pi pi-refresh"
+            class="p-button-secondary"
+            (click)="resetForm()"
+            [disabled]="isSubmitting">
+        </button>
     </div>
-
 </div>

@@ -19,6 +19,9 @@ import { MERCH009Tranrq } from '../interfaces/MERCH009Req.interface';
 import { MERCH010Tranrq } from '../interfaces/MERCH010Req.interface';
 import { MERCH013Tranrq } from '../interfaces/MERCH013Req.interface';
 import { MERCH013Tranrs } from '../interfaces/MERCH013Res.interface';
+import { MERCH008Tranrq } from '../interfaces/MERCH008Req.interface';
+import { MERCH008Res } from '../interfaces/MERCH008Res.interface';
+import { MERCH015Res } from '../interfaces/MERCH015Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -198,5 +201,40 @@ export class MerchService {
     }
 
     return this.http.post<Res<MERCH013Tranrs>>('http://localhost:8080/merchants/properties/get', postData);
+  }
+
+  /**
+   * MERCH-008 新增旅館資訊
+   * @param tranrq 旅館資訊
+   * @returns
+   */
+  createProperty(tranrq: MERCH008Tranrq) {
+    const header: Mwheader = {
+      MSGID: 'MERCH-008'
+    };
+
+    const postData: Req<MERCH008Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<MERCH008Res>('http://localhost:8080/merchants/properties/create', postData);
+  }
+
+  /**
+   * MERCH-015 取得所有縣市區域
+   * @returns
+   */
+  getCityDistricts() {
+    const header: Mwheader = {
+      MSGID: 'MERCH-015'
+    };
+
+    const postData: Req<{}> = {
+      MWHEADER: header,
+      TRANRQ: {}
+    }
+
+    return this.http.post<MERCH015Res>('http://localhost:8080/merchants/postals/get', postData);
   }
 }
