@@ -24,7 +24,7 @@ export class Footer {
         const loggedIn = !!this.authService.getAccessToken();
 
         const goLogin = () =>
-        this.route.navigate(['/merchants/login'], {
+        this.route.navigate(['/merchants/userPage/login'], {
             queryParams: { redirect: '/merchants/userPage' }
         });
 
@@ -78,6 +78,6 @@ export class Footer {
     }
 
     showMerchantRegister() {
-        this.route.navigate(['merchants/register'])
+        this.route.navigate(['merchants/userPage/register'])
     }
 }
