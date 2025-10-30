@@ -286,11 +286,11 @@ export class MerchService {
     return this.http.post<Res<MERCH013Tranrs>>('http://localhost:8080/merchants/properties/get', postData);
   }
 
-/**
- * MERCH-014 更新訂單狀態
- * @param tranrq 訂單編號 + 新狀態
- * @returns
- */
+  /**
+   * MERCH-014 更新訂單狀態
+   * @param tranrq 訂單編號 + 新狀態
+   * @returns
+   */
   updateOrderStatus(tranrq: MERCH014Tranrq) {
     const header: Mwheader = {
       MSGID: 'MERCH-014'

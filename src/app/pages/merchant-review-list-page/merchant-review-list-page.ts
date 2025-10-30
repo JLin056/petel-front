@@ -29,9 +29,9 @@ export class MerchantReviewListPage implements OnInit {
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
-  currentPage: number = 1; 
+  currentPage: number = 1;
 
-  propertyId: string = ''; 
+  propertyId: string = '';
   reviews: reviewList[] = [];
   isLoading = false;
   errorMessage = '';
@@ -114,7 +114,7 @@ export class MerchantReviewListPage implements OnInit {
 
   /**
    * 計算平均分數 
-   */ 
+   */
   getAverageRating(review: reviewList): number {
     return review.avgScore;
   }
