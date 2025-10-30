@@ -59,3 +59,9 @@
         </div>
     </div>
 </div>
+
+<app-add-user-info-dialog
+    [(visible)]="showFillDialog"
+    (save)="onDialogSave($event)"
+    (cancel)="showFillDialog = false">
+</app-add-user-info-dialog>

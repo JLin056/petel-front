@@ -1,0 +1,68 @@
+:host ::ng-deep .petel-auth-dialog .p-dialog-header {
+    padding-left: 30px;
+}
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+    font-size: 1.75rem;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.75rem;
+}
+/* 頭貼區 */
+.avatar-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.avatar-box img {
+    width: 80%;
+    border-radius: 50%;
+}
+.avatar-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.avatar-actions ::ng-deep .p-button {
+    font-size: 1.5rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.avatar-box .error-text {
+    flex-basis: 100%;
+    color: #a24522;
+    font-size: 1.25rem;
+}
+/* 表單區 */
+.input-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: 20px;
+    row-gap: 6px;
+}
+.input-container .error-text {
+    flex-basis: 100%;
+    margin-left: 30%;
+    color: #a24522;
+    font-size: 1.25rem;
+}
+/* 按鈕區 */
+.button-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.button-container ::ng-deep .p-button {
+    font-size: 1.4rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+}

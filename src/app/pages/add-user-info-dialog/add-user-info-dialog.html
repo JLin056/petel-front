@@ -1,0 +1,60 @@
+<p-dialog
+    header="新增會員資訊"
+    [modal]="true"
+    [closable]="false"
+    [blockScroll]="true"
+    [dismissableMask]="false"
+    [(visible)]="visible"
+    (onHide)="onHideDialog()"
+    [style]="{width: '600px'}"
+    styleClass="petel-auth-dialog"
+>
+
+    <div class="container">
+        <!-- 頭貼區 -->
+        <div class="avatar-box">
+            <img
+                [src]="'img/avatar.png'"
+                alt="avatar"
+                class="avatar" />
+
+            <div class="avatar-actions">
+                <input type="file" accept="image/*" hidden #fileInput (change)="onFilePicked($event)" />
+                <p-button label="新增頭貼" size="small" (onClick)="fileInput.click()"></p-button>
+                <p-button
+                    *ngIf="previewFile || avatarUrl"
+                    label="移除頭貼"
+                    size="small"
+                    severity="secondary"
+                    (onClick)="removeAvatar()">
+                </p-button>
+            </div>
+            <small class="hint">支援 JPG/PNG，最大 2MB</small>
+            <small class="error-text" *ngIf="avatarError">{{ avatarError }}</small>
+        </div>
+
+        <!-- 表單區 -->
+        <div class="input-container">
+            <label for="name">姓名</label>
+            <input pInputText id="name" class="text-input"
+                    [(ngModel)]="name" #nameCtrl="ngModel"
+                    required maxlength="30" />
+            <small class="error-text" *ngIf="nameCtrl.invalid && nameCtrl.touched">姓名為必填，長度 1–30。</small>
+        </div>
+
+        <div class="input-container">
+            <label for="phone">電話</label>
+            <input pInputText id="phone" name="phone" class="text-input"
+                    [(ngModel)]="phone" #phoneCtrl="ngModel"
+                    required pattern="^09[0-9]{8}$" inputmode="numeric" placeholder="例如：0912345678" />
+            <small class="error-text" *ngIf="phoneCtrl.invalid && phoneCtrl.touched">
+                請輸入有效手機（09 開頭，共 10 碼）。
+            </small>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <!-- <p-button label="取消" severity="secondary" (click)="onHideDialog()"></p-button> -->
+        <p-button label="儲存" (click)="onSave(nameCtrl, phoneCtrl)" [disabled]="loading" [loading]="loading" />
+    </div>
+</p-dialog>
