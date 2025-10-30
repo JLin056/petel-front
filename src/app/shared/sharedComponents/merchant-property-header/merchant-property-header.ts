@@ -55,24 +55,7 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
     private authService: Auth,
     private toast: MessageService,
     private propertyStateService: PropertyStateService
-  ) {
-    // 監聽路由事件，導航結束時檢查登入狀態
-    this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe(() => {
-        if (this.isFirstCheck) {
-          // 初始化已經檢查過，跳過第一次 Router.events
-          this.isFirstCheck = false;
-          return;
-        }
-        this.onCheckLoginStatus();
-      });
-
-    // 訂閱 service 的登入狀態，保持元件狀態與 Auth service 同步
-    this.authService.isLoggedIn$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(v => this.isLoggedIn = v)
-  }
+  ) {}
 
     /**
      * 元件初始化時執行一次登入狀態檢查
