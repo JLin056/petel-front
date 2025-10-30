@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { MERCH007Tranrq } from '../../core/interfaces/MERCH007Req.interface';
 import { MerchService } from '../../core/services/merch-service';
-import { Router } from '@angular/router';
+import { PropertyStateService } from '../../core/services/property-state.service';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 
 @Component({
@@ -12,7 +14,7 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule, // 改這裡，使用 reactive form
+    ReactiveFormsModule,
     InputTextModule,
     ButtonModule,
     SharedConfirmDialog
@@ -44,7 +46,6 @@ export class MerchantPropertyEditPage implements OnInit {
   ngOnInit(): void {
     this.initForm();
     if (!this.propertyData || !this.propertyId) {
-      this.errorMessage = '無法取得旅館資料';
       setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
       return;
     }
@@ -99,14 +100,11 @@ export class MerchantPropertyEditPage implements OnInit {
       next: (res) => {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.router.navigate(['/merchants/property/info']);
-        } else {
-          this.errorMessage = '修改失敗';
         }
         this.isSubmitting = false;
       },
       error: (err) => {
         console.error('API 錯誤:', err);
-        this.errorMessage = '伺服器錯誤';
         this.isSubmitting = false;
       }
     });

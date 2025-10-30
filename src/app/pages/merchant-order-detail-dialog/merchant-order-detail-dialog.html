@@ -1,8 +1,13 @@
-<p-dialog header="訂單詳細資料" [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true"
-    [style]="{width: '900px', 'max-width': '95vw'}" [dismissableMask]="true" [draggable]="false" [resizable]="false">
+<p-dialog header="訂單詳細資料"
+    [(visible)]="visible"
+    (onHide)="onHideDialog()"
+    [modal]="true"
+    [style]="{width: '900px', 'max-width': '95vw'}"
+    [dismissableMask]="true"
+    [draggable]="false"
+    [resizable]="false">
 
     <div class="order-detail-content" *ngIf="order">
-
         <!-- 基本資訊 -->
         <div class="detail-section">
             <h4>訂單基本資訊</h4>
@@ -13,28 +18,16 @@
                 </div>
                 <div class="detail-item">
                     <label>訂單狀態</label>
-                    <div class="detail-value status-selector">
-                        <p-select
-                            [(ngModel)]="order.STATUS"
-                            [options]="statuses"
-                            optionLabel="label"
-                            optionValue="value"
-                            (onChange)="onStatusChange($event)"
-                            placeholder="選擇狀態"
-                            [style]="{'width': '180px'}">
-                            <ng-template let-option #selectedItem>
-                                <p-tag [value]="option.label" [severity]="getSeverity(option.value)" />
-                            </ng-template>
-                            <ng-template let-option #item>
-                                <p-tag [value]="option.label" [severity]="getSeverity(option.value)" />
-                            </ng-template>
-                        </p-select>
+                    <div class="detail-value">
+                        <select [(ngModel)]="order.STATUS" class="status-select">
+                            <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 會員 / 訂購人資訊 -->
+        <!-- 會員資訊 -->
         <div class="detail-section">
             <h4>會員 / 訂購人資訊</h4>
             <div class="detail-row">
@@ -89,7 +82,7 @@
                     <div class="detail-value">{{ order.PAYMENT_METHOD || '未提供' }}</div>
                 </div>
                 <div class="detail-item">
-                    <label>訂單建立時間</label>
+                    <label>建立時間</label>
                     <div class="detail-value">{{ order.CREATED_AT }}</div>
                 </div>
             </div>
@@ -98,15 +91,12 @@
         <!-- 備註 -->
         <div class="detail-section">
             <h4>訂單備註</h4>
-            <textarea pInputTextarea [(ngModel)]="editedNote" rows="4" class="note-textarea"
-                placeholder="請輸入備註..."></textarea>
+            <textarea [(ngModel)]="editedNote" rows="4" class="note-textarea" placeholder="請輸入備註..."></textarea>
         </div>
-
     </div>
 
     <ng-template pTemplate="footer">
-        <p-button label="儲存" severity="primary" (onClick)="onSaveNote()" />
+        <p-button label="儲存" severity="primary" (onClick)="onSave()" />
         <p-button label="關閉" severity="secondary" (onClick)="onHideDialog()" />
     </ng-template>
-
 </p-dialog>

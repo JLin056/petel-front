@@ -1,17 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { environment } from '../../../environment';
 import { Tranrq as HOTEL001Tranrq } from '../interfaces/HOTEL001Req.interface';
 import { Tranrs as HOTEL001Tranrs } from '../interfaces/HOTEL001Res.interface';
 import { HOTEL002Tranrq } from '../interfaces/HOTEL002Req.interface';
 import { HOTEL002Tranrs } from '../interfaces/HOTEL002Res.interface';
+import { HOTEL004Tranrq } from '../interfaces/HOTEL004Req.interface';
+import { HOTEL004Tranrs } from '../interfaces/HOTEL004Res.interface';
 import { Tranrq as HOTEL005Tranrq } from '../interfaces/HOTEL005Req.interface';
 import { Tranrs as HOTEL005Tranrs } from '../interfaces/HOTEL005Res.interface';
 import { Mwheader, Req } from '../interfaces/Req.interface';
 import { Res } from '../interfaces/Res.interface';
-import { environment } from '../../../environment';
-import { HOTEL004Tranrq } from '../interfaces/HOTEL004Req.interface';
-import { HOTEL004Tranrs } from '../interfaces/HOTEL004Res.interface';
 
 
 @Injectable({
@@ -117,7 +117,7 @@ export class HotelService {
         return this.http.post<Res<HOTEL004Tranrs>>(`${environment.BASE_URL}/hotels/facilities`, postData);
 
     }
-    
+
     /**
      * HOTEL-005 查詢單筆旅館詳細資訊（包含庫存及圖片）
      * @param propertyId 旅館編號 (必填)

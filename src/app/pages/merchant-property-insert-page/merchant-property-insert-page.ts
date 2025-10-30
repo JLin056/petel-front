@@ -1,25 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
+import { SelectModule } from 'primeng/select';
 import { MerchService } from '../../core/services/merch-service';
 import { Router } from '@angular/router';
 
+interface CityDistrict {
+  city: string;
+  districts: string[];
+}
+
 @Component({
   selector: 'app-merchant-property-insert-page',
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, SharedConfirmDialog, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, SharedConfirmDialog],
   templateUrl: './merchant-property-insert-page.html',
-  styleUrl: './merchant-property-insert-page.css'
+  styleUrls: ['./merchant-property-insert-page.css']
 })
-export class MerchantPropertyInsertPage {
+export class MerchantPropertyInsertPage implements OnInit {
   propertyForm!: FormGroup;
   cancelConfirmVisible = false;
   isSubmitting = false;
   errorMessage = '';
   propertyData: any = null;
-  propertyId = '';
+  cities: { city: string, districts: string[] }[] = [];
+  districtOptions: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -29,28 +37,27 @@ export class MerchantPropertyInsertPage {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.propertyData = navigation.extras.state['property'];
-      this.propertyId = this.propertyData?.id || '';
       console.log('接收到的旅館資料:', this.propertyData);
     }
   }
 
   ngOnInit(): void {
     this.initForm();
-    if (!this.propertyData || !this.propertyId) {
-      this.errorMessage = '無法取得旅館資料';
-      setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
-      return;
+    if (this.propertyData) {
+      this.populateForm();
     }
-    this.populateForm();
+    this.loadLocations();
   }
 
   private initForm(): void {
     this.propertyForm = this.fb.group({
       name: ['', Validators.required],
-      businessCode: [{ value: '', disabled: true }],
+      businessCode: ['', Validators.required],
       bankAccount: ['', Validators.required],
       tel: ['', Validators.required],
-      address: ['', Validators.required],
+      city: ['', Validators.required],
+      district: ['', Validators.required],
+      addressDetail: ['', Validators.required],
       info: ['', Validators.required],
       checkNotice: ['', Validators.required],
       petNotice: ['', Validators.required],
@@ -59,47 +66,55 @@ export class MerchantPropertyInsertPage {
   }
 
   private populateForm(): void {
-    if (!this.propertyData) return;
     this.propertyForm.patchValue({
       name: this.propertyData.name || '',
       businessCode: this.propertyData.businessCode || '',
       bankAccount: this.propertyData.bankAccount || '',
       tel: this.propertyData.tel || '',
-      address: this.propertyData.address || '',
+      city: this.propertyData.city || '',
+      district: this.propertyData.district || '',
+      addressDetail: this.propertyData.addressDetail || '',
       info: this.propertyData.info || '',
       checkNotice: this.propertyData.checkNotice || '',
       petNotice: this.propertyData.petNotice || '',
-      propertyNotice: this.propertyData.propertyNotice || '',
+      propertyNotice: this.propertyData.propertyNotice || ''
     });
+
+    if (this.propertyForm.value.city) {
+      this.onCityChange({ value: this.propertyForm.value.city });
+    }
+  }
+
+  loadLocations() {
+  //   this.merchService.getLocations({}).subscribe(res => {
+  //     this.cities = res.data;
+  //   });
+  }
+
+  onCityChange(event: any) {
+    const selectedCity = event.value;
+    const cityObj = this.cities.find(c => c.city === selectedCity);
+    this.districtOptions = cityObj ? cityObj.districts : [];
+    this.propertyForm.patchValue({ district: '' });
   }
 
   onSubmit(): void {
     if (this.propertyForm.invalid) {
-      this.errorMessage = '請填寫所有必填欄位';
       this.propertyForm.markAllAsTouched();
       return;
     }
 
-    const formData = this.propertyForm.value;
-    const tranrq = {
-      id: this.propertyId,
-      sellerId: this.propertyData.sellerId,
-      ...formData
-    };
-
     this.isSubmitting = true;
-    this.merchService.editHotelDetail(tranrq).subscribe({
+    const formData = this.propertyForm.value;
+    this.merchService.createHotelDetail(formData).subscribe({
       next: (res) => {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.router.navigate(['/merchants/property/info']);
-        } else {
-          this.errorMessage = '修改失敗';
-        }
+        } 
         this.isSubmitting = false;
       },
       error: (err) => {
         console.error('API 錯誤:', err);
-        this.errorMessage = '伺服器錯誤';
         this.isSubmitting = false;
       }
     });

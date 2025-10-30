@@ -1,8 +1,7 @@
 export interface HOTEL004Tranrs {
-    facilities: Facilities[];
+  facilities: Facilities[];
 }
 
 export interface Facilities {
-    name: string;
+  name: string; // 設施名稱
 }
-

@@ -62,16 +62,16 @@
         <div class="hotels-grid" *ngIf="!isLoadingHotels && hotelList.length > 0">
             <div class="hotel-card" *ngFor="let hotel of hotelList; trackBy: trackByHotelId">
                 <!-- 圖片區 -->
-                <div class="hotel-image-wrapper" (click)="onPropertyClick()">
+                <div class="hotel-image-wrapper" (click)="onPropertyClick(hotel)">
                     <img [src]="getHotelImage(hotel.id)" [alt]="hotel.name" class="hotel-image">
                     <div class="image-overlay">
-                        <span>查看房型</span>
+                        <span>查看旅館</span>
                     </div>
                 </div>
 
                 <!-- 內容區 -->
                 <div class="hotel-content">
-                    <h3 class="hotel-name" (click)="onPropertyClick()">
+                    <h3 class="hotel-name" (click)="onPropertyClick(hotel)">
                         {{ hotel.name }}
                     </h3>
 

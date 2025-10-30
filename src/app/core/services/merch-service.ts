@@ -27,6 +27,8 @@ import { MERCH003Tranrq } from '../interfaces/MERCH003Req.interface';
 import { MERCH003Tranrs } from '../interfaces/MERCH003Res.interface';
 import { MERCH014Tranrq } from '../interfaces/MERCH014Req.interface';
 import { MERCH014Tranrs } from '../interfaces/MERCH014Res.interface';
+import { MERCH008Tranrq } from '../interfaces/MERCH008Req.interface';
+import { MERCH008Tranrs } from '../interfaces/MERCH008Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -155,7 +157,7 @@ export class MerchService {
 
   /**
    * MERCH-007 修改旅館資訊
-   * @param propertyId 房間編號
+   * @param propertyId 旅館編號
    * @returns
    */
   editHotelDetail(tranrq: MERCH007Tranrq) {
@@ -170,6 +172,25 @@ export class MerchService {
     }
 
     return this.http.post<Res<MERCH007Tranrs>>('http://localhost:8080/merchants/hotels/edit', postData);
+  }
+
+  /**
+   * MERCH-008 新增旅館資訊
+   * @param propertyId 旅館編號
+   * @returns
+   */
+  createHotelDetail(tranrq: MERCH008Tranrq) {
+
+    const header: Mwheader = {
+      MSGID: 'MERCH-008'
+    };
+
+    const postData: Req<MERCH008Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH008Tranrs>>('http://localhost:8080/merchants/hotels/create', postData);
   }
 
   /**
@@ -265,7 +286,7 @@ export class MerchService {
     return this.http.post<Res<MERCH013Tranrs>>('http://localhost:8080/merchants/properties/get', postData);
   }
 
-  /**
+/**
  * MERCH-014 更新訂單狀態
  * @param tranrq 訂單編號 + 新狀態
  * @returns
@@ -285,4 +306,23 @@ export class MerchService {
       postData
     );
   }
+
+  // /**
+  //  * MERCH-015 查詢縣市區域總表
+  //  */
+  // queryPostal(tranrq: MERCH014Tranrq) {
+  //   const header: Mwheader = {
+  //     MSGID: 'MERCH-015'
+  //   };
+
+  //   const postData: Req<MERCH014Tranrq> = {
+  //     MWHEADER: header,
+  //     TRANRQ: tranrq
+  //   };
+
+  //   return this.http.post<Res<MERCH014Tranrs>>(
+  //     'http://localhost:8080/merchants/bookings/updateStatus',
+  //     postData
+  //   );
+  // }
 }

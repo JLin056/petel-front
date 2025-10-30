@@ -61,7 +61,8 @@ export class UserMerchantPage implements OnInit {
     private toast: MessageService,
     private router: Router,
     private merchService: MerchService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private propertyStateService: PropertyStateService
   ) { }
 
   ngOnInit(): void {
@@ -154,7 +155,6 @@ export class UserMerchantPage implements OnInit {
       accountId: this.user.accountId,
       name: updated.name,
       phone: updated.phone,
-      // 若需要上傳檔案，可加 file 參數
     };
 
     this.merchService.editSellerInfo(tranrq).subscribe({
@@ -186,7 +186,6 @@ export class UserMerchantPage implements OnInit {
    * 旅館圖片
    */
   getHotelImage(hotelId: string): string {
-    // 之後可改為實際 API
     return 'img/hotelImg.png';
   }
 
@@ -205,7 +204,6 @@ export class UserMerchantPage implements OnInit {
     console.log('sellerId:', sellerId);
 
     if (!sellerId) {
-      this.errorMessage = '無法取得商家帳號資訊';
       this.isLoadingHotels = false;
       this.toast.add({
         severity: 'error',
@@ -226,7 +224,6 @@ export class UserMerchantPage implements OnInit {
           console.log('旅館列表載入成功，數量:', this.hotelList.length);
           console.log('旅館列表內容:', this.hotelList);
         } else {
-          this.errorMessage = res.MWHEADER.RETURNDESC || '載入旅館列表失敗';
           this.hotelList = [];
           this.toast.add({
             severity: 'error',
@@ -238,7 +235,6 @@ export class UserMerchantPage implements OnInit {
       },
       error: (err) => {
         console.error('載入旅館列表失敗:', err);
-        this.errorMessage = '無法載入旅館列表，請稍後再試';
         this.isLoadingHotels = false;
         this.hotelList = [];
         this.toast.add({
@@ -252,8 +248,23 @@ export class UserMerchantPage implements OnInit {
 
   /**
    * 進入單筆旅館首頁
+   * @param property 旅館資料
    */
-  onPropertyClick(): void {
+  onPropertyClick(property: propertyList): void {
+    if (!property || !property.id) {
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: this.errorMessage
+      });
+      return;
+    }
+
+    // 儲存旅館 ID 和名稱到 PropertyStateService
+    this.propertyStateService.setCurrentPropertyId(property.id, property.name);
+    console.log('已設定當前旅館 ID:', property.id, '名稱:', property.name);
+
+    // 導航到旅館首頁
     this.router.navigate(['/merchants/property/homepage']);
   }
 
@@ -271,7 +282,6 @@ export class UserMerchantPage implements OnInit {
    */
   onEditHotel(property: any): void {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館資料';
       this.toast.add({
         severity: 'error',
         summary: '錯誤',
@@ -291,7 +301,6 @@ export class UserMerchantPage implements OnInit {
    */
   onHotelDetail(property: any): void {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館 ID';
       console.error(this.errorMessage, property);
       this.toast.add({
         severity: 'error',
@@ -312,7 +321,6 @@ export class UserMerchantPage implements OnInit {
    */
   showDeleteHotelConfirm(property: any) {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館';
       this.toast.add({
         severity: 'error',
         summary: '錯誤',
@@ -330,7 +338,6 @@ export class UserMerchantPage implements OnInit {
    */
   onDelete() {
     if (!this.propertyToDelete || !this.propertyToDelete.id) {
-      this.errorMessage = '無法取得旅館，請稍後再試';
       return;
     }
     this.isDeleting = true;
@@ -358,7 +365,6 @@ export class UserMerchantPage implements OnInit {
           this.propertyToDelete = null;
           this.deletePropertyVisible = false;
         } else {
-          this.errorMessage = res.MWHEADER.RETURNDESC || '刪除失敗';
           this.toast.add({
             severity: 'error',
             summary: '錯誤',
@@ -369,7 +375,6 @@ export class UserMerchantPage implements OnInit {
       },
       error: (err) => {
         console.error('刪除失敗:', err);
-        this.errorMessage = err.error?.MWHEADER?.RETURNDESC || '刪除旅館時發生錯誤，請稍後再試';
         this.isDeleting = false;
         this.deletePropertyVisible = false;
         this.propertyToDelete = null;

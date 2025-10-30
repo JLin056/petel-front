@@ -3,9 +3,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EditorModule } from 'primeng/editor';
-import { SelectModule } from 'primeng/select'; // 👈 改成 SelectModule
-import { InputTextModule } from 'primeng/inputtext'; // 👈 加入
-import { MessageModule } from 'primeng/message'; // 👈 加入
+import { SelectModule } from 'primeng/select'; 
+import { InputTextModule } from 'primeng/inputtext'; 
+import { MessageModule } from 'primeng/message'; 
 import { MerchService } from '../../core/services/merch-service';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 
@@ -25,9 +25,9 @@ interface UnitOption {
     CommonModule,
     ReactiveFormsModule,
     EditorModule,
-    SelectModule,  // 👈 改成 SelectModule
-    InputTextModule,  // 👈 加入
-    MessageModule,  // 👈 加入
+    SelectModule,  
+    InputTextModule,  
+    MessageModule, 
     SharedConfirmDialog
   ],
   templateUrl: './room-info-edit-page.html',
@@ -89,7 +89,6 @@ export class RoomInfoEditPage implements OnInit {
 
     if (!this.roomData || !this.roomId) {
       console.warn('沒有房型資料，導回首頁');
-      this.errorMessage = '無法取得房型資料';
       setTimeout(() => {
         this.router.navigate(['/merchants/property/homepage']);
       }, 2000);
@@ -143,13 +142,11 @@ export class RoomInfoEditPage implements OnInit {
     this.roomForm.markAllAsTouched();
 
     if (this.roomForm.invalid) {
-      this.errorMessage = '請填寫所有必填欄位';
       console.log('表單驗證失敗:', this.roomForm.errors);
       console.log('表單值:', this.roomForm.value);
       return;
     }
     if (!this.roomId) {
-      this.errorMessage = '無法取得房型 ID';
       return;
     }
 
@@ -180,14 +177,12 @@ export class RoomInfoEditPage implements OnInit {
           console.log('房型修改成功！');
           this.router.navigate(['/merchants/property/roomInfo']);
         } else {
-          this.errorMessage = '修改失敗';
           console.warn('修改失敗:', this.errorMessage);
         }
         this.isSubmitting = false;
       },
       error: (err) => {
         console.error('API 錯誤:', err);
-        this.errorMessage = '網路或伺服器錯誤，請稍後再試';
         this.isSubmitting = false;
       }
     });

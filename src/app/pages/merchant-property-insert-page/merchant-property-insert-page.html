@@ -1,17 +1,18 @@
 <div class="hotel-container">
     <h2 class="page-title">新增旅館資訊</h2>
 
-    <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()"> 
 
         <!-- 基本資訊 -->
         <div class="info-section">
             <h3>基本資訊</h3>
             <div class="form-grid">
+
                 <label>旅館名稱</label>
                 <input type="text" pInputText formControlName="name" placeholder="請輸入旅館名稱">
 
                 <label>特許寵物業者編號</label>
-                <input type="text" pInputText formControlName="licenseNo" placeholder="特許寵物業者編號" />
+                <input type="text" pInputText formControlName="businessCode" placeholder="特許寵物業者編號">
 
                 <label>收款帳號</label>
                 <input type="text" pInputText formControlName="bankAccount" placeholder="請輸入收款帳號">
@@ -19,8 +20,18 @@
                 <label>電話</label>
                 <input type="text" pInputText formControlName="tel" placeholder="請輸入電話">
 
+                <!-- <label>縣市</label>
+                <p-dropdown [options]="cities" optionLabel="city" placeholder="請選擇縣市" formControlName="city"
+                    (onChange)="onCityChange($event)">
+                </p-dropdown>
+
+                <label>區域</label>
+                <p-dropdown [options]="districtOptions" placeholder="請選擇區域" formControlName="district">
+                </p-dropdown> -->
+
                 <label>地址</label>
-                <input type="text" pInputText formControlName="address" placeholder="請輸入地址">
+                <input type="text" pInputText formControlName="addressDetail" placeholder="請輸入詳細地址">
+
             </div>
         </div>
 

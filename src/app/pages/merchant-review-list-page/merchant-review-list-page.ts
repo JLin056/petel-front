@@ -29,9 +29,9 @@ export class MerchantReviewListPage implements OnInit {
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
-  currentPage: number = 1; // 當前頁碼 (後端從 1 開始)
+  currentPage: number = 1; 
 
-  propertyId: string = ''; // 旅館 ID
+  propertyId: string = ''; 
   reviews: reviewList[] = [];
   isLoading = false;
   errorMessage = '';
@@ -92,14 +92,12 @@ export class MerchantReviewListPage implements OnInit {
             avgServiceScore: this.avgServiceScore
           });
         } else {
-          this.errorMessage = '載入評價列表失敗';
           this.reviews = [];
         }
         this.isLoading = false;
       },
       error: (err) => {
         console.error('載入評價列表失敗', err);
-        this.errorMessage = '無法載入評價列表，請稍後再試';
         this.isLoading = false;
         this.reviews = [];
       }
@@ -109,14 +107,14 @@ export class MerchantReviewListPage implements OnInit {
   onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 10;
-    // PrimeNG paginator 的 first 是從 0 開始，需要轉換成頁碼
     this.currentPage = Math.floor(this.first / this.rows) + 1;
     console.log('頁面變更:', { page: this.currentPage, pageSize: this.rows });
-    // 重新載入資料
     this.loadReviews();
   }
 
-  // 計算平均分數 (使用 API 返回的 avgScore)
+  /**
+   * 計算平均分數 
+   */ 
   getAverageRating(review: reviewList): number {
     return review.avgScore;
   }

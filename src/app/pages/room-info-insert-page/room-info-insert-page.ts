@@ -58,11 +58,9 @@ export class RoomInfoInsertPage implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // 從 PropertyStateService 取得當前旅館 ID
     this.propertyId = this.propertyStateService.getCurrentPropertyId();
 
     if (!this.propertyId) {
-      this.errorMessage = '無法取得旅館資訊';
       this.messageService.add({
         severity: 'warn',
         summary: '無法取得旅館資訊',
@@ -95,7 +93,6 @@ export class RoomInfoInsertPage implements OnInit {
     this.roomForm.markAllAsTouched();
 
     if (this.roomForm.invalid) {
-      this.errorMessage = '請填寫所有必填欄位';
       console.log('表單驗證失敗:', this.roomForm.errors);
       console.log('表單值:', this.roomForm.value);
       return;
@@ -142,7 +139,6 @@ export class RoomInfoInsertPage implements OnInit {
           }
 
         } else {
-          this.errorMessage = res.MWHEADER.RETURNMSG || '新增失敗';
           console.warn('新增失敗:', this.errorMessage);
         }
 
@@ -151,7 +147,6 @@ export class RoomInfoInsertPage implements OnInit {
       },
       error: (err) => {
         console.error('API 錯誤:', err);
-        this.errorMessage = '網路或伺服器錯誤，請稍後再試';
         this.isSubmitting = false;
       }
     });

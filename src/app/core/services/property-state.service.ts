@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class PropertyStateService {
   /** 當前選中的旅館 ID */
-  private currentPropertyIdSubject = new BehaviorSubject<string>('P000000001');
+  private currentPropertyIdSubject = new BehaviorSubject<string>('');
 
   /** 當前選中的旅館 ID (Observable) */
   public currentPropertyId$: Observable<string> = this.currentPropertyIdSubject.asObservable();

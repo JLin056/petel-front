@@ -20,9 +20,10 @@
       <input pInputText type="text" [(ngModel)]="searchUserName" placeholder="輸入會員姓名" />
     </div>
     <div class="search-input">
-      <label>入住日期</label>
-      <input pInputText type="text" [(ngModel)]="searchCheckIn" placeholder="輸入入住日期 (例: 2024-01-01)" />
-    </div>
+      <!-- <label>入住日期</label>
+      <p-datepicker [(ngModel)]="searchCheckIn" [showIcon]="true" dateFormat="yy-mm-dd" placeholder="選擇入住日期"
+        inputId="checkin"></p-datepicker>
+    </div> -->
     <div class="search-buttons">
       <p-button label="搜尋" icon="pi pi-search" (onClick)="onSearch()" [loading]="loading" />
       <p-button label="清除" icon="pi pi-times" severity="secondary" (onClick)="onClearSearch()" />
@@ -58,9 +59,7 @@
           <td>NT$ {{ order.HOTEL_CHARGES }}</td>
           <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
           <td class="status-cell">
-            <p-tag
-              [value]="order.STATUS"
-              [severity]="getSeverity(order.STATUS)">
+            <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)">
             </p-tag>
           </td>
           <td>
@@ -80,6 +79,5 @@
 
 <!-- Dialog -->
 <app-merchant-order-detail-dialog [(visible)]="showDetailDialog" [order]="selectedOrder"
-  (noteUpdated)="onNoteUpdated($event)"
-  (statusUpdated)="onStatusUpdated($event)">
+  (noteUpdated)="onNoteUpdated($event)" (statusUpdated)="onStatusUpdated($event)">
 </app-merchant-order-detail-dialog>

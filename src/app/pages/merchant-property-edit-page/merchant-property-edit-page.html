@@ -3,23 +3,32 @@
 
     <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
 
+        <!-- 旅館圖片區 (保留給之後的圖片 API) -->
+        <div class="info-section">
+            <h3>旅館圖片</h3>
+            <div class="image-placeholder">
+                <i class="pi pi-images" style="font-size: 3rem; color: #ccc;"></i>
+                <p style="color: #999; margin-top: 1rem;">圖片功能開發中，敬請期待</p>
+            </div>
+        </div>
+
         <!-- 基本資訊 -->
         <div class="info-section">
             <h3>基本資訊</h3>
             <div class="form-grid">
-                <label>旅館名稱</label>
-                <input type="text" pInputText formControlName="name" >
+                <label>旅館名稱 <span class="required">*</span></label>
+                <input type="text" pInputText formControlName="name" [disabled]="true">
 
-                <label>特許寵物業者編號</label>
-                <input type="text" pInputText formControlName="licenseNo" />
+                <label>特許寵物業許可證號</label>
+                <input type="text" pInputText formControlName="businessCode" [disabled]="true" />
 
-                <label>收款帳號</label>
+                <label>銀行帳號 <span class="required">*</span></label>
                 <input type="text" pInputText formControlName="bankAccount">
 
-                <label>電話</label>
+                <label>電話 <span class="required">*</span></label>
                 <input type="text" pInputText formControlName="tel">
 
-                <label>地址</label>
+                <label>地址 <span class="required">*</span></label>
                 <input type="text" pInputText formControlName="address">
             </div>
         </div>

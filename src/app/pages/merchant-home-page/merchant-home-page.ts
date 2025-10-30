@@ -59,17 +59,18 @@ export class MerchantHomePage implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // 從 PropertyStateService 取得當前旅館 ID
     this.propertyId = this.propertyStateService.getCurrentPropertyId();
-
-    if (!this.propertyId) {
-      // 如果沒有 propertyId，使用預設值
-      this.propertyId = 'P000000001';
-      this.propertyStateService.setCurrentPropertyId(this.propertyId);
-    }
 
     console.log('=== 旅館首頁初始化 ===');
     console.log('propertyId:', this.propertyId);
+
+    if (!this.propertyId) {
+      console.warn('缺少旅館 ID，導回商家會員頁');
+      setTimeout(() => {
+        this.router.navigate(['/merchants/userPage']);
+      }, 2000);
+      return;
+    }
 
     this.loadRooms();
     this.loadPropertyName();
@@ -123,7 +124,6 @@ export class MerchantHomePage implements OnInit {
       },
       error: (err) => {
         console.error('載入房間列表失敗', err);
-        this.errorMessage = '無法載入房型列表，請稍後再試';
         this.isLoading = false;
         this.roomList = [];
       }
@@ -159,7 +159,6 @@ export class MerchantHomePage implements OnInit {
    */
   onEdit(room: any): void {
     if (!room || !room.id) {
-      this.errorMessage = '無法取得房型資料';
       return;
     }
     this.router.navigate(['/merchants/property/roomInfo/edit'], {
@@ -173,7 +172,6 @@ export class MerchantHomePage implements OnInit {
    */
   showDeleteConfirm(room: any) {
     if (!room || !room.id) {
-      this.errorMessage = '無法取得房型，請稍後再試';
       return;
     }
     this.roomToDelete = room;
@@ -186,7 +184,6 @@ export class MerchantHomePage implements OnInit {
    */
   onDelete() {
     if (!this.roomToDelete || !this.roomToDelete.id) {
-      this.errorMessage = '無法取得房型，請稍後再試';
       return;
     }
     this.isDeleting = true;
@@ -203,14 +200,11 @@ export class MerchantHomePage implements OnInit {
           console.log('已成功刪除房型', this.roomToDelete.name)
           this.roomToDelete = null;
           this.deleteRoomVisible = false;
-        } else {
-          this.errorMessage = '刪除失敗';
-        }
+        } 
         this.isDeleting = false;
       },
       error: (err) => {
         console.error('刪除失敗', err);
-        this.errorMessage = err.error?.TRANRS?.message || '刪除房型時發生錯誤，請稍後再試';
         this.isDeleting = false;
         this.deleteRoomVisible = false;
         this.roomToDelete = null;
@@ -226,7 +220,6 @@ export class MerchantHomePage implements OnInit {
     console.log('點擊房型詳細資料，完整的 Room 物件:', room);
 
     if (!room || !room.id) {
-      this.errorMessage = '無法取得房型 ID (room.id 遺失)。請檢查後端 API 返回的房型物件中 ID 欄位的名稱。';
       console.error(this.errorMessage, room);
       return;
     }
