@@ -100,7 +100,7 @@ export class MerchantLoginPage {
     goRegister() {
         // 確保不被阻擋，直接導航
         this.showFillDialog = false; // 如果 dialog 打開，先關閉
-        this.router.navigate(['merchants/register']).then(() => {
+        this.router.navigate(['merchants/userPage/register']).then(() => {
             window.scrollTo(0, 0);
         });
     }
