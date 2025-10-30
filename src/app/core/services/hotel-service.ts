@@ -5,6 +5,8 @@ import { Tranrq as HOTEL001Tranrq } from '../interfaces/HOTEL001Req.interface';
 import { Tranrs as HOTEL001Tranrs } from '../interfaces/HOTEL001Res.interface';
 import { HOTEL002Tranrq } from '../interfaces/HOTEL002Req.interface';
 import { HOTEL002Tranrs } from '../interfaces/HOTEL002Res.interface';
+import { Tranrq as HOTEL005Tranrq } from '../interfaces/HOTEL005Req.interface';
+import { Tranrs as HOTEL005Tranrs } from '../interfaces/HOTEL005Res.interface';
 import { Mwheader, Req } from '../interfaces/Req.interface';
 import { Res } from '../interfaces/Res.interface';
 import { environment } from '../../../environment';
@@ -113,6 +115,44 @@ export class HotelService {
         }
 
         return this.http.post<Res<HOTEL004Tranrs>>(`${environment.BASE_URL}/hotels/facilities`, postData);
+
+    }
+    
+    /**
+     * HOTEL-005 查詢單筆旅館詳細資訊（包含庫存及圖片）
+     * @param propertyId 旅館編號 (必填)
+     * @param petType 寵物種類 (必填, CAT/DOG)
+     * @param checkIn 入住日期 (選填)
+     * @param checkOut 退房日期 (選填)
+     * @returns
+     */
+    querySingleHotelDetail(params: {
+        propertyId: string;
+        petType: string;
+        checkIn?: Date;
+        checkOut?: Date;
+    }) {
+        const header: Mwheader = {
+            MSGID: 'HOTEL-005'
+        };
+
+        const tranrq: HOTEL005Tranrq = {
+            propertyId: params.propertyId,
+            petType: params.petType,
+            checkIn: params.checkIn || new Date(),
+            checkOut: params.checkOut || new Date()
+        };
+
+        const postData: Req<HOTEL005Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        };
+
+        console.log('=== HOTEL-005 API 請求參數 ===');
+        console.log('API URL:', `${environment.BASE_URL}/hotels/singleHotelDetail`);
+        console.log('請求資料:', JSON.stringify(postData, null, 2));
+
+        return this.http.post<Res<HOTEL005Tranrs>>(`${environment.BASE_URL}/hotels/singleHotelDetail`, postData);
     }
 }
 

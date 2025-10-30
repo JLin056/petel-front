@@ -8,6 +8,8 @@ html, body {
 main {
   flex-grow: 1; /* 讓 main 區域佔據所有剩餘空間 */
   font-size: 25px;
+  max-width: 1920px;
+  padding: 30px;
 }
 
 .layout {

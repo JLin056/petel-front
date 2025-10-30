@@ -1,4 +1,3 @@
-
 import { Hotel } from './ADMIN006Res.interface';
 
 export interface ADMIN001Res {
