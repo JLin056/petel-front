@@ -13,7 +13,6 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { Hotel } from '../../core/interfaces/ADMIN006Res.interface';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 import { AdminService } from '../../core/services/admin.service';
 import { ADMIN001Req } from '../../core/interfaces/ADMIN001Req.interface';
 
@@ -27,7 +26,6 @@ import { ADMIN001Req } from '../../core/interfaces/ADMIN001Req.interface';
     CommonModule,
     FormsModule,
     ButtonModule,
-    SharedConfirmDialog,
     ToastModule,
     TooltipModule
   ],
@@ -40,7 +38,8 @@ export class AdminHotelTable implements OnInit {
     private http: HttpClient,
     private adminService: AdminService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   hotelList: Hotel[] = [];
@@ -49,20 +48,25 @@ export class AdminHotelTable implements OnInit {
   // Filter variables - 用於後端查詢
   propertyIdFilter: string = '';
   propertyNameFilter: string = '';
+  sellerNameFilter: string = '';
 
   // Pagination
   totalRecords: number = 0;
   currentPage: number = 1;
   pageSize: number = 5;
 
-  // Confirm dialog
-  deleteConfirmVisible: boolean = false;
-  selectedHotel: Hotel | null = null;
-
   private isFirstLoad = true; // 追蹤是否為第一次載入
   private isSearching = false; // 追蹤是否為搜尋操作
 
   ngOnInit() {
+    // 檢查 URL 查詢參數，如果有 sellerName 就設定過濾條件
+    this.route.queryParams.subscribe(params => {
+      if (params['sellerName']) {
+        this.sellerNameFilter = params['sellerName'];
+        // 標記為搜尋操作，稍後會顯示提示
+        this.isSearching = true;
+      }
+    });
     // 初始化時不自動載入，等待 lazy table 觸發
   }
 
@@ -91,6 +95,9 @@ export class AdminHotelTable implements OnInit {
     }
     if (this.propertyNameFilter) {
       requestData.TRANRQ.propertyName = this.propertyNameFilter;
+    }
+    if (this.sellerNameFilter) {
+      requestData.TRANRQ.sellerName = this.sellerNameFilter;
     }
 
     // 呼叫 API
@@ -175,59 +182,21 @@ export class AdminHotelTable implements OnInit {
   }
 
   /**
-   * 顯示刪除確認對話框
-   */
-  confirmDelete(hotel: Hotel) {
-    this.selectedHotel = hotel;
-    this.deleteConfirmVisible = true;
-  }
-
-  /**
-   * 確認刪除旅館
-   */
-  onDeleteConfirmed() {
-    if (this.selectedHotel) {
-      console.log('刪除旅館:', this.selectedHotel.PROPERTY_ID);
-      const hotelName = this.selectedHotel.PROPERTY_NAME;
-
-      // TODO: 呼叫 API 刪除旅館
-      // this.http.delete(`/api/hotels/${this.selectedHotel.PROPERTY_ID}`).subscribe(...);
-
-      // 從列表中移除
-      this.hotelList = this.hotelList.filter(h => h.PROPERTY_ID !== this.selectedHotel!.PROPERTY_ID);
-
-      // 顯示成功訊息
-      this.messageService.add({
-        severity: 'success',
-        summary: '刪除成功',
-        detail: `已成功刪除旅館 ${hotelName}`
-      });
-
-      this.selectedHotel = null;
-    }
-    this.deleteConfirmVisible = false;
-  }
-
-  /**
-   * 取消刪除
-   */
-  onDeleteCancelled() {
-    this.selectedHotel = null;
-    this.deleteConfirmVisible = false;
-  }
-
-  /**
    * 查看旅館的歷史訂單
    */
   viewHotelOrders(hotel: Hotel) {
     console.log('查看旅館歷史訂單:', hotel.PROPERTY_ID, hotel.PROPERTY_NAME);
-    // TODO: 實作導航到訂單列表頁面，並根據旅館名稱進行篩選
-    // 方式 1: 使用 Router 導航並傳遞參數
-    // this.router.navigate(['/orders'], { queryParams: { hotelId: hotel.PROPERTY_ID, hotelName: hotel.PROPERTY_NAME } });
 
-    // 方式 2: 使用狀態管理或 Service 傳遞篩選條件
-    // this.orderService.setHotelFilter(hotel.PROPERTY_NAME);
-    // this.router.navigate(['/orders']);
+    // 導航到訂單列表頁面，並帶上 propertyName 參數
+    this.router.navigate(['/admin/orderTable'], {
+      queryParams: { propertyName: hotel.PROPERTY_NAME }
+    });
+
+    this.messageService.add({
+      severity: 'info',
+      summary: '正在跳轉',
+      detail: `正在查看 ${hotel.PROPERTY_NAME} 的歷史訂單`
+    });
   }
 
   /**

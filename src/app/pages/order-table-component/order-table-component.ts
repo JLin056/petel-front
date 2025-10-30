@@ -17,6 +17,7 @@ import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
 import { AdminService } from '../../core/services/admin.service';
 import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
+import { PricePipe } from '../../shared/pipes/price-pipe';
 
 @Component({
   selector: 'app-order-table-component',
@@ -32,7 +33,8 @@ import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
     FormsModule,
     ButtonModule,
     OrderDetailDialog,
-    ToastModule
+    ToastModule,
+    PricePipe
   ],
   providers: [MessageService],
   templateUrl: './order-table-component.html',
@@ -81,6 +83,15 @@ export class OrderTableComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (params['userName']) {
         this.userNameFilter = params['userName'];
+        this.isSearching = true;
+        // 延遲執行搜尋，等待表格初始化完成
+        setTimeout(() => {
+          this.onSearch();
+        }, 100);
+      }
+      if (params['propertyName']) {
+        this.propertyNameFilter = params['propertyName'];
+        this.isSearching = true;
         // 延遲執行搜尋，等待表格初始化完成
         setTimeout(() => {
           this.onSearch();
