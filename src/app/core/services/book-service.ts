@@ -11,12 +11,18 @@ import { BOOK006Tranrs } from '../interfaces/BOOK006Res.interface';
 import { BOOK005Tranrq } from '../interfaces/BOOK005Req.interface';
 import { BOOK005Tranrs } from '../interfaces/BOOK005Res.interface';
 import { BOOK013Tranrq } from '../interfaces/BOOK013Req.interface';
+import { environment } from '../../../environment';
+import { BOOK004Req, Book004Tranrq } from '../interfaces/BOOK004Req.interface';
+import { Observable } from 'rxjs';
+import { BOOK004Res } from '../interfaces/BOOK004Res.interface';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BookService {
     http = inject(HttpClient);
+
+    onCancelBookingUrl = `${environment.BASE_URL}/bookings/cancel`;
 
     /**
      * BOOK-001 建立訂單
@@ -164,6 +170,19 @@ export class BookService {
             rooms: []
         };
     }
+
+    /**
+     * 取消訂單 API
+     * @param postData
+     * @returns
+     */
+    onCancelBookingApi(postData: BOOK004Req): Observable<BOOK004Res> {
+        return this.http.post<BOOK004Res>(this.onCancelBookingUrl, postData, {
+            withCredentials: true
+        })
+    }
+
+
 }
 
 export interface OrderData {

@@ -19,6 +19,13 @@ interface CityDistrict {
   imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, SharedConfirmDialog],
   templateUrl: './merchant-property-insert-page.html',
   styleUrls: ['./merchant-property-insert-page.css']
+import { UploadImg } from "../../shared/sharedComponents/upload-img/upload-img";
+
+@Component({
+  selector: 'app-merchant-property-insert-page',
+  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, UploadImg],
+  templateUrl: './merchant-property-insert-page.html',
+  styleUrl: './merchant-property-insert-page.css',
 })
 export class MerchantPropertyInsertPage implements OnInit {
   propertyForm!: FormGroup;

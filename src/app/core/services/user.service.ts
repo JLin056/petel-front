@@ -7,6 +7,8 @@ import { USER001Res } from '../interfaces/USER001Res.interface';
 import { USER004Res } from '../interfaces/USER004Res.interface';
 import { USER006Req } from '../interfaces/USER006Req.interface';
 import { USER006Res } from '../interfaces/USER006Res.interface';
+import { USER002Req } from '../interfaces/USER002Req.interface';
+import { USER002Res } from '../interfaces/USER002Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,8 @@ export class UserService {
     getUserInfoUrl = `${environment.BASE_URL}/user/get`;
     /** 取得 歷史訂單 API URL */
     getBookingInfoUrl = `${environment.BASE_URL}/user/bookings/get`;
+    /** 修改 會員資訊 API URL */
+    editUserUrl = `${environment.BASE_URL}/user/update`;
 
     /**
      * 新增會員資料 API
@@ -50,6 +54,17 @@ export class UserService {
      */
     onGetBookingInfoApi(postData: USER006Req): Observable<USER006Res> {
         return this.http.post<USER006Res>(this.getBookingInfoUrl, postData, {
+            withCredentials: true
+        })
+    }
+
+    /**
+     * 修改會員資訊 API
+     * @param postData
+     * @returns
+     */
+    onEditUserInfo(postData: USER002Req): Observable<USER002Res> {
+        return this.http.post<USER002Res>(this.editUserUrl, postData, {
             withCredentials: true
         })
     }
