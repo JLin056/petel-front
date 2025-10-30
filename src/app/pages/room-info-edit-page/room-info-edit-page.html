@@ -1,39 +1,175 @@
 <div class="room-form-container">
-    <h2 class="page-title">房型資訊</h2>
+    <h2 class="page-title">修改房型資訊</h2>
     <form [formGroup]="roomForm" class="form-body">
-        <!-- 房型圖片 -->
-        <div class="form-section">
-            <label class="section-label">房型圖片</label>
-            <button type="button" class="btn-upload">新增圖片</button>
+
+        <div class="form-main-content sequential-layout">
+
+            <!-- 1. 房型圖片 (Full Width) -->
+            <div class="form-section full-width image-upload-section">
+                <label class="section-label">房型圖片</label>
+                <div class="image-preview-area">
+                    <div class="image-placeholder">
+                        <i class="pi pi-images"></i>
+                        <span>預覽區 (最多 5 張)</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-upload">修改圖片</button>
+            </div>
+
+            <!-- 2. 房型名稱 & 寵物種類 (Side-by-Side) -->
+            <div class="form-row-2col">
+                <!-- 房型名稱 -->
+                <div class="form-section flex-item">
+                    <label class="section-label" for="roomNameInput">房型名稱</label>
+                    <input pInputText formControlName="name" type="text" id="roomNameInput"
+                        [invalid]="roomForm.get('name')?.invalid && (roomForm.get('name')?.touched || isSubmitted)" />
+
+                    @if (roomForm.get('name')?.invalid && (roomForm.get('name')?.touched || isSubmitted)) {
+                    <p-message severity="error" size="small" variant="simple">
+                        {{ getErrorMessage('name') }}
+                    </p-message>
+                    }
+                </div>
+
+                <!-- 寵物種類 - 使用 p-select 👇 -->
+                <div class="form-section flex-item">
+                    <label class="section-label" for="petTypeInput">寵物種類</label>
+
+                    <p-select formControlName="petTypeObject" [options]="petTypes" optionLabel="name"
+                        placeholder="請選擇寵物種類" [showClear]="true" inputId="petTypeInput"
+                        [invalid]="roomForm.get('petTypeObject')?.invalid && (roomForm.get('petTypeObject')?.touched || isSubmitted)"
+                        class="w-full">
+                    </p-select>
+
+                    @if (roomForm.get('petTypeObject')?.invalid && (roomForm.get('petTypeObject')?.touched ||
+                    isSubmitted)) {
+                    <p-message severity="error" size="small" variant="simple">
+                        {{ getErrorMessage('petTypeObject') }}
+                    </p-message>
+                    }
+                </div>
+            </div>
+
+            <!-- 3. 價格 & 總房間數 (Side-by-Side) -->
+            <div class="form-row-2col">
+                <!-- 價格 -->
+                <div class="form-section flex-item">
+                    <label class="section-label" for="priceInput">價格 NT$ / 天</label>
+                    <input pInputText formControlName="price" type="number" min="1" step="any" id="priceInput"
+                        [invalid]="roomForm.get('price')?.invalid && (roomForm.get('price')?.touched || isSubmitted)" />
+
+                    @if (roomForm.get('price')?.invalid && (roomForm.get('price')?.touched || isSubmitted)) {
+                    <p-message severity="error" size="small" variant="simple">
+                        {{ getErrorMessage('price') }}
+                    </p-message>
+                    }
+                </div>
+
+                <!-- 總房數 - 使用 p-select 👇 -->
+                <div class="form-section flex-item">
+                    <label class="section-label" for="unitInput">總房間數</label>
+
+                    <p-select formControlName="unit" [options]="unitOptions" optionLabel="label" optionValue="value"
+                        placeholder="請選擇房間數" [showClear]="true" inputId="unitInput"
+                        [invalid]="roomForm.get('unit')?.invalid && (roomForm.get('unit')?.touched || isSubmitted)"
+                        class="w-full">
+                    </p-select>
+
+                    @if (roomForm.get('unit')?.invalid && (roomForm.get('unit')?.touched || isSubmitted)) {
+                    <p-message severity="error" size="small" variant="simple">
+                        {{ getErrorMessage('unit') }}
+                    </p-message>
+                    }
+                </div>
+            </div>
+
+            <!-- 4. 空間尺寸 (Full Width) - 方案一 -->
+            <div class="form-section full-width size-inputs-group">
+                <label class="section-label">空間尺寸 (公分)</label>
+
+                <div class="size-inputs-row">
+                    <div class="size-input-item">
+                        <label class="size-label">高度：</label>
+                        <input pInputText formControlName="height" type="number" min="1" id="heightInput"
+                            [invalid]="roomForm.get('height')?.invalid && (roomForm.get('height')?.touched || isSubmitted)" />
+                    </div>
+                    <div class="size-input-item">
+                        <label class="size-label">長度：</label>
+                        <input pInputText formControlName="length" type="number" min="1" id="lengthInput"
+                            [invalid]="roomForm.get('length')?.invalid && (roomForm.get('length')?.touched || isSubmitted)" />
+                    </div>
+                    <div class="size-input-item">
+                        <label class="size-label">寬度：</label>
+                        <input pInputText formControlName="width" type="number" min="1" id="widthInput"
+                            [invalid]="roomForm.get('width')?.invalid && (roomForm.get('width')?.touched || isSubmitted)" />
+                    </div>
+                </div>
+
+                <!-- 錯誤訊息在下方 -->
+                @if ((roomForm.get('height')?.invalid && (roomForm.get('height')?.touched || isSubmitted)) ||
+                (roomForm.get('length')?.invalid && (roomForm.get('length')?.touched || isSubmitted)) ||
+                (roomForm.get('width')?.invalid && (roomForm.get('width')?.touched || isSubmitted))) {
+                <div class="size-error-wrapper">
+                    <p-message severity="error" size="small" variant="simple">
+                        請檢查尺寸欄位，皆為必填且需大於 0。
+                    </p-message>
+                </div>
+                }
+            </div>
+
+            <!-- 5. 房間介紹 (Full Width) -->
+            <div class="form-section full-width">
+                <label class="section-label">房間介紹</label>
+                <p-editor formControlName="description" [style]="{'height':'280px', 'background-color':'#fffdf8'}"
+                    [invalid]="roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)">
+                    <ng-template pTemplate="header">
+                        <span class="ql-formats">
+                            <button type="button" class="ql-bold" aria-label="Bold"></button>
+                            <button type="button" class="ql-italic" aria-label="Italic"></button>
+                            <button type="button" class="ql-underline" aria-label="Underline"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                            <button type="button" class="ql-list" value="bullet" aria-label="Bullet List"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <select class="ql-align">
+                                <option selected></option>
+                                <option value="center"></option>
+                                <option value="right"></option>
+                            </select>
+                        </span>
+                    </ng-template>
+                </p-editor>
+
+                @if (roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)) {
+                <p-message severity="error" size="small" variant="simple">
+                    {{ getErrorMessage('description') }}
+                </p-message>
+                }
+            </div>
+
         </div>
 
-        <!-- 房型名稱 -->
-        <div class="form-section">
-            <label class="section-label">房型名稱</label>
-            <input formControlName="name" type="text" placeholder="請輸入房型名稱" class="input" />
+        <div class="form-buttons full-width">
+            <button type="button" class="btn-cancel" (click)="onCancelClick()" [disabled]="isSubmitting">
+                取 消 修 改
+            </button>
+            <button type="button" class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
+                {{ isSubmitting ? '修改中...' : '確 認 修 改' }}
+            </button>
         </div>
-
-        <!-- 房型說明 -->
-        <div class="form-section">
-            <label class="section-label">空間大小</label>
-            <textarea formControlName="description" rows="5" placeholder="請輸入房型說明" class="textarea"></textarea>
-        </div>
-
-        <!-- 房間設備 -->
-        <div class="form-section">
-            <label class="section-label">房間說明</label>
-            <textarea formControlName="equipment" rows="6" placeholder="請輸入房間設備" class="textarea"></textarea>
-        </div>
-        <!-- 價格 -->
-        <div class="form-section">
-            <label class="section-label">價格 NT$ / 天</label>
-            <input formControlName="price" type="text" placeholder="請輸入房間價格" class="input" />
-        </div>
-        <!-- 按鈕 -->
-        <div class="form-buttons">
-            <button type="button" class="btn-save">確 認 新 增</button>
-            <button type="reset" class="btn-cancel">取 消 新 增</button>
-        </div>
-
     </form>
 </div>
+
+<!-- 錯誤訊息顯示 -->
+@if (errorMessage) {
+<div class="error-message">
+    {{ errorMessage }}
+</div>
+}
+
+<!-- 取消確認對話框 -->
+<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消修改嗎？已修改的資料將不會被儲存。"
+    confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()"
+    (cancel)="onCancelCancel()"></app-shared-confirm-dialog>

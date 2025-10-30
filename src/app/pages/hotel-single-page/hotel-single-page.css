@@ -1,0 +1,754 @@
+/* 搜尋列 */
+.banner {
+    display: flex;
+    justify-content: center;
+}
+
+.banner-background {
+    height: 20px;
+    width: 100%;
+    background-color: #974B2C;
+}
+
+.search-container {
+    background-color: #FFF1C2;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+    top: -20px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-item {
+    min-width: 150px;
+}
+
+.search-label ::ng-deep {
+    color: #A24522;
+}
+
+:host ::ng-deep .p-select.p-component,
+:host ::ng-deep .p-datepicker.p-component input,
+:host ::ng-deep .p-inputnumber.p-component input {
+    border: none;
+    /* 移除內層 input 原框 */
+    box-shadow: none;
+}
+
+::ng-deep .petel-search-btn.p-button {
+    background-color: #EDA33A;
+    color: #A24522;
+    padding: 10px 20px;
+    border: none;
+}
+
+/* 評論網格布局 */
+.review-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 20px; /* 垂直間距加大，水平間距保持 */
+    padding: 0px 20px 30px 20px;
+}
+
+/* Fieldset 外層 - 移除所有邊框 */
+::ng-deep .review-grid .p-fieldset {
+    border: none !important; /* 移除外層邊框 */
+    background: transparent !important;
+    padding: 0 !important;
+    margin-top: 30px !important; /* 上方留空間給 avatar */
+    position: relative;
+    box-shadow: none !important;
+}
+
+/* Fieldset 容器本身 */
+::ng-deep .review-grid .p-fieldset > .p-fieldset-content-container {
+    border: 1px solid #cfc1b1 !important; /* 單一邊框在內層容器 */
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    background-color: #fff !important;
+}
+
+/* Legend 樣式 - 移除邊框，讓 avatar 浮在上面 */
+::ng-deep .review-grid .p-fieldset .p-fieldset-legend {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    position: absolute;
+    top: -25px; /* 讓 avatar 浮在卡片上方 */
+    left: 20px;
+    width: auto !important;
+}
+
+/* Review head - avatar 和名字 */
+.review-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff;
+    padding: 0 10px 0 0;
+}
+
+/* Avatar 樣式 */
+::ng-deep .review-head .p-avatar {
+    width: 50px !important;
+    height: 50px !important;
+    border: 2px solid #cfc1b1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 名字樣式 */
+.review-head .font-bold {
+    font-weight: 600;
+    color: #000000;
+    font-size: 1rem;
+}
+
+/* Fieldset 內容區域 */
+::ng-deep .review-grid .p-fieldset .p-fieldset-content {
+    padding: 40px 1.25rem 1.25rem 1.25rem !important; /* 上方留空間給 avatar */
+    border: none !important;
+}
+
+/* 評論內容文字 */
+.review-content {
+    line-height: 1.6;
+    color: #7c4200;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* 評論評分行 - 星星和分數在同一行 */
+.review-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* 星星和分數之間的間距 */
+}
+
+/* 評論分數文字 */
+.review-score {
+    font-weight: 600;
+    color: #7c4200;
+    font-size: 1rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 新增：用於評分項目並排佈局的樣式 (修正 PrimeNG Divider 的垂直顯示問題) */
+/* ---------------------------------------------------------------------- */
+.score-layout {
+    display: flex;
+    /* 使用 Flexbox 讓所有子元素並排 */
+    align-items: center;
+    /* 垂直置中對齊所有項目 (p, p-divider) */
+    justify-content: space-around;
+    /* 讓項目平均分配空間 */
+    /* 確保容器可以容納 PrimeNG 渲染的 p-divider 元素 */
+    background-color: #f5efe8;
+    padding: 15px 0;
+    /* 上下留一些空間 */
+}
+
+/* 調整 p 標籤的預設邊距，讓它更貼合 */
+.score-layout p {
+    margin: 0 10px;
+    /* 左右留一些空間，避免文字過於擁擠 */
+    white-space: nowrap;
+    /* 避免文字換行，維持單行顯示 */
+    text-align: center;
+    /* 讓評分內容（如果有多行）置中 */
+}
+
+/* 覆蓋 PrimeNG Divider 的預設高度，確保垂直分隔線看得見 */
+.score-layout .p-divider-vertical {
+    height: 30px;
+    /* 設定一個明確的高度，讓垂直分隔線能夠顯示 */
+}
+
+/* ---------------------------------------------------------------------- */
+/* 圖片網格 - 點擊打開全螢幕相簿 */
+/* ---------------------------------------------------------------------- */
+.image-grid-container {
+  padding: 30px 20px;
+  background-color: #f9f9f9;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.grid-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.grid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover img {
+  transform: scale(1.1);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(124, 66, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.grid-item:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-overlay i {
+  color: white;
+  font-size: 2rem;
+}
+
+/* 全螢幕 Galleria 樣式 */
+::ng-deep .p-galleria-mask.p-component-overlay {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+::ng-deep .p-galleria .p-galleria-item-nav {
+  background-color: rgba(124, 66, 0, 0.8);
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-galleria .p-galleria-item-nav:hover {
+  background-color: rgba(124, 66, 0, 1);
+}
+
+::ng-deep .p-galleria .p-galleria-close {
+  background-color: rgba(124, 66, 0, 0.8);
+  color: white;
+}
+
+::ng-deep .p-galleria .p-galleria-close:hover {
+  background-color: rgba(124, 66, 0, 1);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .grid-item {
+    aspect-ratio: 1/1;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* 店家頂部資訊樣式 */
+/* ---------------------------------------------------------------------- */
+.store-header-container {
+  padding: 20px;
+}
+
+.store-name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #7c4200;
+  margin: 0 0 1rem 0;
+}
+
+/* 評分和評論數在同一行 */
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* rating 和評論數之間的間距 */
+  margin-bottom: 0.75rem;
+}
+
+.review-count {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* 地址圖示和文字在同一行 */
+.address-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* icon 和文字之間的間距 */
+}
+
+.address-icon {
+  color: #7c4200;
+  font-size: 1.1rem;
+}
+
+.address-text {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 店家資訊頁面布局 */
+/* ---------------------------------------------------------------------- */
+.info-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* 左邊占 2/3，右邊占 1/3 */
+    gap: 20px;
+    /* 左右間距 */
+    padding: 20px;
+}
+
+/* 左邊的店家資訊卡片 */
+.left-card {
+    height: 100%;
+    /* 讓卡片填滿左側高度 */
+    border-radius: 8px;
+    border: 1px solid #cfc1b1;
+    /* 淡棕框 */
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 移除 PrimeNG 預設樣式 */
+:host ::ng-deep .left-card .p-card {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+}
+
+/* 讓卡片本身使用 flexbox 布局 */
+:host ::ng-deep .left-card .p-card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 讓卡片內容使用 flexbox 布局 */
+:host ::ng-deep .left-card .p-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Chip 容器：兩個一排 */
+/* 固定高度的店家資訊內容區域 */
+.info-content-fixed {
+    flex: 1;
+    /* 讓它可以彈性增長 */
+    max-height: 1000px;
+    /* 固定最大高度 */
+    overflow-y: auto;
+    /* 超出部分可捲動 */
+    margin-bottom: 10px;
+}
+
+/* 設施區塊 - 固定在底部 */
+.facilities-section {
+    flex-shrink: 0;
+    /* 不會被壓縮 */
+}
+
+.chip-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 固定兩個一排 */
+    gap: 10px;
+    /* chip 之間的間距 */
+    margin-top: 10px;
+}
+
+/* Chip 樣式調整 */
+::ng-deep .chip-container .p-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    /* chip 靠左對齊，不會填滿整個格子 */
+    padding: 0.5rem 1.2rem;
+    background-color: #f5efe8;
+    /* 淺棕色背景 */
+    /* border: 1px solid #9db366; */
+    /* 邊框 */
+    border-radius: 24px;
+    /* 圓角 */
+    width: auto;
+    /* 不要太長，根據內容調整 */
+}
+
+/* Chip icon 和文字間隔 */
+::ng-deep .chip-container .p-chip .p-chip-icon {
+    margin-right: 0.3rem;
+    /* icon 和文字之間的間隔 */
+    color: #acb166 !important;
+    /* icon 顏色和文字一致 */
+    font-size: 1rem;
+    /* icon 大小 */
+}
+
+/* Chip 文字樣式 */
+::ng-deep .chip-container .p-chip .p-chip-label {
+    color: #87a734;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+/* 右邊的卡片容器 */
+.right-cards {
+    display: flex;
+    flex-direction: column;
+    /* 垂直排列 */
+    gap: 20px;
+    /* 上下卡片之間的間距 */
+}
+
+/* 右邊的小卡片 */
+.right-card {
+    flex: 1;
+    /* 讓兩個卡片平均分配高度 */
+    border-radius: 8px;
+    border: 1px solid #cfc1b1;
+    /* 淡棕框 */
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 移除 PrimeNG 預設樣式 */
+:host ::ng-deep .right-card .p-card {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+}
+
+/* 右邊卡片的 header 底色 */
+::ng-deep .right-card .p-card-header {
+    background-color: #f5efe8 !important;
+    /* 淡咖啡色底 */
+    padding: 1rem 1.25rem !important;
+    font-weight: 600 !important;
+    color: #7c4200 !important;
+    border-bottom: 1px solid #e8dfd4 !important;
+    margin: 0 !important;
+}
+
+/* 響應式：平板以下改為垂直排列 */
+@media (max-width: 768px) {
+    .info-layout {
+        grid-template-columns: 1fr;
+        /* 改為單列 */
+    }
+}
+
+/* ---------------------------------------------------------------------- */
+/* 須知區塊樣式 */
+/* ---------------------------------------------------------------------- */
+.notes-container {
+  background-color: #f5efe8; /* 淡咖啡色背景 */
+  padding: 30px;
+  border-radius: 10px;
+  margin: 40px 20px; /* 上下留出間距 */
+}
+
+.pet-note,
+.checkIn-note {
+  background-color: transparent; /* 移除白色背景 */
+  padding: 0;
+  border: none; /* 移除外框 */
+  box-shadow: none;
+  margin-bottom: 20px; /* 兩個區塊之間的間距 */
+}
+
+.checkIn-note {
+  margin-bottom: 0; /* 最後一個不需要底部間距 */
+}
+
+.note-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #7c4200;
+  margin: 0 0 0.5rem 0;
+}
+
+.note-content {
+  color: #555;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0.75rem 0 0 0;
+}
+
+/* 房型推薦區塊 */
+.room-recommend {
+  margin: 40px 20px 20px 20px; /* 與上方須知區塊分開 */
+}
+
+.recommend-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #7c4200;
+  margin: 0 0 1rem 0;
+}
+
+/* ---------------------------------------------------------------------- */
+/* 排序控制區樣式 */
+/* ---------------------------------------------------------------------- */
+.sort-control {
+    display: flex;
+    justify-content: flex-end;
+    /* 靠右對齊 */
+    align-items: center;
+    gap: 10px;
+    margin: 40px 0 0px 0;
+    padding: 0 20px;
+}
+
+.sort-control label {
+    font-weight: 500;
+    color: #333;
+}
+
+/* ---------------------------------------------------------------------- */
+/* PrimeNG Card (p-card) 的自定義樣式 */
+/* ---------------------------------------------------------------------- */
+
+/* 外層容器：三個一排 */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    /* 卡片左右間距 */
+    row-gap: 60px;
+    /* 增加上下排之間的間距 */
+    justify-items: center;
+    /* 卡片水平置中 */
+    padding: 20px;
+}
+
+/* 手機與平板自適應 */
+@media (max-width: 1024px) {
+    .card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 卡片外層 */
+.custom-card {
+    width: 25rem;
+    overflow: visible;
+    /* 改為 visible 讓 hover 時的陰影可以完整顯示 */
+    border-radius: 8px;
+    border: 1px solid #cfc1b1;
+    /* 淡棕框 */
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    /* 設置過渡效果，讓 hover 更平滑 */
+    transition: all 0.3s ease-in-out;
+}
+
+/* hover 浮起效果 */
+.custom-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+}
+
+/* 讓 p-card 整體外觀乾淨 */
+:host ::ng-deep .custom-card .p-card {
+    padding: 0;
+    /* 移除預設內距 */
+    border: none !important;
+    /* 移除 PrimeNG 預設邊框 */
+    box-shadow: none !important;
+    /* 移除 PrimeNG 預設陰影 */
+    border-radius: 0;
+    /* 移除內部圓角，由外層控制 */
+    overflow: hidden;
+    /* 確保圖片不會溢出圓角 */
+}
+
+/* 移除 header 預設空白，讓圖片貼齊 */
+::ng-deep .custom-card .p-card-header {
+    padding: 0;
+    margin: 0;
+}
+
+/* 圖片貼齊邊框 */
+.card-image {
+    display: block;
+    width: 100%;
+    height: 250px;
+    /* 可依需求調整 */
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin: 0;
+}
+
+/* 內文主體 */
+.card-body {
+    position: relative;
+    padding: 1rem;
+}
+
+/* 固定高度的內容區域 */
+.card-content-fixed {
+    height: 150px; /* 固定高度 */
+    overflow: hidden; /* 超出部分隱藏 */
+}
+
+/* 內文部分 — 縮小邊距 */
+.card-content {
+    padding: 12px 16px;
+    /* 原本可能是 20+，改成緊湊一些 */
+}
+
+/* 標題與 checkbox 同一行排列 */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+}
+
+/* 文字群組 */
+.card-title-group {
+    flex: 1;
+}
+
+/* 標題 */
+.card-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+/* 可點擊的標題 */
+.clickable-title {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.clickable-title:hover {
+    color: #7c4200;
+    text-decoration: underline;
+}
+
+/* 副標題 */
+.card-subtitle {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+    margin: 0 0 0.75rem 0;
+}
+
+/* 價格文字 */
+.card-price {
+    font-weight: 600;
+    color: #b45c33;
+    font-size: 1rem;
+}
+
+/* checkbox 靠右上角 */
+.card-checkbox {
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+/* 按鈕區 */
+.card-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.card-btn {
+    background-color: #d8c8f0;
+    border: none;
+    color: #5a4280;
+    font-weight: 500;
+}
+
+.booking-btn {
+    background-color: #d8c8f0;
+    border: none;
+    color: #5a4280;
+    font-weight: 500;
+}
+
+.order-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10rem;
+    margin-bottom: 6rem;
+}
+
+.room-quantity-select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 0.75rem;
+}
+
+.room-quantity-select label {
+    margin: 0;
+    color: #7c4200;
+    font-weight: 100;
+    font-size: 0.9rem;
+}
+
+/* 讓下拉選單有固定寬度和邊框 */
+::ng-deep .room-quantity-select .p-select {
+    min-width: 50px;
+}
+
+/* 確保 select 的邊框顯示 */
+::ng-deep .room-quantity-select .p-select .p-select-label {
+    border: 1px solid #cfc1b1;
+    border-radius: 4px;
+}

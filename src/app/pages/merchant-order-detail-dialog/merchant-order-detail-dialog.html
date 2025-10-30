@@ -1,0 +1,81 @@
+<p-dialog header="訂單詳細資料" [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true"
+    [style]="{width: '900px', 'max-width': '95vw'}" [dismissableMask]="true" [draggable]="false" [resizable]="false">
+
+    <div class="order-detail-content" *ngIf="order">
+
+        <!-- 基本資訊 -->
+        <div class="detail-section">
+            <h4>訂單基本資訊</h4>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <label>訂單編號</label>
+                    <div class="detail-value">{{ order.ORDER_ID || 'N/A' }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>訂單狀態</label>
+                    <div class="detail-value status">{{ order.STATUS }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 會員 / 訂購人資訊 -->
+        <div class="detail-section">
+            <h4>會員 / 訂購人資訊</h4>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <label>會員姓名</label>
+                    <div class="detail-value">{{ order.USER_NAME }} ({{ order.USER_PHONE }})</div>
+                </div>
+                <div class="detail-item">
+                    <label>訂購人姓名</label>
+                    <div class="detail-value">{{ order.FINAL_USER_NAME }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>訂購人電話</label>
+                    <div class="detail-value">{{ order.FINAL_USER_Phone }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 住宿資訊 -->
+        <div class="detail-section">
+            <h4>住宿資訊</h4>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <label>旅館名稱</label>
+                    <div class="detail-value">{{ order.PROPERTY_NAME }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>房型名稱</label>
+                    <div class="detail-value">{{ order.ROOM }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>入住日期</label>
+                    <div class="detail-value">{{ order.CHECK_IN }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>退房日期</label>
+                    <div class="detail-value">{{ order.CHECK_OUT }}</div>
+                </div>
+                <div class="detail-item">
+                    <label>總價格</label>
+                    <div class="detail-value price">NT$ {{ order.HOTEL_CHARGES }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 備註 -->
+        <div class="detail-section">
+            <h4>訂單備註</h4>
+            <textarea pInputTextarea [(ngModel)]="editedNote" rows="4" class="note-textarea"
+                placeholder="請輸入備註..."></textarea>
+        </div>
+
+    </div>
+
+    <ng-template #footer>
+        <p-button label="儲存" severity="primary" (onClick)="onSaveNote()" />
+        <p-button label="關閉" severity="secondary" (onClick)="onHideDialog()" />
+    </ng-template>
+
+</p-dialog>

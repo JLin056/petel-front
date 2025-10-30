@@ -1,0 +1,129 @@
+<p-toast position="bottom-right"></p-toast>
+
+<h3 class="title">會員列表</h3>
+
+<div class="search-container">
+    <div class="search-fields">
+        <div class="flex flex-col gap-2">
+            <label for="accountid">帳號ID</label>
+            <input pInputText id="accountid" class="custom-input" [(ngModel)]="accountIdFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="email">電子郵件</label>
+            <input pInputText id="email" class="custom-input" [(ngModel)]="emailFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="name">姓名</label>
+            <input pInputText id="name" class="custom-input" [(ngModel)]="nameFilter" />
+        </div>
+        <div class="search-btn-container">
+            <p-button label="搜尋" styleClass="admin-search-btn" (onClick)="onSearch()"></p-button>
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+  <div class="table-responsive">
+    <p-table
+      #dt
+      [value]="memberList"
+      dataKey="ACCOUNT_ID"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+      [paginator]="true"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="onPageChange($event)"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width:16%">帳號ID</th>
+        <th style="width:16%">
+          <i class="pi pi-envelope icon-large"></i>
+          電子郵件
+        </th>
+        <th style="width:16%">
+          <i class="pi pi-user icon-large"></i>
+          姓名
+        </th>
+        <th style="width:16%">
+          <i class="pi pi-phone icon-large"></i>
+          電話
+        </th>
+        <th style="width:16%">狀態</th>
+        <th style="width:16%">操作</th>
+      </tr>
+      <!-- <tr>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [(ngModel)]="accountIdFilter"
+            (ngModelChange)="onFilterChange()"
+            placeholder="搜尋帳號ID"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [(ngModel)]="emailFilter"
+            (ngModelChange)="onFilterChange()"
+            placeholder="搜尋電子郵件"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [(ngModel)]="nameFilter"
+            (ngModelChange)="onFilterChange()"
+            placeholder="搜尋姓名"
+            class="w-full"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            [(ngModel)]="phoneFilter"
+            (ngModelChange)="onFilterChange()"
+            placeholder="搜尋電話"
+            class="w-full"
+          />
+        </th>
+        <th></th>
+        <th></th>
+      </tr> -->
+    </ng-template>
+    <ng-template pTemplate="body" let-member>
+      <tr>
+        <td><span class="text-large">{{ member.ACCOUNT_ID }}</span></td>
+        <td><span class="text-large">{{ member.EMAIL }}</span></td>
+        <td><span class="text-large">{{ member.NAME }}</span></td>
+        <td><span class="text-large">{{ member.PHONE }}</span></td>
+        <td>
+          <p-tag [value]="getStatusLabel(member.STATUS)" [severity]="getStatusSeverity(member.STATUS) || undefined" class="tag-large" />
+        </td>
+        <td>
+          <p-button
+            label="歷史訂單"
+            [outlined]="true"
+            size="small"
+            (onClick)="viewMemberOrders(member)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6">查無會員資料</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  </div>
+</div>

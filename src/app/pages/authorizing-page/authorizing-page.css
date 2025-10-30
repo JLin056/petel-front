@@ -1,520 +1,472 @@
-/* ===== 全域設置 ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* 整體容器 */
+.authorizing-container {
+    max-width: 1675px;
+    margin: 0 auto;
+    padding: 28px;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f5f5f5;
-  padding: 40px 0;
+/* 左右分欄容器 - 各佔一半 */
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: stretch;
+    margin-bottom: 28px;
 }
 
-/* ===== 表單容器（移動優先）===== */
-form {
-  width: 95%;
-  max-width: 1400px;
-  margin: 0 auto 40px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.left-section,
+.right-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-/* ===== 頁面標題 ===== */
-.page_title {
-  width: 100%;
-  text-align: left;
-  margin-top: 40px;
-  margin-bottom: 20px;
+/* 卡片樣式 - 20px 圓角 */
+.section-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-.page_title h1 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #333;
-}
-
-/* ===== 主要內容區域 ===== */
-.payment_container,
-.notice_container,
-.order_info_container,
-.cancellation_policy {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-/* ===== 付款資訊容器 ===== */
-.payment_header {
-  background-color: #FFD700;
-  padding: 20px 30px;
-}
-
-.payment_title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-}
-
-.payment_content {
-  padding: 30px;
+/* 區塊標題 */
+.section-title {
+    font-size: 32.5px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 20px 0;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
 }
 
 /* 信用卡 Logo */
 .card_logos {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 30px;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .card_logo {
-  width: 60px;
-  height: 40px;
-  background-color: #f8f8f8;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 60px;
+    height: 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: #f9fafb;
 }
 
 .card_logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 /* 表單群組 */
-.form_group {
-  margin-bottom: 20px;
+.form-group {
+    margin-bottom: 20px;
 }
 
-.form_label {
-  display: block;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 8px;
-  font-weight: 500;
+/* 表單標籤 */
+.form-label {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
 }
 
-.form_input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 15px;
-  background-color: #f8f8f8;
-  transition: all 0.3s ease;
+/* 輸入框樣式 - 8px 圓角 */
+.input-field,
+.form-select {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 17.5px;
+    color: #374151;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
 }
 
-.form_input:focus {
-  outline: none;
-  border-color: #FFD700;
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+.input-field:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
 
-.form_select {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 15px;
-  background-color: #f8f8f8;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  padding-right: 40px;
-  transition: all 0.3s ease;
+/* 下拉選單 - 8px 圓角 */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
 }
 
-.form_select:focus {
-  outline: none;
-  border-color: #FFD700;
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+/* Help Text 樣式 */
+small {
+    display: block;
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 6px;
+    line-height: 1.4;
 }
 
-.form_row {
-  display: flex;
-  gap: 16px;
+#validation {
+    display: block;
+    font-size: 14px;
+    color: #ff0000;
+    margin-top: 6px;
+    line-height: 1.4;
 }
 
-.form_row .form_group {
-  flex: 1;
-  margin-bottom: 0;
+/* 有效期限排列 */
+.expiry-row {
+    display: flex;
+    gap: 12px;
 }
 
-.cvv_input {
-  max-width: 200px;
+.expiry-field {
+    flex: 1;
 }
 
-/* ===== 注意事項容器 ===== */
-.notice_header {
-  background-color: #FFD700;
-  padding: 20px 30px;
-}
-
-.notice_title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-}
-
-.notice_content {
-  padding: 30px;
-  background-color: #FAFAFA;
-}
-
+/* 注意事項列表 */
 .notice_list {
-  list-style: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: notice-counter;
 }
 
 .notice_item {
-  font-size: 15px;
-  color: #333;
-  line-height: 1.8;
-  margin-bottom: 12px;
-}
-
-.notice_item.red {
-  color: #D32F2F;
-  font-weight: 500;
+    padding: 12px 0;
+    font-size: 17.5px;
+    color: #374151;
+    line-height: 1.6;
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .notice_item:last-child {
-  margin-bottom: 0;
+    border-bottom: none;
 }
 
-/* ===== 訂單資訊容器 ===== */
-.order_info_container {
-  height: fit-content;
+.notice_item.red {
+    color: #dc2626;
+    font-weight: 500;
 }
 
-::ng-deep .order_info_container .p-card {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: none;
-  border: none;
+/* 訂單資訊區 */
+.order_infos {
+    flex: 1;
+    /* ← 關鍵修改:填滿右欄剩餘空間 */
+    display: flex;
+    flex-direction: column;
 }
 
-::ng-deep .order_info_container .p-card .p-card-header {
-  padding: 0;
+/* 訂單摘要 */
+.order-summary {
+    background: #f9fafb;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
-::ng-deep .order_info_container .p-card .p-card-body {
-  padding: 0;
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 17.5px;
+    color: #374151;
 }
 
-::ng-deep .order_info_container .p-card .p-card-content {
-  padding: 0;
+/* 房間項目 */
+.room-items {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
 }
 
-.property_image {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  display: block;
+.room-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.order_info_content {
-  padding: 24px;
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.section-header {
-  background-color: #A8E6CF;
-  padding: 14px 24px;
-  font-size: 17px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 -24px 20px -24px;
+.room-header:hover {
+    background: #f9fafb;
 }
 
-.price-details {
-  margin-bottom: 20px;
+.room-basic-info {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex: 1;
 }
 
-.order {
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 12px;
-  margin-top: 16px;
+.room-number {
+    background: #f97316;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    width: nowrap;
 }
 
-.order:first-of-type {
-  margin-top: 0;
+.room-name {
+    font-weight: 500;
+    color: #111827;
+    font-size: 17.5px;
 }
 
-.order_item {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 4px;
-  padding-left: 12px;
+.room-price-summary i {
+    font-size: 17.5px;
+    color: #6b7280;
 }
 
-::ng-deep .order_info_container .p-divider {
-  margin: 20px 0;
-  border-top: 2px solid #e0e0e0;
+.room-details {
+    padding: 18px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
 }
 
-.total_section {
-  padding-top: 16px;
+.room-detail-table {
+    width: 100%;
 }
 
-.total_row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+.room-detail-table tr {
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.total_amount {
-  font-size: 26px;
-  color: #333;
-  font-weight: 700;
+.room-detail-table tr:last-child {
+    border-bottom: none;
 }
 
-/* ===== 取消政策容器 ===== */
-.cancellation_policy {
-  padding: 30px;
-  height: fit-content;
+.room-detail-table td {
+    padding: 12px 10px;
+    font-size: 17.5px;
+    color: #374151;
 }
 
-.cancellation_title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 24px;
+.room-detail-table .label-col {
+    color: #6b7280;
+    font-weight: 500;
+    width: 110px;
 }
 
-.policy_list {
-  list-style: none;
-  margin-bottom: 40px;
+/* 訂單總額 */
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    background: rgb(255, 250, 245);
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
 }
 
-.policy_item {
-  font-size: 15px;
-  color: #333;
-  margin-bottom: 12px;
-  line-height: 1.6;
+.total-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: #374151;
 }
 
-.timeline_container {
-  position: relative;
-  margin-top: 40px;
+.total-amount {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fb923c;
 }
 
-.timeline_bar {
-  display: flex;
-  align-items: center;
-  position: relative;
-  margin-bottom: 16px;
-}
-
-.progress-segment {
-  height: 8px;
-  border-radius: 4px;
-  flex: 1;
-}
-
-.progress-active {
-  background-color: #00A86B;
-}
-
-.progress-inactive {
-  background-color: #d9d9d9;
-}
-
-.timeline-dot {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  margin: 0 -12px;
-  z-index: 2;
-}
-
-.dot-active {
-  background-color: #00A86B;
-}
-
-.dot-inactive {
-  background-color: #d9d9d9;
-}
-
-.timeline_labels {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 12px;
-}
-
-.timeline_label {
-  font-size: 13px;
-  color: #666;
-  text-align: center;
-  flex: 1;
-}
-
-.timeline_label:first-child {
-  text-align: left;
-}
-
-.timeline_label:last-child {
-  text-align: right;
-}
-
-/* ===== 送出按鈕容器 ===== */
+/* 送出按鈕容器 */
 .submit_container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0;
 }
 
-.submit_button_container {
-  width: 100%;
-  max-width: 400px;
-}
-
+/* 送出按鈕 - 20px 圓角 */
 .submit_button {
-  width: 100%;
-  background-color: #4A90E2;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  padding: 16px 40px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
-  transition: all 0.3s ease;
-  letter-spacing: 1px;
+    width: 100%;
+    padding: 18px 48px;
+    background: orange;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
 }
 
 .submit_button:hover {
-  background-color: #357ABD;
-  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
-  transform: translateY(-2px);
+    background: #ea580c;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    transform: translateY(-1px);
 }
 
 .submit_button:active {
-  background-color: #2E6BA8;
-  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-  transform: translateY(0);
+    background: #c2410c;
+    transform: translateY(0);
 }
 
-.submit_button:disabled {
-  background-color: #B0BEC5;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
+/* RWD 響應式設計 */
+@media (max-width: 1200px) {
+    .authorizing-container {
+        max-width: 100%;
+        padding: 24px;
+    }
+
+    .content-wrapper {
+        gap: 24px;
+    }
 }
 
-/* ===== 響應式設計 ===== */
-/* 平板以上改用 Grid 布局 */
-@media (min-width: 768px) {
-  form {
-    width: 90%;
-    display: grid;
-    grid-template-columns: 60% 40%;
-    grid-template-rows: auto auto auto auto;
-    gap: 24px;
-  }
+@media (max-width: 992px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
 
-  .page_title {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-
-  .page_title h1 {
-    font-size: 26px;
-  }
-
-  .payment_container {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .notice_container {
-    grid-column: 1;
-    grid-row: 3;
-  }
-
-  .order_info_container {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .cancellation_policy {
-    grid-column: 2;
-    grid-row: 3;
-  }
-
-  .submit_container {
-    grid-column: 1 / -1;
-    grid-row: 4;
-  }
+    .order_infos {
+        position: relative;
+        top: 0;
+    }
 }
 
-/* 桌面版 */
-@media (min-width: 1025px) {
-  form {
-    width: 80%;
-  }
+@media (max-width: 768px) {
+    .authorizing-container {
+        padding: 16px;
+    }
 
-  .page_title h1 {
-    font-size: 28px;
-  }
+    .content-wrapper {
+        gap: 20px;
+    }
+
+    .section-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .section-title {
+        font-size: 24px;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+
+    .card_logos {
+        gap: 12px;
+    }
+
+    .card_logo {
+        width: 50px;
+        height: 35px;
+    }
+
+    .form-label {
+        font-size: 15px;
+    }
+
+    .input-field,
+    .form-select {
+        height: 38px;
+        font-size: 15px;
+    }
+
+    small {
+        font-size: 13px;
+    }
+
+    .notice_item {
+        font-size: 14px;
+        padding: 10px 0;
+    }
+
+    .room-number {
+        font-size: 13px;
+        padding: 5px 12px;
+    }
+
+    .room-name {
+        font-size: 15px;
+    }
+
+    .submit_button {
+        padding: 16px 24px;
+        font-size: 18px;
+        border-radius: 16px;
+        max-width: 100%;
+    }
+
+    .total-amount {
+        font-size: 22px;
+    }
+
+    .total-label {
+        font-size: 18px;
+    }
 }
 
-/* 手機版特定調整 */
-@media (max-width: 767px) {
-  .payment_header,
-  .notice_header {
-    padding: 16px 20px;
-  }
+@media (max-width: 480px) {
+    .authorizing-container {
+        padding: 12px;
+    }
 
-  .payment_title,
-  .notice_title,
-  .cancellation_title {
-    font-size: 18px;
-  }
+    .content-wrapper {
+        gap: 16px;
+    }
 
-  .payment_content,
-  .notice_content,
-  .cancellation_policy {
-    padding: 20px;
-  }
+    .section-card {
+        padding: 16px;
+    }
 
-  .order_info_content {
-    padding: 16px;
-  }
+    .section-title {
+        font-size: 18px;
+    }
 
-  .section-header {
-    margin: 0 -16px 16px -16px;
-    padding: 12px 16px;
-    font-size: 16px;
-  }
+    .expiry-row {
+        gap: 8px;
+    }
 
-  .property_image {
-    height: 180px;
-  }
+    .input-field,
+    .form-select {
+        height: 36px;
+        font-size: 14px;
+    }
 
-  .total_amount {
-    font-size: 22px;
-  }
+    .card_logo {
+        width: 45px;
+        height: 30px;
+    }
 
-  .card_logos {
-    flex-wrap: wrap;
-  }
+    .room-detail-table td {
+        font-size: 14px;
+        padding: 10px 6px;
+    }
+
+    .submit_button {
+        font-size: 16px;
+        padding: 14px 20px;
+    }
 }

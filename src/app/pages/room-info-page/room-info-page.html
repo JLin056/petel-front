@@ -1,0 +1,89 @@
+<div class="room-form-container">
+    <h2 class="page-title">房型詳細資訊</h2>
+
+    <!-- 錯誤訊息顯示 -->
+    @if (errorMessage) {
+    <div class="error-message">
+        {{ errorMessage }}
+    </div>
+    }
+
+    <!-- Loading 狀態 -->
+    @if (isLoading) {
+    <div class="loading-container">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #974b2c;"></i>
+        <p>載入中...</p>
+    </div>
+    }
+
+    @if (!isLoading && !errorMessage && roomData) {
+    <div class="form-body">
+
+        <div class="form-main-content sequential-layout">
+
+            <!-- 1. 房型圖片 (Full Width) -->
+            <div class="form-section full-width image-upload-section">
+                <label class="section-label">房型圖片</label>
+                <div class="image-preview-area">
+                    <div class="image-placeholder">
+                        <i class="pi pi-images"></i>
+                        <span>圖片預覽區</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 房型名稱 & 寵物種類 (Side-by-Side) -->
+            <div class="form-row-2col">
+                <!-- 房型名稱 -->
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">房型名稱</label>
+                    <div class="info-text">{{ roomData.name || '未提供' }}</div>
+                </div>
+
+                <!-- 寵物種類 -->
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">寵物種類</label>
+                    <div class="info-text">{{ getPetTypeName() }}</div>
+                </div>
+            </div>
+
+            <!-- 3. 價格 & 總房間數 (Side-by-Side) -->
+            <div class="form-row-2col">
+                <!-- 價格 -->
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">價格 NT$ / 天</label>
+                    <div class="info-text price-text">{{ roomData.basePrice.toLocaleString() || '0' }} 元</div>
+                </div>
+
+                <!-- 總房數 -->
+                <div class="form-section flex-item info-section">
+                    <label class="section-label">總房間數</label>
+                    <div class="info-text">{{ roomData.totalUnits }} 間</div>
+                </div>
+            </div>
+
+            <!-- 4. 空間尺寸 (Full Width) -->
+            <div class="form-section full-width info-section">
+                <label class="section-label">空間尺寸</label>
+                <div class="info-text">{{ formatRoomSize() }}</div>
+            </div>
+
+            <!-- 5. 房間介紹 (Full Width) -->
+            <div class="form-section full-width info-section">
+                <label class="section-label">房間介紹</label>
+                <div class="description-content" [innerHTML]="getFormattedDescription()"></div>
+            </div>
+
+        </div>
+
+        <div class="form-buttons full-width">
+            <button type="button" class="btn-cancel" (click)="onBack()">
+                <i class="pi pi-arrow-left"></i> 返 回 列 表
+            </button>
+            <button type="button" class="btn-save" (click)="onEdit()">
+                <i class="pi pi-pencil"></i> 修 改 房 型
+            </button>
+        </div>
+    </div>
+    }
+</div>

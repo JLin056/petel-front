@@ -1,0 +1,88 @@
+<p-toast position="bottom-right"></p-toast>
+
+<h3 class="title">賣家列表</h3>
+
+<div class="search-container">
+    <div class="search-fields">
+        <div class="flex flex-col gap-2">
+            <label for="accountid">帳號ID</label>
+            <input pInputText id="accountid" class="custom-input" [(ngModel)]="accountIdFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="email">電子郵件</label>
+            <input pInputText id="email" class="custom-input" [(ngModel)]="emailFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="name">賣家名稱</label>
+            <input pInputText id="name" class="custom-input" [(ngModel)]="nameFilter" />
+        </div>
+        <div class="search-btn-container">
+            <p-button label="搜尋" styleClass="admin-search-btn" (onClick)="onSearch()"></p-button>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <p-table
+      #dt
+      [value]="sellerList"
+      dataKey="SELLER_ID"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+      [paginator]="true"
+      [lazy]="true"
+      [totalRecords]="totalCount"
+      (onPage)="onPageChange($event)"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width:20%">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-id-card icon-large"></i>
+            <span>帳號ID</span>
+          </div>
+        </th>
+        <th style="width:30%">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-envelope icon-large"></i>
+            <span>電子郵件</span>
+          </div>
+        </th>
+        <th style="width:25%">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-building icon-large"></i>
+            <span>賣家名稱</span>
+          </div>
+        </th>
+        <th style="width:10%">狀態</th>
+        <th style="width:15%">操作</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-seller>
+      <tr>
+        <td><span class="text-large">{{ seller.ACCOUNT_ID }}</span></td>
+        <td><span class="text-large">{{ seller.EMAIL }}</span></td>
+        <td><span class="text-large">{{ seller.NAME }}</span></td>
+        <td>
+          <p-tag [value]="getStatusLabel(seller.STATUS)" [severity]="getStatusSeverity(seller.STATUS) || undefined" class="tag-large" />
+        </td>
+        <td>
+          <p-button
+            label="前往旅館"
+            [outlined]="true"
+            size="small"
+            (onClick)="goToHotels(seller.SELLER_ID)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">查無賣家資料</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="header">
+    <div class="logo" (click)="onClickHome()">
+        <a href="#"><img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/petel_logo_004.png" alt="Petel Logo" class="logo-img"></a>
+    </div>
+
+    <!-- 登入後才顯示的導航列 -->
+    <div class="navbar" *ngIf="isLoggedIn">
+        <ul class="navbar-items">
+            <li (click)="onClickUserTable()">會員列表</li>
+            <li (click)="onClickSellerTable()">賣家列表</li>
+            <li (click)="onClickHotelTable()">旅館列表</li>
+            <li (click)="onClickOrderTable()">歷史訂單列表</li>
+        </ul>
+    </div>
+
+    <!-- 登入後才顯示的帳戶區域 -->
+    <div class="account" *ngIf="isLoggedIn">
+        <div class="auth-area">
+            <button pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true" [disabled]="isLoggedOut"></button>
+        </div>
+    </div>
+</div>
+
+<!-- 登出 dialog -->
+<app-shared-confirm-dialog
+    [(visible)]="confirmVisible"
+    header="登出確認"
+    message="確定要登出嗎？"
+    confirmLabel="登出"
+    cancelLabel="取消"
+    (confirm)="onLogout()"
+></app-shared-confirm-dialog>

@@ -1,0 +1,88 @@
+<p-toast position="bottom-right"></p-toast>
+
+<p-dialog [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true"
+  [style]="{width: '950px', 'max-width': '95vw'}" [dismissableMask]="true" [draggable]="false" [resizable]="false">
+
+  <ng-template pTemplate="header">
+    <div class="dialog-header-content">
+      <span class="dialog-title">訂單詳細資料</span>
+      <p-tag *ngIf="order" [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined" class="status-tag" />
+    </div>
+  </ng-template>
+
+  <div class="order-detail-content" *ngIf="order">
+    <!-- 訂單編號 & 會員姓名 -->
+    <div class="detail-row">
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">訂單編號:</span>
+        <span class="detail-value-inline">{{ order.ORDER_ID }}</span>
+      </div>
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">會員姓名:</span>
+        <span class="detail-value-inline clickable" (click)="navigateToMember()">{{ order.USER_NAME }}</span>
+      </div>
+    </div>
+
+    <!-- 訂購人姓名及電話 -->
+    <div class="detail-row">
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">訂購人姓名:</span>
+        <span class="detail-value-inline">{{ order.FINAL_USER_NAME }}</span>
+      </div>
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">訂購人電話:</span>
+        <span class="detail-value-inline">{{ order.FINAL_USER_Phone }}</span>
+      </div>
+    </div>
+
+    <!-- 旅館名稱及房型 -->
+    <div class="detail-row">
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">旅館名稱:</span>
+        <span class="detail-value-inline clickable" (click)="navigateToHotel()">{{ order.PROPERTY_NAME }}</span>
+      </div>
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">房型:</span>
+        <span class="detail-value-inline">{{ order.ROOM }}</span>
+      </div>
+    </div>
+
+    <!-- 入住日期及退房日期 -->
+    <div class="detail-row">
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">入住日期:</span>
+        <span class="detail-value-inline">{{ order.CHECK_IN }}</span>
+      </div>
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">退房日期:</span>
+        <span class="detail-value-inline">{{ order.CHECK_OUT }}</span>
+      </div>
+    </div>
+
+    <!-- 總價格、付款方式 -->
+    <div class="detail-row bottom-section">
+
+      <div class="detail-item-inline">
+        <span class="detail-label-inline">總價格:</span>
+        <span class="detail-value-inline price-amount">{{ order.HOTEL_CHARGES | price }}</span>
+      </div>
+      <div class="detail-item-inline" *ngIf="order.PAYMENT_METHOD">
+        <span class="detail-label-inline">付款方式:</span>
+        <span class="detail-value-inline">{{ order.PAYMENT_METHOD }}</span>
+      </div>
+
+    </div>
+    <div class="detail-item note-section">
+      <label class="detail-label">備註</label>
+      <textarea [(ngModel)]="editedNote" rows="4" class="note-textarea" placeholder="請輸入備註..."
+        [readonly]="!isEditingNote"
+        (click)="onEditNote()">
+        </textarea>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button label="取消" (onClick)="onCancelEdit()" severity="secondary" [disabled]="!isEditingNote" />
+    <p-button label="儲存" (onClick)="onSaveNote()" severity="primary" [disabled]="!isEditingNote" />
+  </ng-template>
+</p-dialog>

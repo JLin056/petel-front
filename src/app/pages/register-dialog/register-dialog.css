@@ -1,3 +1,7 @@
+:host ::ng-deep .petel-auth-dialog.p-dialog {
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
 :host ::ng-deep .petel-auth-dialog .p-dialog-header {
   padding-left: 30px;
 }
@@ -10,7 +14,8 @@
     gap: 30px;
     font-size: 1.75rem;
 }
-.input-container {
+.input-container,
+.input-container-password {
     display: flex;
     /* gap: 20px; */
     align-items: center;
@@ -18,27 +23,73 @@
 }
 .input-container input {
     width: 70%;
+    border-radius: 10px;
+    border: 2px solid #f0e4d8;
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
 }
-:host ::ng-deep .input-container p-password {
+:host ::ng-deep .input-container-password p-password {
     width: 70%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
 }
-:host ::ng-deep .input-container p-password .p-password {
+:host ::ng-deep .input-container-password p-password .p-password {
     width: 100%;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
 }
-:host ::ng-deep .input-container p-password input {
+:host ::ng-deep .petel-input {
     width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 2px solid #f0e4d8;
+    background: #fff;
+    padding: 8px 12px;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    outline: none;
+}
+ .input-container input:focus,
+:host ::ng-deep .petel-input:focus {
+    border-color: #a6845e;
+    box-shadow: 0 0 6px rgba(166,132,94,0.3);
+    outline: none;
 }
 .button-container {
     margin-top: 30px;
     display: flex;
     justify-content: center;
     gap: 40px;
+    font-size: 2rem;
 }
 :host ::ng-deep .button-container .p-button {
-  font-size: 1.25rem;
+    font-size: 1.25rem;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 24px;
+    background-color: #f0e4d8;
+    color: #5b4636;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
+    transition: all 0.2s ease;
+}
+:host ::ng-deep .button-container .p-button:hover {
+    background-color: #e4d2be;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
+}
+:host ::ng-deep .button-container .p-button:disabled {
+    opacity: 0.6;
 }
 :host ::ng-deep .button-container .p-button .p-button-label {
-  font-size: 1.25rem;
+    font-size: 1.25rem;
 }
 .auth-link {
     text-decoration: none;
@@ -61,4 +112,42 @@
     justify-content: center;
     color: #A24522;
     /* font-size: 0.9rem; */
+}
+/* 錯誤訊息 */
+.error-message {
+    background-color: #fff5f5;
+    border: 2px solid #A24522;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    color: #A24522;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+}
+
+.error-message i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* 欄位驗證錯誤文字 */
+.error-text {
+    display: block;
+    color: #A24522;
+    margin-top: -20px;
+    padding-left: 30%;
+    font-size: 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 無效欄位的邊框顏色 */
+:host ::ng-deep input.ng-invalid.ng-touched {
+    border-color: #A24522;
+}
+
+:host ::ng-deep .p-password.ng-invalid.ng-touched input {
+    border-color: #A24522;
 }

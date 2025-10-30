@@ -4,26 +4,26 @@
         <div class="search-container">
             <div class="search-bar">
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select [options]="cities" optionLabel="name" class="search-item"/>
+                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item"/>
                     <label class="search-label">縣市</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
-                    <label class="search-label">入住日</label>
+                    <p-datepicker inputId="checkIn" class="search-item" dateFormat="yy/mm/dd" showIcon [iconDisplay]="'input'" [(ngModel)]="searchParams.checkIn" [minDate]="minCheckInDate" (onSelect)="onCheckInChange()" />
+                    <label class="search-label" for="checkIn">入住日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"/>
-                    <label class="search-label">退房日</label>
+                    <p-datepicker inputId="checkOut" class="search-item" dateFormat="yy/mm/dd" showIcon [iconDisplay]="'input'" [(ngModel)]="searchParams.checkOut" [minDate]="minCheckOutDate" />
+                    <label class="search-label" for="checkOut">退房日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select class="search-item" [options]="types" optionLabel="typeName" />
+                    <p-select class="search-item" [options]="types" optionLabel="name" optionValue="id" [(ngModel)]="searchParams.petType" />
                     <label class="search-label">寵物種類</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" />
+                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" [(ngModel)]="searchParams.petCount" />
                     <label class="search-label">寵物數量</label>
                 </p-floatlabel>
-                <p-button label="搜尋" styleClass="petel-search-btn"></p-button>
+                <p-button label="搜尋" styleClass="petel-search-btn" (onClick)="onSearch()"></p-button>
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
                     <ng-template pTemplate="item" let-hotel>
                         <div class="item">
                             <img [src]="hotel.image" [alt]="hotel.name" class="hotel-img">
-                            <p class="hotel-caption">{{hotel.name}}</p>
+                            <p class="hotel-caption hotel-name-link" (click)="navigateToDetail(hotel.propertyId, hotel.petType)">{{hotel.name}}</p>
                         </div>
                     </ng-template>
 
@@ -65,7 +65,7 @@
                     <ng-template pTemplate="item" let-hotel>
                         <div class="item">
                             <img [src]="hotel.image" [alt]="hotel.name" class="hotel-img">
-                            <p class="hotel-caption">{{hotel.name}}</p>
+                            <p class="hotel-caption hotel-name-link" (click)="navigateToDetail(hotel.propertyId, hotel.petType)">{{hotel.name}}</p>
                         </div>
                     </ng-template>
 
@@ -78,12 +78,12 @@
         <h3>寵物種類</h3>
         <div class="choose-pet-items">
             <div class="choose-pet">
-                <img src="img/dog.png" alt="狗狗">
-                <button class="choose-pet-btn">狗狗</button>
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi9ccQJpgCKejcVKW0qTZC4qaJwyclbwIs49nFqOADMf8ElnYoBGCiZFV_bLwL7EguAhYed8rHMmueeodTu49chM4WYSZYfzsX7habW8xsyQW3V-xExj0GAjsTHODrWLYCQpuzsdzTVKfnI/s800/dog_miniature_pinscher.png" alt="狗狗">
+                <button class="choose-pet-btn" (click)="onSearchByPetType('DOG')">狗狗</button>
             </div>
             <div class="choose-pet">
-                <img src="img/cat.png" alt="">
-                <button class="choose-pet-btn">貓貓</button>
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgh9T8iIULZyWTH12dBhJiLlqWJ5jHe9DVdEZ72cJJuA7ru5B5lpJew5VvqmbF_KbYdxABcMxh9YcNr7vUL3CRZpW75EMkPGjowjOaK8R7ivS0eJje_nYNTB2H2eBZTIGf5jsz3MtBHPWo/s800/pet_cat_kedukuroi.png" alt="貓貓">
+                <button class="choose-pet-btn" (click)="onSearchByPetType('CAT')">貓貓</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,85 @@
+<p-toast position="bottom-right"></p-toast>
+
+<h3 class="title">旅館列表</h3>
+
+<div class="search-container">
+    <div class="search-fields">
+        <div class="flex flex-col gap-2">
+            <label for="propertyId">旅館ID</label>
+            <input pInputText id="propertyId" class="custom-input" [(ngModel)]="propertyIdFilter" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="propertyName">旅館名稱</label>
+            <input pInputText id="propertyName" class="custom-input" [(ngModel)]="propertyNameFilter" />
+        </div>
+        <div class="search-btn-container">
+            <p-button label="搜尋" styleClass="admin-search-btn" (onClick)="onSearch()"></p-button>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <p-table
+      #dt
+      [value]="hotelList"
+      dataKey="PROPERTY_ID"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+      [paginator]="true"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      (onLazyLoad)="onPageChange($event)"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width:12%">旅館ID</th>
+        <th style="width:20%">
+          <i class="pi pi-building icon-large"></i>
+          旅館名稱
+        </th>
+        <th style="width:14%">
+          <i class="pi pi-phone icon-large"></i>
+          電話
+        </th>
+        <th style="width:28%">
+          <i class="pi pi-map-marker icon-large"></i>
+          地址
+        </th>
+        <th style="width:14%">
+          <i class="pi pi-user icon-large"></i>
+          賣家名稱
+        </th>
+        <th style="width:12%">操作</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-hotel>
+      <tr>
+        <td><span class="text-large">{{ hotel.PROPERTY_ID }}</span></td>
+        <td><span class="text-large">{{ hotel.PROPERTY_NAME }}</span></td>
+        <td><span class="text-large">{{ hotel.TEL }}</span></td>
+        <td><span class="text-large">{{ hotel.ADDRESS }}</span></td>
+        <td>
+          <span class="text-large seller-name-link" (click)="viewSellerDetails(hotel.SELLER_NAME)">
+            {{ hotel.SELLER_NAME }}
+          </span>
+        </td>
+        <td>
+          <p-button
+            label="歷史訂單"
+            [outlined]="true"
+            size="small"
+            (onClick)="viewHotelOrders(hotel)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6">查無旅館資料</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  </div>
+</div>

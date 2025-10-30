@@ -1,107 +1,441 @@
-.section-label {
-  font-size: 28px; /* 原本沒有設定，補上 */
-}
-
-.btn-save,
-.btn-cancel,
-.btn-upload {
-  font-size: 16px; /* 讓按鈕字更顯眼 */
-}
-
+/* ------------------------------------- */
+/* 基礎設定與容器 - 修正 max-width */
+/* ------------------------------------- */
 
 .room-form-container {
-  background-color: #f8f1e9;
-  width: 100%;       /* 全寬 */
-  height: 100%;      
-  margin: 0;         /* 移除自動置中 */
-  padding: 20px;     /* 內距可以保留 */
-  box-sizing: border-box; /* 讓 padding 不影響總寬高 */
+    background-color: #f8f1e9;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    box-sizing: border-box;
+    /* 🚨 卡片框：20px */
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    min-height: 85vh;
 }
-
 
 .page-title {
-  font-size: 35px;
-  font-weight: bold;
-  color: #3a1f0b;
-  border-bottom: 3px solid #3a1f0b;
-  padding-bottom: 9px;
-  margin-bottom: 25px;
+    font-size: 35px;
+    font-weight: bold;
+    color: #3a1f0b;
+    border-bottom: 3px solid #3a1f0b;
+    padding-bottom: 9px;
+    margin-bottom: 30px;
 }
+
+/* ------------------------------------- */
+/* 表單佈局：單欄依序排列 + 內部並排 Flexbox */
+/* ------------------------------------- */
 
 .form-body {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
+
+/* 🚨 主內容區塊為單欄排列 🚨 */
+.form-main-content.sequential-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    /* 區塊間距 */
+}
+
+/* 🚨 兩欄並排容器 (2 欄) 🚨 */
+.form-row-2col {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+/* 🚨 並排項目，均分空間 🚨 */
+.form-row-2col .flex-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* 👈 相對定位，讓錯誤訊息可以絕對定位 */
+    padding-bottom: 40px;
+    /* 👈 預留錯誤訊息空間 */
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ------------------------------------- */
+/* 輸入框與標籤樣式 - 統一 100% 寬度 & 調整高度 */
+/* ------------------------------------- */
 
 .section-label {
-  display: block;
-  font-weight: bold;
-  color: #3a1f0b;
-  margin-bottom: 7px;
+    font-size: 28px;
+    display: block;
+    font-weight: 600;
+    color: #3a1f0b;
+    margin-bottom: 8px;
 }
 
+/* 🚨 統一所有輸入欄位的樣式：包含原生 input, textarea, 及 PrimeNG 的 pInputText (.p-inputtext) 🚨 */
 .input,
-.textarea {
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px 12px;
-  background-color: #fffdf8;
+.textarea,
+.p-inputtext {
+    width: 100%;
+    border: 1px solid #c5b09b;
+    /* 🚨 輸入框圓角：8px */
+    border-radius: 8px;
+    padding: 6px 15px;
+    background-color: white;
+    font-size: 20px;
+    color: #3a1f0b;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    min-height: 30px;
+}
+
+/* 針對 p-autocomplete 容器的修正 */
+.room-dropdown .p-autocomplete {
+    width: 100%;
+    /* 讓 p-autocomplete 的邊框和背景由內部的 .p-inputtext 處理 */
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    padding: 0;
+}
+
+/* 確保 p-autocomplete 內的輸入框佔滿容器 */
+.room-dropdown .p-autocomplete .p-inputtext {
+    width: 100% !important;
 }
 
 .textarea {
-  resize: vertical;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+/* 焦點狀態 */
+.input:focus,
+.textarea:focus,
+.p-inputtext:focus,
+/* 確保 p-autocomplete 等容器獲得焦點時，內部輸入框也顯示焦點效果 */
+.room-dropdown .p-autocomplete.p-focus .p-inputtext {
+    outline: none;
+    border-color: #974B2C;
+    box-shadow: 0 0 0 3px rgba(151, 75, 44, 0.2);
+}
+
+/* 👇 錯誤訊息使用絕對定位，不佔用文檔流空間 */
+.form-section>p-message {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+}
+
+/* ------------------------------------- */
+/* 圖片上傳區塊優化 */
+/* ------------------------------------- */
+
+.image-upload-section {
+    gap: 15px;
+    padding-bottom: 0;
+    /* 👈 圖片區塊不需要預留錯誤訊息空間 */
+}
+
+.image-preview-area {
+    width: 100%;
+    height: 250px;
+    background-color: #f1e9e0;
+    border: 2px dashed #a4642b;
+    /* 🚨 預覽區塊圓角：8px */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #a4642b;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.image-placeholder i {
+    font-size: 45px;
+    margin-bottom: 10px;
 }
 
 .btn-upload {
-  background-color: #974B2C;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
+    background-color: #974B2C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    /* 🚨 按鈕圓角：10px */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    align-self: flex-start;
 }
 
 .btn-upload:hover {
-  background-color: #a4642b;
+    background-color: #a4642b;
 }
+
+/* ------------------------------------- */
+/* 尺寸輸入組件 - 絕對定位版本 */
+/* ------------------------------------- */
+
+.size-inputs-group {
+    margin-top: 0;
+    position: relative;
+    padding-bottom: 50px;
+    /* 👈 預留錯誤訊息空間 */
+}
+
+/* 強制並排，永遠不換行 */
+.size-inputs-row {
+    display: flex;
+    gap: 25px;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.size-input-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+/* Label 樣式 - 縮小字體 */
+.size-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3a1f0b;
+    min-width: 50px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* 輸入框樣式 */
+.size-input-item .p-inputtext {
+    flex: 1;
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 60px;
+}
+
+/* 錯誤訊息包裝器 - 絕對定位 */
+.size-error-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+/* 錯誤訊息本身 */
+.size-inputs-group .size-error-wrapper ::ng-deep .p-message {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ------------------------------------- */
+/* p-editor 調整 (列表框) */
+/* ------------------------------------- */
+
+/* p-editor 的父容器也要預留空間 */
+.form-section.full-width:has(p-editor) {
+    padding-bottom: 40px;
+}
+
+::ng-deep .p-editor-container {
+    border: 1px solid #c5b09b !important;
+    /* 🚨 列表框圓角：8px */
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fffdf8;
+}
+
+::ng-deep .p-editor-toolbar {
+    background-color: #f2ebe5 !important;
+    border-bottom: 1px solid #c5b09b !important;
+}
+
+/* p-editor 內的下拉選單也要 8px */
+::ng-deep .p-editor-toolbar .ql-picker-label,
+::ng-deep .p-editor-toolbar .ql-picker-options {
+    border-radius: 8px;
+}
+
+/* ------------------------------------- */
+/* 錯誤訊息樣式 */
+/* ------------------------------------- */
+.validation-error {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.size-error-message {
+    text-align: center;
+    width: 100%;
+    margin-top: 10px;
+    padding: 5px;
+    background-color: #fef2f2;
+    /* 🚨 錯誤訊息圓角：8px */
+    border-radius: 8px;
+}
+
+/* ------------------------------------- */
+/* 按鈕區塊 */
+/* ------------------------------------- */
 
 .form-buttons {
-  display: flex;
-  justify-content: center; 
-  gap: 300px; /* 調整按鈕間距 */
-  margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
+.btn-save,
+.btn-cancel {
+    background-color: #974B2C;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    /* 🚨 按鈕圓角：10px */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    min-width: 180px;
+}
 
 .btn-save {
-  background-color: #974B2C;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  cursor: pointer;
+    background-color: #974B2C;
 }
 
 .btn-save:hover {
-  background-color: #a4642b;
+    background-color: #a4642b;
 }
 
 .btn-cancel {
-  background-color: #974B2C;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  cursor: pointer;
+    background-color: #6c5443;
 }
 
 .btn-cancel:hover {
-  background-color: #c5b09b;
+    background-color: #554133;
 }
 
-.merchant-container {
-  display: flex;
-  height: 100vh;
+.btn-save:disabled,
+.btn-cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ------------------------------------- */
+/* 錯誤訊息顯示 (API 錯誤) */
+/* ------------------------------------- */
+.error-message {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 12px 16px;
+    /* 🚨 錯誤訊息圓角：8px */
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* ------------------------------------- */
+/* PrimeNG 組件圓角覆蓋 - 全部統一 8px */
+/* ------------------------------------- */
+
+/* p-select 下拉選單 - 8px */
+::ng-deep .p-select {
+    border-radius: 8px;
+}
+
+/* p-select 下拉面板 - 8px */
+::ng-deep .p-select-overlay,
+::ng-deep .p-select-panel {
+    border-radius: 8px;
+}
+
+/* p-select 內的選項 - 8px */
+::ng-deep .p-select-option {
+    border-radius: 8px;
+}
+
+/* p-select 觸發按鈕 - 8px */
+::ng-deep .p-select-trigger {
+    border-radius: 0 8px 8px 0;
+}
+
+/* p-message 錯誤訊息 - 8px */
+::ng-deep .p-message {
+    border-radius: 8px;
+}
+
+/* p-message 內容 - 8px */
+::ng-deep .p-message-content {
+    border-radius: 8px;
+}
+
+/* p-select 焦點狀態 */
+::ng-deep .p-select:focus {
+    outline: none;
+    border-color: #974B2C;
+    box-shadow: 0 0 0 3px rgba(151, 75, 44, 0.2);
+}
+
+/* p-select 無效狀態的圓角保持 */
+::ng-deep .p-select.p-invalid {
+    border-radius: 8px;
+}
+
+/* 下拉選單內的項目懸停 */
+::ng-deep .p-select-option:hover {
+    border-radius: 8px;
+}
+
+/* ------------------------------------- */
+/* 響應式優化 */
+/* ------------------------------------- */
+@media (max-width: 1024px) {
+
+    /* 針對新版 form-main-content 調整 */
+    .form-main-content.sequential-layout {
+        gap: 20px;
+    }
+
+    /* 針對並排區塊調整：在小螢幕上垂直堆疊 */
+    .form-row-2col {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+        gap: 20px;
+    }
 }

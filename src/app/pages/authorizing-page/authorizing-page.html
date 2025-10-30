@@ -1,158 +1,210 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="authorizing-container">
 
-    <div class="page_title">
-        <h1>請提供您的信用卡資訊</h1>
-    </div>
-
-    <div class="payment_container">
-        <div class="payment_header">
-            <h2 class="payment_title">付款資訊</h2>
-        </div>
-
-        <div class="payment_content">
-            <div class="card_logos">
-                <div class="card_logo">
-                    <img src="img/mastercard.png" alt="mastercard">
-                </div>
-                <div class="card_logo">
-                    <img src="img/visa.png" alt="visa">
-                </div>
-                <div class="card_logo">
-                    <img src="img/jcb.png" alt="jcb">
-                </div>
-            </div>
-
-            <div class="form_group">
-                <label class="form_label">持卡人姓名（請輸入卡片上的英文姓名）</label>
-                <input type="text" class="form_input">
-            </div>
-
-            <div class="form_group">
-                <label class="form_label">信用卡 / 金融卡卡號</label>
-                <input type="text" class="form_input" placeholder="格式：XXXX-XXXX-XXXX-XXXX" maxlength="19">
-            </div>
-
-            <div class="form_group">
-                <label class="form_label">卡片有效期限</label>
-                <div class="form_row">
-                    <div class="form_group">
-                        <select class="form_select">
-                            <option value="">Month</option>
-                            <option value="01">01</option>
-                            <option value="02">02</option>
-                            <option value="03">03</option>
-                            <option value="04">04</option>
-                            <option value="05">05</option>
-                            <option value="06">06</option>
-                            <option value="07">07</option>
-                            <option value="08">08</option>
-                            <option value="09">09</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select>
+        <div class="content-wrapper">
+            <!-- 左側區域 -->
+            <div class="left-section">
+                <!-- 付款資訊 -->
+                <div class="payment_container section-card">
+                    <div class="payment_header">
+                        <h2 class="section-title">授權資訊</h2>
                     </div>
-                    <div class="form_group">
-                        <input type="text" class="form_input card_year" placeholder="Year" maxlength="4">
+
+                    <div class="payment_content">
+                        <div class="card_logos">
+                            <div class="card_logo">
+                                <img src="img/mastercard.png" alt="mastercard">
+                            </div>
+                            <div class="card_logo">
+                                <img src="img/visa.png" alt="visa">
+                            </div>
+                            <div class="card_logo">
+                                <img src="img/jcb.png" alt="jcb">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="expiry-row">
+                                <div class="expiry-field">
+                                    <!-- 持卡人姓名 -->
+                                    <label for="cardholderName" class="form-label">持卡人姓名</label>
+                                    <input pInputText id="cardholderName" class="input-field"
+                                        aria-describedby="cardholderName-help" formControlName="cardName" maxlength="20"
+                                        placeholder="請輸入卡片上的英文姓名" />
+                                    @if (cardName.invalid && (cardName.dirty || cardName.touched) &&
+                                    cardName.value?.length === 0) {
+                                    <small id="validation">此欄位為必填</small>
+                                    }
+                                </div>
+                                <div class="expiry-field">
+                                    <!-- 持卡人電話 -->
+                                    <label for="cardholderPhone" class="form-label">持卡人手機</label>
+                                    <input pInputText id="cardholderPhone" class="input-field"
+                                        aria-describedby="cardholderPhone-help" formControlName="cardPhone"
+                                        maxlength="15" placeholder="請輸入卡片持有人的手機號碼" />
+                                    @if (cardPhone.invalid && (cardPhone.dirty || cardPhone.touched) &&
+                                    cardPhone.value?.length === 0) {
+                                    <small id="validation">此欄位為必填</small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="expiry-row">
+                                <div class="expiry-field">
+                                    <!-- 信用卡卡號 -->
+                                    <label for="cardNumber" class="form-label">信用卡 / 金融卡卡號</label>
+                                    <input pInputText id="cardNumber" class="input-field"
+                                        aria-describedby="cardNumber-help" formControlName="cardNo" maxlength="19"
+                                        placeholder="請輸入卡片正面的 16 位數字" (input)="formatCardNumber($event)" />
+                                    @if (cardNo.invalid && (cardNo.dirty || cardNo.touched) && cardNo.value?.length ===
+                                    0) {
+                                    <small id="validation">此欄位為必填</small>
+                                    }
+                                </div>
+                                <div class="expiry-field">
+                                    <!-- 信用卡安全碼 -->
+                                    <label for="cvv" class="form-label">信用卡安全碼</label>
+                                    <input pInputText id="cvv" class="input-field cvv-input" aria-describedby="cvv-help"
+                                        formControlName="cardCVV2" maxlength="4" placeholder="請輸入卡片背面的 3-4 位數字" />
+                                    @if (cardCVV2.invalid && (cardCVV2.dirty || cardCVV2.touched) &&
+                                    cardCVV2.value?.length === 0) {
+                                    <small id="validation">此欄位為必填</small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片有效期限 -->
+                        <div class="form-group">
+                            <label class="form-label">卡片有效期限</label>
+                            <div class="expiry-row">
+                                <div class="expiry-field">
+                                    <select pInputText class="form-select" formControlName="cardValidMM">
+                                        <option value="">月</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    @if (cardValidMM.invalid && cardValidMM.touched) {
+                                    <small id="validation">此欄位為必填</small>
+                                    }
+                                </div>
+                                <div class="expiry-field">
+                                    <select pInputText class="form-select" formControlName="cardValidYY">
+                                        <option value="">年</option>
+                                        <option value="25">2025</option>
+                                        <option value="26">2026</option>
+                                        <option value="27">2027</option>
+                                        <option value="28">2028</option>
+                                        <option value="29">2029</option>
+                                        <option value="30">2030</option>
+                                        <option value="31">2031</option>
+                                        <option value="32">2032</option>
+                                        <option value="33">2033</option>
+                                        <option value="34">2034</option>
+                                        <option value="35">2035</option>
+                                    </select>
+                                    @if (cardValidYY.invalid && cardValidYY.touched) {
+                                    <small id="validation">此欄位為必填</small>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 注意事項 -->
+                <div class="notice_container section-card">
+                    <div class="notice_header">
+                        <h2 class="section-title">注意事項</h2>
+                    </div>
+
+                    <div class="notice_content">
+                        <ol class="notice_list">
+                            <li class="notice_item red">本預訂修改服務僅提供修改備註，下單前請務必確認相關資訊</li>
+                            <li class="notice_item red">逾時入住或提前退房，恕不退還任何費用</li>
+                            <li class="notice_item">延長住宿需重新訂房</li>
+                            <li class="notice_item">櫃檯人員將於入住時為客人辦理報到</li>
+                        </ol>
                     </div>
                 </div>
             </div>
 
-            <div class="form_group">
-                <label class="form_label">信用卡安全碼</label>
-                <input type="text" class="form_input cvv_input" placeholder="" maxlength="4">
-            </div>
+            <!-- 右側區域 - 訂單資訊 -->
+            <div class="right-section">
+                <div class="order_infos section-card">
+                    <p class="section-title">您的訂單資訊</p>
 
-        </div>
-    </div>
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>入住日期</span>
+                            <span>{{ orderData.checkIn }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>退房日期</span>
+                            <span>{{ orderData.checkOut }}</span>
+                        </div>
+                    </div>
 
-    <div class="notice_container">
-        <div class="notice_header">
-            <h2 class="notice_title">注意事項</h2>
-        </div>
+                    <div class="room-items">
+                        @for (room of orderData.rooms; track room.roomName; let i = $index) {
+                        <div class="room-item">
+                            <div class="room-header" (click)="toggleRoom(i)">
+                                <div class="room-basic-info">
+                                    <span class="room-number">訂購房型 {{ i + 1 }}</span>
+                                    <span class="room-name">{{ room.roomName }}</span>
+                                </div>
+                                <div class="room-price-summary">
+                                    <i class="pi" [ngClass]="room.expanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+                                </div>
+                            </div>
 
-        <div class="notice_content">
-            <ol class="notice_list">
-                <li class="notice_item red">1. 本預訂修改服務僅提供修改備註，下單前請務必確認相關資訊</li>
-                <li class="notice_item red">2. 逾時入住或提前退房，恕不退還任何費用</li>
-                <li class="notice_item">3. 退款政策請參考右方說明欄</li>
-                <li class="notice_item">4. 延長住宿需重新訂房</li>
-                <li class="notice_item">5. 櫃檯人員將於入住時為客人辦理報到</li>
-            </ol>
-        </div>
-    </div>
+                            @if (room.expanded) {
+                            <div class="room-details">
+                                <table class="room-detail-table">
+                                    <tr>
+                                        <td class="label-col">房型金額</td>
+                                        <td>{{ room.roomPrice | price }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">房型數量</td>
+                                        <td>{{ room.roomQuantity }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">房型總額</td>
+                                        <td>{{ room.roomTotal | price }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            }
+                        </div>
+                        }
+                    </div>
 
-    <div class="order_info_container">
-        <p-card>
-            <ng-template pTemplate="header"> <!-- 隨機生成相片，因為可能會訂超過一間旅館 -->
-                <img src="https://blog-static.kkday.com/zh-tw/blog/wp-content/uploads/2025/03/Snapinst.app_278024614_170723668634791_2379235125175504030_n_1080.jpg"
-                    alt="PETEL" class="property_image">
-            </ng-template>
-
-            <div class="order_info_content">
-                <div class="section-header"> 訂單資訊 </div>
-
-                <div class="price-details"> <!-- 以對應到單一訂單標號為一個item -->
-                    @for (booking of bookings; track $index) {
-                    <h3 class="order"> 訂單編號為 {{ booking.orderId }} 的詳細資訊： </h3>
-                    @for (item of booking.detail; track $index) {
-                    <p class="order_item"> 入住時間：{{ item.arrivalDate }} </p>
-                    <p class="order_item"> 入住房型：{{ item.roomId }} </p> <!-- 要改成房型名稱 -->
-                    <p class="order_item"> 房型數量：{{ item.quantity }} </p>
-                    <p class="order_item"> 房型數量 x 房型價格：${{ item.price }} </p>
-                    }
-                    <p class="order"> 訂單編號為 {{ booking.orderId }} 的付款金額為 ${{ booking.hotelCharges }} </p>
-                    }
-
-                </div>
-
-                <p-divider></p-divider>
-
-                <div class="total_section">
-                    <div class="total_row">
-                        <span>訂單總額</span>
-                        <span class="total_amount">${{ totalAmount }}</span>
+                    <div class="order-total">
+                        <span class="total-label">總金額</span>
+                        <span class="total-amount">{{ totalAmount | price }}</span>
                     </div>
                 </div>
-            </div>
-        </p-card>
-    </div>
 
-    <div class="cancellation_policy">
-        <h2 class="cancellation_title">取消的話要付多少錢？</h2>
-
-        <ol class="policy_list">
-            <li class="policy_item">1. 距離入住日期10天以上：免費取消</li>
-            <li class="policy_item">2. 距離入住日期5-10天：退款50%</li>
-            <li class="policy_item">3. 距離入住日期 5 天內：不退款</li>
-        </ol>
-
-        <div class="timeline_container">
-            <div class="timeline_bar">
-                <div class="timeline-dot dot-active"></div>
-                <div class="progress-segment progress-active"></div>
-                <div class="timeline-dot dot-inactive"></div>
-                <div class="progress-segment progress-inactive"></div>
-                <div class="timeline-dot dot-inactive"></div>
-                <div class="progress-segment progress-inactive"></div>
-                <div class="timeline-dot dot-inactive"></div>
-            </div>
-
-            <div class="timeline_labels">
-                <span class="timeline_label">今天</span>
-                <span class="timeline_label">入住前10天</span>
-                <span class="timeline_label">入住前5天</span>
-                <span class="timeline_label">入住當天</span>
+                <!-- 送出按鈕 -->
+                <div class="submit_container">
+                    <button class="submit_button" type="submit">
+                        送出授權
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="submit_container">
-        <div class="submit_button_container">
-            <button class="submit_button" type="submit">
-                送出授權
-            </button>
-        </div>
-    </div>
-
 </form>

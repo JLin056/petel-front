@@ -1,0 +1,225 @@
+/* 整頁背景 + 爪印（可拿掉） */
+.auth-page {
+    min-height: 83vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6vh 6vw;
+    background: #fff9f3;
+}
+
+/* 左側介紹 */
+.hero {
+    flex: 1 1 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 4rem;
+    color: #1f1f1f;
+}
+
+.hero p {
+    margin: 0;
+    color: #6b6b6b;
+    font-size: 2rem;
+}
+
+/* 右側卡片（表單） */
+.auth-card {
+    flex: 1 1 40%;
+    background: #fff;
+    border-radius: 16px;
+    border: 2px solid #f0e4d8;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .06);
+    padding: 70px;
+    gap: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 750px;
+    box-sizing: border-box;
+}
+
+.card-title {
+    font-size: 3rem;
+}
+
+/* 表單 */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 輸入框 */
+.input-container,
+.input-container-password {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    margin-bottom: 20px;
+}
+
+.input-container label,
+.input-container-password label {
+    flex: 0 0 25%;
+    text-align: right;
+    white-space: nowrap;
+    font-size: 1.3rem;
+}
+
+.input-container input {
+    width: 70%;
+    border-radius: 10px;
+    border: 2px solid #f0e4d8;
+    background-color: #fff;
+    padding: 8px 12px;
+    font-size: 1.25rem;
+    transition: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* 密碼 */
+:host ::ng-deep .input-container-password p-password {
+    width: 70%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+:host ::ng-deep .input-container-password p-password .p-password {
+    width: 100%;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+:host ::ng-deep .petel-input {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 2px solid #f0e4d8;
+    background: #fff;
+    padding: 8px 12px;
+    font-size: 1.25rem;
+    transition: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    outline: none;
+}
+
+.input-container input:focus,
+:host ::ng-deep .petel-input:focus {
+    border-color: #a6845e;
+    box-shadow: 0 0 6px rgba(166, 132, 94, 0.3);
+    outline: none;
+}
+
+/* 按鈕 */
+.button-container {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-size: 2rem;
+}
+
+:host ::ng-deep .button-container .p-button {
+    font-size: 1.25rem;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 24px;
+    background-color: #f0e4d8;
+    color: #5b4636;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
+    transition: none;
+}
+
+:host ::ng-deep .button-container .p-button:hover {
+    background-color: #e4d2be;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
+}
+
+:host ::ng-deep .button-container .p-button:disabled {
+    opacity: 0.4;
+}
+
+:host ::ng-deep .button-container .p-button .p-button-label {
+    font-size: 1.25rem;
+}
+
+/* 忘記密碼 */
+.aux-row {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 1.25rem;
+}
+
+.auth-link {
+    text-decoration: none;
+    color: #A24522;
+    cursor: pointer;
+}
+
+.auth-link:hover {
+    opacity: 0.7;
+}
+
+/* 底部 */
+.auth-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.25rem;
+}
+
+/* 錯誤訊息 */
+/* .error-message {
+    background-color: #fff5f5;
+    border: 2px solid #A24522;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    color: #A24522;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+}
+
+.error-message i {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+} */
+
+/* 欄位驗證錯誤文字 */
+.error-text {
+    display: block;
+    color: #A24522;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    padding-left: 45%;
+    font-size: 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 無效欄位的邊框顏色 */
+:host ::ng-deep input.ng-invalid.ng-touched,
+:host ::ng-deep .p-password.ng-invalid.ng-touched input {
+    border-color: #a24522;
+    box-shadow: 0 0 4px rgba(162, 69, 34, 0.2);
+}
+
+.app-add-seller-info-dialog {
+    pointer-events: auto;
+}

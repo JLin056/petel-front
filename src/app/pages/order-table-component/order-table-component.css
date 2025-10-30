@@ -1,0 +1,244 @@
+.wrap {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.card {
+  padding: 30px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 36px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.search-container {
+  padding: 20px 30px;
+}
+
+.search-fields {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.search-btn-container {
+  margin-left: auto;
+}
+
+.custom-input {
+  height: 40px;
+  border-radius: 8px;
+}
+
+::ng-deep .admin-search-btn.p-button {
+  background-color: #EDA33A;
+  color: #A24522;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 40px;
+  min-width: 120px;
+  font-size: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.text-large {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.icon-large {
+  font-size: 1.5rem;
+}
+
+/* 調整表格整體字體大小 */
+::ng-deep .p-datatable {
+  font-size: 1.1rem;
+}
+
+/* 調整表頭字體 */
+::ng-deep .p-datatable th {
+  font-size: 1.2rem;
+}
+
+/* 調整輸入框字體 */
+::ng-deep .p-datatable input {
+  font-size: 1.1rem;
+}
+
+/*
+::ng-deep : 可以穿透到p-tag內部
+*/
+::ng-deep .tag-large {
+  font-size: 1.125rem;
+  padding: 0.375rem 0.5625rem;
+}
+
+/* 詳細按鈕樣式 */
+::ng-deep .detailBtn {
+  border-radius: 20px;
+}
+
+::ng-deep .detailBtn .p-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 20px;
+}
+
+/* ==================== RWD 響應式設計 ==================== */
+
+/* 平板尺寸 (768px 以下) */
+@media screen and (max-width: 768px) {
+  .wrap {
+    padding: 0 15px;
+  }
+
+  .title {
+    font-size: 28px;
+    margin-top: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .search-container {
+    padding: 15px 20px;
+  }
+
+  .search-fields {
+    flex-wrap: wrap;
+  }
+
+  /* 表格內文字大小調整 */
+  .text-large {
+    font-size: 1rem;
+  }
+
+  .icon-large {
+    font-size: 1.2rem;
+  }
+
+  ::ng-deep .p-datatable th {
+    font-size: 1rem;
+  }
+
+  ::ng-deep .p-datatable {
+    font-size: 0.95rem;
+  }
+
+  /* 狀態標籤調整 */
+  ::ng-deep .tag-large {
+    font-size: 0.9rem;
+  }
+
+  /* 詳細按鈕調整 */
+  ::ng-deep .detailBtn .p-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 16px;
+  }
+}
+
+/* 手機尺寸 (480px 以下) */
+@media screen and (max-width: 480px) {
+  .wrap {
+    padding: 0 10px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    padding: 12px;
+    overflow-x: auto;
+  }
+
+  .search-container {
+    padding: 10px 15px;
+  }
+
+  .search-fields {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* 表格內文字大小進一步縮小 */
+  .text-large {
+    font-size: 0.85rem;
+  }
+
+  .icon-large {
+    font-size: 1rem;
+  }
+
+  ::ng-deep .p-datatable th {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+
+  ::ng-deep .p-datatable td {
+    padding: 0.5rem;
+  }
+
+  ::ng-deep .p-datatable {
+    font-size: 0.85rem;
+  }
+
+  /* 狀態標籤調整 */
+  ::ng-deep .tag-large {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  /* 詳細按鈕調整 */
+  ::ng-deep .detailBtn .p-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 16px;
+  }
+
+  /* 搜尋按鈕置中 */
+  .search-btn-container {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  ::ng-deep .admin-search-btn.p-button {
+    width: 100%;
+    border-radius: 16px;
+  }
+}

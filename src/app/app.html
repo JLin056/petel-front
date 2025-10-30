@@ -1,11 +1,27 @@
 <!-- <app-test-homepage></app-test-homepage> -->
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
 <div class="layout">
+  @if (isAdminRoute) {
+  <app-admin-header></app-admin-header>
+  }@else if (isMerchantRoute) {
+  <app-merchant-property-header></app-merchant-property-header>
+  }@else if (isMerchantUserpageRoute) {
+  <app-merchant-userpage-header></app-merchant-userpage-header>
+  } @else {
   <app-header></app-header>
+  }
+
   <main class="content">
     <router-outlet></router-outlet>
   </main>
+
+  @if (isAdminRoute) {
+  <app-admin-footer></app-admin-footer>
+  }@else if (!isMerchantUserpageFooterRoute) {
   <app-footer></app-footer>
+  }@else{
+  <app-merchant-userpage-footer></app-merchant-userpage-footer>
+  }
 </div>

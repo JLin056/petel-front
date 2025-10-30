@@ -1,0 +1,150 @@
+.dialog-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.dialog-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.status-tag {
+  font-size: 1rem;
+}
+
+.order-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem 0;
+  font-size: 1.2rem;
+}
+
+.detail-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.detail-row.full-width {
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.detail-item-inline {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.detail-label-inline {
+  font-weight: 900;
+  color: #495057;
+  font-size: 1.3rem;
+}
+
+.detail-value-inline {
+  font-size: 1.3rem;
+  color: #212529;
+}
+
+.detail-value-inline.clickable {
+  cursor: pointer;
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.detail-value-inline.clickable:hover {
+  color: #0a58ca;
+}
+
+.detail-value-inline.price-amount {
+  font-size: 1.5rem;
+  color: #198754;
+  font-weight: 700;
+}
+
+.detail-value-inline.status-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+}
+
+/* 已完成 - 綠色 */
+.detail-value-inline.status-text.status-success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+/* 已確認 - 藍色 */
+.detail-value-inline.status-text.status-info {
+  background-color: #cfe2ff;
+  color: #084298;
+}
+
+/* 待付款 - 黃色 */
+.detail-value-inline.status-text.status-warn {
+  background-color: #fff3cd;
+  color: #997404;
+}
+
+/* 已取消 - 紅色 */
+.detail-value-inline.status-text.status-danger {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 1.3rem;
+}
+
+.bottom-section {
+  align-items: flex-start;
+}
+
+.left-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  flex: 0 0 320px;
+}
+
+.note-section {
+  flex: 1;
+}
+
+
+.note-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #ced4da;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: all 0.2s;
+}
+
+.note-textarea[readonly] {
+  background-color: #f8f9fa;
+  cursor: pointer;
+  border-color: #dee2e6;
+}
+
+.note-textarea[readonly]:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.note-textarea:focus {
+  outline: none;
+}
+

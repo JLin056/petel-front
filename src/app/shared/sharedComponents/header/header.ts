@@ -7,9 +7,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
-import { LoginDialog } from '../../../pages/login-dialog/login-dialog';
-import { RegisterDialog } from '../../../pages/register-dialog/register-dialog';
-import { ForgotPasswordDialog } from '../../../pages/forgot-password-dialog/forgot-password-dialog';
+import { Auth } from '../../../core/services/auth.service';
+import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
+import { MessageService } from 'primeng/api';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, Subject, takeUntil } from 'rxjs';
+import { HotelService } from '../../../core/services/hotel-service';
 
 @Component({
   selector: 'app-header',
@@ -23,38 +26,259 @@ import { ForgotPasswordDialog } from '../../../pages/forgot-password-dialog/forg
     InputTextModule,
     SelectModule,
     InputNumberModule,
-    LoginDialog,
-    RegisterDialog,
-    ForgotPasswordDialog
+    SharedConfirmDialog
 ],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-    loginDialogVisible = false;
-    registerDialogVisible = false;
-    forgotDialogVisible = false;
-    showLogin() {
-        this.loginDialogVisible = true;
+    /** 是否登入（service 推播） */
+    isLoggedIn = false;
+    /** confirmVisible */
+    confirmVisible = false;
+    /** 是否登出中 */
+    isLoggedOut = false;
+
+    private destroy$ = new Subject<void>();
+
+    /**
+     * 注入
+     * @param router
+     * @param authService
+     * @param toast
+     * @param hotelService
+     */
+    constructor(
+        private router: Router,
+        private authService: Auth,
+        private toast: MessageService,
+        private hotelService: HotelService
+    ) {
+        // 監聽 router 改變
+        this.router.events
+            .pipe(
+                filter(e => e instanceof NavigationEnd),
+                filter(() => !!this.authService.getAccessToken())
+            )
+            .subscribe(() => this.onCheckLoginStatus());
+
+        // 訂閱 service 的登入狀態
+        this.authService.isLoggedIn$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(v => this.isLoggedIn = v);
     }
 
-    showRegister() {
-        this.registerDialogVisible = true;
+    /**
+     * 跳出 login
+     */
+    onClickLogin() {
+        this.router.navigate(['/login']);
     }
 
-    openRegister() {
-        this.loginDialogVisible = false;
-        this.registerDialogVisible = true;
+    /**
+     * 登出
+     */
+    onLogout() {
+        if (this.isLoggedOut) return;
+        this.isLoggedOut = true;
+
+        this.authService.onLogoutApi().subscribe({
+            next: () => {
+                this.confirmVisible = false;
+                this.toast.add({
+                    severity: 'success',
+                    summary: '登出成功',
+                    detail: '期待您再次光臨！'
+                });
+                this.router.navigate(['']);
+                this.isLoggedOut = false;
+            },
+            error: () => {
+                this.confirmVisible = false;
+                this.authService.clearAccessToken();
+
+                this.toast.add({
+                    severity: 'error',
+                    summary: '登出失敗',
+                    detail: '請稍後再試'
+                });
+
+                this.isLoggedOut = false;
+            }
+        });
     }
 
-    openLogin() {
-        this.registerDialogVisible = false;
-        this.loginDialogVisible = true;
+    /**
+     * 確認登入狀態
+     */
+    onCheckLoginStatus() {
+        this.authService.onCheckLoginStatus().subscribe();
     }
 
-    openForgot() {
-        this.loginDialogVisible = false;
-        this.forgotDialogVisible = true;
+    /**
+     * 前往首頁
+     */
+    onClickHome() {
+        this.router.navigate(['']);
     }
 
+    /**
+     * 前往狗狗旅館（帶參數搜尋）
+     */
+    onClickDog() {
+        console.log('=== Header - 狗狗旅館 ===');
+
+        // 使用默認日期：今天和明天
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // 準備 API 參數
+        const apiParams = {
+            petType: 'DOG',
+            checkIn: today,
+            checkOut: tomorrow,
+            petCount: 1,
+            city: '',  // 不指定城市
+            pageNumber: 1,
+            pageSize: 10
+        };
+
+        console.log('API 參數:', apiParams);
+
+        // 調用 API
+        this.hotelService.queryHotels(apiParams).subscribe({
+            next: (response) => {
+                console.log('API 回應:', response);
+
+                if (response.MWHEADER.RETURNCODE === '0000') {
+                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間狗狗旅館`);
+
+                    // 成功，跳轉到旅館列表頁
+                    this.router.navigate(['/dogHotels'], {
+                        state: {
+                            searchResult: response.TRANRS,
+                            searchParams: apiParams
+                        }
+                    });
+                } else {
+                    // API 返回錯誤
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: response.MWHEADER.RETURNDESC || '查詢失敗'
+                    });
+                }
+            },
+            error: (error) => {
+                console.error('API 錯誤:', error);
+                this.toast.add({
+                    severity: 'error',
+                    summary: '錯誤',
+                    detail: '連接後端 API 失敗，請稍後再試'
+                });
+            }
+        });
+    }
+
+    /**
+     * 前往貓貓旅館（帶參數搜尋）
+     */
+    onClickCat() {
+        console.log('=== Header - 貓貓旅館 ===');
+
+        // 使用默認日期：今天和明天
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // 準備 API 參數
+        const apiParams = {
+            petType: 'CAT',
+            checkIn: today,
+            checkOut: tomorrow,
+            petCount: 1,
+            city: '',  // 不指定城市
+            pageNumber: 1,
+            pageSize: 10
+        };
+
+        console.log('API 參數:', apiParams);
+
+        // 調用 API
+        this.hotelService.queryHotels(apiParams).subscribe({
+            next: (response) => {
+                console.log('API 回應:', response);
+
+                if (response.MWHEADER.RETURNCODE === '0000') {
+                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間貓貓旅館`);
+
+                    // 成功，跳轉到旅館列表頁
+                    this.router.navigate(['/dogHotels'], {
+                        state: {
+                            searchResult: response.TRANRS,
+                            searchParams: apiParams
+                        }
+                    });
+                } else {
+                    // API 返回錯誤
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: response.MWHEADER.RETURNDESC || '查詢失敗'
+                    });
+                }
+            },
+            error: (error) => {
+                console.error('API 錯誤:', error);
+                this.toast.add({
+                    severity: 'error',
+                    summary: '錯誤',
+                    detail: '連接後端 API 失敗，請稍後再試'
+                });
+            }
+        });
+    }
+
+    /**
+     * 前往聊天頁
+     * @returns
+     */
+    onClickChat() {
+        if (!this.isLoggedIn) {
+            this.toast.add({
+                severity: 'warn',
+                summary: '尚未登入',
+                detail: '請先登入後再使用聊天室功能'
+            });
+            this.router.navigate(['/login'], { queryParams: { redirect: '/chat' } });
+            return;
+        }
+        this.router.navigate(['/chat']);
+    }
+
+    /**
+     * 前往個人資料頁
+     * @returns
+     */
+    onClickProfile() {
+        if (!this.isLoggedIn) {
+            this.toast.add({
+                severity: 'warn',
+                summary: '尚未登入',
+                detail: '請先登入後再看會員資訊'
+            });
+            this.router.navigate(['/login'], { queryParams: { redirect: '/history' } });
+            return;
+        }
+        this.router.navigate(['/history']);
+    }
+
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
 }
