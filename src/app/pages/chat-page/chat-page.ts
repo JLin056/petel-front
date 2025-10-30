@@ -298,11 +298,11 @@ export class ChatPage {
         });
     }
 
-    getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
+    getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | null {
         switch (status) {
             case '已完成': return 'success';
-            case '已確認': return 'info';
-            case '待付款': case '未付款': return 'warn';
+            case '已付款': return 'info';
+            case '未付款': return 'warn';
             case '已取消': return 'danger';
             default: return null;
         }
