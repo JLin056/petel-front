@@ -18,21 +18,22 @@ import { MerchantUserpageFooter } from "./shared/sharedComponents/merchant-userp
   styleUrl: './app.css'
 })
 export class App implements OnInit {
-  protected readonly title = signal('petelFrontTest');
-  isMerchantRoute = false;
-  isMerchantUserpageRoute = false;
-  isMerchantUserpageFooterRoute = false;
-  constructor(private router: Router) { }
+    protected readonly title = signal('petelFrontTest');
+    isMerchantRoute = false;
+    isMerchantUserpageRoute = false;
+    isMerchantUserpageFooterRoute = false;
+    constructor(private router: Router) { }
 
-  ngOnInit() {
-    // 監聽路由變化，判斷是否為商家後台
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      this.isMerchantRoute = event.url.includes('/merchants/property') ||
-        event.url.includes('/orderTable');
-      this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage');
-      this.isMerchantUserpageFooterRoute = event.url.includes('/merchants/userPage');
-    });
-  }
+    ngOnInit() {
+            // 監聽路由變化，判斷是否為商家後台
+            this.router.events.pipe(
+                filter(event => event instanceof NavigationEnd)
+                ).subscribe((event: NavigationEnd) => {
+                    this.isMerchantRoute = event.url.includes('/merchants/property') ||
+                        event.url.includes('/orderTable');
+                    this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage');
+                    this.isMerchantUserpageFooterRoute = event.url.includes('/merchants/userPage');
+                }
+            );
+    }
 }
