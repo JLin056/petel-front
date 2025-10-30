@@ -6,7 +6,7 @@ import { CardModule } from 'primeng/card';
 import { RatingModule } from 'primeng/rating';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-
+import { MerchService } from '../../core/services/merch-service';
 import { reviewList } from '../../core/interfaces/MERCH003Res.interface';
 import { PropertyStateService } from '../../core/services/property-state.service';
 
@@ -45,7 +45,7 @@ export class MerchantReviewListPage implements OnInit {
   expandedReviews: Map<string, boolean> = new Map();
 
   constructor(
-    // private merchService: MerchService,
+    private merchService: MerchService,
     private propertyStateService: PropertyStateService
   ) { }
 
