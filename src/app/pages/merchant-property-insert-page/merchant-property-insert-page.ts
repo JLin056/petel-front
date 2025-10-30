@@ -3,12 +3,13 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { UploadImg } from "../../shared/sharedComponents/upload-img/upload-img";
 
 @Component({
   selector: 'app-merchant-property-insert-page',
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule],
+  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, UploadImg],
   templateUrl: './merchant-property-insert-page.html',
-  styleUrl: './merchant-property-insert-page.css'
+  styleUrl: './merchant-property-insert-page.css',
 })
 export class MerchantPropertyInsertPage {
   hotel = {

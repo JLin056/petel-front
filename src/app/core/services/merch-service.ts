@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Mwheader, Req } from '../interfaces/Req.interface';
-import { MERCH004Tranrq } from '../interfaces/MERCH004Req.interface';
+import { Tranrq as MERCH004Req } from '../interfaces/MERCH004Req.interface';
 import { MERCH004Tranrs } from '../interfaces/MERCH004Res.interface';
 import { MERCH005Tranrq } from '../interfaces/MERCH005Req.interface';
 import { MERCH005Tranrs } from '../interfaces/MERCH005Res.interface';
@@ -72,13 +72,13 @@ export class MerchService {
    * @param tranrq 房型資訊
    * @returns
    */
-  createRoomDetail(tranrq: MERCH004Tranrq) {
+  createRoomDetail(tranrq: MERCH004Req) {
 
     const header: Mwheader = {
       MSGID: 'MERCH-004'
     };
 
-    const postData: Req<MERCH004Tranrq> = {
+    const postData: Req<MERCH004Req> = {
       MWHEADER: header,
       TRANRQ: tranrq
     }

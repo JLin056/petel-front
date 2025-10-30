@@ -10,12 +10,19 @@ import { BOOK006Tranrq } from '../interfaces/BOOK006Req.interface';
 import { BOOK006Tranrs } from '../interfaces/BOOK006Res.interface';
 import { BOOK005Tranrq } from '../interfaces/BOOK005Req.interface';
 import { BOOK005Tranrs } from '../interfaces/BOOK005Res.interface';
+import { BOOK013Tranrq } from '../interfaces/BOOK013Req.interface';
+import { environment } from '../../../environment';
+import { BOOK004Req, Book004Tranrq } from '../interfaces/BOOK004Req.interface';
+import { Observable } from 'rxjs';
+import { BOOK004Res } from '../interfaces/BOOK004Res.interface';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BookService {
     http = inject(HttpClient);
+
+    onCancelBookingUrl = `${environment.BASE_URL}/bookings/cancel`;
 
     /**
      * BOOK-001 建立訂單
@@ -105,7 +112,28 @@ export class BookService {
         return this.http.post<Res<BOOK006Tranrs>>('http://localhost:8080/bookings/credit', postData);
     }
 
-    // -----
+    /**
+     * BOOK-013 模擬更新訂單付款狀態 (線上刷卡)
+     * @param orderId 訂單編號
+     * @returns
+     */
+    updatePayStatus(orderId: string) {
+
+        const header: Mwheader = {
+            MSGID: 'BOOK-013'
+        };
+
+        const tranrq: BOOK013Tranrq = {
+            order_id: orderId
+        }
+
+        const postData: Req<BOOK013Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        }
+
+        return this.http.post<Res<object>>('http://localhost:8080/bookings/simulate/notify', postData);
+    }
 
     /** 初始的建立訂單前的相關資料 */
     sharedOrderData: OrderData = {
@@ -114,28 +142,6 @@ export class BookService {
         checkOut: '',
         rooms: []
     };
-
-    // Test code
-    // this.BookService.setSharedOrderData({
-    //     propertyId: 'P000000001',
-    //     checkIn: '2025-10-26',
-    //     checkOut: '2025-10-27',
-    //     rooms: [{
-    //         roomId: 'R000000001',
-    //         roomName: '高級寵物房',
-    //         roomPrice: 2500,
-    //         roomQuantity: 1,
-    //         roomTotal: 2500,
-    //         expanded: false
-    //     }, {
-    //         roomId: 'R000000002',
-    //         roomName: '豪華寵物房',
-    //         roomPrice: 2700,
-    //         roomQuantity: 1,
-    //         roomTotal: 2700,
-    //         expanded: false
-    //     }]
-    // });
 
     /**
      * 設定建立訂單前的相關資料
@@ -164,6 +170,19 @@ export class BookService {
             rooms: []
         };
     }
+
+    /**
+     * 取消訂單 API
+     * @param postData
+     * @returns
+     */
+    onCancelBookingApi(postData: BOOK004Req): Observable<BOOK004Res> {
+        return this.http.post<BOOK004Res>(this.onCancelBookingUrl, postData, {
+            withCredentials: true
+        })
+    }
+
+
 }
 
 export interface OrderData {

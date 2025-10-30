@@ -5,11 +5,17 @@ import { ChatService } from '../../core/services/chat.service';
 import { CHAT002Req } from '../../core/interfaces/CHAT002Req.interface';
 import { CHAT003Req } from '../../core/interfaces/CHAT003Req.interface';
 import { CommonModule } from '@angular/common';
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { filter, finalize, Subject, takeUntil } from 'rxjs';
+import { ChatMessage } from '../../core/interfaces/ChatMessage.interface';
+import { WsService } from '../../core/services/ws.service';
+import { FormsModule } from '@angular/forms';
+import { ThreadUpdate } from '../../core/interfaces/ThreadUpdate.interface';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-chat-page',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, TagModule],
   templateUrl: './chat-page.html',
   styleUrl: './chat-page.css'
 })
@@ -24,27 +30,44 @@ export class ChatPage {
 
     /** 右側 */
     room: Room | null = null;
-    messages: Message[] = [];
+    messages: ChatMessage[] = [];
     loadingMessages = false;
 
-    private currentTopic: string | null = null;
+    draft = '';
 
     /** 滾軸 */
     @ViewChild('messagesBox') messagesBox!: ElementRef<HTMLDivElement>;
 
-    private readonly destroy$ = new Subject<void>();
-    private readonly listPageSize = 10;
-    private readonly msgPageSize = 50;
+    private destroy$ = new Subject<void>();
+    private listPageSize = 10;
+    private threadPage = 1;
+    private threadHasMore = true;
+
+    private msgPageSize = 50;
+    private msgPage = 1;
+    private msgHasMore = true;
+    private loadingOlder = false;
+
+
 
     /** 注入 */
     constructor(
-        private chatService: ChatService
+        private chatService: ChatService,
+        private ws: WsService
     ) {}
 
     /**
      * 取得聊天室列表
      */
-    getThreads(): void {
+    getThreads(reset = false): void {
+        if (this.loadingThreads || (!this.threadHasMore && !reset)) return;
+
+        if (reset) {
+            this.threadPage = 1;
+            this.threadHasMore = true;
+            this.threads = [];
+        }
+
         this.loadingThreads = true;
 
         const req: CHAT002Req = {
@@ -53,7 +76,7 @@ export class ChatPage {
             },
             TRANRQ: {
                 pageSize: this.listPageSize,
-                pageNumber: 1
+                pageNumber: this.threadPage
             }
         }
 
@@ -63,6 +86,27 @@ export class ChatPage {
                 next: (res) => {
                     const chats = res.TRANRS?.chats ?? [];
 
+                    if (reset) {
+                        this.threadPage = 1;
+                        this.threadHasMore = true;
+                        this.threads = [];
+                    }
+
+                    const merged = [...this.threads, ...chats];
+
+                    // 用 id 判斷是否重複
+                    const byId = new Map<string, Chat>();
+                    for (const t of merged) {
+                        const exist = byId.get(t.threadId);
+                        if (!exist) {
+                            byId.set(t.threadId, t);
+                        } else {
+                            const tTime = t.lastMessageTime ? new Date(t.lastMessageTime).getTime() : 0;
+                            const eTime = exist.lastMessageTime ? new Date(exist.lastMessageTime).getTime() : 0;
+                            byId.set(t.threadId, tTime >= eTime ? t : exist);
+                        }
+                    }
+
                     // 由新到舊
                     this.threads = chats.sort((a, b) => {
                         const ta = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
@@ -70,13 +114,18 @@ export class ChatPage {
                         return tb - ta;
                     })
 
+                    if (chats.length < this.listPageSize) {
+                        this.threadHasMore = false;
+                    } else {
+                        this.threadPage += 1;
+                    }
 
                     if (this.threads.length > 0 && !this.selectedThread) {
                         this.selectThread(this.threads[0]);
                     }
                 },
                 error: () => {
-                    this.threads = [];
+                    this.threadHasMore = false;
                 }
         });
     }
@@ -88,6 +137,13 @@ export class ChatPage {
     selectThread(thread: Chat): void {
         if (this.selectedThread?.threadId === thread.threadId) return;
         this.selectedThread = thread;
+
+        // 重設訊息分頁狀態
+        this.room = null;
+        this.messages = [];
+        this.msgPage = 1;
+        this.msgHasMore = true;
+
         this.loadMessages(thread.threadId);
     }
 
@@ -95,7 +151,10 @@ export class ChatPage {
      * 取得聊天室訊息內容
      * @param threadId
      */
-    loadMessages(threadId: string): void {
+    loadMessages(threadId: string, append = false): void {
+        if (this.loadingMessages) return;
+        if (!append && !this.msgHasMore) return;
+
         this.loadingMessages = true;
 
         const req: CHAT003Req = {
@@ -103,7 +162,7 @@ export class ChatPage {
             TRANRQ: {
                 threadId,
                 pageSize: this.msgPageSize,
-                pageNumber: 1
+                pageNumber: this.msgPage
             }
         };
 
@@ -114,45 +173,119 @@ export class ChatPage {
                     this.room = res.TRANRS.room;
 
                     // 由舊到新
-                    this.messages = (res.TRANRS.messages ?? []).sort((a, b) => {
-                        const ta = new Date(a.createdAt).getTime();
-                        const tb = new Date(b.createdAt).getTime();
-                        return ta - tb;
-                    });
+                    const pageMsgs = (res.TRANRS.messages ?? [])
+                        .map(m => this.mapApiMsgToChatMessage(m, threadId))
+                        .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()); // 舊 → 新
 
-                    this.scrollToBottom();
+                    if (!append) {
+                        // 初次
+                        this.messages = pageMsgs;
+                        this.msgPage = 2; // 下一次會取第 2 頁
+                        this.msgHasMore = pageMsgs.length === this.msgPageSize;
+                        this.scrollToBottom();
+                    } else {
+                        const el = this.messagesBox?.nativeElement;
+                        const prevHeight = el ? el.scrollHeight : 0;
+
+                        const existing = new Set(this.messages.map(m => m.id));
+                        const uniqueOlder = pageMsgs.filter(m => !existing.has(m.id));
+
+                        this.messages = [...uniqueOlder, ...this.messages];
+
+                        if (pageMsgs.length < this.msgPageSize) {
+                            this.msgHasMore = false;
+                        } else {
+                            this.msgPage += 1;
+                        }
+
+                        // 維持視窗位置
+                        requestAnimationFrame(() => {
+                            if (!el) return;
+                            const newHeight = el.scrollHeight;
+                            el.scrollTop = newHeight - prevHeight + el.scrollTop;
+                        });
+                    }
                 },
                 error: () => {
-                    this.room = null;
-                    this.messages = [];
+                    this.msgHasMore = false;
                 }
             });
     }
+
+    onMessagesScroll(): void {
+        if (this.loadingOlder || !this.msgHasMore) return;
+        const el = this.messagesBox?.nativeElement;
+        if (!el) return;
+
+        if (el.scrollTop <= 30) {
+            this.loadingOlder = true;
+            this.loadMessages(this.selectedThread!.threadId, true);
+            setTimeout(() => (this.loadingOlder = false), 200);
+        }
+    }
+
+    /** 是否接近底部 */
+    private isNearBottom(el: HTMLElement, threshold = 80): boolean {
+        return el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+    }
+
+    private mapApiMsgToChatMessage(m: Message, threadId: string): ChatMessage {
+        return {
+            id: m.messageId,
+            threadId,
+            senderAccountId: m.senderId,
+            type: m.type,
+            content: m.content ?? '',
+            createdAt: m.createdAt instanceof Date ? m.createdAt : new Date(m.createdAt),
+        };
+    }
+
+    private bumpThreadToTop(threadId: string, lastMessage: string, time: Date): void {
+        const idx = this.threads.findIndex(t => t.threadId === threadId);
+        if (idx === -1) return;
+
+        const item = this.threads[idx];
+        item.lastMessage = lastMessage as any;
+        item.lastMessageTime = time.toISOString() as any;
+
+        this.threads.splice(idx, 1);
+        this.threads = [item, ...this.threads];
+    }
+
+    onSend(): void {
+        const threadId = this.selectedThread?.threadId;
+        const content = (this.draft ?? '').trim();
+        if (!threadId || !content) return;
+
+        this.ws.sendMessage(threadId, content, 'TEXT');
+        this.draft = '';
+
+        this.bumpThreadToTop(threadId, content, new Date());
+        this.scrollToBottom();
+    }
+
+    onEnterKey(event: any): void {
+        if (event.ctrlKey) {
+            event.preventDefault();
+            this.onSend();
+        }
+    }
+
 
     /**
      * 判斷是誰的訊息
      * @param msg
      * @returns
      */
-    isMine(msg: Message): boolean {
+    isMine(msg: ChatMessage): boolean {
         if (!this.room) return false;
         if (this.room.role === 'user') {
-            return msg.senderId === this.room.buyerAccountId;
+            return msg.senderAccountId === this.room.buyerAccountId;
         }
         if (this.room.role === 'seller') {
-            return msg.senderId === this.room.sellerAccountId;
+            return msg.senderAccountId === this.room.sellerAccountId;
         }
         return false;
-    }
-
-    sendMessage(content: string): void {
-        const threadId = this.selectedThread?.threadId;
-        if (!threadId) return;
-
-        const body = {
-            content,
-            messageType: 'TEXT'
-        };
     }
 
     /**
@@ -164,13 +297,13 @@ export class ChatPage {
         const d = new Date(dt);
         if (Number.isNaN(d.getTime())) return '';
 
-        const yy = d.getFullYear();
+        // const yy = d.getFullYear();
         const mm = (d.getMonth() + 1).toString().padStart(2, '0');
         const dd = d.getDate().toString().padStart(2, '0');
         const hh = d.getHours().toString().padStart(2, '0');
         const min = d.getMinutes().toString().padStart(2, '0');
 
-        return `${yy}-${mm}-${dd} ${hh}:${min}`;
+        return `${mm}-${dd} ${hh}:${min}`;
     }
 
     /**
@@ -184,6 +317,16 @@ export class ChatPage {
         });
     }
 
+    getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | null {
+        switch (status) {
+            case '已完成': return 'success';
+            case '已付款': return 'info';
+            case '未付款': return 'warn';
+            case '已取消': return 'danger';
+            default: return null;
+        }
+    }
+
     /**
      * 只更新內容，其餘不需更新
      * @param _
@@ -194,8 +337,8 @@ export class ChatPage {
         return t.threadId;
     }
 
-    trackByMsg(_: number, m: Message): string {
-        return m.messageId;
+    trackByMsg(_: number, m: ChatMessage): string {
+        return m.id;
     }
 
     /**
@@ -203,6 +346,30 @@ export class ChatPage {
      */
     ngOnInit(): void {
         this.getThreads();
+
+        this.ws.connect();
+
+        this.ws.messages$
+            .pipe(
+                takeUntil(this.destroy$),
+                filter(m => !!this.selectedThread&& m.threadId === this.selectedThread.threadId)
+            )
+            .subscribe(m => {
+                if (!this.messages.find(x => x.id === m.id)) {
+                    const el = this.messagesBox?.nativeElement;
+                    const shouldStick = el ? this.isNearBottom(el) : true;
+
+                    this.messages = [...this.messages, m];
+
+                    if (shouldStick) this.scrollToBottom();
+                }
+            });
+
+        this.ws.threadUpdates$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(ev => {
+                this.bumpThreadToTop(ev.threadId, ev.lastMessage, ev.lastMessageTime);
+            });
     }
 
     /**

@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { CHAT002Res } from '../interfaces/CHAT002Res.interface';
 import { CHAT003Req } from '../interfaces/CHAT003Req.interface';
 import { CHAT003Res } from '../interfaces/CHAT003Res.interface';
+import { CHAT001Req } from '../interfaces/CHAT001Req.interface';
+import { CHAT001Res } from '../interfaces/CHAT001Res.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +16,8 @@ export class ChatService {
     /** 注入 HttpClient */
     constructor(private http: HttpClient){}
 
+    /** 建立聊天室 URL */
+    createChatRoomUrl = `${environment.BASE_URL}/chat/create`;
     /** 取得聊天室列表 URL */
     getThreadUrl = `${environment.BASE_URL}/chat/threads`;
     /** 取得單間訊息紀錄 URL */
@@ -23,6 +27,18 @@ export class ChatService {
     private readonly headers = new HttpHeaders({
         'Content-Type': 'application/json'
     });
+
+    /**
+     * 建立聊天室
+     * @param postData
+     * @returns
+     */
+    onCreateChatRoomApi(postData: CHAT001Req): Observable<CHAT001Res> {
+        return this.http.post<CHAT001Res>(this.createChatRoomUrl, postData, {
+            headers: this.headers,
+            withCredentials: true
+        })
+    }
 
     /**
      * 取得聊天室列表
