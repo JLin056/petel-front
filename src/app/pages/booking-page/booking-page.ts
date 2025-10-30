@@ -1,4 +1,4 @@
-
+import { MediaService } from './../../core/services/media-service';
 import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -89,11 +89,13 @@ export class BookingPage implements OnInit {
 
     /** isNavigatingAway */
     isNavigatingAway: boolean = false;
+    /** image */
+    image: string = '';
 
     /**
      * 建構子注入
      */
-    constructor(private router: Router, private hotelService: HotelService, private bookService: BookService, private messageService: MessageService, private userService: UserService) { };
+    constructor(private router: Router, private hotelService: HotelService, private bookService: BookService, private messageService: MessageService, private userService: UserService, private mediaService: MediaService) { };
 
     /**
      * 初始化頁面內容
@@ -142,6 +144,8 @@ export class BookingPage implements OnInit {
                 this.propertyNotice = propertyDetail!.propertyNotice;
             }
         });
+
+        this.image = this.getImage(this.orderData.propertyId);
 
         this.orderDays = this.getOrderDays(this.orderData.checkIn, this.orderData.checkOut);
 
@@ -334,6 +338,26 @@ export class BookingPage implements OnInit {
         }
         event.preventDefault();
         event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
+    }
+
+    /**
+     * 獲取旅館圖片
+     * @returns
+     */
+    getImage(propertyId: string): string {
+        this.mediaService.queryMedia({ propertyId: propertyId }).subscribe({
+            next: (response) => {
+                if (!(response.MWHEADER.RETURNCODE === "0000") || response.TRANRS.totalCount) {
+                    return 'img/hotelImg.png';
+                }
+                const firstImage = response.TRANRS.medias[0];
+                return `data:${firstImage.mimeType || 'image/jpeg'};base64,${firstImage.base64Data}`;
+            },
+            error: (error) => {
+                return 'img/hotelImg.png';
+            }
+        });
+        return 'img/hotelImg.png';
     }
 
     // 簡化取得控制項：beginning
