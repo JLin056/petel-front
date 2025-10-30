@@ -16,10 +16,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Member as ADMIN007Member } from '../../core/interfaces/ADMIN007Res.interface';
 import { UserStatus, UserRole } from '../../core/interfaces/ADMIN004Res.interface';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 import { AdminService } from '../../core/services/admin.service';
 import { ADMIN007Req } from '../../core/interfaces/ADMIN007Req.interface';
-import { ADMIN008Req } from '../../core/interfaces/ADMIN008Req.interface';
 
 @Component({
   selector: 'app-admin-user-table',
@@ -34,7 +32,6 @@ import { ADMIN008Req } from '../../core/interfaces/ADMIN008Req.interface';
     CommonModule,
     FormsModule,
     ButtonModule,
-    SharedConfirmDialog,
     TooltipModule,
     ToastModule
   ],
@@ -67,10 +64,6 @@ export class AdminUserTable implements OnInit {
   totalRecords: number = 0;
   currentPage: number = 1;
   pageSize: number = 5;
-
-  // Confirm dialog
-  deleteConfirmVisible: boolean = false;
-  selectedMember: ADMIN007Member | null = null;
 
   private isFirstLoad = true; // 追蹤是否為第一次載入
   private isSearching = false; // 追蹤是否為搜尋操作
@@ -232,92 +225,6 @@ export class AdminUserTable implements OnInit {
       default:
         return status;
     }
-  }
-
-  /**
-   * 顯示刪除確認對話框
-   */
-  confirmDelete(member: ADMIN007Member) {
-    this.selectedMember = member;
-    this.deleteConfirmVisible = true;
-  }
-
-  /**
-   * 確認刪除會員
-   */
-  onDeleteConfirmed() {
-    if (!this.selectedMember) {
-      this.deleteConfirmVisible = false;
-      return;
-    }
-
-    const memberToDelete = this.selectedMember;
-
-    // 建立刪除請求資料
-    const requestData: ADMIN008Req = {
-      MWHEADER: {
-        MSGID: 'ADMIN-008'
-      },
-      TRANRQ: {
-        usersId: memberToDelete.USER_ID
-      }
-    };
-
-    // 呼叫刪除 API
-    this.adminService.deleteMember(requestData).subscribe({
-      next: (response) => {
-        if (response.MWHEADER.RETURNCODE === '0000') {
-          console.log('刪除成功:', response.TRANRS.message);
-
-          // 從列表中移除該會員
-          this.memberList = this.memberList.filter(m => m.USER_ID !== memberToDelete.USER_ID);
-
-          // 如果當前頁沒有資料了，且不是第一頁，則回到上一頁
-          if (this.memberList.length === 0 && this.currentPage > 1) {
-            this.currentPage--;
-            this.loadMembers();
-          } else if (this.memberList.length === 0) {
-            // 如果是第一頁且沒資料，重新載入
-            this.loadMembers();
-          }
-
-          this.messageService.add({
-            severity: 'success',
-            summary: '刪除成功',
-            detail: response.TRANRS.message
-          });
-        } else {
-          console.error('刪除失敗:', response.MWHEADER.RETURNDESC);
-          this.messageService.add({
-            severity: 'error',
-            summary: '刪除失敗',
-            detail: response.MWHEADER.RETURNDESC
-          });
-        }
-
-        this.selectedMember = null;
-        this.deleteConfirmVisible = false;
-      },
-      error: (error) => {
-        console.error('刪除 API 呼叫失敗:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: '刪除失敗',
-          detail: error.error?.MWHEADER?.RETURNDESC || '網路錯誤，請稍後再試'
-        });
-
-        this.selectedMember = null;
-        this.deleteConfirmVisible = false;
-      }
-    });
-  }
-
-  /**
-   * 取消刪除
-   */
-  onDeleteCancelled() {
-    this.selectedMember = null;
-    this.deleteConfirmVisible = false;
   }
 
   /**

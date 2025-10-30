@@ -123,17 +123,26 @@
 
 /* 標題列 */
 .room-header {
-    flex: 0 0 auto;
+    /* flex: 0 0 auto; */
     background: #ede1d3;
     padding: 21.5px 20px;
     border-bottom: 1px solid #e5d6c5;
 }
 
 .room-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     margin: 0;
     font-size: 30px;
     font-weight: 700;
     color: #3b2d22;
+}
+
+.status-tag {
+    font-size: 20px;
+    padding: 4px 10px;
+    border-radius: 6px;
 }
 
 /* 訊息區 */
@@ -171,6 +180,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
+    max-width: min(70%, 560px);
 }
 .avatar {
     width: 45px;
@@ -193,11 +203,13 @@
 /* 泡泡樣式 */
 .bubble {
     display: inline-block;
+    width: auto;
     padding: 10px 14px;
     border-radius: 14px;
     background: #f0f0f0;        /* 對方泡泡 */
     color: #222;
     line-height: 1.45;
+    white-space: pre-wrap;
     word-break: break-word;
 }
 

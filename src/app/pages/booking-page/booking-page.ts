@@ -1,4 +1,3 @@
-
 import { BookService, OrderData } from './../../core/services/book-service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +18,7 @@ import { MessageService } from 'primeng/api';
 import { PricePipe } from "../../shared/pipes/price-pipe";
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
+import { MediaService } from '../../core/services/media.service';
 
 @Component({
     selector: 'app-booking-page',
@@ -63,6 +63,9 @@ export class BookingPage implements OnInit {
         rooms: []
     };
 
+    // <div class="order_infos section-card">
+    orderDays: number = 0;
+
     // <div class="additional_infos section-card">
     checkNotice = '';
     petNotice = '';
@@ -86,37 +89,18 @@ export class BookingPage implements OnInit {
 
     /** isNavigatingAway */
     isNavigatingAway: boolean = false;
+    /** image */
+    image: string = '';
 
     /**
      * 建構子注入
      */
-    constructor(private router: Router, private hotelService: HotelService, private bookService: BookService, private messageService: MessageService, private userService: UserService) { };
+    constructor(private router: Router, private hotelService: HotelService, private bookService: BookService, private messageService: MessageService, private userService: UserService, private mediaService: MediaService) { };
 
     /**
      * 初始化頁面內容
      */
     ngOnInit(): void {
-
-        this.bookService.setSharedOrderData({ // 暫時寫在這，應該要在上一頁設定
-            propertyId: 'P000000001',
-            checkIn: '2025-10-26',
-            checkOut: '2025-10-27',
-            rooms: [{
-                roomId: 'R000000001',
-                roomName: '高級寵物房',
-                roomPrice: 2500,
-                roomQuantity: 1,
-                roomTotal: 2500,
-                expanded: false
-            }, {
-                roomId: 'R000000002',
-                roomName: '豪華寵物房',
-                roomPrice: 2700,
-                roomQuantity: 1,
-                roomTotal: 2700,
-                expanded: false
-            }]
-        });
 
         this.orderData = this.bookService.getSharedOrderData();
 
@@ -161,8 +145,12 @@ export class BookingPage implements OnInit {
             }
         });
 
+        this.image = this.getImage(this.orderData.propertyId);
+
+        this.orderDays = this.getOrderDays(this.orderData.checkIn, this.orderData.checkOut);
+
         for (let room of this.orderData.rooms) {
-            this.totalAmount += room.roomTotal;
+            this.totalAmount += room.roomTotal * this.orderDays;
         }
     }
 
@@ -230,9 +218,8 @@ export class BookingPage implements OnInit {
                             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                             return;
                         }
-                        this.router.navigate(['/book/authorize'], {
-                            state: { orderId: response.TRANRS.order_id }
-                        });
+                        localStorage.setItem('sharedOrderId', response.TRANRS.order_id);
+                        this.router.navigate(['/book/authorize'], { state: { orderDays: this.orderDays } })
                     },
                     error: (error) => {
                         this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
@@ -252,8 +239,11 @@ export class BookingPage implements OnInit {
                             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                             return;
                         }
+                        const orderId: string = response.TRANRS.order_id;
+                        localStorage.setItem('sharedOrderId', orderId);
+
                         // 呼叫綠界信用卡API
-                        this.bookService.getCreditParams(response.TRANRS.order_id).subscribe({
+                        this.bookService.getCreditParams(orderId).subscribe({
                             next: (response) => {
 
                                 // 建立form
@@ -328,6 +318,16 @@ export class BookingPage implements OnInit {
     }
 
     /**
+     * 獲取兩個日期之間的晚數
+     * @params startDate：起始日，格式：'yyyy-MM-dd'
+     * @params endDate：結束日，格式：'yyyy-MM-dd'
+     * @returns 訂單總晚數
+     */
+    getOrderDays(startDate: string, endDate: string): number {
+        return this.getDatesBetween(startDate, endDate).length;
+    }
+
+    /**
      * 使用者如果要重整頁面，跳出警告
      * @params event
      */
@@ -338,6 +338,33 @@ export class BookingPage implements OnInit {
         }
         event.preventDefault();
         event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
+    }
+
+    /**
+     * 獲取旅館圖片
+     * @returns
+     */
+    getImage(propertyId: string): string {
+        this.mediaService.onGetMediaApi({
+            MWHEADER: {
+                MSGID: 'MEDIA-004'
+            },
+            TRANRQ: {
+                propertyId: propertyId
+            }
+        }).subscribe({
+            next: (response) => {
+                if (!(response.MWHEADER.RETURNCODE === "0000") || response.TRANRS.totalCount) {
+                    return 'img/hotelImg.png';
+                }
+                const firstImage = response.TRANRS.medias[0];
+                return `data:${firstImage.mimeType || 'image/jpeg'};base64,${firstImage.base64Data}`;
+            },
+            error: (error) => {
+                return 'img/hotelImg.png';
+            }
+        });
+        return 'img/hotelImg.png';
     }
 
     // 簡化取得控制項：beginning

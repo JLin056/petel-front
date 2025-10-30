@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './pages/home-page/home-page';
 import { HotelListPage } from './pages/hotel-list-page/hotel-list-page';
+import { adminAuthGuard } from './core/guards/admin-auth.guard';
 import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page';
 import { UserPage } from './pages/user-page/user-page';
 import { ChatPage } from './pages/chat-page/chat-page';
@@ -11,6 +12,7 @@ import { ResetPasswordPage } from './pages/reset-password-page/reset-password-pa
 import { MerchantLoginPage } from './pages/merchant-login-page/merchant-login-page';
 import { MerchantRegisterPage } from './pages/merchant-register-page/merchant-register-page';
 import { MerchantHomePage } from './pages/merchant-home-page/merchant-home-page';
+import { AdminLoginPage } from './pages/admin-login-page/admin-login-page';
 import { UserMerchantPage } from './pages/user-merchant-page/user-merchant-page';
 import { MerchantOrderTablePage } from './pages/merchant-order-table-page/merchant-order-table-page';
 import { MerchantReviewListPage } from './pages/merchant-review-list-page/merchant-review-list-page';
@@ -140,19 +142,27 @@ export const routes: Routes = [
         component: MerchantReviewListPage
     },
     {
+        path: 'admin/login',
+        component: AdminLoginPage
+    },
+    {
         path: 'admin/orderTable',
-        component: OrderTableComponent
+        component: OrderTableComponent,
+        canActivate: [adminAuthGuard]
     },
     {
         path: 'admin/userTable',
-        component: AdminUserTable
+        component: AdminUserTable,
+        canActivate: [adminAuthGuard]
     },
     {
         path: 'admin/sellerTable',
-        component: AdminSellerTable
+        component: AdminSellerTable,
+        canActivate: [adminAuthGuard]
     },
     {
         path: 'admin/hotelTable',
-        component: AdminHotelTable
+        component: AdminHotelTable,
+        canActivate: [adminAuthGuard]
     }
 ];
