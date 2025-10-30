@@ -163,8 +163,6 @@ export class MerchantPropertyInfoPage implements OnInit {
                 facilities: this.facilityData?.facilities.map(f => ({ facilityName: f.name })) || []
             };
 
-            // TODO
-
             this.mediaService.onGetMediaApi({
                 MWHEADER: {
                     MSGID: 'MEDIA-004'
