@@ -14,5 +14,6 @@ export interface Tranrs {
     name:      string;
     phone:     string;
     email:     string;
-    mediaId:   string;
+    mediaId:    string | null;
+    mediaBase64: string | null;
 }
