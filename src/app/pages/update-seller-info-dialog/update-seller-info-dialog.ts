@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
+import { Media } from '../../core/interfaces/MEDIA004Res.interface';
+import { MediaService } from '../../core/services/media.service';
+import { MEDIA004Req } from '../../core/interfaces/MEDIA004Req.interface';
 
 @Component({
   selector: 'app-update-seller-info-dialog',
@@ -18,30 +21,35 @@ export class UpdateSellerInfoDialog {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   /** 接收 user 資料 */
-  @Input() user: Partial<MERCH011Tranrs & { avatarUrl?: string | null }> = {};
+  @Input() user: Partial<MERCH011Tranrs & { avatarUrl?: string | null; mediaId?: string; mediaBase64?: string }> = {};
 
   /** 事件：儲存 */
-  @Output() save = new EventEmitter<{ name: string; phone: string; file: File | null }>();
+  @Output() save = new EventEmitter<{ name: string; phone: string; avatarMediaId: string | undefined }>();
   /** 事件：取消 */
   @Output() cancel = new EventEmitter<void>();
 
   loading = false;
-  previewFile: string | ArrayBuffer | null = null;
-  avatarError = '';
-  private file: File | null = null;
+
   /** formData 用來綁定表單 */
   formData: { name: string; phone: string } = { name: '', phone: '' };
 
-  ngOnChanges() {
-    if (this.visible && this.user) {
-      this.formData = {
-        name: this.user.name || '',
-        phone: this.user.phone || ''
-      };
-      this.previewFile = this.user.avatarUrl || null;
-      this.file = null;
-      this.avatarError = '';
+  // 頭貼處理
+  avatars: Media[] = [];
+  loadingAvatars = false;
+  selectedIndex: number | null = null;
+  selectedMediaId: string | undefined = undefined;
+
+  constructor(private mediaService: MediaService) {}
+
+  toDataUrl(m: Media): string {
+    return `data:${m.mimeType};base64,${m.base64Data}`;
+  }
+
+  get previewSrc(): string | null {
+    if (this.selectedIndex !== null && this.avatars[this.selectedIndex]) {
+      return this.toDataUrl(this.avatars[this.selectedIndex]);
     }
+    return this.user?.mediaBase64 ?? null;
   }
 
   /** Dialog 隱藏 */
@@ -51,49 +59,81 @@ export class UpdateSellerInfoDialog {
     this.cancel.emit();
   }
 
-  /** 選擇檔案 */
-  onFilePicked(ev: Event) {
-    this.avatarError = '';
-    const input = ev.target as HTMLInputElement;
-    const f = input.files?.[0] ?? null;
-    if (!f) return;
-
-    if (!/^image\/(png|jpeg|jpg)$/.test(f.type)) {
-      this.avatarError = '只支援 JPG/PNG';
+  private syncSelectedIndexByMediaId(): void {
+    if (!this.avatars.length) {
+      this.selectedIndex = null;
+      this.selectedMediaId = undefined;
       return;
     }
-    if (f.size > 2 * 1024 * 1024) {
-      this.avatarError = '檔案大小不可超過 2MB';
-      return;
-    }
-    this.file = f;
 
-    const reader = new FileReader();
-    reader.onload = () => (this.previewFile = reader.result);
-    reader.readAsDataURL(f);
+    const target = this.user?.mediaId ?? this.selectedMediaId ?? this.avatars[0].mediaId;
+    const i = this.avatars.findIndex(a => a.mediaId === target);
+    this.selectedIndex = i >= 0 ? i : 0;
+    this.selectedMediaId = this.avatars[this.selectedIndex].mediaId;
   }
 
-  /** 移除頭貼 */
-  removeAvatar() {
-    this.file = null;
-    this.previewFile = null;
-    this.user.avatarUrl = null;
+  loadAvatars(force = false): void {
+    if (this.loadingAvatars) return;
+    if (!force && this.avatars.length) {
+      this.syncSelectedIndexByMediaId();
+      return;
+    }
+
+    this.loadingAvatars = true;
+    const payload: MEDIA004Req = {
+      MWHEADER: {
+        MSGID: 'MEDIA-004'
+      },
+      TRANRQ: {
+        bucket: 'Seller_Profile'
+      }
+    }
+
+    this.mediaService.onGetMediaApi(payload).subscribe({
+      next: (res) => {
+        this.avatars = res.TRANRS.medias ?? [];
+        this.loadingAvatars = false;
+        this.syncSelectedIndexByMediaId();
+      },
+      error: () => {
+        this.avatars = [];
+        this.loadingAvatars = false;
+        this.selectedIndex = null;
+      }
+    })
+  }
+
+  selectAvatar(i: number): void {
+    this.selectedIndex = i;
+    this.selectedMediaId = this.avatars[i]?.mediaId ?? this.selectedMediaId;
   }
 
   /** 儲存 */
-  onSave(nameCtrl: NgModel, phoneCtrl: NgModel) {
-    if (nameCtrl.invalid || phoneCtrl.invalid) {
-      nameCtrl.control.markAsTouched();
-      phoneCtrl.control.markAsTouched();
-      return;
-    }
+  onSave(nameCtrl: NgModel, phoneCtrl: NgModel): void {
+    nameCtrl.control.markAsTouched();
+    phoneCtrl.control.markAsTouched();
+    if (nameCtrl.invalid || phoneCtrl.invalid) return;
 
     this.loading = true;
     this.save.emit({
       name: this.formData.name.trim(),
       phone: this.formData.phone.trim(),
-      file: this.file
+      avatarMediaId: this.selectedMediaId
     });
     this.loading = false;
+    this.onHideDialog();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['user'] && this.user) {
+      this.formData = {
+        name: this.user.name || '',
+        phone: this.user.phone || ''
+      };
+      this.selectedMediaId = this.user.mediaId ?? this.selectedMediaId;
+    }
+    if (changes['visible']?.currentValue === true) {
+      this.loadAvatars();
+    }
   }
 }

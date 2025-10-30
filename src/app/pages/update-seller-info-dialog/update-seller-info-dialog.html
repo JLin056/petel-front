@@ -1,21 +1,33 @@
-<p-dialog header="修改會員資訊" [modal]="true" [closable]="false" [blockScroll]="true" [dismissableMask]="false"
+<p-dialog header="修改商家資訊" [modal]="true" [closable]="false" [blockScroll]="true" [dismissableMask]="false"
     [(visible)]="visible" (onHide)="onHideDialog()" [style]="{width: '600px'}" styleClass="petel-auth-dialog">
 
     <div class="container">
         <!-- 頭貼區 -->
         <div class="avatar-box">
-            <img [src]="previewFile || user.avatarUrl || 'img/avatar.png'" alt="avatar" class="avatar" />
-
-            <div class="avatar-actions">
-                <input type="file" accept="image/*" hidden #fileInput (change)="onFilePicked($event)" />
-                <p-button label="修改頭貼" size="small" (onClick)="fileInput.click()"></p-button>
-                <p-button *ngIf="previewFile || user.avatarUrl" label="移除頭貼" size="small" severity="secondary"
-                    (onClick)="removeAvatar()">
-                </p-button>
-            </div>
-            <small class="hint">支援 JPG/PNG，最大 2MB</small>
-            <small class="error-text" *ngIf="avatarError">{{ avatarError }}</small>
+            <img
+                [src]="previewSrc || 'img/avatar.png'"
+                alt="avatar"
+                class="avatar"
+            />
+            <small class="hint">喜歡其他張？</small>
         </div>
+
+        <div class="avatar-grid" *ngIf="avatars.length; else emptyArea">
+            <div
+                class="avatar-item"
+                *ngFor="let a of avatars; let i = index"
+                [class.selected]="selectedIndex === i"
+                (click)="selectAvatar(i)"
+            >
+                <img [src]="toDataUrl(a)" alt="avatar-option" />
+            </div>
+        </div>
+
+        <ng-template #emptyArea>
+            <div class="empty">
+                <p *ngIf="!loadingAvatars">目前沒有可選頭貼，或尚未載入。</p>
+            </div>
+        </ng-template>
 
         <!-- 表單區 -->
         <div class="input-container">
