@@ -70,18 +70,38 @@
     justify-content: flex-start;
 }
 ::ng-deep .p-button.button {
+    border-radius: 20px;
     font-size: 1.4rem;
     font-weight: 600;
     transition: 0.2s;
     margin-right: 50px;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 10px 16px;
+}
+/* 搜尋框 */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 8px 20px;
+    /* position: sticky;
+    top: 0;
+    z-index: 2;  */
+}
+.sort-wrap {
+    margin-left: auto;
+}
+.p-select {
+    min-width: 220px;
+    border-radius: 8px;
+}
+.p-select .p-inputtext {
+    border-radius: 8px;
+    padding: 6px 16px;
 }
 /* 訂單 */
 .order {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     margin-bottom: 30px;
 }
 .order h3 {
@@ -112,8 +132,93 @@
     color: #757575;
 }
 .status-tag {
-  font-size: 20px;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-weight: 600;
+    font-size: 20px;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-weight: 600;
 }
+.order-item-img img {
+    width: 250px;
+}
+
+.state-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    width: 100%;
+    min-height: 320px;
+    padding: 40px 20px;
+    border-radius: 20px;
+
+    background-color: #fffdf9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+    margin-top: 40px;
+    transition: 0.3s ease;
+}
+.state-card .state-icon {
+    font-size: 60px;
+    margin-bottom: 12px;
+}
+.state-card h4 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5b3923;
+    margin: 8px 0;
+}
+.state-card p {
+    font-size: 1.4rem;
+    color: #7a7a7a;
+    margin: 4px 0;
+}
+.state-card.empty .state-icon {
+    color: #c08a5b;
+}
+.state-card.error {
+    background-color: #fff0f0;
+    border: 2px solid #e8b2b2;
+}
+.state-card.error .state-icon {
+    color: #d9534f;
+}
+.state-card.error h4 {
+    color: #b53a3a;
+}
+::ng-deep .state-card.error .p-button {
+    margin-top: 16px;
+    background-color: #d9534f;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 18px;
+    transition: background-color 0.2s ease;
+}
+
+::ng-deep .state-card.error .p-button:hover {
+    background-color: #c9403c;
+}
+
+.order-panel {
+    border: 1px solid #e6e2dd;
+    border-radius: 12px;
+    background: #fff;
+    padding: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+
+    max-height: calc(100dvh - 500px);  /* 視需要微調 420 */
+    overflow-y: auto;
+}
+.order-panel::-webkit-scrollbar {
+    width: 8px;
+}
+.order-panel::-webkit-scrollbar-thumb {
+    background: #d8c6b3; border-radius: 8px;
+}
+.order-panel::-webkit-scrollbar-track {
+    background: #f7f2ec; border-radius: 8px;
+}
+

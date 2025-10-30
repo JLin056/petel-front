@@ -15,10 +15,13 @@ import { USER002Req } from '../../core/interfaces/USER002Req.interface';
 import { Order } from '../../core/interfaces/USER006Res.interface';
 import { USER006Req } from '../../core/interfaces/USER006Req.interface';
 import { TagModule } from 'primeng/tag';
+import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
+
 
 @Component({
   selector: 'app-user-page',
-  imports: [CommonModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule],
+  imports: [CommonModule, FormsModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule, SelectModule],
   templateUrl: './user-page.html',
   styleUrl: './user-page.css',
   providers: [ConfirmationService, MessageService]
@@ -37,6 +40,16 @@ export class UserPage {
     orders: Order[] = [];
 
     user: Tranrs | null = null;
+
+    readonly statusOptions = [
+        { label: '全部',  value: '' },
+        { label: '已付款', value: '已付款' },
+        { label: '未付款', value: '未付款' },
+        { label: '已完成', value: '已完成' },
+        { label: '已取消', value: '已取消' },
+    ];
+
+    selectedStatus: string = '';
 
     constructor(
         private toast: MessageService,
@@ -65,9 +78,14 @@ export class UserPage {
             });
     }
 
+    reloadOrders() {
+        this.onGetBooking();
+    }
+
     openEdit() {
         this.editVisible = true;
     }
+
     onEditSaved(updated: { name: string; phone: string; avatarMediaId?: string }) {
         if (this.loading) return;
 
@@ -140,6 +158,7 @@ export class UserPage {
                 MSGID: 'USER-006'
             },
             TRANRQ : {
+                ...(this.selectedStatus ? { status: this.selectedStatus } : {})
             }
         }
 
@@ -150,6 +169,9 @@ export class UserPage {
                 if (res.MWHEADER.RETURNCODE === '0000') {
                     const list = res?.TRANRS?.orders;
                     this.orders = Array.isArray(list) ? list : [];
+                } else if (res.MWHEADER.RETURNDESC === '查無資料') {
+                    this.orders = [];
+                    this.bookingsError = '';
                 } else {
                     this.orders = [];
                     this.bookingsError = res?.MWHEADER?.RETURNDESC || '讀取歷史訂單失敗';
@@ -180,6 +202,8 @@ export class UserPage {
         }
     }
 
+
+
     // 取消訂單按鈕 disable
     isCancelDisabled(status?: string): boolean {
         return !status || !this.cancellableStatuses.has(status);
@@ -195,7 +219,7 @@ export class UserPage {
     onDeleteOrderConfirmed() {
         // 執行取消訂單的邏輯
         console.log('取消訂單', this.currentOrderId);
-        // 呼叫你的 service 來取消訂單
+
         // this.orderService.cancelOrder(this.currentOrderId).subscribe(...);
 
         this.deleteOrderVisible = false;
