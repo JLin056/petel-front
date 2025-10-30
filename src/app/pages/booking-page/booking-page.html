@@ -123,6 +123,10 @@
                         <span>退房日期</span>
                         <span>{{ this.orderData.checkOut }}</span>
                     </div>
+                    <div class="summary-row">
+                        <span>住宿天數</span>
+                        <span>{{ this.orderDays }} 晚</span>
+                    </div>
                 </div>
 
                 <div class="room-items">
@@ -143,7 +147,7 @@
                             <table class="room-detail-table">
                                 <tr>
                                     <td class="label-col">房型金額</td>
-                                    <td>{{ room.roomPrice | price }}</td>
+                                    <td>{{ room.roomPrice | price }} (每晚)</td>
                                 </tr>
                                 <tr>
                                     <td class="label-col">房型數量</td>
@@ -151,7 +155,7 @@
                                 </tr>
                                 <tr>
                                     <td class="label-col">房型總額</td>
-                                    <td>{{ room.roomTotal | price }}</td>
+                                    <td>{{ room.roomTotal | price }} (每晚)</td>
                                 </tr>
                             </table>
                         </div>

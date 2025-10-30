@@ -63,6 +63,9 @@ export class BookingPage implements OnInit {
         rooms: []
     };
 
+    // <div class="order_infos section-card">
+    orderDays: number = 0;
+
     // <div class="additional_infos section-card">
     checkNotice = '';
     petNotice = '';
@@ -140,8 +143,10 @@ export class BookingPage implements OnInit {
             }
         });
 
+        this.orderDays = this.getOrderDays(this.orderData.checkIn, this.orderData.checkOut);
+
         for (let room of this.orderData.rooms) {
-            this.totalAmount += room.roomTotal;
+            this.totalAmount += room.roomTotal * this.orderDays;
         }
     }
 
@@ -210,7 +215,7 @@ export class BookingPage implements OnInit {
                             return;
                         }
                         localStorage.setItem('sharedOrderId', response.TRANRS.order_id);
-                        this.router.navigateByUrl('/book/authorize');
+                        this.router.navigate(['/book/authorize'], { state: { orderDays: this.orderDays } })
                     },
                     error: (error) => {
                         this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
@@ -306,6 +311,16 @@ export class BookingPage implements OnInit {
         }
 
         return dates;
+    }
+
+    /**
+     * 獲取兩個日期之間的晚數
+     * @params startDate：起始日，格式：'yyyy-MM-dd'
+     * @params endDate：結束日，格式：'yyyy-MM-dd'
+     * @returns 訂單總晚數
+     */
+    getOrderDays(startDate: string, endDate: string): number {
+        return this.getDatesBetween(startDate, endDate).length;
     }
 
     /**

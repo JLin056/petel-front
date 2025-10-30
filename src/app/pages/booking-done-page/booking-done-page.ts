@@ -1,3 +1,4 @@
+import { ChatService } from './../../core/services/chat.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { BookService, OrderData } from './../../core/services/book-service';
@@ -36,7 +37,7 @@ export class BookingDonePage implements OnInit, OnDestroy {
     /**
      * 建構子注入
      */
-    constructor(private router: Router, private bookService: BookService, private hotelService: HotelService, private messageService: MessageService) { };
+    constructor(private router: Router, private bookService: BookService, private hotelService: HotelService, private messageService: MessageService, private chatService: ChatService) { };
 
     /**
      * 初始化頁面內容
@@ -71,6 +72,15 @@ export class BookingDonePage implements OnInit, OnDestroy {
             this.bookService.setSharedOrderData(JSON.parse(localStorage.getItem('sharedOrderData')!));
         }
 
+        this.chatService.onCreateChatRoomApi({
+            MWHEADER: {
+                MSGID: 'CHAT-001'
+            },
+            TRANRQ: {
+                orderId: localStorage.getItem('sharedOrderId')!
+            }
+        }).subscribe();
+
         this.orderData = this.bookService.getSharedOrderData();
 
         this.hotelService.queryHotelDetail(this.orderData.propertyId).subscribe({
@@ -104,7 +114,7 @@ export class BookingDonePage implements OnInit, OnDestroy {
      * 點擊聊聊按鈕，轉導至聊天室頁面
      */
     onChat(): void {
-        this.router.navigateByUrl('/chat'); // TODO Check: see whether it needs additional info.
+        this.router.navigateByUrl('/chat');
     }
 
     /**
