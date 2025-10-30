@@ -19,6 +19,8 @@ import { MERCH009Tranrq } from '../interfaces/MERCH009Req.interface';
 import { MERCH010Tranrq } from '../interfaces/MERCH010Req.interface';
 import { MERCH013Tranrq } from '../interfaces/MERCH013Req.interface';
 import { MERCH013Tranrs } from '../interfaces/MERCH013Res.interface';
+import { MERCH014Tranrq } from '../interfaces/MERCH014Req.interface';
+import { MERCH014Tranrs } from '../interfaces/MERCH014Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -198,5 +200,26 @@ export class MerchService {
     }
 
     return this.http.post<Res<MERCH013Tranrs>>('http://localhost:8080/merchants/properties/get', postData);
+  }
+
+  /**
+ * MERCH-014 更新訂單狀態
+ * @param tranrq 訂單編號 + 新狀態
+ * @returns
+ */
+  updateOrderStatus(tranrq: MERCH014Tranrq) {
+    const header: Mwheader = {
+      MSGID: 'MERCH-014'
+    };
+
+    const postData: Req<MERCH014Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    };
+
+    return this.http.post<Res<MERCH014Tranrs>>(
+      'http://localhost:8080/merchants/bookings/updateStatus',
+      postData
+    );
   }
 }
