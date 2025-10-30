@@ -346,7 +346,7 @@ export class BookingPage implements OnInit {
             }
         }).subscribe({
             next: (response) => {
-                if (!(response.MWHEADER.RETURNCODE === "0000") || response.TRANRS.totalCount) {
+                if (!(response.MWHEADER.RETURNCODE === "0000") || !response.TRANRS.totalCount) {
                     return 'img/hotelImg.png';
                 }
                 const firstImage = response.TRANRS.medias[0];

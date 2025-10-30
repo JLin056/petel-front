@@ -16,14 +16,14 @@
                 <label class="section-label">旅館圖片</label>
                 <div class="image-preview-area gallery-preview">
                     <!-- 有圖片 -->
-                    <!-- <div class="image-gallery" *ngIf="hotel.propertyImages && hotel.propertyImages.length > 0">
-                        <img *ngFor="let img of hotel.propertyImages" [src]="img.base64Data" alt="旅館圖片" />
-                    </div> -->
+                    <div class="image-gallery" *ngIf="hotel.propertyImages && hotel.propertyImages.length > 0">
+                        <img *ngFor="let img of hotel.propertyImages" [src]="`data:${img.mimeType || 'image/jpeg'};base64,${img.base64Data}`" alt="旅館圖片" style="width: 240px; height: 160px;" />
+                    </div>
                     <!-- 無圖片 -->
-                    <!-- <div class="image-placeholder" *ngIf="!hotel.propertyImages || hotel.propertyImages.length === 0">
+                    <div class="image-placeholder" *ngIf="!hotel.propertyImages || hotel.propertyImages.length === 0">
                         <i class="pi pi-images"></i>
                         <span>暫無圖片</span>
-                    </div> -->
+                    </div>
                 </div>
             </div>
 
