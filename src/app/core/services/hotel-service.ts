@@ -12,6 +12,8 @@ import { Tranrq as HOTEL005Tranrq } from '../interfaces/HOTEL005Req.interface';
 import { Tranrs as HOTEL005Tranrs } from '../interfaces/HOTEL005Res.interface';
 import { Mwheader, Req } from '../interfaces/Req.interface';
 import { Res } from '../interfaces/Res.interface';
+import { HOTEL006Tranrq } from '../interfaces/HOTEL006Req.interface';
+import { HOTEL006Tranrs } from '../interfaces/HOTEL006Res.interface';
 
 
 @Injectable({
@@ -153,6 +155,32 @@ export class HotelService {
         console.log('請求資料:', JSON.stringify(postData, null, 2));
 
         return this.http.post<Res<HOTEL005Tranrs>>(`${environment.BASE_URL}/hotels/singleHotelDetail`, postData);
+    }
+
+    /**
+     * HOTEL-006 查詢單筆旅館詳細資訊 for 商家
+     * @param propertyId 旅館編號
+     * @returns
+     */
+    querySingleHotelDetailForMerchant(propertyId: string) {
+        const header: Mwheader = {
+            MSGID: 'HOTEL-006'
+        };
+
+        const tranrq: HOTEL006Tranrq = {
+            propertyId: propertyId
+        };
+
+        const postData: Req<HOTEL006Tranrq> = {
+            MWHEADER: header,
+            TRANRQ: tranrq
+        };
+
+        console.log('=== HOTEL-006 API 請求參數 ===');
+        console.log('API URL:', `${environment.BASE_URL}/hotels/singleHotelDetail/forSeller`);
+        console.log('請求資料:', JSON.stringify(postData, null, 2));
+
+        return this.http.post<Res<HOTEL006Tranrs>>(`${environment.BASE_URL}/hotels/singleHotelDetail/forSeller`, postData);
     }
 }
 
