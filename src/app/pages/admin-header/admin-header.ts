@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { Auth } from '../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-admin-header',
@@ -16,17 +17,26 @@ import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dia
   templateUrl: './admin-header.html',
   styleUrl: './admin-header.css'
 })
-export class AdminHeader {
+export class AdminHeader implements OnDestroy {
+  /** 是否登入（service 推播） */
+  isLoggedIn = false;
   /** confirmVisible */
   confirmVisible = false;
   /** 是否登出中 */
   isLoggedOut = false;
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private router: Router,
     private authService: Auth,
     private toast: MessageService
-  ) {}
+  ) {
+    // 訂閱 service 的登入狀態
+    this.authService.isLoggedIn$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(v => this.isLoggedIn = v);
+  }
 
   /**
    * 登出
@@ -88,5 +98,17 @@ export class AdminHeader {
    */
   onClickOrderTable() {
     this.router.navigate(['/admin/orderTable']);
+  }
+
+  /**
+   * 前往首頁
+   */
+  onClickHome() {
+    this.router.navigate(['/admin/login']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,9 +1,10 @@
 <div class="header">
-    <div class="logo">
-        <a href="#"><img src="img/Logo.png" alt="Petel Logo" class="logo-img"></a>
+    <div class="logo" (click)="onClickHome()">
+        <a href="#"><img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/petel_logo_004.png" alt="Petel Logo" class="logo-img"></a>
     </div>
 
-    <div class="navbar">
+    <!-- 登入後才顯示的導航列 -->
+    <div class="navbar" *ngIf="isLoggedIn">
         <ul class="navbar-items">
             <li (click)="onClickUserTable()">會員列表</li>
             <li (click)="onClickSellerTable()">賣家列表</li>
@@ -12,7 +13,8 @@
         </ul>
     </div>
 
-    <div class="account">
+    <!-- 登入後才顯示的帳戶區域 -->
+    <div class="account" *ngIf="isLoggedIn">
         <div class="auth-area">
             <button pButton class="LoginLogout" label="登出" (click)="confirmVisible = true" [outlined]="true" [disabled]="isLoggedOut"></button>
         </div>

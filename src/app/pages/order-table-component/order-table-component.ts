@@ -17,6 +17,7 @@ import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
 import { AdminService } from '../../core/services/admin.service';
 import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
+import { PricePipe } from '../../shared/pipes/price-pipe';
 
 @Component({
   selector: 'app-order-table-component',
@@ -32,7 +33,8 @@ import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
     FormsModule,
     ButtonModule,
     OrderDetailDialog,
-    ToastModule
+    ToastModule,
+    PricePipe
   ],
   providers: [MessageService],
   templateUrl: './order-table-component.html',

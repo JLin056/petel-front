@@ -11,10 +11,11 @@ import { MessageService } from 'primeng/api';
 import { Order } from '../../core/interfaces/ADMIN003Res.interface';
 import { AdminService } from '../../core/services/admin.service';
 import { ADMIN004Req } from '../../core/interfaces/ADMIN004Req.interface';
+import { PricePipe } from '../../shared/pipes/price-pipe';
 
 @Component({
   selector: 'app-order-detail-dialog',
-  imports: [CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule, TagModule, ToastModule],
+  imports: [CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule, TagModule, ToastModule, PricePipe],
   providers: [MessageService],
   templateUrl: './order-detail-dialog.html',
   styleUrl: './order-detail-dialog.css'
