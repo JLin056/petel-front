@@ -21,6 +21,7 @@
 }
 .image img {
     border-radius: 50%;
+    width: 250px;
 }
 /* 右側 - 會員資訊 */
 .user-info {
