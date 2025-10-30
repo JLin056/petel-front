@@ -139,11 +139,6 @@ export class LoginPage {
         ).subscribe({
             next: (res: AUTH002Res) => {
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    const redirect = this.getRedirectUrl();
-                    this.toast.add({ severity: 'success', summary: '登入成功', detail: '歡迎回來！' });
-                    this.router.navigateByUrl(redirect, {
-                        replaceUrl: true
-                    });
                     // 判斷是否填寫過會員資訊
                     this.authService.onProfileCheck().subscribe({
                         next: (chk) => {
@@ -192,7 +187,7 @@ export class LoginPage {
     /**
      * 送出會員資訊
      */
-     onDialogSave(e: { name: string; phone: string; file?: File | null }) {
+     onDialogSave(e: { name: string; phone: string; avatarMediaId: string }) {
         const req: USER001Req = {
             MWHEADER: {
                 MSGID: 'USER-001'
@@ -200,7 +195,7 @@ export class LoginPage {
             TRANRQ: {
                 name: e.name,
                 phone: e.phone,
-                mediaId: 'M000000001'
+                mediaId: e.avatarMediaId
             }
         };
 
