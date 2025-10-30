@@ -86,14 +86,33 @@ export class ChatPage {
                 next: (res) => {
                     const chats = res.TRANRS?.chats ?? [];
 
+                    if (reset) {
+                        this.threadPage = 1;
+                        this.threadHasMore = true;
+                        this.threads = [];
+                    }
+
+                    const merged = [...this.threads, ...chats];
+
+                    // 用 id 判斷是否重複
+                    const byId = new Map<string, Chat>();
+                    for (const t of merged) {
+                        const exist = byId.get(t.threadId);
+                        if (!exist) {
+                            byId.set(t.threadId, t);
+                        } else {
+                            const tTime = t.lastMessageTime ? new Date(t.lastMessageTime).getTime() : 0;
+                            const eTime = exist.lastMessageTime ? new Date(exist.lastMessageTime).getTime() : 0;
+                            byId.set(t.threadId, tTime >= eTime ? t : exist);
+                        }
+                    }
+
                     // 由新到舊
                     this.threads = chats.sort((a, b) => {
                         const ta = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
                         const tb = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
                         return tb - ta;
                     })
-
-                    this.threads = [...this.threads, ...chats];
 
                     if (chats.length < this.listPageSize) {
                         this.threadHasMore = false;
