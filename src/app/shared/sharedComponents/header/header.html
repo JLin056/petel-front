@@ -19,6 +19,19 @@
             style="color: #2e2424; font-size: 1.5rem;"
             (click)="onClickChat()"
         ></i>
+        <div style="position: relative; display: inline-block;">
+            <i
+                class="pi pi-bell"
+                style="color: #2e2424; font-size: 1.5rem; cursor: pointer;"
+                (click)="onClickNotification()"
+            ></i>
+            <span
+                *ngIf="unreadCount > 0"
+                class="notification-badge"
+            >
+                {{ unreadCount > 99 ? '99+' : unreadCount }}
+            </span>
+        </div>
         <i
             class="pi pi-user"
             style="color: #2e2424; font-size: 1.5rem;"
@@ -42,3 +55,8 @@
     cancelLabel="取消"
     (confirm)="onLogout()"
 ></app-shared-confirm-dialog>
+
+<!-- 通知面板 -->
+<app-notification-panel
+    [(visible)]="notificationPanelVisible"
+></app-notification-panel>

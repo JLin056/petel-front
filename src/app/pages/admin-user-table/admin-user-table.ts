@@ -70,7 +70,7 @@ export class AdminUserTable implements OnInit {
 
   ngOnInit() {
     this.statuses = [
-      { label: '啟用', value: 'ACTIVE' },
+      { label: '啟用', value: 'active' },
       { label: '停用', value: 'INACTIVE' },
       { label: '暫停', value: 'SUSPENDED' }
     ];
@@ -203,7 +203,7 @@ export class AdminUserTable implements OnInit {
 
   getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
     switch (status) {
-      case 'ACTIVE':
+      case 'active':
         return 'success';
       case 'INACTIVE':
         return 'warn';
@@ -216,7 +216,7 @@ export class AdminUserTable implements OnInit {
 
   getStatusLabel(status: string): string {
     switch (status) {
-      case 'ACTIVE':
+      case 'active':
         return '啟用';
       case 'INACTIVE':
         return '停用';
