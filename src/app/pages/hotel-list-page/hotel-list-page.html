@@ -8,7 +8,7 @@
                     <label class="search-label">縣市</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
-                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkIn" (onSelect)="onCheckInChange()"/>
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkIn" [minDate]="minCheckInDate" (onSelect)="onCheckInChange()"/>
                     <label class="search-label">入住日</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
@@ -31,7 +31,7 @@
         <!-- 左側搜尋 -->
         <div class="search-select-container">
             <!-- 旅館名稱搜尋 -->
-            <div class="hotel-name-search">
+            <!-- <div class="hotel-name-search">
                 <p>搜尋</p>
                 <p-inputgroup>
                     <input pInputText placeholder="e.g. 熊讚寵物窩" />
@@ -39,7 +39,7 @@
                         <p-button icon="pi pi-search" severity="secondary" />
                     </p-inputgroup-addon>
                 </p-inputgroup>
-            </div>
+            </div> -->
             <!-- 價格選擇框 -->
             <div class="select-search">
                 <div class="select-search-title">
@@ -47,13 +47,21 @@
                 </div>
                 <p-listbox
                     [options]="priceRanges"
-                    [multiple]="true"
+                    [(ngModel)]="selectedPriceRange"
+                    [multiple]="false"
                     [metaKeySelection]="false"
+                    (onChange)="onFilterChange()"
                     class="price-listbox"
                 >
                     <ng-template let-opt pTemplate="item">
                         <div class="price-item">
-                            <span class="price-text">
+                            <span class="price-text" *ngIf="opt.min === 0">
+                                $ {{ opt.max | number:'1.0-0' }} 以下
+                            </span>
+                            <span class="price-text" *ngIf="opt.max === 999999">
+                                $ {{ opt.min | number:'1.0-0' }} 以上
+                            </span>
+                            <span class="price-text" *ngIf="opt.min !== 0 && opt.max !== 999999">
                                 $ {{ opt.min | number:'1.0-0' }} - $ {{ opt.max | number:'1.0-0' }}
                             </span>
                         </div>
@@ -66,7 +74,7 @@
                    <p>評價以上我才要</p>
                 </div>
                 <div class="rating-select-search">
-                    <p-rating [(ngModel)]="selectedRating" (onRate)="performSearch()" />
+                    <p-rating [(ngModel)]="selectedRating" (onRate)="onFilterChange()" />
                 </div>
             </div>
             <!-- 熱門搜尋條件 -->
@@ -76,9 +84,11 @@
                 </div>
                 <p-listbox
                     [options]="hotFilters"
+                    [(ngModel)]="selectedFilters"
                     [multiple]="true"
                     [metaKeySelection]="false"
                     optionLabel="name"
+                    (onChange)="onFilterChange()"
                     class="filter-listbox"
                 >
                 </p-listbox>
@@ -120,7 +130,6 @@
                             <div class="hotel-list-price-detail">
                                 <h4>${{ hotel.minPrice | number:'1.0-0' }}</h4>
                                 <p>（已含稅）</p>
-                                <p class="available-qty">剩餘 {{ hotel.availableQty }} 間</p>
                             </div>
                         </div>
                     </div>

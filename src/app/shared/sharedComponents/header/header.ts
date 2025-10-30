@@ -12,6 +12,7 @@ import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared
 import { MessageService } from 'primeng/api';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subject, takeUntil } from 'rxjs';
+import { HotelService } from '../../../core/services/hotel-service';
 
 @Component({
   selector: 'app-header',
@@ -45,15 +46,20 @@ export class Header {
      * @param router
      * @param authService
      * @param toast
+     * @param hotelService
      */
     constructor(
         private router: Router,
         private authService: Auth,
-        private toast: MessageService
+        private toast: MessageService,
+        private hotelService: HotelService
     ) {
         // 監聽 router 改變
         this.router.events
-            .pipe(filter(e => e instanceof NavigationEnd))
+            .pipe(
+                filter(e => e instanceof NavigationEnd),
+                filter(() => !!this.authService.getAccessToken())
+            )
             .subscribe(() => this.onCheckLoginStatus());
 
         // 訂閱 service 的登入狀態
@@ -106,12 +112,7 @@ export class Header {
      * 確認登入狀態
      */
     onCheckLoginStatus() {
-        this.authService.onCheckLoginStatus().subscribe({
-            next: (res) => {
-                const valid = !!res?.TRANRS.valid;
-                if (!valid) this.authService.clearAccessToken();
-            }
-        });
+        this.authService.onCheckLoginStatus().subscribe();
     }
 
     /**
@@ -122,10 +123,123 @@ export class Header {
     }
 
     /**
-     * 前往狗狗旅館
+     * 前往狗狗旅館（帶參數搜尋）
      */
     onClickDog() {
-        this.router.navigate(['/dogHotels']);
+        console.log('=== Header - 狗狗旅館 ===');
+
+        // 使用默認日期：今天和明天
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // 準備 API 參數
+        const apiParams = {
+            petType: 'DOG',
+            checkIn: today,
+            checkOut: tomorrow,
+            petCount: 1,
+            city: '',  // 不指定城市
+            pageNumber: 1,
+            pageSize: 10
+        };
+
+        console.log('API 參數:', apiParams);
+
+        // 調用 API
+        this.hotelService.queryHotels(apiParams).subscribe({
+            next: (response) => {
+                console.log('API 回應:', response);
+
+                if (response.MWHEADER.RETURNCODE === '0000') {
+                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間狗狗旅館`);
+
+                    // 成功，跳轉到旅館列表頁
+                    this.router.navigate(['/dogHotels'], {
+                        state: {
+                            searchResult: response.TRANRS,
+                            searchParams: apiParams
+                        }
+                    });
+                } else {
+                    // API 返回錯誤
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: response.MWHEADER.RETURNDESC || '查詢失敗'
+                    });
+                }
+            },
+            error: (error) => {
+                console.error('API 錯誤:', error);
+                this.toast.add({
+                    severity: 'error',
+                    summary: '錯誤',
+                    detail: '連接後端 API 失敗，請稍後再試'
+                });
+            }
+        });
+    }
+
+    /**
+     * 前往貓貓旅館（帶參數搜尋）
+     */
+    onClickCat() {
+        console.log('=== Header - 貓貓旅館 ===');
+
+        // 使用默認日期：今天和明天
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // 準備 API 參數
+        const apiParams = {
+            petType: 'CAT',
+            checkIn: today,
+            checkOut: tomorrow,
+            petCount: 1,
+            city: '',  // 不指定城市
+            pageNumber: 1,
+            pageSize: 10
+        };
+
+        console.log('API 參數:', apiParams);
+
+        // 調用 API
+        this.hotelService.queryHotels(apiParams).subscribe({
+            next: (response) => {
+                console.log('API 回應:', response);
+
+                if (response.MWHEADER.RETURNCODE === '0000') {
+                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間貓貓旅館`);
+
+                    // 成功，跳轉到旅館列表頁
+                    this.router.navigate(['/dogHotels'], {
+                        state: {
+                            searchResult: response.TRANRS,
+                            searchParams: apiParams
+                        }
+                    });
+                } else {
+                    // API 返回錯誤
+                    this.toast.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: response.MWHEADER.RETURNDESC || '查詢失敗'
+                    });
+                }
+            },
+            error: (error) => {
+                console.error('API 錯誤:', error);
+                this.toast.add({
+                    severity: 'error',
+                    summary: '錯誤',
+                    detail: '連接後端 API 失敗，請稍後再試'
+                });
+            }
+        });
     }
 
     /**

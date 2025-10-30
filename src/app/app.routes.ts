@@ -90,12 +90,16 @@ export const routes: Routes = [
         component: UploadPropertyImage
     },
     {
-        path: 'merchants/login',
+        path: 'merchants/userPage/login',
         component: MerchantLoginPage
     },
     {
-        path: 'merchants/register',
+        path: 'merchants/userPage/register',
         component: MerchantRegisterPage
+    },
+    {
+        path: 'merchants/userPage/chat',
+        component: ChatPage
     },
     {
         path: 'merchants/property/homepage',

@@ -30,6 +30,8 @@ export class Auth {
     private roleSubject = new BehaviorSubject<string | null>(null);
     public readonly role$ = this.roleSubject.asObservable();
 
+    private bootstrapped = false;
+
     /** 注入 HttpClient */
     constructor(private http: HttpClient) { }
 
@@ -164,8 +166,8 @@ export class Auth {
     onGetInfo(): Observable<AUTH006Res> {
         return this.http.post<AUTH006Res>(this.meUrl, null, {
             withCredentials: true
-        })
-            .pipe(tap(res => {
+        }).pipe(
+            tap(res => {
                 const role = extractSingleRole(res);
                 if (role) this.setRole(role);
             }))
@@ -178,12 +180,16 @@ export class Auth {
     onCheckLoginStatus(): Observable<AUTH008Res> {
         return this.http.post<AUTH008Res>(this.checkLoginUrl, null, {
             withCredentials: true
-        })
-            .pipe(tap(res => {
+        }).pipe(
+            tap(res => {
                 const valid = !!res?.TRANRS?.valid;
-                this.isLoggedInSubject.next(valid);
-                if (!valid) this.clearAccessToken();
-            }))
+                this.isLoggedInSubject.next(valid && !!this.accessToken);
+            }),
+            catchError(() => {
+                this.isLoggedInSubject.next(false);
+                return of({ TRANRS: { valid: false } } as AUTH008Res);
+            })
+        );
     }
 
     /**
@@ -218,18 +224,19 @@ export class Auth {
     }
 
     async bootstrap(): Promise<void> {
+        if (this.bootstrapped) return;
+        this.bootstrapped = true;
+
+        if (this.accessToken) return;
+
         try {
             await lastValueFrom(
                 this.onRefreshToken().pipe(
                     switchMap(() => this.onGetInfo()),
-                    catchError(() => {
-                        this.clearAccessToken();
-                        return of(null);
-                    })
+                    catchError(() => of(null))
                 )
             );
         } catch {
-            this.clearAccessToken();
         }
     }
 
