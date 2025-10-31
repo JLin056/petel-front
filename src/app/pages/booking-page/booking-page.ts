@@ -118,9 +118,12 @@ export class BookingPage implements OnInit {
                     this.memberName = tranrs.name;
                     this.memberEmail = tranrs.email;
                     this.memberPhone = tranrs.phone;
+                } else {
+                    this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '會員資訊取得異常' });
                 }
             },
             error: (error) => {
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: '獲取會員資訊失敗' });
                 console.error('獲取會員資訊失敗:', error);
             }
         });
@@ -222,7 +225,7 @@ export class BookingPage implements OnInit {
                         this.router.navigate(['/book/authorize'], { state: { orderDays: this.orderDays } })
                     },
                     error: (error) => {
-                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: '資料庫數據異常，無法送出訂單' });
                         return;
                     }
                 });
@@ -268,7 +271,7 @@ export class BookingPage implements OnInit {
                         });
                     },
                     error: (error) => {
-                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: '資料庫數據異常，無法送出訂單' });
                         return;
                     }
                 });

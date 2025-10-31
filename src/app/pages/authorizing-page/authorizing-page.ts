@@ -33,7 +33,7 @@ import { BOOK005TranrqCardInfo, BOOK005TranrqConsumerInfo } from '../../core/int
 export class AuthorizingPage implements OnInit, OnDestroy {
 
     /** 訂單編號 */
-    orderId: string = '';
+    orderId: string | null = null;
 
     /** 訂購天數 */
     orderDays: number = 0;
@@ -76,14 +76,13 @@ export class AuthorizingPage implements OnInit, OnDestroy {
     ngOnInit(): void {
 
         this.orderDays = history.state.orderDays;
+        this.orderId = localStorage.getItem('sharedOrderId');
+        this.orderData = this.bookService.getSharedOrderData();
 
-        if (!localStorage.getItem('sharedOrderId')) {
+        if (!(this.orderDays && this.orderId && this.orderData)) {
             this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料傳輸異常，將導回 PETEL 首頁' });
             this.router.navigateByUrl('/');
         }
-
-        this.orderId = localStorage.getItem('sharedOrderId')!;
-        this.orderData = this.bookService.getSharedOrderData();
 
         this.totalAmount = 0;
 
@@ -174,7 +173,7 @@ export class AuthorizingPage implements OnInit, OnDestroy {
         }
 
         this.bookService.getAuthorizeParams({
-            order_id: this.orderId,
+            order_id: this.orderId!,
             card_info: cardInfo,
             consumer_info: consumerInfo
         }).subscribe({
