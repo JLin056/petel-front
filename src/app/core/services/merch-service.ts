@@ -76,10 +76,10 @@ export class MerchService {
   }
 
   /**
-   * MERCH-003 查詢單筆旅館所有評價資訊
-   * @param tranrq 單筆旅館所有評價資訊
-   * @returns
-   */
+ * MERCH-003 查詢單筆旅館所有評價資訊
+ * @param tranrq 單筆旅館所有評價資訊
+ * @returns
+ */
   queryPropertyReviews(tranrq: MERCH003Tranrq) {
 
     const header: Mwheader = {
