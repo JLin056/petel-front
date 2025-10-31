@@ -67,9 +67,6 @@ export class BookingDonePage implements OnInit, OnDestroy {
             });
 
             this.bookService.setSharedOrderData(JSON.parse(localStorage.getItem('sharedOrderData')!));
-
-            history.pushState(null, '', location.href);
-            window.addEventListener('popstate', this.popStateHandler);
         }
 
         this.chatService.onCreateChatRoomApi({
@@ -99,6 +96,9 @@ export class BookingDonePage implements OnInit, OnDestroy {
                 return;
             }
         });
+
+        history.pushState(null, '', location.href);
+        window.addEventListener('popstate', this.popStateHandler);
     }
 
     /**
