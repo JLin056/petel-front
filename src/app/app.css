@@ -20,7 +20,7 @@ main {
 
 .content {
   padding-top: 85px;    /* 預留 header 空間 */
-  padding-bottom: 110px; /* 預留 footer 空間 */
+  /* padding-bottom: 110px;  */ /* 預留 footer 空間 */
   min-height: calc(100vh - 100px); /* 100vh 減去 header + footer 的高度 */
   box-sizing: border-box;
 }
