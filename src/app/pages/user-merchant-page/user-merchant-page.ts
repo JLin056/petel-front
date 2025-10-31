@@ -129,10 +129,10 @@ export class UserMerchantPage implements OnInit {
 
   /**
    * 儲存修改後的會員資訊
-   * @param updated 
-   * @returns 
+   * @param updated
+   * @returns
    */
-  onDialogSave(updated: { name: string; phone: string; file: File | null }) {
+  onDialogSave(updated: { name: string; phone: string; avatarMediaId: string | undefined }) {
     if (!this.user.accountId) {
       this.toast.add({ severity: 'error', summary: '錯誤', detail: '找不到帳號資料' });
       return;
@@ -142,7 +142,7 @@ export class UserMerchantPage implements OnInit {
       accountId: this.user.accountId,
       name: updated.name,
       phone: updated.phone,
-      // 若需要上傳檔案，可加 file 參數
+      mediaId: updated.avatarMediaId
     };
 
     this.merchService.editSellerInfo(tranrq).subscribe({
