@@ -97,7 +97,6 @@ export class MerchantReviewListPage implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('載入評價列表失敗', err);
         this.isLoading = false;
         this.reviews = [];
       }
