@@ -120,14 +120,33 @@ export class MerchantOrderTablePage implements OnInit {
 
     this.adminService.queryOrders(postData).subscribe({
       next: (res) => {
-        console.log('API 回應:', res);
+        console.log('=== ADMIN-003 API 完整回應 ===');
+        console.log('回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.orderList = res.TRANRS?.orders || [];
           this.totalRecords = res.TRANRS?.totalCount || 0;
-          console.log('訂單列表載入成功', this.orderList);
+          console.log('訂單列表載入成功，總數:', this.totalRecords);
+          console.log('訂單列表:', this.orderList);
+
+          // 檢查每個訂單的房型和數量資訊
+          this.orderList.forEach((order, index) => {
+            console.log(`訂單 ${index + 1} (${order.ORDER_ID}):`, {
+              房型名稱: order.ROOM,
+              訂購數量: order.QUANTITY,
+              完整訂單: order
+            });
+
+            if (!order.ROOM) {
+              console.warn(`⚠️ 訂單 ${order.ORDER_ID} 缺少房型名稱 (ROOM)`);
+            }
+            if (!order.QUANTITY) {
+              console.warn(`⚠️ 訂單 ${order.ORDER_ID} 缺少訂購數量 (QUANTITY)`);
+            }
+          });
         } else {
           this.orderList = [];
+          console.error('API 返回錯誤:', res.MWHEADER);
         }
         this.loading = false;
       },
@@ -187,6 +206,28 @@ export class MerchantOrderTablePage implements OnInit {
    */
   onStatusChange(order: Order) {
     console.log('訂單狀態已變更:', order.ORDER_ID, '新狀態:', order.STATUS);
+
+    const tranrq: MERCH014Tranrq = {
+      id: order.ORDER_ID,
+      status: order.STATUS
+    };
+
+    this.merchService.updateOrderStatus(tranrq).subscribe({
+      next: (res) => {
+        console.log('狀態更新成功:', res);
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          // 狀態更新成功，訂單已在 ngModel 雙向綁定中自動更新
+          console.log('訂單', order.ORDER_ID, '狀態已更新為', order.STATUS);
+        } else {
+          console.error('狀態更新失敗:', res.MWHEADER);
+          // 可以在這裡添加錯誤提示
+        }
+      },
+      error: (err) => {
+        console.error('狀態更新失敗:', err);
+        // 可以在這裡添加錯誤提示並恢復原狀態
+      }
+    });
   }
 
   /**
@@ -207,31 +248,6 @@ export class MerchantOrderTablePage implements OnInit {
   showOrderDetail(order: Order) {
     this.selectedOrder = order;
     this.showDetailDialog = true;
-  }
-
-  onStatusUpdated(data: { orderId: string; status: string }) {
-    const tranrq: MERCH014Tranrq = {
-      id: data.orderId,
-      status: data.status
-    };
-
-    this.merchService.updateOrderStatus(tranrq).subscribe({
-      next: (res) => {
-        console.log('狀態更新成功:', res);
-
-        const index = this.orderList.findIndex(o => o.ORDER_ID === data.orderId);
-        if (index !== -1) {
-          this.orderList[index].STATUS = data.status;
-        }
-
-        if (this.selectedOrder && this.selectedOrder.ORDER_ID === data.orderId) {
-          this.selectedOrder.STATUS = data.status;
-        }
-      },
-      error: (err) => {
-        console.error('狀態更新失敗:', err);
-      }
-    });
   }
 
   formatDate(date: any): string {

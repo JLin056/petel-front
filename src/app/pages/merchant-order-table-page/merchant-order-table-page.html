@@ -55,12 +55,12 @@
           <td>{{ order.CHECK_IN }}</td>
           <td>{{ order.CHECK_OUT }}</td>
           <td>{{ order.USER_NAME }}</td>
-          <td>{{ order.ROOM }}</td>
+          <td>{{ order.ROOM || '未提供房型資訊' }}</td>
           <td>NT$ {{ order.HOTEL_CHARGES }}</td>
           <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
           <td class="status-cell">
-            <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)">
-            </p-tag>
+            <p-select [(ngModel)]="order.STATUS" [options]="statuses" optionLabel="label" optionValue="value"
+              (onChange)="onStatusChange(order)" placeholder="選擇狀態" styleClass="status-select" />
           </td>
           <td>
             <p-button label="詳細" icon="pi pi-eye" size="small" styleClass="button" (onClick)="showOrderDetail(order)" />
@@ -79,5 +79,5 @@
 
 <!-- Dialog -->
 <app-merchant-order-detail-dialog [(visible)]="showDetailDialog" [order]="selectedOrder"
-  (noteUpdated)="onNoteUpdated($event)" (statusUpdated)="onStatusUpdated($event)">
+  (noteUpdated)="onNoteUpdated($event)">
 </app-merchant-order-detail-dialog>

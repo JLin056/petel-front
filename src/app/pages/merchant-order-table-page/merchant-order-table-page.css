@@ -7,15 +7,15 @@ body {
   text-align: center;
   font-weight: 700;
   font-size: 32px;
-  margin-bottom: 20px;
-  margin-top: 25px;
+  margin-bottom: 30px;
+  margin-top: 40px;
   color: #3a1f0b;
 }
 
 /* 搜尋框區塊 */
 .search-container {
   background-color: #ffffff;
-  padding: 10px 30px 20px;
+  padding: 10px 30px 30px;
 }
 
 /* 搜尋列 */

@@ -1,102 +1,88 @@
-<p-dialog header="訂單詳細資料"
-    [(visible)]="visible"
-    (onHide)="onHideDialog()"
-    [modal]="true"
-    [style]="{width: '900px', 'max-width': '95vw'}"
-    [dismissableMask]="true"
-    [draggable]="false"
-    [resizable]="false">
+<p-dialog [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true"
+    [style]="{width: '950px', 'max-width': '95vw'}" [dismissableMask]="true" [draggable]="false" [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="dialog-header-content">
+            <span class="dialog-title">訂單詳細資料</span>
+            <p-tag *ngIf="order" [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined"
+                class="status-tag" />
+        </div>
+    </ng-template>
 
     <div class="order-detail-content" *ngIf="order">
-        <!-- 基本資訊 -->
-        <div class="detail-section">
-            <h4>訂單基本資訊</h4>
-            <div class="detail-row">
-                <div class="detail-item">
-                    <label>訂單編號</label>
-                    <div class="detail-value">{{ order.ORDER_ID || 'N/A' }}</div>
-                </div>
-                <div class="detail-item">
-                    <label>訂單狀態</label>
-                    <div class="detail-value">
-                        <select [(ngModel)]="order.STATUS" class="status-select">
-                            <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
-                        </select>
-                    </div>
-                </div>
+        <!-- 訂單編號 & 會員姓名 -->
+        <div class="detail-row">
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">訂單編號:</span>
+                <span class="detail-value-inline">{{ order.ORDER_ID || 'N/A' }}</span>
+            </div>
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">會員姓名:</span>
+                <span class="detail-value-inline">{{ order.USER_NAME }} ({{ order.USER_PHONE }})</span>
             </div>
         </div>
 
-        <!-- 會員資訊 -->
-        <div class="detail-section">
-            <h4>會員 / 訂購人資訊</h4>
-            <div class="detail-row">
-                <div class="detail-item">
-                    <label>會員姓名</label>
-                    <div class="detail-value">{{ order.USER_NAME }} ({{ order.USER_PHONE }})</div>
-                </div>
-                <div class="detail-item">
-                    <label>訂購人姓名</label>
-                    <div class="detail-value">{{ order.FINAL_USER_NAME }}</div>
-                </div>
-                <div class="detail-item">
-                    <label>訂購人電話</label>
-                    <div class="detail-value">{{ order.FINAL_USER_Phone }}</div>
-                </div>
+        <!-- 訂購人姓名及電話 -->
+        <div class="detail-row">
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">訂購人姓名:</span>
+                <span class="detail-value-inline">{{ order.FINAL_USER_NAME }}</span>
+            </div>
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">訂購人電話:</span>
+                <span class="detail-value-inline">{{ order.FINAL_USER_Phone }}</span>
             </div>
         </div>
 
-        <!-- 住宿資訊 -->
-        <div class="detail-section">
-            <h4>住宿資訊</h4>
-            <div class="detail-row">
-                <div class="detail-item">
-                    <label>房型名稱</label>
-                    <div class="detail-value">{{ order.ROOM }}</div>
-                </div>
-                <div class="detail-item">
-                    <label>訂購房數</label>
-                    <div class="detail-value">{{ order.QUANTITY }} 間</div>
-                </div>
-                <div class="detail-item">
-                    <label>入住日期</label>
-                    <div class="detail-value">{{ order.CHECK_IN }}</div>
-                </div>
-                <div class="detail-item">
-                    <label>退房日期</label>
-                    <div class="detail-value">{{ order.CHECK_OUT }}</div>
-                </div>
+        <!-- 房型及訂購房數 -->
+        <div class="detail-row">
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">房型:</span>
+                <span class="detail-value-inline">{{ order.ROOM || '未提供房型資訊' }}</span>
+            </div>
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">訂購房數:</span>
+                <span class="detail-value-inline">{{ order.QUANTITY ? (order.QUANTITY + ' 間') : '未提供數量資訊' }}</span>
             </div>
         </div>
 
-        <!-- 費用資訊 -->
-        <div class="detail-section">
-            <h4>費用資訊</h4>
-            <div class="detail-row">
-                <div class="detail-item">
-                    <label>總價格</label>
-                    <div class="detail-value price">NT$ {{ order.HOTEL_CHARGES }}</div>
-                </div>
-                <div class="detail-item">
-                    <label>付款方式</label>
-                    <div class="detail-value">{{ order.PAYMENT_METHOD || '未提供' }}</div>
-                </div>
-                <div class="detail-item">
-                    <label>建立時間</label>
-                    <div class="detail-value">{{ order.CREATED_AT }}</div>
-                </div>
+        <!-- 入住日期及退房日期 -->
+        <div class="detail-row">
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">入住日期:</span>
+                <span class="detail-value-inline">{{ order.CHECK_IN }}</span>
+            </div>
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">退房日期:</span>
+                <span class="detail-value-inline">{{ order.CHECK_OUT }}</span>
+            </div>
+        </div>
+
+        <!-- 總價格、付款方式、建立時間 -->
+        <div class="detail-row bottom-section">
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">總價格:</span>
+                <span class="detail-value-inline price-amount">NT$ {{ order.HOTEL_CHARGES }}</span>
+            </div>
+            <div class="detail-item-inline" *ngIf="order.PAYMENT_METHOD">
+                <span class="detail-label-inline">付款方式:</span>
+                <span class="detail-value-inline">{{ order.PAYMENT_METHOD }}</span>
+            </div>
+            <div class="detail-item-inline">
+                <span class="detail-label-inline">建立時間:</span>
+                <span class="detail-value-inline">{{ order.CREATED_AT }}</span>
             </div>
         </div>
 
         <!-- 備註 -->
-        <div class="detail-section">
-            <h4>訂單備註</h4>
+        <div class="detail-item note-section">
+            <label class="detail-label">備註</label>
             <textarea [(ngModel)]="editedNote" rows="4" class="note-textarea" placeholder="請輸入備註..."></textarea>
         </div>
     </div>
 
     <ng-template pTemplate="footer">
-        <p-button label="儲存" severity="primary" (onClick)="onSave()" />
         <p-button label="關閉" severity="secondary" (onClick)="onHideDialog()" />
+        <p-button label="儲存備註" severity="primary" (onClick)="onSave()" />
     </ng-template>
 </p-dialog>
