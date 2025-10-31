@@ -128,17 +128,20 @@ export class AddSellerInfoDialog {
       return;
     }
 
+    // 如果有頭像列表但沒有選擇，自動選第一個
     if (!this.selectedMediaId && this.avatars.length > 0) {
       this.selectedIndex = 0;
       this.selectedMediaId = this.avatars[0].mediaId;
     }
-    if (!this.selectedMediaId) return;
+
+    // 如果還是沒有 selectedMediaId（例如頭像列表為空），使用預設值
+    const avatarId = this.selectedMediaId || this.avatars[0]?.mediaId || 'M000000007';
 
     this.loading = true;
     this.save.emit({
       name: this.name.trim(),
       phone: this.phone.trim(),
-      avatarMediaId: this.selectedMediaId
+      avatarMediaId: avatarId
     });
     this.loading = false;
   }
