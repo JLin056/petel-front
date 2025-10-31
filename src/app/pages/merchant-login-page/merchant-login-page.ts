@@ -201,14 +201,11 @@ export class MerchantLoginPage {
     /**
     * 送出會員資訊
     */
-    onDialogSave(e: { name: string; phone: string; file?: File | null }) {
-        // Step 1: 若有頭貼，先處理上傳（可串真實 API）
-        const mediaId = 'M000000001'; // 暫時先寫死或等上傳成功後取得
-
+    onDialogSave(e: { name: string; phone: string; avatarMediaId: string }) {
         const req = {
             name: e.name,
             phone: e.phone,
-            mediaId
+            mediaId: e.avatarMediaId
         };
 
         this.merchService.createSellerInfo(req).subscribe({
