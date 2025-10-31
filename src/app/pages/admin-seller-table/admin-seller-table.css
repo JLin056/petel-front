@@ -83,6 +83,14 @@
   font-size: 1.2rem;
 }
 
+/* 表格內容文字溢出顯示省略號 */
+::ng-deep .p-datatable td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
 /* �t8eFW� */
 ::ng-deep .p-datatable input {
   font-size: 1.1rem;
