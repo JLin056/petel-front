@@ -22,6 +22,7 @@ export interface Media {
     fileName:   string;
     sizeBytes:  number;
     mimeType:   string;
+    sortOrder?: number;
     createdAt:  Date;
     updatedAt:  Date;
 }
