@@ -28,7 +28,7 @@ export class UserMerchantPage implements OnInit {
   deleteUserVisible = false;
   deleteOrderVisible = false;
   deletePropertyVisible = false;
-  showFillDialog = false;  // 👈 加入這行
+  showFillDialog = false; 
   propertyToDelete: any = null;
   hotelList: propertyList[] = [];
   isLoading = false;
@@ -129,10 +129,10 @@ export class UserMerchantPage implements OnInit {
 
   /**
    * 儲存修改後的會員資訊
-   * @param updated 
-   * @returns 
+   * @param updated
+   * @returns
    */
-  onDialogSave(updated: { name: string; phone: string; file: File | null }) {
+  onDialogSave(updated: { name: string; phone: string; avatarMediaId: string | undefined }) {
     if (!this.user.accountId) {
       this.toast.add({ severity: 'error', summary: '錯誤', detail: '找不到帳號資料' });
       return;
@@ -142,14 +142,13 @@ export class UserMerchantPage implements OnInit {
       accountId: this.user.accountId,
       name: updated.name,
       phone: updated.phone,
-      // 若需要上傳檔案，可加 file 參數
+      mediaId: updated.avatarMediaId
     };
 
     this.merchService.editSellerInfo(tranrq).subscribe({
       next: (res) => {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.toast.add({ severity: 'success', summary: '成功', detail: '會員資料已更新' });
-          // 更新 user 資料
           this.user = { ...this.user, name: updated.name, phone: updated.phone };
           this.showFillDialog = false;
         } else {
@@ -193,7 +192,6 @@ export class UserMerchantPage implements OnInit {
     console.log('sellerId:', sellerId);
 
     if (!sellerId) {
-      this.errorMessage = '無法取得商家帳號資訊';
       this.isLoadingHotels = false;
       this.toast.add({
         severity: 'error',
@@ -214,7 +212,6 @@ export class UserMerchantPage implements OnInit {
           console.log('旅館列表載入成功，數量:', this.hotelList.length);
           console.log('旅館列表內容:', this.hotelList);
         } else {
-          this.errorMessage = res.MWHEADER.RETURNDESC || '載入旅館列表失敗';
           this.hotelList = [];
           this.toast.add({
             severity: 'error',
@@ -226,7 +223,6 @@ export class UserMerchantPage implements OnInit {
       },
       error: (err) => {
         console.error('載入旅館列表失敗:', err);
-        this.errorMessage = '無法載入旅館列表，請稍後再試';
         this.isLoadingHotels = false;
         this.hotelList = [];
         this.toast.add({
@@ -259,7 +255,6 @@ export class UserMerchantPage implements OnInit {
    */
   onEditHotel(property: any): void {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館資料';
       this.toast.add({
         severity: 'error',
         summary: '錯誤',
@@ -279,7 +274,6 @@ export class UserMerchantPage implements OnInit {
    */
   onHotelDetail(property: any): void {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館 ID';
       console.error(this.errorMessage, property);
       this.toast.add({
         severity: 'error',
@@ -300,7 +294,6 @@ export class UserMerchantPage implements OnInit {
    */
   showDeleteHotelConfirm(property: any) {
     if (!property || !property.id) {
-      this.errorMessage = '無法取得旅館';
       this.toast.add({
         severity: 'error',
         summary: '錯誤',
@@ -346,7 +339,6 @@ export class UserMerchantPage implements OnInit {
           this.propertyToDelete = null;
           this.deletePropertyVisible = false;
         } else {
-          this.errorMessage = res.MWHEADER.RETURNDESC || '刪除失敗';
           this.toast.add({
             severity: 'error',
             summary: '錯誤',
@@ -357,7 +349,6 @@ export class UserMerchantPage implements OnInit {
       },
       error: (err) => {
         console.error('刪除失敗:', err);
-        this.errorMessage = err.error?.MWHEADER?.RETURNDESC || '刪除旅館時發生錯誤，請稍後再試';
         this.isDeleting = false;
         this.deletePropertyVisible = false;
         this.propertyToDelete = null;
