@@ -56,7 +56,6 @@ export class MerchantReviewListPage implements OnInit {
       this.errorMessage = '無法取得旅館資訊';
       return;
     }
-
     this.loadReviews();
   }
 
