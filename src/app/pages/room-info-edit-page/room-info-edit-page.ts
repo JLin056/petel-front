@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EditorModule } from 'primeng/editor';
-import { SelectModule } from 'primeng/select'; // 👈 改成 SelectModule
-import { InputTextModule } from 'primeng/inputtext'; // 👈 加入
-import { MessageModule } from 'primeng/message'; // 👈 加入
+import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { MessageService } from 'primeng/api';
 import { MerchService } from '../../core/services/merch-service';
+import { MediaService } from '../../core/services/media.service';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 interface PetTypeOption {
   name: string;
@@ -19,16 +22,29 @@ interface UnitOption {
   value: number;
 }
 
+interface UploadedImage {
+  file: File;
+  previewUrl: string;
+  sortOrder: number;
+}
+
+interface ExistingImage {
+  mediaId: string;
+  base64Data: string;
+  sortOrder: number;
+}
+
 @Component({
   selector: 'app-room-info-edit-page',
   imports: [
     CommonModule,
     ReactiveFormsModule,
     EditorModule,
-    SelectModule,  // 👈 改成 SelectModule
-    InputTextModule,  // 👈 加入
-    MessageModule,  // 👈 加入
-    SharedConfirmDialog
+    SelectModule,
+    InputTextModule,
+    MessageModule,
+    SharedConfirmDialog,
+    DragDropModule
   ],
   templateUrl: './room-info-edit-page.html',
   styleUrl: './room-info-edit-page.css',
@@ -37,6 +53,9 @@ interface UnitOption {
 export class RoomInfoEditPage implements OnInit {
   /** roomForm */
   roomForm!: FormGroup;
+
+  /** MessageService */
+  messageService = inject(MessageService);
 
   /** petTypes */
   petTypes: PetTypeOption[] = [
@@ -72,12 +91,18 @@ export class RoomInfoEditPage implements OnInit {
   /** roomId */
   roomId: string = '';
 
+  // 圖片相關
+  uploadedImages: UploadedImage[] = [];
+  existingImages: ExistingImage[] = [];
+  deletedImageIds: string[] = [];
+
   /**
    * 注入
    */
   constructor(
     private fb: FormBuilder,
     private merchService: MerchService,
+    private mediaService: MediaService,
     private router: Router
   ) {
     // 從 router state 取得房型資料
@@ -141,28 +166,205 @@ export class RoomInfoEditPage implements OnInit {
     this.roomForm.patchValue({
       petTypeObject: petType || null,
       name: this.roomData.name || '',
-      height: sizes[0] || '',   // 👈 高度
-      length: sizes[1] || '',   // 👈 長度
-      width: sizes[2] || '',    // 👈 寬度
+      height: sizes[0] || '',
+      length: sizes[1] || '',
+      width: sizes[2] || '',
       description: this.roomData.info || '',
       price: this.roomData.basePrice || '',
-      unit: this.roomData.totalUnits || null  // 👈 改成 null
+      unit: this.roomData.totalUnits || null
     });
 
     console.log('表單已填入資料:', this.roomForm.value);
+
+    // 載入現有圖片
+    this.loadExistingImages();
+  }
+
+  /**
+   * 載入現有圖片
+   */
+  private loadExistingImages(): void {
+    if (!this.roomId) return;
+
+    this.mediaService.onGetMediaApi({
+      MWHEADER: { MSGID: 'MEDIA-004' },
+      TRANRQ: { roomId: this.roomId }
+    }).subscribe({
+      next: (res) => {
+        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias) {
+          this.existingImages = res.TRANRS.medias.map(media => ({
+            mediaId: media.mediaId,
+            base64Data: media.base64Data,
+            sortOrder: media.sortOrder || 0
+          }));
+          console.log('已載入現有圖片:', this.existingImages.length);
+        }
+      },
+      error: (err) => {
+        console.error('載入現有圖片失敗', err);
+      }
+    });
+  }
+
+  /**
+   * 處理圖片選擇
+   */
+  onImageSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const files = Array.from(input.files);
+
+    // 過濾有效檔案
+    const validFiles = files.filter(file => {
+      if (file.size > 5 * 1024 * 1024) {
+        this.messageService.add({
+          severity: 'error',
+          summary: '錯誤',
+          detail: `${file.name} 檔案過大，請選擇小於 5MB 的圖片`
+        });
+        return false;
+      }
+      return true;
+    });
+
+    const startIndex = this.existingImages.length + this.uploadedImages.length;
+
+    validFiles.forEach((file, index) => {
+      const previewUrl = URL.createObjectURL(file);
+      const uploadedImage: UploadedImage = {
+        file,
+        previewUrl,
+        sortOrder: startIndex + index + 1
+      };
+      this.uploadedImages.push(uploadedImage);
+    });
+
+    input.value = '';
+  }
+
+  /**
+   * 移除新上傳的圖片
+   */
+  removeUploadedImage(index: number): void {
+    const image = this.uploadedImages[index];
+    URL.revokeObjectURL(image.previewUrl);
+    this.uploadedImages.splice(index, 1);
+    this.updateSortOrder();
+  }
+
+  /**
+   * 移除現有圖片（加入刪除清單）
+   */
+  removeExistingImage(index: number): void {
+    const image = this.existingImages[index];
+    this.deletedImageIds.push(image.mediaId);
+    this.existingImages.splice(index, 1);
+    this.updateSortOrder();
+  }
+
+  /**
+   * 拖拉排序事件處理
+   */
+  onImageDrop(event: CdkDragDrop<any[]>): void {
+    // 合併兩個陣列進行排序
+    const allImages = [...this.existingImages, ...this.uploadedImages];
+    moveItemInArray(allImages, event.previousIndex, event.currentIndex);
+
+    // 分離回原陣列
+    this.existingImages = allImages.filter(img => 'mediaId' in img) as ExistingImage[];
+    this.uploadedImages = allImages.filter(img => 'file' in img) as UploadedImage[];
+
+    this.updateSortOrder();
+  }
+
+  /**
+   * 更新圖片排序
+   */
+  private updateSortOrder(): void {
+    this.existingImages.forEach((img, index) => {
+      img.sortOrder = index + 1;
+    });
+    this.uploadedImages.forEach((img, index) => {
+      img.sortOrder = this.existingImages.length + index + 1;
+    });
+  }
+
+  /**
+   * 上傳所有新圖片
+   */
+  private async uploadAllImages(): Promise<{ mediaId: string; sortOrder: number }[]> {
+    const results: { mediaId: string; sortOrder: number }[] = [];
+
+    for (let index = 0; index < this.uploadedImages.length; index++) {
+      const uploadedImage = this.uploadedImages[index];
+
+      try {
+        const result = await new Promise<{ mediaId: string; sortOrder: number }>((resolve, reject) => {
+          const reader = new FileReader();
+
+          reader.onload = () => {
+            const base64Data = (reader.result as string).split(',')[1];
+
+            const postData = {
+              MWHEADER: { MSGID: 'MEDIA-001' },
+              TRANRQ: {
+                category: 'Room_Image',
+                referenceId: this.roomId,
+                medias: [{
+                  base64Data: base64Data,
+                  fileName: uploadedImage.file.name,
+                  mimeType: uploadedImage.file.type,
+                  bucket: 'petel-media',
+                  sizeBytes: uploadedImage.file.size,
+                  visibility: 'PUBLIC',
+                  sortOrder: uploadedImage.sortOrder
+                }]
+              }
+            };
+
+            this.mediaService.uploadMedia(postData).subscribe({
+              next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.results.length > 0) {
+                  resolve({
+                    mediaId: res.TRANRS.results[0].mediaId,
+                    sortOrder: uploadedImage.sortOrder
+                  });
+                } else {
+                  reject(new Error(`${uploadedImage.file.name} 上傳失敗: ${res.MWHEADER.RETURNDESC}`));
+                }
+              },
+              error: (err) => {
+                reject(new Error(`${uploadedImage.file.name} 上傳錯誤: ${err.message}`));
+              }
+            });
+          };
+
+          reader.onerror = () => {
+            reject(new Error(`${uploadedImage.file.name} 讀取失敗`));
+          };
+
+          reader.readAsDataURL(uploadedImage.file);
+        });
+
+        results.push(result);
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    return results;
   }
 
   /**
    * 提交表單 - 修改
    */
-  onSubmit(): void {
-    this.isSubmitted = true;  // 👈 設定已提交
+  async onSubmit(): Promise<void> {
+    this.isSubmitted = true;
     this.roomForm.markAllAsTouched();
 
     if (this.roomForm.invalid) {
       this.errorMessage = '請填寫所有必填欄位';
-      console.log('表單驗證失敗:', this.roomForm.errors);
-      console.log('表單值:', this.roomForm.value);
       return;
     }
 
@@ -174,46 +376,118 @@ export class RoomInfoEditPage implements OnInit {
     this.errorMessage = '';
     this.isSubmitting = true;
 
-    const formData = this.roomForm.value;
+    try {
+      // 1. 刪除已標記的圖片
+      if (this.deletedImageIds.length > 0) {
+        this.messageService.add({
+          severity: 'info',
+          summary: '處理中',
+          detail: `正在刪除 ${this.deletedImageIds.length} 張圖片...`
+        });
 
-    // 👈 組合尺寸字串
-    const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
-
-    // 構建發送給後端的資料
-    const tranrq = {
-      id: this.roomId,  // 必須傳房間 ID
-      propertyId: this.roomData.propertyId,  // 從原資料取得
-      petTypeId: formData.petTypeObject?.id || '',
-      name: formData.name,
-      roomSize: roomSizeText,  // 👈 使用組合後的尺寸字串
-      info: formData.description,
-      basePrice: Number(formData.price),
-      totalUnits: Number(formData.unit)
-    };
-
-    console.log('發送修改資料:', tranrq);
-
-    this.merchService.editRoomDetail(tranrq).subscribe({
-      next: (res) => {
-        console.log('API 回應:', res);
-
-        if (res.MWHEADER.RETURNCODE === '0000') {
-          console.log('房型修改成功！');
-          // 導航回房型列表頁
-          this.router.navigate(['/merchants/property/homepage']);
-        } else {
-          this.errorMessage = '修改失敗';
-          console.warn('修改失敗:', this.errorMessage);
-        }
-
-        this.isSubmitting = false;
-      },
-      error: (err) => {
-        console.error('API 錯誤:', err);
-        this.errorMessage = '網路或伺服器錯誤，請稍後再試';
-        this.isSubmitting = false;
+        await new Promise<void>((resolve, reject) => {
+          this.mediaService.deleteMedia({
+            MWHEADER: { MSGID: 'MEDIA-003' },
+            TRANRQ: { mediaIds: this.deletedImageIds }
+          }).subscribe({
+            next: (res) => {
+              if (res.MWHEADER.RETURNCODE === '0000') {
+                resolve();
+              } else {
+                reject(new Error('刪除圖片失敗'));
+              }
+            },
+            error: (err) => reject(err)
+          });
+        });
       }
-    });
+
+      // 2. 上傳新圖片
+      if (this.uploadedImages.length > 0) {
+        this.messageService.add({
+          severity: 'info',
+          summary: '上傳中',
+          detail: `正在上傳 ${this.uploadedImages.length} 張圖片...`
+        });
+
+        await this.uploadAllImages();
+      }
+
+      // 3. 更新現有圖片的排序
+      if (this.existingImages.length > 0) {
+        const updatePromises = this.existingImages.map((img) =>
+          new Promise<void>((resolve, reject) => {
+            this.mediaService.updateMedia({
+              MWHEADER: { MSGID: 'MEDIA-002' },
+              TRANRQ: {
+                medias: [{
+                  mediaId: img.mediaId,
+                  sortOrder: img.sortOrder
+                }]
+              }
+            }).subscribe({
+              next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                  resolve();
+                } else {
+                  reject(new Error('更新圖片排序失敗'));
+                }
+              },
+              error: (err) => reject(err)
+            });
+          })
+        );
+
+        await Promise.all(updatePromises);
+      }
+
+      // 4. 更新房型資料
+      const formData = this.roomForm.value;
+      const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
+
+      const tranrq = {
+        id: this.roomId,
+        propertyId: this.roomData.propertyId,
+        petTypeId: formData.petTypeObject?.id || '',
+        name: formData.name,
+        roomSize: roomSizeText,
+        info: formData.description,
+        basePrice: Number(formData.price),
+        totalUnits: Number(formData.unit)
+      };
+
+      this.merchService.editRoomDetail(tranrq).subscribe({
+        next: (res) => {
+          if (res.MWHEADER.RETURNCODE === '0000') {
+            this.messageService.add({
+              severity: 'success',
+              summary: '成功',
+              detail: '房型修改成功'
+            });
+            setTimeout(() => {
+              this.router.navigate(['/merchants/property/homepage']);
+            }, 1000);
+          } else {
+            this.errorMessage = '修改失敗';
+          }
+          this.isSubmitting = false;
+        },
+        error: (err) => {
+          console.error('API 錯誤:', err);
+          this.errorMessage = '網路或伺服器錯誤，請稍後再試';
+          this.isSubmitting = false;
+        }
+      });
+
+    } catch (error: any) {
+      this.errorMessage = error.message || '處理圖片失敗，請稍後再試';
+      this.messageService.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: this.errorMessage
+      });
+      this.isSubmitting = false;
+    }
   }
 
   /**

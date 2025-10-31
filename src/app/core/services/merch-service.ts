@@ -21,6 +21,14 @@ import { MERCH013Tranrq } from '../interfaces/MERCH013Req.interface';
 import { MERCH013Tranrs } from '../interfaces/MERCH013Res.interface';
 import { MERCH014Tranrq } from '../interfaces/MERCH014Req.interface';
 import { MERCH014Tranrs } from '../interfaces/MERCH014Res.interface';
+import { MERCH001Tranrs } from '../interfaces/MERCH001Res.interface';
+import { MERCH001Tranrq } from '../interfaces/MERCH001Req.interface';
+import { MERCH003Tranrq } from '../interfaces/MERCH003Req.interface';
+import { MERCH003Tranrs } from '../interfaces/MERCH003Res.interface';
+import { MERCH007Tranrq } from '../interfaces/MERCH007Req.interface';
+import { MERCH007Tranrs } from '../interfaces/MERCH007Res.interface';
+import { MERCH008Tranrq } from '../interfaces/MERCH008Req.interface';
+import { MERCH008Tranrs } from '../interfaces/MERCH008Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +36,25 @@ import { MERCH014Tranrs } from '../interfaces/MERCH014Res.interface';
 export class MerchService {
 
   http = inject(HttpClient);
+
+  /**
+   * MERCH-001 查詢單筆旅館所有訂單資訊
+   * @param tranrq 單筆旅館所有訂單資訊
+   * @returns
+   */
+  queryPropertyBooking(tranrq: MERCH001Tranrq) {
+
+    const header: Mwheader = {
+      MSGID: 'MERCH-001'
+    };
+
+    const postData: Req<MERCH001Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH001Tranrs>>('http://localhost:8080/merchants/bookings/list', postData);
+  }
 
   /**
      * MERCH-002 查詢單筆旅館所有房型資訊
@@ -46,6 +73,25 @@ export class MerchService {
     }
 
     return this.http.post<Res<MERCH002Tranrs>>('http://localhost:8080/merchants/rooms/list', postData);
+  }
+
+  /**
+   * MERCH-003 查詢單筆旅館所有評價資訊
+   * @param tranrq 單筆旅館所有評價資訊
+   * @returns
+   */
+  queryPropertyReviews(tranrq: MERCH003Tranrq) {
+
+    const header: Mwheader = {
+      MSGID: 'MERCH-003'
+    };
+
+    const postData: Req<MERCH003Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH003Tranrs>>('http://localhost:8080/merchants/hotels/reviews', postData);
   }
 
   /**
@@ -110,8 +156,46 @@ export class MerchService {
   }
 
   /**
+   * MERCH-007 修改旅館資訊
+   * @param propertyId 旅館編號
+   * @returns
+   */
+  editHotelDetail(tranrq: MERCH007Tranrq) {
+
+    const header: Mwheader = {
+      MSGID: 'MERCH-007'
+    };
+
+    const postData: Req<MERCH007Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH007Tranrs>>('http://localhost:8080/merchants/hotels/edit', postData);
+  }
+
+  /**
+   * MERCH-008 新增旅館資訊
+   * @param propertyId 旅館編號
+   * @returns
+   */
+  createHotelDetail(tranrq: MERCH008Tranrq) {
+
+    const header: Mwheader = {
+      MSGID: 'MERCH-008'
+    };
+
+    const postData: Req<MERCH008Tranrq> = {
+      MWHEADER: header,
+      TRANRQ: tranrq
+    }
+
+    return this.http.post<Res<MERCH008Tranrs>>('http://localhost:8080/merchants/hotels/create', postData);
+  }
+
+  /**
    * MERCH-009 新增商家會員資訊
-   * @returns 
+   * @returns
    */
   createSellerInfo(tranrq: MERCH009Tranrq) {
     const header: Mwheader = {
@@ -129,7 +213,7 @@ export class MerchService {
 
   /**
    * MERCH-010 修改商家會員資訊
-   * @returns 
+   * @returns
    */
   editSellerInfo(tranrq: MERCH010Tranrq) {
     const header: Mwheader = {
@@ -146,7 +230,7 @@ export class MerchService {
 
   /**
    * MERCH-011 取得商家會員資訊
-   * @returns 
+   * @returns
    */
   getSellerInfo(accountId: string) {
     const header: Mwheader = {
