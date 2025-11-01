@@ -19,16 +19,16 @@ import { MERCH009Tranrq } from '../interfaces/MERCH009Req.interface';
 import { MERCH010Tranrq } from '../interfaces/MERCH010Req.interface';
 import { MERCH013Tranrq } from '../interfaces/MERCH013Req.interface';
 import { MERCH013Tranrs } from '../interfaces/MERCH013Res.interface';
-import { MERCH003Tranrq } from '../interfaces/MERCH003Req.interface';
-import { MERCH003Tranrs } from '../interfaces/MERCH003Res.interface';
-import { MERCH008Tranrs } from '../interfaces/MERCH008Res.interface';
-import { MERCH008Tranrq } from '../interfaces/MERCH008Req.interface';
-import { MERCH007Tranrq } from '../interfaces/MERCH007Req.interface';
-import { MERCH007Tranrs } from '../interfaces/MERCH007Res.interface';
-import { MERCH001Tranrq } from '../interfaces/MERCH001Req.interface';
-import { MERCH001Tranrs } from '../interfaces/MERCH001Res.interface';
 import { MERCH014Tranrq } from '../interfaces/MERCH014Req.interface';
 import { MERCH014Tranrs } from '../interfaces/MERCH014Res.interface';
+import { MERCH001Tranrs } from '../interfaces/MERCH001Res.interface';
+import { MERCH001Tranrq } from '../interfaces/MERCH001Req.interface';
+import { MERCH003Tranrq } from '../interfaces/MERCH003Req.interface';
+import { MERCH003Tranrs } from '../interfaces/MERCH003Res.interface';
+import { MERCH007Tranrq } from '../interfaces/MERCH007Req.interface';
+import { MERCH007Tranrs } from '../interfaces/MERCH007Res.interface';
+import { MERCH008Tranrq } from '../interfaces/MERCH008Req.interface';
+import { MERCH008Tranrs } from '../interfaces/MERCH008Res.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -287,10 +287,10 @@ export class MerchService {
   }
 
   /**
-   * MERCH-014 更新訂單狀態
-   * @param tranrq 訂單編號 + 新狀態
-   * @returns
-   */
+ * MERCH-014 更新訂單狀態
+ * @param tranrq 訂單編號 + 新狀態
+ * @returns
+ */
   updateOrderStatus(tranrq: MERCH014Tranrq) {
     const header: Mwheader = {
       MSGID: 'MERCH-014'
@@ -306,23 +306,4 @@ export class MerchService {
       postData
     );
   }
-
-  // /**
-  //  * MERCH-015 查詢縣市區域總表
-  //  */
-  // queryPostal(tranrq: MERCH014Tranrq) {
-  //   const header: Mwheader = {
-  //     MSGID: 'MERCH-015'
-  //   };
-
-  //   const postData: Req<MERCH014Tranrq> = {
-  //     MWHEADER: header,
-  //     TRANRQ: tranrq
-  //   };
-
-  //   return this.http.post<Res<MERCH014Tranrs>>(
-  //     'http://localhost:8080/merchants/bookings/updateStatus',
-  //     postData
-  //   );
-  // }
 }

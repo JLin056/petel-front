@@ -1,4 +1,4 @@
-import { PageRequest } from './PageRequest.interface';
+import { PageRequest } from "./PageRequest.interface";
 
 export interface MERCH003Tranrq {
     propertyId: string;
