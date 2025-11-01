@@ -1,8 +1,23 @@
-:host ::ng-deep .petel-auth-dialog .p-dialog-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 30px;
+::ng-deep .p-dialog.petel-auth-dialog {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+    border-radius: 0 0 20px 20px ;
+    padding: 24px 28px ;
+    background-color: #fffdf9;
+}
+
+/* 頂部標題區 */
+::ng-deep .p-dialog.petel-auth-dialog .p-dialog-header {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    background-color: #f6ede5;
+    color: #3b2d22;
+    font-weight: 700;
+    font-size: 20px;
 }
 :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
     font-size: 1.6rem;

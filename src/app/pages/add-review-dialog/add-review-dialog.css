@@ -1,6 +1,5 @@
-/* petel-auth-dialog 是你本來就有的共用 styleClass */
 ::ng-deep .p-dialog.petel-auth-dialog {
-    border-radius: 20px !important;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -20,7 +19,11 @@
     font-weight: 700;
     font-size: 20px;
 }
-
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+    font-size: 1.6rem;
+    flex: 1;
+    text-align: center;
+}
 
 .review-wrap {
     display: flex;
@@ -31,7 +34,7 @@
 
 .hotel {
     margin: 0;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
     color: #3b2d22;
 }
@@ -39,7 +42,7 @@
 .date {
     margin: 0 0 10px;
     color: #7c6c5b;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 .row {
@@ -67,7 +70,7 @@ label {
     border: 1px solid #d4c2b2;
     border-radius: 10px;
     padding: 10px 12px;
-    font-size: 15px;
+    font-size: 20px;
     resize: vertical;
     line-height: 1.5;
     color: #3b2d22;
@@ -91,12 +94,30 @@ label {
     margin-top: 10px;
 }
 
-.cancel-btn,
-.confirm-btn {
-    min-width: 100px;
+:host ::ng-deep .confirm-btn.p-button {
+    background-color: #f0e4d8;
+    color: #5b4636;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
+    transition: all 0.2s ease;
 }
 
-.confirm-btn ::ng-deep .p-button {
-    background-color: #c68a4a;
-    border: none;
+:host ::ng-deep .confirm-btn.p-button:hover {
+    background-color: #e4d2be;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
+}
+
+:host ::ng-deep .confirm-btn.p-button:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
+
+:host ::ng-deep .confirm-btn.p-button .p-button-label {
+    font-size: 1.25rem;
 }

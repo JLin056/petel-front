@@ -37,9 +37,6 @@
     align-items: center;
     gap: 20px;
 }
-.pi-info-circle {
-    font-size: 2.5rem;
-}
 .title h3{
     font-size: 2.5rem;
 }
@@ -56,10 +53,6 @@
 .material-symbols-outlined {
     font-size: 2.5rem;
 }
-.item-text h4{
-    font-size: 1.75rem;
-    font-weight: 700;
-}
 .item-text p {
     font-size: 1.7rem;
     font-weight: 400;
@@ -68,24 +61,64 @@
 .button-container {
     display: flex;
     justify-content: flex-start;
+    gap: 40px;
 }
-::ng-deep .p-button.button {
-    border-radius: 20px;
-    font-size: 1.4rem;
+:host ::ng-deep .button-container .p-button {
+    font-size: 1.25rem;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 24px;
     font-weight: 600;
-    transition: 0.2s;
-    margin-right: 50px;
-    padding: 10px 16px;
+    color: #5b4636;
+    box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
+    transition: all 0.2s ease;
 }
+/** 主要按鈕 */
+:host ::ng-deep .button-container .p-button.filled {
+    background-color: #e7d6c2;
+}
+:host ::ng-deep .button-container .p-button.filled:hover {
+    background-color: #d8c2a7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(216, 194, 167, 0.6);
+}
+/** 評論按鈕 */
+:host ::ng-deep .button-container .p-button.outlined {
+    background-color: #f0e4d8;
+}
+:host ::ng-deep .button-container .p-button.outlined:hover {
+    background-color: #e4d2be;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
+}
+/** 取消訂單按鈕 */
+:host ::ng-deep .button-container .p-button.danger {
+    background-color: #ce7575;
+    color: #fff;
+}
+:host ::ng-deep .button-container .p-button.danger:hover {
+    background-color: #b96363;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(217, 83, 79, 0.5);
+}
+/** disable 按鈕 */
+:host ::ng-deep .button-container .p-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+:host ::ng-deep .button-container .p-button:disabled:hover {
+    transform: translateY(0px);
+    box-shadow: 0 0px 0px;
+}
+
 /* 搜尋框 */
 .filter-bar {
     display: flex;
     align-items: center;
     gap: 16px;
     margin: 20px 8px 20px;
-    /* position: sticky;
-    top: 0;
-    z-index: 2;  */
 }
 .sort-wrap {
     margin-left: auto;
@@ -131,6 +164,16 @@
     gap: 50px;
     color: #757575;
 }
+::ng-deep .custom-rating .p-rating-icon,
+::ng-deep .custom-rating .pi {
+    font-size: 2rem;
+}
+.rating-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+}
 .status-tag {
     font-size: 20px;
     border-radius: 20px;
@@ -140,7 +183,7 @@
 .order-item-img img {
     width: 250px;
 }
-
+/* 其他狀態 */
 .state-card {
     display: flex;
     flex-direction: column;
@@ -197,11 +240,10 @@
     padding: 8px 18px;
     transition: background-color 0.2s ease;
 }
-
 ::ng-deep .state-card.error .p-button:hover {
     background-color: #c9403c;
 }
-
+/* 歷史訂單區滾輪 */
 .order-panel {
     border: 1px solid #e6e2dd;
     border-radius: 12px;
@@ -209,7 +251,7 @@
     padding: 12px;
     box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 
-    max-height: calc(100dvh - 500px);  /* 視需要微調 420 */
+    max-height: calc(100dvh - 600px);
     overflow-y: auto;
 }
 .order-panel::-webkit-scrollbar {
@@ -222,3 +264,199 @@
     background: #f7f2ec; border-radius: 8px;
 }
 
+
+/* ========= 平板：≤ 1024px ========= */
+@media (max-width: 1024px) {
+    .wrap {
+        padding: 0 20px;
+        gap: 28px;
+    }
+    .user-info-container {
+        gap: 30px;
+        padding: 0 12px;
+        box-shadow: 0px 3px 0px #F4F4F4;
+    }
+    .image {
+        padding: 24px 0;
+    }
+    .image img {
+        width: 180px;
+    }
+    .user-info {
+        width: 100%;
+        padding: 20px 0;
+        gap: 16px;
+    }
+    .title h3 { font-size: 2rem; }
+    .material-symbols-outlined { font-size: 2rem; }
+    .item-text p { font-size: 1.4rem; }
+
+    .button-container {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .order-item {
+        gap: 32px;
+        padding: 20px;
+    }
+    .order-item-img img {
+        width: 200px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+    .order-item h4 { font-size: 1.5rem; }
+    .order-content {
+        gap: 24px;
+        font-size: 0.95rem;
+    }
+    ::ng-deep .custom-rating .p-rating-icon,
+    ::ng-deep .custom-rating .pi {
+        font-size: 1rem;
+    }
+    .status-tag {
+        font-size: 16px;
+        padding: 4px 10px;
+        border-radius: 14px;
+    }
+    .filter-bar {
+        gap: 12px;
+        margin: 14px 4px 14px;
+    }
+    .p-select { min-width: 180px; }
+    .p-select .p-inputtext { padding: 6px 12px; }
+    .order-panel {
+        max-height: calc(100dvh - 520px);
+    }
+    :host ::ng-deep .button-container .p-button {
+        font-size: 1rem;
+        padding: 8px 18px;
+    }
+    :host ::ng-deep .p-button {
+        font-size: 1rem;
+        padding: 8px 18px;
+    }
+}
+
+/* ========= 手機：≤ 768px ========= */
+@media (max-width: 768px) {
+    .wrap {
+        gap: 24px;
+    }
+
+    .user-info-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 12px;
+    }
+    .image { padding: 0; }
+    .image img {
+        width: 140px;
+    }
+    .user-info {
+        align-items: stretch;
+        padding: 0;
+    }
+    .title h3 { font-size: 1.6rem; }
+    .item {
+        gap: 14px;
+    }
+    .material-symbols-outlined { font-size: 1.6rem; }
+    .item-text p { font-size: 1.1rem; }
+    .order-item {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+        border-radius: 14px;
+    }
+    .order-item-img img {
+        width: 100%;
+        height: 180px;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+    .order-item h4 { font-size: 1.3rem; }
+    .order-content {
+        flex-direction: column;
+        gap: 12px;
+        color: #666;
+    }
+    .button-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    :host ::ng-deep .button-container .p-button {
+        width: 100%;
+        padding: 10px 16px;
+        font-size: 1.05rem;
+        border-radius: 10px;
+    }
+
+    .status-tag {
+        font-size: 14px;
+        padding: 4px 10px;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin: 10px 0 16px;
+    }
+    .sort-wrap {
+        margin-left: 0;
+    }
+    .p-select {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .order-panel {
+        padding: 10px;
+        max-height: none;
+    }
+    :host ::ng-deep .button-container .p-button {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+/* ========= 超小螢幕：≤ 480px ========= */
+@media (max-width: 480px) {
+    .wrap {
+        padding: 0 12px;
+        margin-top: 60px;
+    }
+    .title h3 {
+        font-size: 1.4rem;
+    }
+    .order h3 {
+        font-size: 1.3rem;
+    }
+
+    .image img {
+        width: 120px;
+    }
+
+    .order-item {
+        padding: 12px;
+        border-radius: 12px;
+    }
+    .order-item-img img {
+        height: 150px;
+    }
+    .order-item h4 {
+        font-size: 1.15rem;
+    }
+
+    .status-tag {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+    :host ::ng-deep .button-container .p-button {
+        font-size: 0.85rem;
+        padding: 7px 14px;
+    }
+}

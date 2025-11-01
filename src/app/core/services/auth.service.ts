@@ -124,13 +124,16 @@ export class Auth {
             .pipe(
                 tap(res => this.setAccessToken(res?.TRANRS.accessToken ?? null)),
                 switchMap(res => {
-                    const roleFromLogin = res?.TRANRS?.Role as string | undefined;
-                    if (roleFromLogin) {
-                        this.setRole(roleFromLogin);
-                        return of(res);
-                    }
-                    return this.onGetInfo().pipe(
-                        tap(me => this.setRole(extractSingleRole(me))),
+                    const role = res?.TRANRS?.Role as string | undefined;
+
+                    const role$ = role
+                        ? of(role)
+                        : this.onGetInfo().pipe(
+                            map(me => me.TRANRS.Role)
+                        );
+
+                    return role$.pipe(
+                        tap(finalRole => this.setRole(finalRole)),
                         map(() => res)
                     );
                 })
@@ -167,10 +170,7 @@ export class Auth {
         return this.http.post<AUTH006Res>(this.meUrl, null, {
             withCredentials: true
         }).pipe(
-            tap(res => {
-                const role = extractSingleRole(res);
-                if (role) this.setRole(role);
-            }))
+            tap(res => this.setRole(res?.TRANRS?.Role)))
     }
 
     /**
@@ -249,15 +249,4 @@ export class Auth {
             })
         )
     }
-}
-
-
-/** 抽出「單一角色字串」 */
-function extractSingleRole(res: any): string | null {
-    const role =
-        res?.TRANRS?.Role ??
-        null;
-
-    if (typeof role === 'string') return role;
-    return null;
 }

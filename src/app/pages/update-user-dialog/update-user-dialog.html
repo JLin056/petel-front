@@ -8,14 +8,14 @@
 >
     <div class="container">
 
-    <!-- 頭貼區 -->
-    <div class="avatar-box">
-            <img
-                [src]="previewSrc || 'img/avatar.png'"
-                alt="avatar"
-                class="avatar"
-            />
-            <small class="hint">喜歡其他張？</small>
+        <!-- 頭貼區 -->
+        <div class="avatar-box">
+                <img
+                    [src]="previewSrc || 'img/avatar.png'"
+                    alt="avatar"
+                    class="avatar"
+                />
+                <small class="hint">喜歡其他張？</small>
         </div>
 
         <div class="avatar-grid" *ngIf="avatars.length; else emptyArea">

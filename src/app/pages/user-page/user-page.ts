@@ -3,7 +3,7 @@ import { Review001Tranrq } from './../../core/interfaces/REVIEW001Req.interface'
 import { Tranrs } from './../../core/interfaces/USER004Res.interface';
 import { User002Tranrq } from './../../core/interfaces/USER002Req.interface';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { UpdateUserDialog } from '../update-user-dialog/update-user-dialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -22,34 +22,61 @@ import { SelectModule } from 'primeng/select';
 import { REVIEW001Req } from '../../core/interfaces/REVIEW001Req.interface';
 import { ReviewService } from '../../core/services/review.service';
 import { AddReviewDialog } from '../add-review-dialog/add-review-dialog';
+import { UserOrderDetailDialog } from '../user-order-detail-dialog/user-order-detail-dialog';
+import { Rating } from 'primeng/rating';
 
 @Component({
-  selector: 'app-user-page',
-  imports: [CommonModule, FormsModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule, SelectModule, AddReviewDialog],
-  templateUrl: './user-page.html',
-  styleUrl: './user-page.css',
-  providers: [ConfirmationService, MessageService]
+    selector: 'app-user-page',
+    imports: [CommonModule, FormsModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule, SelectModule, AddReviewDialog, UserOrderDetailDialog, Rating],
+    templateUrl: './user-page.html',
+    styleUrl: './user-page.css',
+    providers: [ConfirmationService, MessageService]
 })
-export class UserPage {
+export class UserPage implements OnInit{
+    /** 編輯 dialog */
     editVisible = false;
-    deleteUserVisible = false;
+    /** 取消訂單 dialog */
     deleteOrderVisible = false;
-
+    /** 載入中 */
     loading = false;
-
+    /** 載入訂單中 */
     isLoadingBookings = false;
+    /** 訂單錯誤 */
     bookingsError = '';
-
-    currentOrderId?: string;
+    /** 現在的 訂單編號 */
+    currentOrderId: string | null = null;
+    /** 訂單 */
     orders: Order[] = [];
-
+    /** 用戶 */
     user: Tranrs | null = null;
-
+    /** 評論 dialog */
     reviewVisible = false;
     selectedOrderForReview: { orderId: string; propertyName: string; checkIn?: string; checkOut?: string } | null = null;
-
+    /** 取消訂單 編號 */
     cancelingOrderId?: string;
+    /** 詳細訂單 dialog */
+    orderDetailVisible = false;
+    /** 狀態 */
+    selectedStatus: string = '';
 
+    /**
+     * 注入
+     * @param toast
+     * @param userService
+     * @param reviewService
+     * @param bookService
+     */
+    constructor(
+        private toast: MessageService,
+        private userService: UserService,
+        private reviewService: ReviewService,
+        private bookService: BookService
+    ) {}
+
+    /**
+     * 訂單狀態
+     * @memberof UserPage
+     */
     readonly statusOptions = [
         { label: '全部',  value: '' },
         { label: '已付款', value: '已付款' },
@@ -58,17 +85,17 @@ export class UserPage {
         { label: '已取消', value: '已取消' },
     ];
 
-    selectedStatus: string = '';
-
-    constructor(
-        private toast: MessageService,
-        private userService: UserService,
-        private reviewService: ReviewService,
-        private bookService: BookService
-    ) {}
-
+    /**
+     * 取消訂單判斷狀態
+     * @private
+     * @memberof UserPage
+     */
     private readonly cancellableStatuses = new Set(['已付款', '未付款']);
 
+    /**
+     * 載入用戶資訊
+     * @returns
+     */
     loadUser(): void {
         if (this.loading) return;
         this.loading = true;
@@ -89,14 +116,25 @@ export class UserPage {
             });
     }
 
+    /**
+     * 重整訂單
+     */
     reloadOrders() {
         this.onGetBooking();
     }
 
+    /**
+     * 打開編輯 dialog
+     */
     openEdit() {
         this.editVisible = true;
     }
 
+    /**
+     * 修改會員
+     * @param updated
+     * @returns
+     */
     onEditSaved(updated: { name: string; phone: string; avatarMediaId?: string }) {
         if (this.loading) return;
 
@@ -151,15 +189,19 @@ export class UserPage {
             });
     }
 
-    showConfirm() {
-        this.deleteUserVisible = true;
-    }
-
+    /**
+     * 價格格式
+     * @param n
+     * @returns
+     */
     price(n: number | null | undefined): string {
         if (n == null) return '-';
         return n.toLocaleString('zh-TW');
     }
 
+    /**
+     * 取得訂單歷史紀錄
+     */
     onGetBooking() {
         this.isLoadingBookings = true;
         this.bookingsError = '';
@@ -198,6 +240,11 @@ export class UserPage {
         });
     }
 
+    /**
+     * 訂單狀態
+     * @param status
+     * @returns
+     */
     getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
         switch (status) {
         case '已付款':
@@ -213,18 +260,29 @@ export class UserPage {
         }
     }
 
-    // 取消訂單按鈕 disable
+    /**
+     * 取消訂單按鈕 disable
+     * @param status
+     * @returns
+     */
     isCancelDisabled(status?: string): boolean {
         return !status || !this.cancellableStatuses.has(status);
     }
 
-    // 顯示取消訂單確認
-    confirmDeleteOrder(event: Event, orderId?: string) {
+    /**
+     * 顯示取消訂單確認
+     * @param event
+     * @param orderId
+     */
+    confirmDeleteOrder(event: Event, orderId: string) {
         this.currentOrderId = orderId;
         this.deleteOrderVisible = true;
     }
 
-    // 確認取消訂單
+    /**
+     * 確認取消訂單
+     * @returns
+     */
     onDeleteOrderConfirmed() {
         if (!this.currentOrderId) {
             this.deleteOrderVisible = false;
@@ -288,6 +346,10 @@ export class UserPage {
             });
     }
 
+    /**
+     * 打開評論 dialog
+     * @param o
+     */
     openReview(o: any) {
         this.selectedOrderForReview = {
             orderId: o.orderId,
@@ -298,6 +360,10 @@ export class UserPage {
         this.reviewVisible = true;
     }
 
+    /**
+     * 新增評論
+     * @param form
+     */
     onReviewSaved(form: Review001Tranrq) {
         const req: REVIEW001Req = {
             MWHEADER: { MSGID: 'REVIEW-001' },
@@ -331,7 +397,18 @@ export class UserPage {
         });
     }
 
+    /**
+     * 打開訂單詳細資訊
+     * @param orderId
+     */
+    openOrderDetail(orderId: string) {
+        this.currentOrderId = orderId;
+        this.orderDetailVisible = true;
+    }
 
+    /**
+     * 初始化
+     */
     ngOnInit(): void {
         this.loadUser();
         this.onGetBooking();
