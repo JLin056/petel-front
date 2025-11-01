@@ -10,6 +10,7 @@ import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dia
 import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
 import { AdminService } from '../../core/services/admin.service';
 import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-user-merchant-page',
@@ -49,7 +50,8 @@ export class UserMerchantPage implements OnInit {
     private toast: MessageService,
     private router: Router,
     private merchService: MerchService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private propertyStateService: PropertyStateService
   ) { }
 
   ngOnInit(): void {
@@ -237,7 +239,20 @@ export class UserMerchantPage implements OnInit {
   /**
    * 進入單筆旅館首頁
    */
-  onPropertyClick(): void {
+  onPropertyClick(property: propertyList): void {
+    if (!property || !property.id) {
+      this.toast.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: '無法取得旅館資訊'
+      });
+      return;
+    }
+
+    // 設定當前旅館 ID 到 PropertyStateService
+    this.propertyStateService.setCurrentPropertyId(property.id, property.name);
+    console.log('已設定 propertyId:', property.id, property.name);
+
     this.router.navigate(['/merchants/property/homepage']);
   }
 

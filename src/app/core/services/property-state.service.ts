@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-/**
- * 管理當前選中旅館的狀態
- */
 @Injectable({
   providedIn: 'root'
 })

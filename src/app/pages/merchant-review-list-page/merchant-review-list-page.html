@@ -7,17 +7,31 @@
         <p class="page-subtitle">查看所有顧客的真實評價與回饋</p>
     </div>
 
-    @for (review of reviews; track review.orderNo) {
+    @if (isLoading) {
+    <div class="loading-wrapper">
+        <i class="pi pi-spinner pi-spin"></i>
+        <p>載入中...</p>
+    </div>
+    }
+
+    @if (errorMessage && !isLoading) {
+    <div class="error-message">
+        <i class="pi pi-exclamation-circle"></i>
+        {{ errorMessage }}
+    </div>
+    }
+
+    @for (review of reviews; track review.orderId) {
     <p-card class="review-card">
         <!-- 卡片頭部 -->
         <ng-template pTemplate="header">
             <div class="review-card-header">
                 <div class="header-left">
-                    <p-tag [value]="review.orderNo" icon="pi pi-receipt" severity="secondary"></p-tag>
-                    @if (review.date) {
+                    <p-tag [value]="review.orderId" icon="pi pi-receipt" severity="secondary"></p-tag>
+                    @if (review.createdAt) {
                     <span class="review-date">
                         <i class="pi pi-calendar"></i>
-                        {{ review.date }}
+                        {{ formatDate(review.createdAt) }}
                     </span>
                     }
                 </div>
@@ -36,17 +50,15 @@
             <div class="review-text-section">
                 <div class="average-rating">
                     <span class="avg-score">{{ getAverageRating(review) }}</span>
-                    <!-- 👇 移除 [cancel]="false" -->
                     <p-rating [ngModel]="getAverageRating(review)" [readonly]="true" class="rating-display"></p-rating>
                 </div>
-                <p class="review-comment">
+                <p class="review-comment" [class.collapsed]="!isReviewExpanded(review.orderId)"
+                    [class.expanded]="isReviewExpanded(review.orderId)">
                     <i class="pi pi-quote-left quote-icon"></i>
-                    {{ review.comment }}
+                    {{ review.content }}
                     <i class="pi pi-quote-right quote-icon"></i>
                 </p>
             </div>
-
-            <p-divider layout="vertical" class="review-divider"></p-divider>
 
             <!-- 右側：詳細評分 -->
             <div class="rating-section">
@@ -56,9 +68,8 @@
                         價格
                     </span>
                     <div class="rating-value">
-                        <!-- 👇 移除 [cancel]="false" -->
-                        <p-rating [ngModel]="review.price" [readonly]="true"></p-rating>
-                        <span class="rating-number">{{ review.price }}.0</span>
+                        <p-rating [ngModel]="review.priceScore" [readonly]="true"></p-rating>
+                        <span class="rating-number">{{ review.priceScore }}.0</span>
                     </div>
                 </div>
 
@@ -68,8 +79,8 @@
                         環境
                     </span>
                     <div class="rating-value">
-                        <p-rating [ngModel]="review.environment" [readonly]="true"></p-rating>
-                        <span class="rating-number">{{ review.environment }}.0</span>
+                        <p-rating [ngModel]="review.envScore" [readonly]="true"></p-rating>
+                        <span class="rating-number">{{ review.envScore }}.0</span>
                     </div>
                 </div>
 
@@ -79,8 +90,8 @@
                         服務
                     </span>
                     <div class="rating-value">
-                        <p-rating [ngModel]="review.service" [readonly]="true"></p-rating>
-                        <span class="rating-number">{{ review.service }}.0</span>
+                        <p-rating [ngModel]="review.serviceScore" [readonly]="true"></p-rating>
+                        <span class="rating-number">{{ review.serviceScore }}.0</span>
                     </div>
                 </div>
             </div>
@@ -89,7 +100,9 @@
         <!-- 卡片底部 -->
         <ng-template pTemplate="footer">
             <div class="card-footer">
-                <p-button label="查看詳細資料" icon="pi pi-eye" [outlined]="true" severity="secondary" size="small">
+                <p-button [label]="isReviewExpanded(review.orderId) ? '收合評價' : '查看完整評價'"
+                    [icon]="isReviewExpanded(review.orderId) ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                    [outlined]="true" severity="secondary" size="small" (onClick)="toggleReviewExpand(review.orderId)">
                 </p-button>
             </div>
         </ng-template>
@@ -110,7 +123,7 @@
     @if (reviews.length > 0) {
     <div class="paginator-wrapper">
         <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="totalRecords"
-            [rowsPerPageOptions]="[10, 20, 30]">
+            [rowsPerPageOptions]="[5, 10, 15]">
         </p-paginator>
     </div>
     }

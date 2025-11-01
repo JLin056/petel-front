@@ -13,6 +13,8 @@ import { MessageService } from 'primeng/api';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { HotelService } from '../../../core/services/hotel-service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationPanel } from '../notification-panel/notification-panel';
 
 @Component({
   selector: 'app-header',
@@ -26,7 +28,8 @@ import { HotelService } from '../../../core/services/hotel-service';
     InputTextModule,
     SelectModule,
     InputNumberModule,
-    SharedConfirmDialog
+    SharedConfirmDialog,
+    NotificationPanel
 ],
   templateUrl: './header.html',
   styleUrl: './header.css',
@@ -38,6 +41,10 @@ export class Header {
     confirmVisible = false;
     /** 是否登出中 */
     isLoggedOut = false;
+    /** 未讀通知數量 */
+    unreadCount = 0;
+    /** 通知面板是否顯示 */
+    notificationPanelVisible = false;
 
     private destroy$ = new Subject<void>();
 
@@ -47,12 +54,14 @@ export class Header {
      * @param authService
      * @param toast
      * @param hotelService
+     * @param notificationService
      */
     constructor(
         private router: Router,
         private authService: Auth,
         private toast: MessageService,
-        private hotelService: HotelService
+        private hotelService: HotelService,
+        private notificationService: NotificationService
     ) {
         // 監聽 router 改變
         this.router.events
@@ -65,7 +74,22 @@ export class Header {
         // 訂閱 service 的登入狀態
         this.authService.isLoggedIn$
             .pipe(takeUntil(this.destroy$))
-            .subscribe(v => this.isLoggedIn = v);
+            .subscribe(v => {
+                this.isLoggedIn = v;
+                // 當登入狀態改變時，更新未讀數量和 SSE 連線
+                if (v) {
+                    this.fetchUnreadCount();
+                    this.setupSSEConnection();
+                } else {
+                    this.unreadCount = 0;
+                    this.notificationService.disconnectSSE();
+                }
+            });
+
+        // 訂閱未讀通知數量
+        this.notificationService.unreadCount$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(count => this.unreadCount = count);
     }
 
     /**
@@ -276,8 +300,111 @@ export class Header {
         this.router.navigate(['/history']);
     }
 
+    /**
+     * 點擊通知鈴鐺
+     * @returns
+     */
+    onClickNotification() {
+        if (!this.isLoggedIn) {
+            this.toast.add({
+                severity: 'warn',
+                summary: '尚未登入',
+                detail: '請先登入後查看通知'
+            });
+            this.router.navigate(['/login']);
+            return;
+        }
+        // 顯示通知面板
+        this.notificationPanelVisible = true;
+    }
+
+    /**
+     * 取得未讀通知數量
+     */
+    private fetchUnreadCount() {
+        this.notificationService.getUnreadCount().subscribe({
+            next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                    console.log('未讀通知數量:', res.TRANRS.unread_count);
+                }
+            },
+            error: (error) => {
+                console.error('取得未讀通知數量失敗:', error);
+            }
+        });
+    }
+
+    /**
+     * 建立 SSE 即時推播連線
+     */
+    private setupSSEConnection() {
+        console.log('設定 SSE 即時推播連線');
+
+        // 建立連線，並傳入收到通知時的回調
+        this.notificationService.connectSSE((notification) => {
+            console.log('Header 收到新通知:', notification);
+
+            // 顯示瀏覽器通知
+            this.showBrowserNotification(notification);
+
+            // 顯示 Toast 提示
+            this.toast.add({
+                severity: 'info',
+                summary: notification.title,
+                detail: notification.message,
+                life: 5000
+            });
+        });
+    }
+
+    /**
+     * 顯示瀏覽器通知
+     */
+    private showBrowserNotification(notification: any) {
+        // 檢查瀏覽器是否支援通知
+        if (!('Notification' in window)) {
+            console.log('瀏覽器不支援通知');
+            return;
+        }
+
+        // 檢查通知權限
+        if (Notification.permission === 'granted') {
+            // 已授權，顯示通知
+            this.createBrowserNotification(notification);
+        } else if (Notification.permission !== 'denied') {
+            // 請求權限
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    this.createBrowserNotification(notification);
+                }
+            });
+        }
+    }
+
+    /**
+     * 建立瀏覽器通知
+     */
+    private createBrowserNotification(notification: any) {
+        const notif = new Notification(notification.title, {
+            body: notification.message,
+            icon: '/assets/logo.png', // 可以自訂圖標
+            badge: '/assets/badge.png',
+            tag: notification.id,
+            requireInteraction: false
+        });
+
+        // 點擊通知時開啟通知面板
+        notif.onclick = () => {
+            window.focus();
+            this.notificationPanelVisible = true;
+            notif.close();
+        };
+    }
 
     ngOnDestroy(): void {
+        // 關閉 SSE 連線
+        this.notificationService.disconnectSSE();
+
         this.destroy$.next();
         this.destroy$.complete();
     }

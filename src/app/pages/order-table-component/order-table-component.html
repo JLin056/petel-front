@@ -61,13 +61,13 @@
     </ng-template>
     <ng-template pTemplate="body" let-order>
       <tr>
-        <td><span class="text-large">{{ order.ORDER_ID }}</span></td>
-        <td><span class="text-large">{{ order.CHECK_IN }}</span></td>
-        <td><span class="text-large">{{ order.CHECK_OUT }}</span></td>
-        <td><span class="text-large">{{ order.FINAL_USER_NAME }}</span></td>
-        <td><span class="text-large">{{ order.PROPERTY_NAME }}</span></td>
-        <td><span class="text-large">{{ order.HOTEL_CHARGES | price }}</span></td>
-        <td><span class="text-large">{{ order.PAYMENT_METHOD || '-' }}</span></td>
+        <td [pTooltip]="order.ORDER_ID" tooltipPosition="top"><span class="text-large">{{ order.ORDER_ID }}</span></td>
+        <td [pTooltip]="order.CHECK_IN" tooltipPosition="top"><span class="text-large">{{ order.CHECK_IN }}</span></td>
+        <td [pTooltip]="order.CHECK_OUT" tooltipPosition="top"><span class="text-large">{{ order.CHECK_OUT }}</span></td>
+        <td [pTooltip]="order.FINAL_USER_NAME" tooltipPosition="top"><span class="text-large">{{ order.FINAL_USER_NAME }}</span></td>
+        <td [pTooltip]="order.PROPERTY_NAME" tooltipPosition="top"><span class="text-large">{{ order.PROPERTY_NAME }}</span></td>
+        <td [pTooltip]="order.HOTEL_CHARGES | price" tooltipPosition="top"><span class="text-large">{{ order.HOTEL_CHARGES | price }}</span></td>
+        <td [pTooltip]="order.PAYMENT_METHOD || '-'" tooltipPosition="top"><span class="text-large">{{ order.PAYMENT_METHOD || '-' }}</span></td>
         <td>
           <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined" class="tag-large" />
         </td>
