@@ -117,6 +117,16 @@
     outline: none;
 }
 
+.error-message {
+    margin-top: -15px;
+    margin-bottom: 5px;
+    height: 30px;
+    margin-left: 160px;
+}
+.error-message ::ng-deep .p-message-text {
+    font-size: 1.2rem;
+    line-height: 1.4;
+}
 /* 按鈕 */
 .button-container {
     margin-top: 40px;
@@ -169,42 +179,4 @@
     align-items: center;
     gap: 6px;
     font-size: 1.25rem;
-}
-
-/* 錯誤訊息 */
-/* .error-message {
-    background-color: #fff5f5;
-    border: 2px solid #A24522;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    color: #A24522;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.5rem;
-}
-
-.error-message i {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-} */
-
-/* 欄位驗證錯誤文字 */
-.error-text {
-    display: block;
-    color: #A24522;
-    margin-top: -10px;
-    margin-bottom: 10px;
-    padding-left: 40%;
-    font-size: 1.25rem;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* 無效欄位的邊框顏色 */
-:host ::ng-deep input.ng-invalid.ng-touched,
-:host ::ng-deep .p-password.ng-invalid.ng-touched input {
-    border-color: #a24522;
-    box-shadow: 0 0 4px rgba(162, 69, 34, 0.2);
 }

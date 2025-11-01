@@ -13,10 +13,11 @@ import { finalize, take } from 'rxjs';
 import { AddUserInfoDialog } from '../add-user-info-dialog/add-user-info-dialog';
 import { UserService } from '../../core/services/user.service';
 import { USER001Req } from '../../core/interfaces/USER001Req.interface';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-login-page',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, AddUserInfoDialog],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, AddUserInfoDialog, MessageModule],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css'
 })
