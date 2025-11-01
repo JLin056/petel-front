@@ -225,7 +225,7 @@ export class BookingPage implements OnInit {
                         this.router.navigate(['/book/authorize'], { state: { orderDays: this.orderDays } })
                     },
                     error: (error) => {
-                        this.messageService.add({ severity: 'error', summary: 'Error', detail: '資料庫數據異常，無法送出訂單' });
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                         return;
                     }
                 });
@@ -271,7 +271,7 @@ export class BookingPage implements OnInit {
                         });
                     },
                     error: (error) => {
-                        this.messageService.add({ severity: 'error', summary: 'Error', detail: '資料庫數據異常，無法送出訂單' });
+                        this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '資料庫數據異常，無法送出訂單' });
                         return;
                     }
                 });
@@ -357,11 +357,12 @@ export class BookingPage implements OnInit {
             }
         }).subscribe({
             next: (response) => {
-                if (!(response.MWHEADER.RETURNCODE === "0000") || response.TRANRS.totalCount) {
+                console.log(response);
+                if (response.MWHEADER.RETURNCODE !== "0000" || response.TRANRS.totalCount) {
                     return 'img/hotelImg.png';
                 }
-                const firstImage = response.TRANRS.medias[0];
-                return `data:${firstImage.mimeType || 'image/jpeg'};base64,${firstImage.base64Data}`;
+                const img = response.TRANRS.medias[0];
+                return `data:${img.mimeType};base64,${img.base64Data}`;
             },
             error: (error) => {
                 return 'img/hotelImg.png';
