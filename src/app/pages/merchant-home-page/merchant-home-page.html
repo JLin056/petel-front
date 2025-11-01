@@ -1,11 +1,4 @@
 <div class="merchant-dashboard">
-    @if (errorMessage && !isLoading) {
-    <div class="error-banner">
-        <i class="pi pi-exclamation-triangle"></i>
-        <span>{{ errorMessage }}</span>
-    </div>
-    }
-
     <!-- Loading 狀態 -->
     @if (isLoading) {
     <div class="loading-container">
@@ -34,6 +27,7 @@
         }
     </div>
     }
+
     <!-- 下半部：房型資訊 -->
     <div class="section-header-row">
         <h2 class="section-title">房型資訊</h2>
@@ -47,14 +41,13 @@
     <div class="room-list">
         @for (room of roomList; track room) {
         <div class="room-card">
-            <img src="https://image.bvshop.tw/3430/home/3430_68e103220d5d5.png.webp" alt="房型圖片" class="room-image"
-                (click)="onDetail(room)" />
+            <img [src]="getRoomImage(room.id)" alt="房型圖片" class="room-image" (click)="onDetail(room)" />
 
             <div class="room-info" (click)="onDetail(room)">
                 <div class="room-name">{{ room.name }}</div>
                 <div class="room-detail">寵物種類：{{ room.petTypeName }}</div>
                 <div class="room-detail">空間大小：{{ room.formattedRoomSize }}</div>
-                <div class="room-detail">房間價格：${{ room.basePrice }}/天</div>
+                <div class="room-detail">房間價格：${{ room.basePrice.toLocaleString() || '0' }}/天</div>
 
                 <div class="room-buttons" (click)="$event.stopPropagation()">
                     <button class="btn-edit" (click)="onEdit(room)">修改房型</button>
@@ -74,9 +67,6 @@
         </div>
         }
     </div>
-    <!-- <div class="btn-more-container">
-        <button class="btn-more">更多房型</button>
-    </div> -->
     }
 </div>
 

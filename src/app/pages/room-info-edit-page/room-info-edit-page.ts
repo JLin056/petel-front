@@ -12,28 +12,6 @@ import { MediaService } from '../../core/services/media.service';
 import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
-interface PetTypeOption {
-  name: string;
-  id: string;
-}
-
-interface UnitOption {
-  label: string;
-  value: number;
-}
-
-interface UploadedImage {
-  file: File;
-  previewUrl: string;
-  sortOrder: number;
-}
-
-interface ExistingImage {
-  mediaId: string;
-  base64Data: string;
-  sortOrder: number;
-}
-
 @Component({
   selector: 'app-room-info-edit-page',
   imports: [
@@ -57,22 +35,6 @@ export class RoomInfoEditPage implements OnInit {
   /** MessageService */
   messageService = inject(MessageService);
 
-  /** petTypes */
-  petTypes: PetTypeOption[] = [
-    { name: '貓', id: 'W001' },
-    { name: '迷你犬', id: 'W002' },
-    { name: '小型犬', id: 'W003' },
-    { name: '中型犬', id: 'W004' },
-    { name: '大型犬', id: 'W005' },
-    { name: '超大型犬', id: 'W006' }
-  ];
-
-  // 👈 新增：房間數選項 1-20
-  unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
-    label: `${i + 1} 間`,
-    value: i + 1
-  }));
-
   /** cancelConfirmVisible */
   cancelConfirmVisible: boolean = false;
 
@@ -85,16 +47,34 @@ export class RoomInfoEditPage implements OnInit {
   /** errorMessage */
   errorMessage: string = '';
 
-  /** roomData - 從首頁傳來的房型資料 */
+  /** roomData */
   roomData: any = null;
 
   /** roomId */
   roomId: string = '';
 
+  /** petTypes */
+  petTypes: PetTypeOption[] = [
+    { name: '貓', id: 'W001' },
+    { name: '迷你犬', id: 'W002' },
+    { name: '小型犬', id: 'W003' },
+    { name: '中型犬', id: 'W004' },
+    { name: '大型犬', id: 'W005' },
+    { name: '超大型犬', id: 'W006' }
+  ];
+
+  /** unitOptions */
+  unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
+    label: `${i + 1} 間`,
+    value: i + 1
+  }));
+
   // 圖片相關
   uploadedImages: UploadedImage[] = [];
   existingImages: ExistingImage[] = [];
   deletedImageIds: string[] = [];
+  originalImageOrder: Map<string, number> = new Map();
+  originalImageData: Map<string, any> = new Map();
 
   /**
    * 注入
@@ -105,7 +85,6 @@ export class RoomInfoEditPage implements OnInit {
     private mediaService: MediaService,
     private router: Router
   ) {
-    // 從 router state 取得房型資料
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.roomData = navigation.extras.state['room'];
@@ -114,13 +93,9 @@ export class RoomInfoEditPage implements OnInit {
     }
   }
 
-  /**
-   * 初始化
-   */
   ngOnInit(): void {
     this.initForm();
 
-    // 如果沒有房型資料，導回首頁
     if (!this.roomData || !this.roomId) {
       console.warn('沒有房型資料，導回首頁');
       this.errorMessage = '無法取得房型資料';
@@ -130,7 +105,6 @@ export class RoomInfoEditPage implements OnInit {
       return;
     }
 
-    // 填入表單資料
     this.populateForm();
   }
 
@@ -155,14 +129,11 @@ export class RoomInfoEditPage implements OnInit {
    */
   private populateForm(): void {
     if (!this.roomData) return;
-
-    // 找到對應的寵物種類物件
     const petType = this.petTypes.find(pt => pt.id === this.roomData.petTypeId);
 
-    // 👈 解析尺寸字串 (例如: "100x200x300")
+    // 解析尺寸字串 (例如: "100x200x300")
     const sizes = this.roomData.roomSize?.split('x') || ['', '', ''];
 
-    // 填入表單
     this.roomForm.patchValue({
       petTypeObject: petType || null,
       name: this.roomData.name || '',
@@ -175,8 +146,6 @@ export class RoomInfoEditPage implements OnInit {
     });
 
     console.log('表單已填入資料:', this.roomForm.value);
-
-    // 載入現有圖片
     this.loadExistingImages();
   }
 
@@ -197,7 +166,12 @@ export class RoomInfoEditPage implements OnInit {
             base64Data: media.base64Data,
             sortOrder: media.sortOrder || 0
           }));
+          res.TRANRS.medias.forEach(media => {
+            this.originalImageOrder.set(media.mediaId, media.sortOrder || 0);
+            this.originalImageData.set(media.mediaId, media);
+          });
           console.log('已載入現有圖片:', this.existingImages.length);
+          console.log('原始圖片資料:', res.TRANRS.medias);
         }
       },
       error: (err) => {
@@ -413,15 +387,107 @@ export class RoomInfoEditPage implements OnInit {
         await this.uploadAllImages();
       }
 
-      // 3. 更新現有圖片的排序
-      if (this.existingImages.length > 0) {
-        const updatePromises = this.existingImages.map((img) =>
-          new Promise<void>((resolve, reject) => {
-            this.mediaService.updateMedia({
-              MWHEADER: { MSGID: 'MEDIA-002' },
+      // 3. 更新現有圖片的排序（只更新有變更的）
+      const imagesToUpdate = this.existingImages.filter(img =>
+        this.originalImageOrder.get(img.mediaId) !== img.sortOrder
+      );
+
+      // 🔧 臨時方案:使用刪除後重傳的方式更新排序
+      const USE_DELETE_AND_REUPLOAD = false;
+
+      if (imagesToUpdate.length > 0 && !USE_DELETE_AND_REUPLOAD) {
+        console.log(`有 ${imagesToUpdate.length} 張圖片的排序需要更新`);
+        console.log('需要更新的圖片:', imagesToUpdate.map(img => ({
+          mediaId: img.mediaId,
+          oldOrder: this.originalImageOrder.get(img.mediaId),
+          newOrder: img.sortOrder
+        })));
+
+        const updatePayload = {
+          MWHEADER: { MSGID: 'MEDIA-002' },
+          TRANRQ: {
+            medias: imagesToUpdate.map(img => {
+              const originalData = this.originalImageData.get(img.mediaId);
+              return {
+                mediaId: img.mediaId,
+                sortOrder: img.sortOrder,
+                // 保留原始的其他欄位
+                fileName: originalData?.fileName,
+                mimeType: originalData?.mimeType,
+                bucket: originalData?.bucket,
+                sizeBytes: originalData?.sizeBytes
+              };
+            })
+          }
+        };
+
+        console.log('MEDIA-002 請求內容:', JSON.stringify(updatePayload, null, 2));
+
+        // 批次更新所有需要變更的圖片
+        await new Promise<void>((resolve, reject) => {
+          this.mediaService.updateMedia(updatePayload).subscribe({
+            next: (res) => {
+              console.log('MEDIA-002 回應:', res);
+              if (res.MWHEADER.RETURNCODE === '0000') {
+                console.log('圖片排序更新成功');
+                resolve();
+              } else {
+                console.error('更新圖片排序失敗:', res.MWHEADER);
+                reject(new Error('更新圖片排序失敗: ' + res.MWHEADER.RETURNDESC));
+              }
+            },
+            error: (err) => {
+              console.error('更新圖片排序 API 錯誤:', err);
+              console.error('HTTP 狀態碼:', err.status);
+              console.error('錯誤訊息:', err.message);
+              console.error('後端回應:', err.error);
+              console.error('完整錯誤物件:', JSON.stringify(err, null, 2));
+              reject(err);
+            }
+          });
+        });
+      } else if (imagesToUpdate.length > 0 && USE_DELETE_AND_REUPLOAD) {
+        // 替代方案:刪除所有圖片後重新上傳
+        console.log('⚠️ 使用替代方案:刪除後重新上傳來更新排序');
+
+        const allMediaIds = this.existingImages.map(img => img.mediaId);
+
+        // 1. 刪除所有現有圖片
+        await new Promise<void>((resolve, reject) => {
+          this.mediaService.deleteMedia({
+            MWHEADER: { MSGID: 'MEDIA-003' },
+            TRANRQ: { mediaIds: allMediaIds }
+          }).subscribe({
+            next: (res) => {
+              if (res.MWHEADER.RETURNCODE === '0000') {
+                console.log('已刪除所有圖片');
+                resolve();
+              } else {
+                reject(new Error('刪除圖片失敗'));
+              }
+            },
+            error: (err) => reject(err)
+          });
+        });
+
+        // 2. 依新順序重新上傳所有圖片
+        for (let index = 0; index < this.existingImages.length; index++) {
+          const img = this.existingImages[index];
+          const originalData = this.originalImageData.get(img.mediaId);
+
+          await new Promise<void>((resolve, reject) => {
+            this.mediaService.uploadMedia({
+              MWHEADER: { MSGID: 'MEDIA-001' },
               TRANRQ: {
+                category: 'Room_Image',
+                referenceId: this.roomId,
                 medias: [{
-                  mediaId: img.mediaId,
+                  base64Data: img.base64Data,
+                  fileName: originalData?.fileName || 'image.jpg',
+                  mimeType: originalData?.mimeType || 'image/jpeg',
+                  bucket: originalData?.bucket || 'petel-media',
+                  sizeBytes: originalData?.sizeBytes || 0,
+                  visibility: 'PUBLIC',
                   sortOrder: img.sortOrder
                 }]
               }
@@ -430,15 +496,17 @@ export class RoomInfoEditPage implements OnInit {
                 if (res.MWHEADER.RETURNCODE === '0000') {
                   resolve();
                 } else {
-                  reject(new Error('更新圖片排序失敗'));
+                  reject(new Error('重新上傳圖片失敗'));
                 }
               },
               error: (err) => reject(err)
             });
-          })
-        );
+          });
+        }
 
-        await Promise.all(updatePromises);
+        console.log('✅ 所有圖片已重新上傳並更新排序');
+      } else {
+        console.log('沒有圖片排序需要更新');
       }
 
       // 4. 更新房型資料
@@ -465,8 +533,10 @@ export class RoomInfoEditPage implements OnInit {
               detail: '房型修改成功'
             });
             setTimeout(() => {
-              this.router.navigate(['/merchants/property/homepage']);
-            }, 1000);
+              this.router.navigate(['/merchants/property/homepage'], {
+                queryParams: { refresh: new Date().getTime() }
+              });
+            }, 1500);
           } else {
             this.errorMessage = '修改失敗';
           }
