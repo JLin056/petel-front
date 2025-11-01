@@ -15,7 +15,6 @@ import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merch
 import { PropertyStateService } from '../../core/services/property-state.service';
 import { MerchService } from '../../core/services/merch-service';
 import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
-import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-merchant-order-table-page',
@@ -30,8 +29,7 @@ import { DatePickerModule } from 'primeng/datepicker';
     CommonModule,
     FormsModule,
     ButtonModule,
-    MerchantOrderDetailDialog,
-    DatePickerModule
+    MerchantOrderDetailDialog
   ],
   templateUrl: './merchant-order-table-page.html',
   styleUrl: './merchant-order-table-page.css'
@@ -67,7 +65,7 @@ export class MerchantOrderTablePage implements OnInit {
   // 搜尋條件
   searchOrderId: string = '';
   searchUserName: string = '';
-  searchCheckIn: Date | null = null;
+  searchCheckIn: string = '';
 
   // 詳細資料彈窗相關
   showDetailDialog = false;
@@ -108,7 +106,7 @@ export class MerchantOrderTablePage implements OnInit {
       },
       TRANRQ: {
         ORDER_ID: this.searchOrderId || undefined,
-        CHECK_IN: this.searchCheckIn ? this.formatDate(this.searchCheckIn) : undefined,
+        CHECK_IN: this.searchCheckIn || undefined,
         userName: this.searchUserName || undefined,
         propertyName: this.propertyName || undefined,
         page: {
@@ -172,7 +170,7 @@ export class MerchantOrderTablePage implements OnInit {
   onClearSearch() {
     this.searchOrderId = '';
     this.searchUserName = '';
-    this.searchCheckIn = null;
+    this.searchCheckIn = '';
     this.currentPage = 1;
     this.loadOrders();
   }
@@ -202,32 +200,21 @@ export class MerchantOrderTablePage implements OnInit {
   }
 
   /**
-   * 狀態變更事件
+   * 狀態更新事件（從 dialog 接收）
    */
-  onStatusChange(order: Order) {
-    console.log('訂單狀態已變更:', order.ORDER_ID, '新狀態:', order.STATUS);
+  onStatusUpdated(data: { orderId: string; status: string }) {
+    console.log('訂單狀態已更新:', data);
 
-    const tranrq: MERCH014Tranrq = {
-      id: order.ORDER_ID,
-      status: order.STATUS
-    };
+    // 更新列表中的訂單狀態
+    const index = this.orderList.findIndex(o => o.ORDER_ID === data.orderId);
+    if (index !== -1) {
+      this.orderList[index].STATUS = data.status;
+    }
 
-    this.merchService.updateOrderStatus(tranrq).subscribe({
-      next: (res) => {
-        console.log('狀態更新成功:', res);
-        if (res.MWHEADER.RETURNCODE === '0000') {
-          // 狀態更新成功，訂單已在 ngModel 雙向綁定中自動更新
-          console.log('訂單', order.ORDER_ID, '狀態已更新為', order.STATUS);
-        } else {
-          console.error('狀態更新失敗:', res.MWHEADER);
-          // 可以在這裡添加錯誤提示
-        }
-      },
-      error: (err) => {
-        console.error('狀態更新失敗:', err);
-        // 可以在這裡添加錯誤提示並恢復原狀態
-      }
-    });
+    // 如果當前選中的訂單是被更新的訂單，也要更新
+    if (this.selectedOrder && this.selectedOrder.ORDER_ID === data.orderId) {
+      this.selectedOrder.STATUS = data.status;
+    }
   }
 
   /**
