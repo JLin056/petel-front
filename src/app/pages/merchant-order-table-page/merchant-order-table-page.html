@@ -49,7 +49,7 @@
           <td>{{ order.CHECK_OUT }}</td>
           <td>{{ order.USER_NAME }}</td>
           <td>{{ order.ROOM || '未提供房型資訊' }}</td>
-          <td>NT$ {{ order.HOTEL_CHARGES }}</td>
+          <td>NT$ {{ order.HOTEL_CHARGES.toLocaleString() || '0' }}</td>
           <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
           <td class="status-cell">
             <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)" styleClass="custom-tag">
