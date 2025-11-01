@@ -10,7 +10,9 @@ export interface Order {
   PROPERTY_NAME: string | null;
   PROPERTY_PHONE: string | null;
   ROOM: string | null;
+  room?: string | null;  // 備用：如果後端回傳小寫
   QUANTITY?: number;
+  quantity?: number;  // 備用：如果後端回傳小寫
   HOTEL_CHARGES: number;
   PRICE_EVERYNIGHT?: number;
   STATUS: string;

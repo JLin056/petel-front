@@ -1,78 +1,108 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Order } from '../../core/interfaces/ADMIN003Res.interface';
-import { Button, ButtonModule } from "primeng/button";
+import { Component, EventEmitter, Input, Output, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Dialog } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { SelectModule } from 'primeng/select';
+
+import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
+import { MerchService } from '../../core/services/merch-service';
+import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
+import { BookService } from '../../core/services/book-service';
+import { BOOK004Req } from '../../core/interfaces/BOOK004Req.interface';
 
 @Component({
   selector: 'app-merchant-order-detail-dialog',
-  imports: [Button, CommonModule, Dialog, ButtonModule, InputTextModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, TagModule, SelectModule],
   templateUrl: './merchant-order-detail-dialog.html',
   styleUrl: './merchant-order-detail-dialog.css'
 })
-export class MerchantOrderDetailDialog {
+export class MerchantOrderDetailDialog implements OnChanges {
   @Input() visible = false;
-  @Output() visibleChange = new EventEmitter<boolean>();
-
   @Input() order: Order | null = null;
+  @Output() visibleChange = new EventEmitter<boolean>();
   @Output() noteUpdated = new EventEmitter<{ orderId: string, note: string }>();
+  @Output() statusUpdated = new EventEmitter<{ orderId: string, status: string }>();
 
-  // 備註編輯狀態
-  isEditingNote = false;
-  editedNote = '';
+  editedNote: string = '';
+  originalStatus: string = '';
+  roomInfo: string = '';
+  roomQuantity: number = 0;
+
+  statuses: Status[] = [
+    { label: '待付款', value: '待付款' },
+    { label: '已確認', value: '已確認' },
+    { label: '已完成', value: '已完成' },
+    { label: '已取消', value: '已取消' }
+  ];
+
+  constructor(
+    private merchService: MerchService,
+    private bookService: BookService
+  ) { }
 
   ngOnChanges(): void {
     if (this.order) {
       this.editedNote = this.order.NOTE || '';
+      this.originalStatus = this.order.STATUS;
+      this.roomInfo = this.order.ROOM || (this.order as any).room || '未提供房型資訊';
+      this.roomQuantity = this.order.QUANTITY || (this.order as any).quantity || 0;
+      this.order.STATUS = this.statuses.find(s => s.value === this.order!.STATUS)?.value || this.order!.STATUS;
     }
   }
 
   onHideDialog() {
     this.visible = false;
     this.visibleChange.emit(false);
-    this.isEditingNote = false;
   }
 
-  onEditNote() {
-    this.isEditingNote = true;
+  /**
+   * 更新訂單狀態
+   */
+  private updateOrderStatus() {
+    if (!this.order) return;
+
+    const tranrq: MERCH014Tranrq = {
+      id: this.order.ORDER_ID,
+      status: this.order.STATUS
+    };
+
+    this.merchService.updateOrderStatus(tranrq).subscribe({
+      next: (res) => {
+        console.log('狀態更新成功:', res);
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          this.statusUpdated.emit({
+            orderId: this.order!.ORDER_ID,
+            status: this.order!.STATUS
+          });
+
+          this.updateNote();
+        } else {
+          console.error('狀態更新失敗:', res.MWHEADER);
+          alert('狀態更新失敗：' + res.MWHEADER.RETURNDESC);
+        }
+      },
+      error: (err) => {
+        console.error('狀態更新失敗:', err);
+        alert('狀態更新時發生錯誤，請稍後再試');
+      }
+    });
   }
 
-  onCancelEdit() {
-    this.editedNote = this.order?.NOTE || '';
-    this.isEditingNote = false;
-  }
-
-  onSaveNote() {
-    if (this.order) {
-      this.noteUpdated.emit({
-        orderId: this.order.ORDER_ID,
-        note: this.editedNote
-      });
-    }
-  }
-
-  // 導航到會員列表(暫時用 console.log，之後可以串接路由)
-  navigateToMember() {
-    console.log('導航到會員:', this.order?.USER_NAME);
-    // TODO: 實作導航到會員列表並搜尋該會員
-  }
-
-  // 導航到旅館列表(暫時用 console.log，之後可以串接路由)
-  navigateToHotel() {
-    console.log('導航到旅館:', this.order?.PROPERTY_NAME);
-    // TODO: 實作導航到旅館列表並搜尋該旅館
-  }
-
-  // 取得狀態顏色
+  /**
+ * 取得狀態標籤的嚴重程度
+ */
   getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
     switch (status) {
       case '已完成':
         return 'success';
       case '已確認':
+      case '已付款':
         return 'info';
       case '待付款':
+      case '未付款':
         return 'warn';
       case '已取消':
         return 'danger';
@@ -81,19 +111,61 @@ export class MerchantOrderDetailDialog {
     }
   }
 
-  // 取得狀態樣式類別
-  getStatusClass(status: string): string {
-    switch (status) {
-      case '已完成':
-        return 'success';
-      case '已確認':
-        return 'info';
-      case '待付款':
-        return 'warn';
-      case '已取消':
-        return 'danger';
-      default:
-        return 'default';
+  /**
+   * 更新備註
+   */
+  private updateNote() {
+    if (!this.order) return;
+
+    this.noteUpdated.emit({
+      orderId: this.order.ORDER_ID,
+      note: this.editedNote
+    });
+    console.log('儲存成功');
+    this.onHideDialog();
+  }
+
+  onSave() {
+    if (!this.order) return;
+
+    const statusChanged = this.order.STATUS !== this.originalStatus;
+
+    if (statusChanged && this.order.STATUS === '已取消') {
+      console.log('訂單狀態改為已取消，呼叫取消訂單 API');
+
+      const cancelReq: BOOK004Req = {
+        MWHEADER: { MSGID: 'BOOK-004' },
+        TRANRQ: { order_id: this.order.ORDER_ID }
+      };
+
+      this.bookService.onCancelBookingApi(cancelReq).subscribe({
+        next: (res) => {
+          console.log('取消訂單 API 回應:', res);
+          if (res.MWHEADER.RETURNCODE === '0000') {
+            console.log('✅ 訂單已成功取消');
+            this.updateOrderStatus();
+          } else {
+            console.error('取消訂單失敗:', res.MWHEADER);
+            alert('取消訂單失敗：' + res.MWHEADER.RETURNDESC);
+
+            if (this.order) {
+              this.order.STATUS = this.originalStatus;
+            }
+          }
+        },
+        error: (err) => {
+          console.error('取消訂單 API 錯誤:', err);
+          alert('取消訂單時發生錯誤，請稍後再試');
+
+          if (this.order) {
+            this.order.STATUS = this.originalStatus;
+          }
+        }
+      });
+    } else if (statusChanged) {
+      this.updateOrderStatus();
+    } else {
+      this.updateNote();
     }
   }
 }
