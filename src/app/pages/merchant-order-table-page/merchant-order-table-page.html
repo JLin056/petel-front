@@ -37,7 +37,6 @@
       <ng-template #header>
         <tr>
           <th style="width: 85px">訂單編號</th>
-          <th style="width: 100px">入住日期</th>
           <th style="width: 100px">退房日期</th>
           <th style="width: 90px">主人姓名</th>
           <th style="width: 130px">房型</th>
@@ -51,14 +50,13 @@
       <ng-template #body let-order>
         <tr>
           <td>{{ order.ORDER_ID }}</td>
-          <td>{{ order.CHECK_IN }}</td>
           <td>{{ order.CHECK_OUT }}</td>
           <td>{{ order.USER_NAME }}</td>
           <td>{{ order.ROOM || '未提供房型資訊' }}</td>
           <td>NT$ {{ order.HOTEL_CHARGES }}</td>
           <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
           <td class="status-cell">
-            <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)">
+            <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)" styleClass="custom-tag">
             </p-tag>
           </td>
           <td>
@@ -69,7 +67,7 @@
 
       <ng-template #emptymessage>
         <tr>
-          <td colspan="9" class="text-center py-4">目前沒有訂單資料</td>
+          <td colspan="8" class="text-center py-4">目前沒有訂單資料</td>
         </tr>
       </ng-template>
     </p-table>

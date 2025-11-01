@@ -220,9 +220,10 @@ body {
   background-color: #ebae88 !important;
   border: none !important;
   color: #fff !important;
-  border-radius: 8px !important;
-  padding: 5px 12px !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
   font-weight: 600 !important;
+  font-size: 13px !important;
   transition: 0.2s ease;
 }
 
@@ -232,30 +233,30 @@ body {
 
 /* 狀態標籤（柔和莫蘭迪系） */
 :host ::ng-deep .p-tag.custom-tag {
-  border-radius: 15px;
-  font-size: 13px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 3px 10px;
+  padding: 3px 9px;
 }
 
 :host ::ng-deep .p-tag-success.custom-tag {
   background-color: #d4ead7;
-  color: #315c41;
+  color: #4a7c59;
 }
 
 :host ::ng-deep .p-tag-info.custom-tag {
-  background-color: #dce3ef;
-  color: #36485a;
+  background-color: #d1e7f5;
+  color: #4a7ba7;
 }
 
 :host ::ng-deep .p-tag-warn.custom-tag {
-  background-color: #f9e8c0;
-  color: #665029;
+  background-color: #ffeab0;
+  color: #8b6914;
 }
 
 :host ::ng-deep .p-tag-danger.custom-tag {
-  background-color: #f8c7c7;
-  color: #703b3b;
+  background-color: #f5d1d1;
+  color: #8b4a4a;
 }
 
 /* 分頁器樣式 */

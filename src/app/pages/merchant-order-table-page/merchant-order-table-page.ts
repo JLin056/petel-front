@@ -29,7 +29,7 @@ import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
     CommonModule,
     FormsModule,
     ButtonModule,
-    MerchantOrderDetailDialog
+    MerchantOrderDetailDialog,
   ],
   templateUrl: './merchant-order-table-page.html',
   styleUrl: './merchant-order-table-page.css'
@@ -45,11 +45,8 @@ export class MerchantOrderTablePage implements OnInit {
     private propertyStateService: PropertyStateService
   ) { }
 
-  /** 當前旅館 ID */
   propertyId: string = '';
-  /** 當前旅館名稱 */
   propertyName: string = '';
-  /** 當前選中要修改狀態的訂單 */
   currentEditingOrder: Order | null = null;
 
   orderList: Order[] = [];
@@ -106,7 +103,7 @@ export class MerchantOrderTablePage implements OnInit {
       },
       TRANRQ: {
         ORDER_ID: this.searchOrderId || undefined,
-        CHECK_IN: this.searchCheckIn || undefined,
+        CHECK_IN: this.searchCheckIn ? this.searchCheckIn.trim() : undefined,
         userName: this.searchUserName || undefined,
         propertyName: this.propertyName || undefined,
         page: {
@@ -120,6 +117,8 @@ export class MerchantOrderTablePage implements OnInit {
       next: (res) => {
         console.log('=== ADMIN-003 API 完整回應 ===');
         console.log('回應:', res);
+        console.log('TRANRS:', res.TRANRS);
+        console.log('orders 陣列:', res.TRANRS?.orders);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.orderList = res.TRANRS?.orders || [];
@@ -127,21 +126,9 @@ export class MerchantOrderTablePage implements OnInit {
           console.log('訂單列表載入成功，總數:', this.totalRecords);
           console.log('訂單列表:', this.orderList);
 
-          // 檢查每個訂單的房型和數量資訊
-          this.orderList.forEach((order, index) => {
-            console.log(`訂單 ${index + 1} (${order.ORDER_ID}):`, {
-              房型名稱: order.ROOM,
-              訂購數量: order.QUANTITY,
-              完整訂單: order
-            });
-
-            if (!order.ROOM) {
-              console.warn(`⚠️ 訂單 ${order.ORDER_ID} 缺少房型名稱 (ROOM)`);
-            }
-            if (!order.QUANTITY) {
-              console.warn(`⚠️ 訂單 ${order.ORDER_ID} 缺少訂購數量 (QUANTITY)`);
-            }
-          });
+          if (this.orderList.length > 0) {
+            const firstOrder = this.orderList[0];
+          }
         } else {
           this.orderList = [];
           console.error('API 返回錯誤:', res.MWHEADER);
@@ -188,9 +175,9 @@ export class MerchantOrderTablePage implements OnInit {
     switch (status) {
       case '已完成':
         return 'success';
-      case '已付款':
+      case '已確認':
         return 'info';
-      case '未付款':
+      case '待付款':
         return 'warn';
       case '已取消':
         return 'danger';
@@ -211,7 +198,6 @@ export class MerchantOrderTablePage implements OnInit {
       this.orderList[index].STATUS = data.status;
     }
 
-    // 如果當前選中的訂單是被更新的訂單，也要更新
     if (this.selectedOrder && this.selectedOrder.ORDER_ID === data.orderId) {
       this.selectedOrder.STATUS = data.status;
     }

@@ -1,11 +1,9 @@
-<p-dialog [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true"
-    [style]="{width: '850px', 'max-width': '95vw'}" [dismissableMask]="true" [draggable]="false" [resizable]="false">
+<p-dialog [(visible)]="visible" (onHide)="onHideDialog()" [modal]="true" [style]="{width: '850px', 'max-width': '95vw'}"
+    [dismissableMask]="true" [draggable]="false" [resizable]="false">
 
     <ng-template pTemplate="header">
         <div class="dialog-header-content">
             <span class="dialog-title">訂單詳細資料 - {{ order?.ORDER_ID }}</span>
-            <p-tag *ngIf="order" [value]="order.STATUS" [severity]="getSeverity(order.STATUS) || undefined"
-                class="status-tag" />
         </div>
     </ng-template>
 
@@ -13,20 +11,19 @@
         <!-- 訂單狀態 -->
         <div class="info-section">
             <div class="section-title">訂單狀態</div>
-            <div class="detail-grid">
-                <div class="detail-item">
+            <div class="detail-grid single-col">
+                <div class="detail-item full-width">
                     <span class="detail-label">狀態:</span>
                     <p-select [(ngModel)]="order.STATUS" [options]="statuses" optionLabel="label" optionValue="value"
-                        placeholder="選擇狀態" styleClass="status-select-dialog"
-                        [disabled]="order.STATUS === '已取消'" />
+                        placeholder="選擇狀態" styleClass="status-select-dialog" [disabled]="order.STATUS === '已取消'" />
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">建立時間:</span>
                     <span class="detail-value">{{ order.CREATED_AT }}</span>
                 </div>
-                <div class="detail-item" *ngIf="order.PAYMENT_METHOD">
+                <div class="detail-item">
                     <span class="detail-label">付款方式:</span>
-                    <span class="detail-value">{{ order.PAYMENT_METHOD }}</span>
+                    <span class="detail-value">{{ order.PAYMENT_METHOD || '未提供' }}</span>
                 </div>
             </div>
         </div>
@@ -67,7 +64,7 @@
                     <span class="detail-label">房型:</span>
                     <span class="detail-value">{{ roomInfo || '未提供房型資訊' }}</span>
                 </div>
-                <div class="detail-item">
+                <div class="detail-item full-width">
                     <span class="detail-label">訂購房數:</span>
                     <span class="detail-value highlight">{{ roomQuantity ? (roomQuantity + ' 間') : '未提供數量資訊' }}</span>
                 </div>
@@ -81,7 +78,6 @@
                 </div>
             </div>
         </div>
-
         <div class="divider"></div>
 
         <!-- 總價格 -->

@@ -44,6 +44,13 @@
   padding-left: 0.3rem;
 }
 
+/* 讓每組可控排列的 detail-grid */
+.detail-grid.single-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 2rem;
+}
+
 .detail-item {
   display: flex;
   align-items: center;
