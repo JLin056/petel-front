@@ -62,7 +62,6 @@ export class MerchantOrderTablePage implements OnInit {
   // 搜尋條件
   searchOrderId: string = '';
   searchUserName: string = '';
-  searchCheckIn: string = '';
 
   // 詳細資料彈窗相關
   showDetailDialog = false;
@@ -103,7 +102,6 @@ export class MerchantOrderTablePage implements OnInit {
       },
       TRANRQ: {
         ORDER_ID: this.searchOrderId || undefined,
-        CHECK_IN: this.searchCheckIn ? this.searchCheckIn.trim() : undefined,
         userName: this.searchUserName || undefined,
         propertyName: this.propertyName || undefined,
         page: {
@@ -157,7 +155,6 @@ export class MerchantOrderTablePage implements OnInit {
   onClearSearch() {
     this.searchOrderId = '';
     this.searchUserName = '';
-    this.searchCheckIn = '';
     this.currentPage = 1;
     this.loadOrders();
   }
