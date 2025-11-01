@@ -351,7 +351,7 @@ export class RoomInfoEditPage implements OnInit {
     this.isSubmitting = true;
 
     try {
-      // 1. 刪除已標記的圖片
+      // 刪除已標記的圖片
       if (this.deletedImageIds.length > 0) {
         this.messageService.add({
           severity: 'info',
@@ -376,7 +376,7 @@ export class RoomInfoEditPage implements OnInit {
         });
       }
 
-      // 2. 上傳新圖片
+      // 上傳新圖片
       if (this.uploadedImages.length > 0) {
         this.messageService.add({
           severity: 'info',
@@ -387,12 +387,12 @@ export class RoomInfoEditPage implements OnInit {
         await this.uploadAllImages();
       }
 
-      // 3. 更新現有圖片的排序（只更新有變更的）
+      // 更新現有圖片的排序（只更新有變更的）
       const imagesToUpdate = this.existingImages.filter(img =>
         this.originalImageOrder.get(img.mediaId) !== img.sortOrder
       );
 
-      // 🔧 臨時方案:使用刪除後重傳的方式更新排序
+      // 使用刪除後重傳的方式更新排序
       const USE_DELETE_AND_REUPLOAD = false;
 
       if (imagesToUpdate.length > 0 && !USE_DELETE_AND_REUPLOAD) {
@@ -509,7 +509,6 @@ export class RoomInfoEditPage implements OnInit {
         console.log('沒有圖片排序需要更新');
       }
 
-      // 4. 更新房型資料
       const formData = this.roomForm.value;
       const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
 
