@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 import { MediaService } from '../../core/services/media.service';
 import { Tranrq } from '../../core/interfaces/MERCH004Req.interface';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 interface PetTypeOption {
   name: string;
@@ -58,7 +59,6 @@ export class RoomInfoInsertPage implements OnInit {
     { name: '超大型犬', id: 'W006' }
   ];
 
-  // 房間數選項 1-20
   unitOptions: UnitOption[] = Array.from({ length: 20 }, (_, i) => ({
     label: `${i + 1} 間`,
     value: i + 1
@@ -68,7 +68,7 @@ export class RoomInfoInsertPage implements OnInit {
   isSubmitting: boolean = false;
   isSubmitted: boolean = false;
   errorMessage: string = '';
-  propertyId: string = 'P000000001';
+  propertyId: string = '';
 
   // 圖片相關
   uploadedImages: UploadedImage[] = [];
@@ -77,10 +77,25 @@ export class RoomInfoInsertPage implements OnInit {
     private fb: FormBuilder,
     private merchService: MerchService,
     private mediaService: MediaService,
-    private router: Router
+    private router: Router,
+    private propertyStateService: PropertyStateService
   ) { }
 
   ngOnInit(): void {
+    this.propertyId = this.propertyStateService.getCurrentPropertyId();
+
+    if (!this.propertyId) {
+      this.errorMessage = '無法取得旅館資訊';
+      this.messageService.add({
+        severity: 'warn',
+        summary: '無法取得旅館資訊',
+        detail: '請先選擇旅館'
+      });
+      setTimeout(() => {
+        this.router.navigate(['/merchants/property/homepage']);
+      }, 2000);
+      return;
+    }
     this.initForm();
   }
 
@@ -272,7 +287,7 @@ export class RoomInfoInsertPage implements OnInit {
       const formData = this.roomForm.value;
       const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
 
-      const tranrq: Tranrq = {
+      const tranrq = {
         propertyId: this.propertyId,
         name: formData.name,
         totalUnits: Number(formData.unit),
@@ -312,12 +327,11 @@ export class RoomInfoInsertPage implements OnInit {
 
           this.isSubmitting = false;
         },
-        error: () => {
-          this.errorMessage = '網路或伺服器錯誤，請稍後再試';
+        error: (err) => {
+          console.error('API 錯誤:', err);
           this.isSubmitting = false;
         }
       });
-
     } catch (error: any) {
       this.errorMessage = error.message || '圖片上傳失敗，請稍後再試';
       this.isSubmitting = false;

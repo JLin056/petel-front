@@ -1,0 +1,83 @@
+<p-drawer
+    [(visible)]="visible"
+    position="right"
+    [style]="{ width: '450px' }"
+    (onShow)="onShow()"
+    (onHide)="onHide()"
+>
+    <ng-template pTemplate="header">
+        <div class="notification-header">
+            <h3>通知中心</h3>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+
+        <!-- 載入中 -->
+        <div *ngIf="loading" class="loading-container">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
+            <p>載入中...</p>
+        </div>
+
+        <!-- 通知列表 -->
+        <div *ngIf="!loading" class="notifications-container">
+            <!-- 空狀態 -->
+            <div *ngIf="notifications.length === 0" class="empty-state">
+                <i class="pi pi-inbox" style="font-size: 3rem; color: #95a5a6;"></i>
+                <p>目前沒有通知</p>
+            </div>
+
+            <!-- 通知卡片 -->
+            <div
+                *ngFor="let notification of notifications"
+                class="notification-card"
+                [class.unread]="notification.status === 'UNREAD'"
+                (click)="markAsRead(notification)"
+            >
+                <div class="notification-icon" [style.background-color]="getTypeColor(notification.type)">
+                    <i [class]="getTypeIcon(notification.type)"></i>
+                </div>
+
+                <div class="notification-content">
+                    <div class="notification-header-line">
+                        <span class="notification-type">{{ getTypeLabel(notification.type) }}</span>
+                        <span class="notification-time">{{ formatTime(notification.created_at) }}</span>
+                    </div>
+
+                    <h4 class="notification-title">{{ notification.title }}</h4>
+                    <p class="notification-message">{{ notification.message }}</p>
+
+                    <!-- ORDER 類型的額外資訊 -->
+                    <div *ngIf="notification.type === 'ORDER' && notification.property_name" class="notification-details">
+                        <div class="detail-item">
+                            <i class="pi pi-building"></i>
+                            <span>{{ notification.property_name }}</span>
+                        </div>
+                        <div *ngIf="notification.check_in && notification.check_out" class="detail-item">
+                            <i class="pi pi-calendar"></i>
+                            <span>{{ formatDate(notification.check_in) }} - {{ formatDate(notification.check_out) }}</span>
+                        </div>
+                        <div *ngIf="notification.amount" class="detail-item">
+                            <i class="pi pi-dollar"></i>
+                            <span>{{ notification.amount | price }}</span>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT 類型的額外資訊 -->
+                    <div *ngIf="notification.type === 'PAYMENT' && notification.amount" class="notification-details">
+                        <div class="detail-item">
+                            <i class="pi pi-dollar"></i>
+                            <span>{{ notification.amount | price }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 未讀標記 -->
+                    <div *ngIf="notification.status === 'UNREAD'" class="unread-indicator">
+                        <span class="unread-dot"></span>
+                        <span class="unread-text">未讀</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-drawer>

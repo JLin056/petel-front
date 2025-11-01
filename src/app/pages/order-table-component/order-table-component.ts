@@ -12,6 +12,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { OrderDetailDialog } from '../order-detail-dialog/order-detail-dialog';
@@ -34,6 +35,7 @@ import { PricePipe } from '../../shared/pipes/price-pipe';
     ButtonModule,
     OrderDetailDialog,
     ToastModule,
+    TooltipModule,
     PricePipe
   ],
   providers: [MessageService],
@@ -83,15 +85,6 @@ export class OrderTableComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (params['userName']) {
         this.userNameFilter = params['userName'];
-        this.isSearching = true;
-        // 延遲執行搜尋，等待表格初始化完成
-        setTimeout(() => {
-          this.onSearch();
-        }, 100);
-      }
-      if (params['propertyName']) {
-        this.propertyNameFilter = params['propertyName'];
-        this.isSearching = true;
         // 延遲執行搜尋，等待表格初始化完成
         setTimeout(() => {
           this.onSearch();
@@ -218,9 +211,8 @@ export class OrderTableComponent implements OnInit {
     switch (status) {
       case '已完成':
         return 'success';
-      case '已確認':
+      case '已付款':
         return 'info';
-      case '待付款':
       case '未付款':
         return 'warn';
       case '已取消':
