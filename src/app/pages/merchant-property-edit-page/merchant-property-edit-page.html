@@ -3,12 +3,54 @@
 
     <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
 
-        <!-- 旅館圖片區 (保留給之後的圖片 API) -->
+        <!-- 旅館圖片區 -->
         <div class="info-section">
             <h3>旅館圖片</h3>
             <div class="image-placeholder">
-                <i class="pi pi-images" style="font-size: 3rem; color: #ccc;"></i>
-                <p style="color: #999; margin-top: 1rem;">圖片功能開發中，敬請期待</p>
+
+                <!-- 原生檔案選擇 -->
+                <input type="file" accept="image/*" multiple hidden #fileInput (change)="onImageSelect($event)">
+                <button type="button" class="btn-upload" (click)="fileInput.click()">
+                    <i class="pi pi-images"></i>
+                    選擇圖片
+                </button>
+
+                <!-- 圖片預覽區 -->
+                @if (existingImages.length > 0 || uploadedImages.length > 0) {
+                <div class="image-preview-area">
+                    <div class="image-grid" cdkDropList (cdkDropListDropped)="onImageDrop($event)">
+                        <!-- 現有圖片 -->
+                        @for (img of existingImages; track img.mediaId; let i = $index) {
+                        <div class="image-item" cdkDrag>
+                            <img [src]="'data:image/jpeg;base64,' + img.base64Data" alt="房型圖片">
+                            <div class="image-overlay">
+                                <span class="sort-number">{{ img.sortOrder }}</span>
+                                <button type="button" class="btn-remove" (click)="removeExistingImage(i)">
+                                    <i class="pi pi-times"></i>
+                                </button>
+                            </div>
+                            <!-- CDK 拖拉預覽 -->
+                            <div class="drag-placeholder" *cdkDragPlaceholder></div>
+                        </div>
+                        }
+                        <!-- 新上傳的圖片 -->
+                        @for (img of uploadedImages; track img.previewUrl; let i = $index) {
+                        <div class="image-item" cdkDrag>
+                            <img [src]="img.previewUrl" alt="預覽圖片">
+                            <div class="image-overlay">
+                                <span class="sort-number">{{ img.sortOrder }}</span>
+                                <button type="button" class="btn-remove" (click)="removeUploadedImage(i)">
+                                    <i class="pi pi-times"></i>
+                                </button>
+                            </div>
+                            <!-- CDK 拖拉預覽 -->
+                            <div class="drag-placeholder" *cdkDragPlaceholder></div>
+                        </div>
+                        }
+                    </div>
+                    <p class="hint-text"><i class="pi pi-arrows-alt"></i> 拖拉圖片可調整順序</p>
+                </div>
+                }
             </div>
         </div>
 
@@ -16,7 +58,7 @@
         <div class="info-section">
             <h3>基本資訊</h3>
             <div class="form-grid">
-                <label>旅館名稱 <span class="required">*</span></label>
+                <label>旅館名稱</label>
                 <input type="text" pInputText formControlName="name" [disabled]="true" />
 
                 <label>特許寵物業許可證號</label>
@@ -29,16 +71,18 @@
                 <input type="text" pInputText formControlName="tel">
 
                 <label>地址 <span class="required">*</span></label>
-                <input class="city-input" type="text" pInputText formControlName="city" placeholder="縣市名">
-                <input class="district-input" type="text" pInputText formControlName="district" placeholder="鄉鎮市區名">
-                <input class="addressDetail-input" type="text" pInputText formControlName="address" placeholder="詳細地址">
+                <div class="address-row">
+                    <p-select class="city-input" [options]="avaliableCities" formControlName="city" placeholder="縣市名"
+                        (onChange)="onCityChange($event.value)" />
+                    <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
+                        placeholder="鄉鎮市區名" />
+                    <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
+                        placeholder="詳細地址">
+                </div>
 
                 <label>設施 <span class="required">*</span></label>
-                <!-- <input type="checkbox" name="facilityId1" [checked]="propertyData.facilities[0].facilityId" [value]="propertyData.facilities[0].facilityId"/> 寵物友善
-                <input type="checkbox" name="facilityId2" [checked]="propertyData.facilities[1].facilityId" [value]="propertyData.facilities[1].facilityId"/> 鄰近公園
-                <input type="checkbox" name="facilityId3" [checked]="propertyData.facilities[2].facilityId" [value]="propertyData.facilities[2].facilityId"/> 鄰近寵物餐廳
-                <input type="checkbox" name="facilityId4" [checked]="propertyData.facilities[3].facilityId" [value]="propertyData.facilities[3].facilityId"/> 獨立房間
-                <input type="checkbox" name="facilityId5" [checked]="propertyData.facilities[4].facilityId" [value]="propertyData.facilities[4].facilityId"/> 全天候攝影監控 -->
+                <p-multiselect [options]="avaliableFacilities" formControlName="selectedFacilities"
+                    optionLabel="facilityName" placeholder="選取旅館可用的設施" [maxSelectedLabels]="3" class="p-multiselect" />
             </div>
         </div>
 
