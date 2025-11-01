@@ -4,18 +4,15 @@
     justify-content: center;
 }
 
-.banner-background {
-    height: 20px;
-    width: 100%;
-    background-color: #974B2C;
-}
-
 .search-container {
     background-color: #FFF1C2;
     border-radius: 10px;
     padding: 10px;
+    margin: 0 auto;
     position: relative;
-    top: -20px;
+    top: 15px;
+    max-width: 1200px;
+    width: 100%;
 }
 
 .search-bar {
@@ -52,23 +49,27 @@
 .review-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px 20px; /* 垂直間距加大，水平間距保持 */
+    gap: 30px 20px;
+    /* 垂直間距加大，水平間距保持 */
     padding: 0px 20px 30px 20px;
 }
 
 /* Fieldset 外層 - 移除所有邊框 */
 ::ng-deep .review-grid .p-fieldset {
-    border: none !important; /* 移除外層邊框 */
+    border: none !important;
+    /* 移除外層邊框 */
     background: transparent !important;
     padding: 0 !important;
-    margin-top: 30px !important; /* 上方留空間給 avatar */
+    margin-top: 30px !important;
+    /* 上方留空間給 avatar */
     position: relative;
     box-shadow: none !important;
 }
 
 /* Fieldset 容器本身 */
-::ng-deep .review-grid .p-fieldset > .p-fieldset-content-container {
-    border: 1px solid #cfc1b1 !important; /* 單一邊框在內層容器 */
+::ng-deep .review-grid .p-fieldset>.p-fieldset-content-container {
+    border: 1px solid #cfc1b1 !important;
+    /* 單一邊框在內層容器 */
     border-radius: 10px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
     background-color: #fff !important;
@@ -81,7 +82,8 @@
     padding: 0 !important;
     margin: 0 !important;
     position: absolute;
-    top: -25px; /* 讓 avatar 浮在卡片上方 */
+    top: -25px;
+    /* 讓 avatar 浮在卡片上方 */
     left: 20px;
     width: auto !important;
 }
@@ -112,7 +114,8 @@
 
 /* Fieldset 內容區域 */
 ::ng-deep .review-grid .p-fieldset .p-fieldset-content {
-    padding: 40px 1.25rem 1.25rem 1.25rem !important; /* 上方留空間給 avatar */
+    padding: 40px 1.25rem 1.25rem 1.25rem !important;
+    /* 上方留空間給 avatar */
     border: none !important;
 }
 
@@ -128,7 +131,8 @@
 .review-rating-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* 星星和分數之間的間距 */
+    gap: 0.5rem;
+    /* 星星和分數之間的間距 */
 }
 
 /* 評論分數文字 */
@@ -174,157 +178,158 @@
 /* 圖片網格 - 點擊打開全螢幕相簿 */
 /* ---------------------------------------------------------------------- */
 .image-grid-container {
-  padding: 30px 20px;
-  background-color: #f9f9f9;
+    padding: 30px 20px;
 }
 
 .image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  max-width: 1200px;
-  margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .grid-item {
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  cursor: pointer;
-  aspect-ratio: 4/3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    aspect-ratio: 4/3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .grid-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .grid-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
 }
 
 .grid-item:hover img {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 .image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(124, 66, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(124, 66, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .grid-item:hover .image-overlay {
-  opacity: 1;
+    opacity: 1;
 }
 
 .image-overlay i {
-  color: white;
-  font-size: 2rem;
+    color: white;
+    font-size: 2rem;
 }
 
 /* 全螢幕 Galleria 樣式 */
 ::ng-deep .p-galleria-mask.p-component-overlay {
-  background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 ::ng-deep .p-galleria .p-galleria-item-nav {
-  background-color: rgba(124, 66, 0, 0.8);
-  color: white;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  transition: all 0.3s ease;
+    background-color: rgba(124, 66, 0, 0.8);
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease;
 }
 
 ::ng-deep .p-galleria .p-galleria-item-nav:hover {
-  background-color: rgba(124, 66, 0, 1);
+    background-color: rgba(124, 66, 0, 1);
 }
 
 ::ng-deep .p-galleria .p-galleria-close {
-  background-color: rgba(124, 66, 0, 0.8);
-  color: white;
+    background-color: rgba(124, 66, 0, 0.8);
+    color: white;
 }
 
 ::ng-deep .p-galleria .p-galleria-close:hover {
-  background-color: rgba(124, 66, 0, 1);
+    background-color: rgba(124, 66, 0, 1);
 }
 
 /* 響應式設計 */
 @media (max-width: 768px) {
-  .image-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
+    .image-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
 
-  .grid-item {
-    aspect-ratio: 1/1;
-  }
+    .grid-item {
+        aspect-ratio: 1/1;
+    }
 }
 
 @media (max-width: 480px) {
-  .image-grid {
-    grid-template-columns: 1fr;
-  }
+    .image-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ---------------------------------------------------------------------- */
 /* 店家頂部資訊樣式 */
 /* ---------------------------------------------------------------------- */
 .store-header-container {
-  padding: 20px;
+    padding: 20px;
 }
 
 .store-name {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #7c4200;
-  margin: 0 0 1rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #7c4200;
+    margin: 0 0 1rem 0;
 }
 
 /* 評分和評論數在同一行 */
 .rating-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem; /* rating 和評論數之間的間距 */
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    /* rating 和評論數之間的間距 */
+    margin-bottom: 0.75rem;
 }
 
 .review-count {
-  margin: 0;
-  color: #666;
-  font-size: 0.95rem;
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
 }
 
 /* 地址圖示和文字在同一行 */
 .address-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* icon 和文字之間的間距 */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* icon 和文字之間的間距 */
 }
 
 .address-icon {
-  color: #7c4200;
-  font-size: 1.1rem;
+    color: #7c4200;
+    font-size: 1.1rem;
 }
 
 .address-text {
-  margin: 0;
-  color: #666;
-  font-size: 0.95rem;
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -348,6 +353,7 @@
     /* 淡棕框 */
     background-color: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 1.2rem;
 }
 
 /* 移除 PrimeNG 預設樣式 */
@@ -453,6 +459,10 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+::ng-deep .right-card .p-card-header {
+    font-size: 1.5rem;
+}
+
 /* 移除 PrimeNG 預設樣式 */
 :host ::ng-deep .right-card .p-card {
     border: none !important;
@@ -483,49 +493,56 @@
 /* 須知區塊樣式 */
 /* ---------------------------------------------------------------------- */
 .notes-container {
-  background-color: #f5efe8; /* 淡咖啡色背景 */
-  padding: 30px;
-  border-radius: 10px;
-  margin: 40px 20px; /* 上下留出間距 */
+    background-color: #f5efe8;
+    /* 淡咖啡色背景 */
+    padding: 30px;
+    border-radius: 10px;
+    margin: 40px 20px;
+    /* 上下留出間距 */
 }
 
 .pet-note,
 .checkIn-note {
-  background-color: transparent; /* 移除白色背景 */
-  padding: 0;
-  border: none; /* 移除外框 */
-  box-shadow: none;
-  margin-bottom: 20px; /* 兩個區塊之間的間距 */
+    background-color: transparent;
+    /* 移除白色背景 */
+    padding: 0;
+    border: none;
+    /* 移除外框 */
+    box-shadow: none;
+    margin-bottom: 20px;
+    /* 兩個區塊之間的間距 */
 }
 
 .checkIn-note {
-  margin-bottom: 0; /* 最後一個不需要底部間距 */
+    margin-bottom: 0;
+    /* 最後一個不需要底部間距 */
 }
 
 .note-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #7c4200;
-  margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #7c4200;
+    margin: 0 0 0.5rem 0;
 }
 
 .note-content {
-  color: #555;
-  line-height: 1.6;
-  font-size: 0.95rem;
-  margin: 0.75rem 0 0 0;
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin: 0.75rem 0 0 0;
 }
 
 /* 房型推薦區塊 */
 .room-recommend {
-  margin: 40px 20px 20px 20px; /* 與上方須知區塊分開 */
+    margin: 40px 20px 20px 20px;
+    /* 與上方須知區塊分開 */
 }
 
 .recommend-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #7c4200;
-  margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #7c4200;
+    margin: 0 0 1rem 0;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -636,8 +653,10 @@
 
 /* 固定高度的內容區域 */
 .card-content-fixed {
-    height: 150px; /* 固定高度 */
-    overflow: hidden; /* 超出部分隱藏 */
+    height: 150px;
+    /* 固定高度 */
+    overflow: hidden;
+    /* 超出部分隱藏 */
 }
 
 /* 內文部分 — 縮小邊距 */
@@ -700,24 +719,11 @@
 }
 
 /* 按鈕區 */
+
 .card-footer {
     display: flex;
     justify-content: center;
     margin-top: 1rem;
-}
-
-.card-btn {
-    background-color: #d8c8f0;
-    border: none;
-    color: #5a4280;
-    font-weight: 500;
-}
-
-.booking-btn {
-    background-color: #d8c8f0;
-    border: none;
-    color: #5a4280;
-    font-weight: 500;
 }
 
 .order-button {
@@ -725,6 +731,24 @@
     justify-content: center;
     margin-top: 10rem;
     margin-bottom: 6rem;
+}
+
+::ng-deep .card-btn {
+    background-color: #eee5da;
+    color: #493522;
+    border: none;
+    font-weight: 500;
+    border-radius: 20px;
+    font-size: 1.2rem;
+}
+
+::ng-deep .booking-btn {
+    background-color: #eee5da;
+    color: #493522;
+    border: none;
+    font-weight: 500;
+    border-radius: 20px;
+    font-size: 1.2rem;
 }
 
 .room-quantity-select {
@@ -751,4 +775,300 @@
 ::ng-deep .room-quantity-select .p-select .p-select-label {
     border: 1px solid #cfc1b1;
     border-radius: 4px;
+}
+
+
+/* ===== 新增優化部分 ===== */
+
+/* ===== 優化邊框圓角設定 ===== */
+input,
+textarea,
+select,
+.p-dropdown,
+.p-inputtext,
+.search-item {
+    border-radius: 8px !important;
+}
+
+/* 按鈕圓角20px */
+.p-button,
+button,
+.btn {
+    border-radius: 20px !important;
+}
+
+/* PrimeNG p-card圓角 */
+.p-card,
+.right-card {
+    border-radius: 20px !important;
+}
+
+/* ===== RWD調整 ===== */
+@media (max-width: 768px) {
+
+    body,
+    .p-card,
+    .right-card {
+        padding: 10px !important;
+    }
+
+    input,
+    textarea,
+    select,
+    .p-dropdown,
+    .p-inputtext,
+    .search-item {
+        font-size: 0.9rem !important;
+    }
+
+    .p-button,
+    button,
+    .btn {
+        font-size: 1rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+}
+
+/* 店家資訊、設施、評價、注意事項、毛孩須知、入住須知 區塊標題字體大小 */
+.store-header-container h1.store-name,
+.info-layout p-card>.p-card-header,
+.right-cards p-card>.p-card-header,
+.notes-container .note-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+
+/* 對應的內文區文字大小 */
+.info-layout p-card .info-content-fixed p,
+.info-layout p-card .facilities-section p,
+.right-cards p-card .card-body p,
+.notes-container .note-content {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #333333;
+}
+
+/* RWD：手機螢幕縮小時字體調整和最大寬度自適應 */
+@media (max-width: 768px) {
+    .search-container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    .store-header-container h1.store-name,
+    .info-layout p-card>.p-card-header,
+    .right-cards p-card>.p-card-header,
+    .notes-container .note-title {
+        font-size: 1.3rem;
+    }
+
+    .info-layout p-card .info-content-fixed p,
+    .info-layout p-card .facilities-section p,
+    .right-cards p-card .card-body p,
+    .notes-container .note-content {
+        font-size: 1rem;
+    }
+}
+
+/* ===== 優化邊框圓角 ===== */
+input,
+textarea,
+select,
+.p-dropdown,
+.p-inputtext,
+.search-item {
+    border-radius: 8px !important;
+}
+
+.p-button,
+button,
+.btn {
+    border-radius: 20px !important;
+}
+
+.p-card,
+.right-card,
+.left-card,
+.custom-card {
+    border-radius: 20px !important;
+}
+
+/* ===== RWD 調整 ===== */
+@media (max-width: 768px) {
+
+    body,
+    .p-card,
+    .right-card,
+    .left-card,
+    .custom-card {
+        padding: 10px !important;
+    }
+
+    input,
+    textarea,
+    select,
+    .p-dropdown,
+    .p-inputtext,
+    .search-item {
+        font-size: 0.9rem !important;
+    }
+
+    .p-button,
+    button,
+    .btn {
+        font-size: 1rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+
+    .search-container {
+        max-width: 100% !important;
+        padding: 0 15px !important;
+    }
+}
+
+
+/* ===== 新增優化樣式 ===== */
+
+/* ===== 基本圓角改動 ===== */
+input,
+textarea,
+select,
+.p-dropdown,
+.p-inputtext,
+.search-item {
+    border-radius: 8px !important;
+}
+
+.p-button,
+button,
+.btn {
+    border-radius: 20px !important;
+}
+
+.p-card,
+.right-card,
+.left-card,
+.custom-card {
+    border-radius: 20px !important;
+}
+
+/* ===== 房型資訊卡片內文字大小 ===== */
+.custom-card .card-body,
+.custom-card .card-content-fixed,
+.custom-card .card-footer {
+    font-size: 1.2rem !important;
+}
+
+/* ===== 店家資訊、評價、設施、注意事項文字大小及顏色 ===== */
+.store-header-container h1.store-name,
+/* 店家名稱 */
+.info-layout p-card>.p-card-header,
+/* 店家資訊標題 */
+.right-cards p-card>.p-card-header,
+/* 評價、注意事項卡片標題 */
+.notes-container .note-title
+
+/* 毛孩須知、入住須知標題 */
+    {
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    color: #493522 !important;
+    /* 與房型推薦文字顏色相同 */
+    margin-bottom: 0.5rem;
+}
+
+/* 內文文字大小 */
+.info-layout p-card .info-content-fixed p,
+/* 店家資訊內文 */
+.info-layout p-card .facilities-section p,
+/* 設施內文 */
+.right-cards p-card .card-body p,
+/* 評價、注意事項內文 */
+.notes-container .note-content
+
+/* 毛孩須知、入住須知內文 */
+    {
+    font-size: 1.2rem !important;
+    color: #493522 !important;
+    line-height: 1.5;
+}
+
+/* 價格評分、環境評分、服務評分文字大小 */
+.score-layout p {
+    font-size: 1.2rem !important;
+    color: #493522 !important;
+}
+
+/* 評價相關文字大小 */
+.review-grid p,
+.review-content p {
+    font-size: 1.2rem !important;
+    color: #493522 !important;
+}
+
+/* ===== 我要預訂、返回搜尋列表 按鈕字與內邊距調整 ===== */
+.booking-btn,
+.card-btn {
+    padding: 0.75rem 2rem !important;
+    font-size: 1.1rem !important;
+}
+.search-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+
+    /* RWD調整寬度與字體 */
+    .search-container {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    input,
+    textarea,
+    select,
+    .p-dropdown,
+    .p-inputtext,
+    .search-item {
+        font-size: 0.9rem !important;
+    }
+
+    .p-button,
+    button,
+    .btn {
+        font-size: 1rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+
+    .custom-card .card-body,
+    .custom-card .card-content-fixed,
+    .custom-card .card-footer {
+        font-size: 1rem !important;
+    }
+
+    .store-header-container h1.store-name,
+    .info-layout p-card>.p-card-header,
+    .right-cards p-card>.p-card-header,
+    .notes-container .note-title {
+        font-size: 1.3rem !important;
+    }
+
+    .info-layout p-card .info-content-fixed p,
+    .info-layout p-card .facilities-section p,
+    .right-cards p-card .card-body p,
+    .notes-container .note-content,
+    .score-layout p,
+    .review-grid p,
+    .review-content p {
+        font-size: 1rem !important;
+    }
+
+    .booking-btn,
+    .card-btn {
+        font-size: 1rem !important;
+        padding: 0.5rem 1.5rem !important;
+    }
 }
