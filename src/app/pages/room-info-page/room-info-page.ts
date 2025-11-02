@@ -2,11 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MerchService } from '../../core/services/merch-service';
+import { MediaService } from '../../core/services/media.service';
 import { MERCH012Tranrs } from '../../core/interfaces/MERCH012Res.interface';
 
 interface PetTypeOption {
   name: string;
   id: string;
+}
+
+interface RoomImage {
+  mediaId: string;
+  sortOrder: number;
+  base64Data: string;
+  fileName: string;
 }
 
 @Component({
@@ -40,11 +48,18 @@ export class RoomInfoPage implements OnInit {
   /** roomId */
   roomId: string = '';
 
+  /** roomImages - 儲存房型圖片 */
+  roomImages: RoomImage[] = [];
+
+  /** isLoadingImages - 圖片載入狀態 */
+  isLoadingImages: boolean = false;
+
   /**
    * 注入
    */
   constructor(
     private merchService: MerchService,
+    private mediaService: MediaService,
     private router: Router
   ) {
     // 從 router state 取得房型 ID
@@ -93,6 +108,8 @@ export class RoomInfoPage implements OnInit {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.roomData = res.TRANRS;
           console.log('取得的房型資料:', this.roomData);
+          // 載入房型圖片
+          this.loadRoomImages();
         } else {
           this.errorMessage = '載入房型資料失敗';
           this.roomData = null;
@@ -107,6 +124,54 @@ export class RoomInfoPage implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  /**
+   * 載入房型圖片
+   */
+  private loadRoomImages(): void {
+    if (!this.roomId) return;
+
+    this.isLoadingImages = true;
+
+    this.mediaService.onGetMediaApi({
+      MWHEADER: { MSGID: 'MEDIA-004' },
+      TRANRQ: { roomId: this.roomId }
+    }).subscribe({
+      next: (res) => {
+        console.log('圖片 API 回應:', res);
+
+        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias) {
+          // 依照 sortOrder 排序
+          this.roomImages = res.TRANRS.medias
+            .map(media => ({
+              mediaId: media.mediaId,
+              sortOrder: media.sortOrder || 0,
+              base64Data: media.base64Data,
+              fileName: media.fileName
+            }))
+            .sort((a, b) => a.sortOrder - b.sortOrder);
+
+          console.log('已載入房型圖片:', this.roomImages.length, '張');
+        } else {
+          console.warn('沒有圖片資料或載入失敗');
+          this.roomImages = [];
+        }
+        this.isLoadingImages = false;
+      },
+      error: (err) => {
+        console.error('載入房型圖片失敗', err);
+        this.roomImages = [];
+        this.isLoadingImages = false;
+      }
+    });
+  }
+
+  /**
+   * 取得圖片的 Base64 URL
+   */
+  getImageUrl(image: RoomImage): string {
+    return `data:image/jpeg;base64,${image.base64Data}`;
   }
 
   /**
