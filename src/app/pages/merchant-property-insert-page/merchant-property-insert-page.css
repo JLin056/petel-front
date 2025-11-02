@@ -28,7 +28,8 @@
 }
 
 .info-section {
-    margin-bottom: 40px; /* 👈 這行是新增的 */
+    margin-bottom: 40px;
+    /* 👈 這行是新增的 */
 }
 
 
@@ -430,7 +431,7 @@ textarea[pInputTextarea]:focus {
 }
 
 .btn-save:hover {
-    background-color: #a4642b;
+    background-color: #974b2c;
 }
 
 .btn-clear {
@@ -442,7 +443,31 @@ textarea[pInputTextarea]:focus {
 }
 
 .btn-clear:hover {
-    background-color: #554133;
+    background-color: #6c5443;
+}
+
+.btn-save,
+.btn-clear {
+    border: none !important;
+    /* 移除按鈕邊框 */
+    outline: none !important;
+    /* 移除聚焦外框 */
+    box-shadow: none !important;
+    /* 移除陰影 */
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-save:hover,
+.btn-clear:hover {
+    transform: translateY(-1px);
+    /* 稍微浮起效果（可留可不留） */
+}
+
+.btn-save:focus,
+.btn-clear:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 /* ------------------------------------- */

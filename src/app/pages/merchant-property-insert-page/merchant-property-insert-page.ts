@@ -316,7 +316,7 @@ export class MerchantPropertyInsertPage {
    */
   onCancelConfirm(): void {
     this.cancelConfirmVisible = false;
-    this.router.navigate(['/merchants/property/homepage']);
+    this.router.navigate(['/merchants/userPage']);
   }
 
   /**
