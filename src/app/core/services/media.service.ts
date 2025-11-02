@@ -24,8 +24,8 @@ export class MediaService {
 
     /** API URLs */
     uploadMediaUrl = `${environment.BASE_URL}/medias/upload/base64`;
-    updateMediaUrl = `${environment.BASE_URL}/medias/update`;
-    deleteMediaUrl = `${environment.BASE_URL}/medias/delete`;
+    updateMediaUrl = `${environment.BASE_URL}/medias/update/base64`;
+    deleteMediaUrl = `${environment.BASE_URL}/medias/delete/base64`;
     getMediaUrl = `${environment.BASE_URL}/medias/query/base64`;
 
     /**

@@ -77,14 +77,73 @@
 }
 
 /* ------------------------------------- */
-/* 圖片上傳區塊 */
+/* 圖片區塊 - 簡潔版 */
 /* ------------------------------------- */
 
-.image-upload-section {
-    gap: 15px;
-    padding-bottom: 0;
+.image-section {
+    padding-bottom: 10px;
 }
 
+/* 圖片畫廊容器 */
+.images-gallery {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+/* 單張圖片 */
+.gallery-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+}
+
+.gallery-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
+}
+
+.gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 載入中狀態 */
+.images-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 0;
+    color: #974b2c;
+    font-size: 16px;
+}
+
+.images-loading i {
+    font-size: 1.5rem;
+}
+
+/* 沒有圖片狀態 */
+.images-empty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 0;
+    color: #8b6f5c;
+    font-size: 16px;
+}
+
+.images-empty i {
+    font-size: 1.5rem;
+}
+
+/* 舊版樣式保留（以防萬一） */
 .image-preview-area {
     width: 100%;
     height: 200px;
