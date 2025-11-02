@@ -1,72 +1,78 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { MessageService } from 'primeng/api';
-import { MerchService } from '../../core/services/merch-service';
-import { MediaService } from '../../core/services/media.service';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MERCH008TranrqPropertyImage } from '../../core/interfaces/MERCH008Req.interface';
-import { MERCH025Tranrs } from '../../core/interfaces/MERCH025Res.interface';
+import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Select } from 'primeng/select';
-
-interface UploadedImage {
-  file: File;
-  previewUrl: string;
-  sortOrder: number;
-}
+import { MessageService } from 'primeng/api';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MerchService } from '../../core/services/merch-service';
+import { MediaService } from '../../core/services/media.service';
+import { MERCH025Tranrs } from '../../core/interfaces/MERCH025Res.interface';
+import { MERCH008Tranrq, MERCH008TranrqPropertyImage } from '../../core/interfaces/MERCH008Req.interface';
+import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
+import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
+import { firstValueFrom } from 'rxjs';
+import { Res } from '../../core/interfaces/Res.interface';
 
 @Component({
-  selector: 'app-merchant-property-insert-page',
+  selector: 'app-property-insert',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
     ButtonModule,
-    SharedConfirmDialog,
-    DragDropModule,
     MultiSelectModule,
-    Select
+    Select,
+    DragDropModule,
+    SharedConfirmDialog
   ],
   templateUrl: './merchant-property-insert-page.html',
-  styleUrl: './merchant-property-insert-page.css'
+  styleUrls: ['./merchant-property-insert-page.css'],
+  providers: [MessageService]
 })
-export class MerchantPropertyInsertPage implements OnInit {
-  // 圖片相關
+export class MerchantPropertyInsertPage {
+
+  // 圖片相關屬性
   uploadedImages: UploadedImage[] = [];
+  deletedImageIds: string[] = [];
 
-  // 表單
+  // 表單群組
   propertyForm: FormGroup;
-
   // 取消確認彈窗
   cancelConfirmVisible = false;
-
   // 錯誤訊息
   errorMessage = '';
+  // 旅館資料
+  propertyData: any = null;
+  // 旅館編號
+  propertyId = '';
 
-  // 地址相關
+  // 地址相關屬性
   avaliableCities: string[] = [];
   avaliableDistrict: string[] = [];
   rawList: any[] = [];
 
-  // 設施
+  // 屬性：與 PETEL_FACILITIES 一致
   avaliableFacilities: MERCH025Tranrs[] = [];
 
-  /** MessageService */
-  messageService = inject(MessageService);
-
   /**
-   * 建構子
+   * 建構子注入
+   * @param fb 
+   * @param merchService 
+   * @param mediaService 
+   * @param router 
+   * @param messageService 
    */
   constructor(
     private fb: FormBuilder,
     private merchService: MerchService,
     private mediaService: MediaService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {
     this.propertyForm = this.fb.group({
       name: ['', Validators.required],
@@ -77,46 +83,41 @@ export class MerchantPropertyInsertPage implements OnInit {
       district: ['', Validators.required],
       addressDetail: ['', Validators.required],
       selectedFacilities: [[]],
-      info: ['', Validators.required],
-      checkNotice: ['', Validators.required],
-      petNotice: ['', Validators.required],
+      info: [''],
+      checkNotice: [''],
+      petNotice: [''],
       propertyNotice: ['']
     });
+
+    this.loadFacilities();
+    this.loadPostalData();
   }
 
-  /**
-   * 初始化
+  /** 
+   * 載入郵遞區號資料
    */
-  ngOnInit(): void {
-    // 載入縣市區域
+  private loadPostalData(): void {
     this.merchService.queryPostal().subscribe({
       next: (response) => {
         this.rawList = response;
-        this.avaliableCities = [
-          ...new Set(response.map(o => o.city))
-        ];
-        this.avaliableDistrict = [
-          ...new Set(response.map(o => o.district))
-        ];
+        this.avaliableCities = [...new Set(response.map(o => o.city))];
       },
-      error: (error) => {
-        console.error('載入縣市區域失敗:', error);
-      }
-    });
-
-    // 載入設施
-    this.merchService.queryAllFacilities().subscribe({
-      next: (response) => {
-        this.avaliableFacilities = response;
-      },
-      error: (error) => {
-        console.error('載入設施失敗:', error);
-      }
+      error: (err) => console.error('載入地址失敗', err)
     });
   }
 
-  /**
-   * 當縣市改變時更新區域選項
+  /** 
+   * 載入設施 
+   */
+  private loadFacilities(): void {
+    this.merchService.queryAllFacilities().subscribe({
+      next: (response) => this.avaliableFacilities = response,
+      error: (err) => console.error('載入設施失敗', err)
+    });
+  }
+
+  /** 
+   * 縣市變動更新區域
    */
   onCityChange(city: string): void {
     this.propertyForm.controls['city'].setValue(city);
@@ -126,45 +127,49 @@ export class MerchantPropertyInsertPage implements OnInit {
     this.propertyForm.controls['district'].setValue('');
   }
 
-  /**
-   * 處理圖片選擇
+  /** 
+   * 圖片選擇 
    */
   onImageSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const files = Array.from(input.files);
-
     const validFiles = files.filter(file => {
       if (file.size > 5 * 1024 * 1024) {
-        this.messageService.add({
-          severity: 'error',
-          summary: '錯誤',
-          detail: `${file.name} 檔案過大，請選擇小於 5MB 的圖片`
-        });
+        this.messageService.add({ severity: 'error', summary: '錯誤', detail: `${file.name} 檔案過大，請選擇小於 5MB 的圖片` });
         return false;
       }
       return true;
     });
 
     const startIndex = this.uploadedImages.length;
-
     validFiles.forEach((file, index) => {
       const previewUrl = URL.createObjectURL(file);
-      const uploadedImage: UploadedImage = {
-        file,
-        previewUrl,
-        sortOrder: startIndex + index + 1
-      };
-      this.uploadedImages.push(uploadedImage);
+      this.uploadedImages.push({ file, previewUrl, sortOrder: startIndex + index + 1 });
     });
 
     input.value = '';
   }
 
-  /**
-   * 移除上傳的圖片
+  /** 
+   * 拖拉排序 
    */
+  onImageDrop(event: CdkDragDrop<any[]>): void {
+    moveItemInArray(this.uploadedImages, event.previousIndex, event.currentIndex);
+    this.updateSortOrder();
+  }
+
+  /** 
+   * 更新排序 
+  */
+  private updateSortOrder(): void {
+    this.uploadedImages.forEach((img, index) => img.sortOrder = index + 1);
+  }
+
+  /** 
+   * 移除圖片 
+  */
   removeUploadedImage(index: number): void {
     const image = this.uploadedImages[index];
     URL.revokeObjectURL(image.previewUrl);
@@ -172,94 +177,76 @@ export class MerchantPropertyInsertPage implements OnInit {
     this.updateSortOrder();
   }
 
-  /**
-   * 拖拉排序
+  /** 
+   * 上傳所有圖片
    */
-  onImageDrop(event: CdkDragDrop<UploadedImage[]>): void {
-    moveItemInArray(this.uploadedImages, event.previousIndex, event.currentIndex);
-    this.updateSortOrder();
-  }
-
-  /**
-   * 更新排序
-   */
-  private updateSortOrder(): void {
-    this.uploadedImages.forEach((img, index) => {
-      img.sortOrder = index + 1;
-    });
-  }
-
-  /**
-   * 上傳所有圖片並返回 mediaId 陣列
-   */
-  private async uploadAllImages(): Promise<MERCH008TranrqPropertyImage[]> {
-    if (this.uploadedImages.length === 0) return [];
-
-    const uploadedMedias: MERCH008TranrqPropertyImage[] = [];
+  private async uploadAllImages(): Promise<{ mediaId: string; sortOrder: number }[]> {
+    const results: { mediaId: string; sortOrder: number }[] = [];
 
     for (let index = 0; index < this.uploadedImages.length; index++) {
       const uploadedImage = this.uploadedImages[index];
+      const result = await new Promise<{ mediaId: string; sortOrder: number }>((resolve, reject) => {
+        const reader = new FileReader();
 
-      try {
-        const mediaId = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-
-          reader.onload = () => {
-            const base64Data = (reader.result as string).split(',')[1];
-
-            const postData = {
-              MWHEADER: { MSGID: 'MEDIA-001' },
-              TRANRQ: {
-                category: 'Property_Image',
-                referenceId: 'TEMP',
-                medias: [{
-                  base64Data: base64Data,
-                  fileName: uploadedImage.file.name,
-                  mimeType: uploadedImage.file.type,
-                  bucket: 'petel-media',
-                  sizeBytes: uploadedImage.file.size,
-                  visibility: 'PUBLIC',
-                  sortOrder: uploadedImage.sortOrder
-                }]
-              }
-            };
-
-            this.mediaService.uploadMedia(postData).subscribe({
-              next: (res) => {
-                if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.results.length > 0) {
-                  resolve(res.TRANRS.results[0].mediaId);
-                } else {
-                  reject(new Error(`${uploadedImage.file.name} 上傳失敗`));
-                }
-              },
-              error: (err) => {
-                reject(new Error(`${uploadedImage.file.name} 上傳錯誤`));
-              }
-            });
+        reader.onload = () => {
+          const base64Data = (reader.result as string).split(',')[1];
+          const postData = {
+            MWHEADER: { MSGID: 'MEDIA-001' },
+            TRANRQ: {
+              category: 'Property_Image',
+              referenceId: '',
+              medias: [{
+                base64Data,
+                fileName: uploadedImage.file.name,
+                mimeType: uploadedImage.file.type,
+                bucket: 'petel-media',
+                sizeBytes: uploadedImage.file.size,
+                visibility: 'PUBLIC',
+                sortOrder: uploadedImage.sortOrder
+              }]
+            }
           };
 
-          reader.onerror = () => {
-            reject(new Error(`${uploadedImage.file.name} 讀取失敗`));
-          };
+          this.mediaService.uploadMedia(postData).subscribe({
+            next: (res) => {
+              if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.results.length > 0) {
+                resolve({ mediaId: res.TRANRS.results[0].mediaId, sortOrder: uploadedImage.sortOrder });
+              } else reject(new Error(`${uploadedImage.file.name} 上傳失敗`));
+            },
+            error: (err) => reject(err)
+          });
+        };
 
-          reader.readAsDataURL(uploadedImage.file);
-        });
+        reader.onerror = () => reject(new Error(`${uploadedImage.file.name} 讀取失敗`));
+        reader.readAsDataURL(uploadedImage.file);
+      });
 
-        uploadedMedias.push({
-          mediaId: mediaId,
-          sortOrder: uploadedImage.sortOrder
-        });
-
-      } catch (error) {
-        throw error;
-      }
+      results.push(result);
     }
 
-    return uploadedMedias;
+    return results;
   }
 
-  /**
-   * 提交表單
+  /** 
+   * 取得 sellerId 
+   */
+  private async getSellerId(): Promise<string> {
+    const accountId = localStorage.getItem('accountId') || '';
+    try {
+      const res: Res<MERCH011Tranrs> = await firstValueFrom(this.merchService.getSellerInfo(accountId));
+      if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
+        return res.TRANRS.id;
+      } else {
+        throw new Error('取得商家會員資訊失敗');
+      }
+    } catch (error) {
+      console.error('取得商家會員資訊錯誤', error);
+      throw error;
+    }
+  }
+
+  /** 
+   * 送出表單 
    */
   async onSubmit(): Promise<void> {
     if (this.propertyForm.invalid) {
@@ -268,86 +255,56 @@ export class MerchantPropertyInsertPage implements OnInit {
       return;
     }
 
-    this.errorMessage = '';
-
     try {
-      // 1. 先上傳圖片
+      const sellerId = await this.getSellerId();
+
       let propertyImages: MERCH008TranrqPropertyImage[] = [];
       if (this.uploadedImages.length > 0) {
-        this.messageService.add({
-          severity: 'info',
-          summary: '處理中',
-          detail: `正在上傳 ${this.uploadedImages.length} 張圖片...`
-        });
-
-        propertyImages = await this.uploadAllImages();
+        const uploadedResults = await this.uploadAllImages();
+        propertyImages = uploadedResults.map(r => ({ mediaId: r.mediaId, sortOrder: r.sortOrder }));
       }
 
-      // 2. 組合請求資料
-      const tranrq = {
-        sellerId: 'S000000001',
+      const tranrq: MERCH008Tranrq = {
+        sellerId,
         name: this.propertyForm.controls['name'].value,
         businessCode: this.propertyForm.controls['businessCode'].value,
+        bankAccount: this.propertyForm.controls['bankAccount'].value,
         tel: this.propertyForm.controls['tel'].value,
         city: this.propertyForm.controls['city'].value,
         district: this.propertyForm.controls['district'].value,
         addressDetail: this.propertyForm.controls['addressDetail'].value,
-        bankAccount: this.propertyForm.controls['bankAccount'].value,
         info: this.propertyForm.controls['info'].value,
         checkNotice: this.propertyForm.controls['checkNotice'].value,
         petNotice: this.propertyForm.controls['petNotice'].value,
         propertyNotice: this.propertyForm.controls['propertyNotice'].value,
-        facilities: this.propertyForm.controls['selectedFacilities'].value.map((facility: { facilityId: any; }) => facility.facilityId),
-        propertyImages: propertyImages
+        facilities: this.propertyForm.controls['selectedFacilities'].value.map((f: any) => f.facilityId),
+        propertyImages
       };
 
-      // 3. 呼叫 MERCH-008
       this.merchService.createHotelDetail(tranrq).subscribe({
         next: (res) => {
           if (res.MWHEADER.RETURNCODE === '0000') {
-            this.messageService.add({
-              severity: 'success',
-              summary: '成功',
-              detail: '旅館新增成功'
-            });
-            setTimeout(() => {
-              this.router.navigate(['/merchants/property/homepage']);
-            }, 1500);
+            this.messageService.add({ severity: 'success', summary: '成功', detail: '旅館新增成功！' });
+            this.router.navigate(['/merchants/property/info']);
           } else {
-            this.errorMessage = res.MWHEADER.RETURNDESC || '新增旅館失敗';
-            this.messageService.add({
-              severity: 'error',
-              summary: '錯誤',
-              detail: this.errorMessage
-            });
+            this.messageService.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '新增失敗' });
           }
         },
         error: (err) => {
-          console.error('MERCH-008 錯誤:', err);
-          this.errorMessage = err.error?.message || '新增旅館失敗';
-          this.messageService.add({
-            severity: 'error',
-            summary: '錯誤',
-            detail: this.errorMessage
-          });
+          this.messageService.add({ severity: 'error', summary: '錯誤', detail: '系統發生錯誤，請稍後再試' });
         }
       });
 
     } catch (error: any) {
-      this.errorMessage = error.message || '處理失敗';
-      this.messageService.add({
-        severity: 'error',
-        summary: '錯誤',
-        detail: this.errorMessage
-      });
+      this.messageService.add({ severity: 'error', summary: '錯誤', detail: error.message || '處理圖片失敗' });
     }
   }
 
   /**
-   * 點擊取消按鈕
+   * 按下取消按鈕，彈出確認視窗
    */
   onCancelClick(): void {
-    if (this.propertyForm.dirty || this.uploadedImages.length > 0) {
+    if (this.propertyForm.dirty) {
       this.cancelConfirmVisible = true;
     } else {
       this.onCancelConfirm();
@@ -355,7 +312,7 @@ export class MerchantPropertyInsertPage implements OnInit {
   }
 
   /**
-   * 確認取消
+   * 放棄新增
    */
   onCancelConfirm(): void {
     this.cancelConfirmVisible = false;
@@ -363,9 +320,15 @@ export class MerchantPropertyInsertPage implements OnInit {
   }
 
   /**
-   * 取消取消
+   * 按下取消按鈕後，又決定繼續編輯
    */
   onCancelCancel(): void {
     this.cancelConfirmVisible = false;
   }
+}
+
+interface UploadedImage {
+  file: File;
+  previewUrl: string;
+  sortOrder: number;
 }
