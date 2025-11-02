@@ -22,14 +22,35 @@
         <div class="form-main-content sequential-layout">
 
             <!-- 1. 房型圖片 (Full Width) -->
-            <div class="form-section full-width image-upload-section">
+            <div class="form-section full-width image-section">
                 <label class="section-label">房型圖片</label>
-                <div class="image-preview-area">
-                    <div class="image-placeholder">
-                        <i class="pi pi-images"></i>
-                        <span>圖片預覽區</span>
-                    </div>
+
+                <!-- 圖片載入中 -->
+                @if (isLoadingImages) {
+                <div class="images-loading">
+                    <i class="pi pi-spin pi-spinner"></i>
+                    <span>載入中...</span>
                 </div>
+                }
+
+                <!-- 有圖片時顯示 -->
+                @if (!isLoadingImages && roomImages.length > 0) {
+                <div class="images-gallery">
+                    @for (image of roomImages; track image.mediaId) {
+                    <div class="gallery-image">
+                        <img [src]="getImageUrl(image)" [alt]="image.fileName">
+                    </div>
+                    }
+                </div>
+                }
+
+                <!-- 沒有圖片時顯示 -->
+                @if (!isLoadingImages && roomImages.length === 0) {
+                <div class="images-empty">
+                    <i class="pi pi-images"></i>
+                    <span>目前沒有房型圖片</span>
+                </div>
+                }
             </div>
 
             <!-- 2. 房型名稱 & 寵物種類 (Side-by-Side) -->
