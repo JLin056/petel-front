@@ -36,13 +36,16 @@
     border: none;
     /* 移除內層 input 原框 */
     box-shadow: none;
+    border-radius: 8px;
 }
 
 ::ng-deep .petel-search-btn.p-button {
     background-color: #EDA33A;
-    color: #A24522;
-    padding: 10px 20px;
+    color: white;
+    padding: 12px 24px;
     border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
 }
 
 /* 評論網格布局 */
@@ -681,7 +684,7 @@
 /* 標題 */
 .card-title {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin: 0 0 0.5rem 0;
     color: #333;
 }
@@ -699,9 +702,8 @@
 
 /* 副標題 */
 .card-subtitle {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     color: #555;
-    line-height: 1.4;
     margin: 0 0 0.75rem 0;
 }
 
@@ -709,7 +711,7 @@
 .card-price {
     font-weight: 600;
     color: #b45c33;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 /* checkbox 靠右上角 */
@@ -1005,18 +1007,6 @@ button,
 .review-content p {
     font-size: 1.2rem !important;
     color: #493522 !important;
-}
-
-/* ===== 我要預訂、返回搜尋列表 按鈕字與內邊距調整 ===== */
-.booking-btn,
-.card-btn {
-    padding: 0.75rem 2rem !important;
-    font-size: 1.1rem !important;
-}
-.search-container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
 }
 
 @media (max-width: 768px) {

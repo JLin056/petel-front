@@ -18,6 +18,8 @@
     padding: 10px;
     position: relative;
     top: -30px;
+    max-width: 1350px;
+    width: 100%;
 }
 
 .search-bar {
@@ -38,15 +40,19 @@
 :host ::ng-deep .p-select.p-component,
 :host ::ng-deep .p-datepicker.p-component input,
 :host ::ng-deep .p-inputnumber.p-component input {
-  border: none; /* 移除內層 input 原框 */
-  box-shadow: none;
+    border: none;
+    /* 移除內層 input 原框 */
+    box-shadow: none;
+    border-radius: 8px;
 }
 
 ::ng-deep .petel-search-btn.p-button {
-  background-color: #EDA33A;
-  color: #A24522;
-  padding: 10px 20px;
-  border: none;
+    background-color: #EDA33A;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
 }
 
 /* 推薦旅館區域 */
@@ -59,31 +65,38 @@
     font-size: 30px;
     padding: 50px;
 }
+
 .hotel-carousel {
     padding: 0.5rem 0;
 }
+
 .item {
     text-align: center;
 }
-.item p{
+
+.item p {
     margin-top: 20px;
     font-weight: 500;
     font-size: 25px;
 }
+
 .hotel-name-link {
     cursor: pointer;
     transition: color 0.3s ease;
 }
+
 .hotel-name-link:hover {
     color: #EDA33A;
     text-decoration: underline;
 }
-.item img{
+
+.item img {
     width: 300px;
     height: 300px;
     object-fit: cover;
     border-radius: 10px;
 }
+
 .caption {
     margin-top: 0.5rem;
     font-weight: 600;
@@ -123,4 +136,198 @@
     border-radius: 20px;
     border: none;
     padding: 10px 30px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(162, 70, 34, 0.3);
+}
+
+/* Hover 狀態 - 滑鼠移上去 */
+.choose-pet-btn:hover {
+    background-color: #8a3a1c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(162, 70, 34, 0.4);
+}
+
+/* Active 狀態 - 按下按鈕 */
+.choose-pet-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 4px rgba(162, 70, 34, 0.2);
+    background-color: #722f15;
+}
+
+/* Focus 狀態 - 鍵盤 Tab 選中 */
+.choose-pet-btn:focus {
+    outline: 2px solid #EDA33A;
+    outline-offset: 2px;
+}
+
+/* 漣漪效果（點擊時的波紋） */
+.choose-pet-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.choose-pet-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* 手機裝置 (最大 480px) */
+@media (max-width: 480px) {
+    .banner {
+        padding: 20px;
+    }
+
+    .search-container {
+        padding: 15px;
+        top: -20px;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-item {
+        min-width: 100%;
+    }
+
+    ::ng-deep .petel-search-btn.p-button {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .recommend-container-dog h3,
+    .recommend-container-cat h3 {
+        font-size: 1.5rem;
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .item p {
+        font-size: 1.2rem;
+        margin-top: 15px;
+    }
+
+    .item img {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
+    }
+
+    .choose-pet-container h3 {
+        font-size: 1.5rem;
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .choose-pet-items {
+        flex-direction: column;
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .choose-pet {
+        width: 100%;
+    }
+
+    .choose-pet img {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
+    }
+
+    .choose-pet-btn {
+        width: 100%;
+        max-width: 280px;
+        font-size: 1rem;
+    }
+}
+
+/* 平板裝置 (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .banner {
+        padding: 30px;
+    }
+
+    .search-bar {
+        flex-wrap: wrap;
+    }
+
+    .search-item {
+        min-width: 150px;
+        flex: 1 1 45%;
+    }
+
+    ::ng-deep .petel-search-btn.p-button {
+        flex: 1 1 100%;
+        font-size: 1.1rem;
+    }
+
+    .recommend-container-dog h3,
+    .recommend-container-cat h3 {
+        font-size: 1.8rem;
+        padding: 40px 30px;
+    }
+
+    .item p {
+        font-size: 1.4rem;
+    }
+
+    .choose-pet-container h3 {
+        font-size: 1.8rem;
+        padding: 40px 30px;
+    }
+
+    .choose-pet-items {
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+
+    .choose-pet {
+        flex: 0 1 45%;
+    }
+}
+
+/* 平板裝置橫向 (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .search-bar {
+        flex-wrap: wrap;
+    }
+
+    .recommend-container-dog h3,
+    .recommend-container-cat h3 {
+        font-size: 2rem;
+        padding: 45px 40px;
+    }
+
+    .item p {
+        font-size: 1.6rem;
+    }
+
+    .choose-pet-container h3 {
+        font-size: 2rem;
+        padding: 45px 40px;
+    }
+
+    .choose-pet-items {
+        gap: 45px;
+    }
+}
+
+/* 桌面裝置 (1025px 以上) - 維持原設計 */
+@media (min-width: 1025px) {
+    .search-bar {
+        flex-wrap: nowrap;
+    }
 }
