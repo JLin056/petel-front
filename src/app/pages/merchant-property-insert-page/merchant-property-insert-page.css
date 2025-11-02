@@ -1,0 +1,528 @@
+/* ------------------------------------- */
+/* ˙-öπh */
+/* ------------------------------------- */
+
+.property-form-container {
+    background-color: #f8f1e9;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 40px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    min-height: 85vh;
+}
+
+.page-title {
+    font-size: 35px;
+    font-weight: bold;
+    color: #3a1f0b;
+    border-bottom: 3px solid #3a1f0b;
+    padding-bottom: 9px;
+    margin-bottom: 30px;
+}
+
+/* ------------------------------------- */
+/* hÆH@ */
+/* ------------------------------------- */
+
+.form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-main-content.sequential-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-row-2col {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+.form-row-2col .flex-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 40px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ------------------------------------- */
+/* d# */
+/* ------------------------------------- */
+
+.section-label {
+    font-size: 28px;
+    display: block;
+    font-weight: 600;
+    color: #3a1f0b;
+    margin-bottom: 8px;
+}
+
+/* ------------------------------------- */
+/* 8eF# */
+/* ------------------------------------- */
+
+.input,
+.textarea,
+.p-inputtext {
+    width: 100%;
+    border: 1px solid #c5b09b;
+    border-radius: 8px;
+    padding: 6px 15px;
+    background-color: white;
+    font-size: 20px;
+    color: #3a1f0b;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    min-height: 30px;
+}
+
+.textarea {
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.input:focus,
+.textarea:focus,
+.p-inputtext:focus {
+    outline: none;
+    border-color: #974B2C;
+    box-shadow: 0 0 0 3px rgba(151, 75, 44, 0.2);
+}
+
+.form-section>p-message {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 8px;
+}
+
+/* ------------------------------------- */
+/* G
+≥@J */
+/* ------------------------------------- */
+
+.image-upload-section {
+    gap: 15px;
+    padding-bottom: 0;
+}
+
+.image-preview-area {
+    width: 100%;
+    min-height: 250px;
+    background-color: #f1e9e0;
+    border: 2px dashed #a4642b;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.image-item {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: move;
+    flex-shrink: 0;
+}
+
+.image-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.image-item.uploading {
+    opacity: 0.6;
+}
+
+.image-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 40%);
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.sort-number {
+    background-color: #974B2C;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn-remove {
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    padding: 0;
+}
+
+.btn-remove:hover:not(:disabled) {
+    background-color: rgba(220, 53, 69, 1);
+}
+
+.btn-remove:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-remove i {
+    font-size: 14px;
+}
+
+.upload-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-spinner i {
+    font-size: 24px;
+    color: #974B2C;
+}
+
+.hint-text {
+    text-align: center;
+    color: #a4642b;
+    font-size: 14px;
+    margin-top: 10px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #a4642b;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.image-placeholder i {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.btn-upload {
+    background-color: #974B2C;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-upload:hover {
+    background-color: #a4642b;
+}
+
+.btn-upload i {
+    font-size: 18px;
+}
+
+/* CDK ÷…# */
+.image-item.cdk-drag-preview {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    opacity: 0.8;
+    cursor: grabbing;
+}
+
+.image-item.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.image-grid.cdk-drop-list-dragging .image-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(151, 75, 44, 0.2);
+    border: 2px dashed #974B2C;
+    border-radius: 8px;
+}
+
+/* ------------------------------------- */
+/* p-editor øt */
+/* ------------------------------------- */
+
+.form-section.full-width:has(p-editor) {
+    padding-bottom: 40px;
+}
+
+::ng-deep .p-editor-container {
+    border: 1px solid #c5b09b !important;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fffdf8;
+}
+
+::ng-deep .p-editor-toolbar {
+    background-color: #f2ebe5 !important;
+    border-bottom: 1px solid #c5b09b !important;
+}
+
+::ng-deep .p-editor-toolbar .ql-picker-label,
+::ng-deep .p-editor-toolbar .ql-picker-options {
+    border-radius: 8px;
+}
+
+/* ------------------------------------- */
+/* /§
+o# */
+/* ------------------------------------- */
+
+.validation-error {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* ------------------------------------- */
+/* 	@J */
+/* ------------------------------------- */
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn-save,
+.btn-cancel {
+    background-color: #974B2C;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    min-width: 180px;
+}
+
+.btn-save {
+    background-color: #974B2C;
+}
+
+.btn-save:hover {
+    background-color: #a4642b;
+}
+
+.btn-cancel {
+    background-color: #6c5443;
+}
+
+.btn-cancel:hover {
+    background-color: #554133;
+}
+
+.btn-save:disabled,
+.btn-cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ------------------------------------- */
+/* /§
+oo: */
+/* ------------------------------------- */
+
+.error-message {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* ------------------------------------- */
+/* PrimeNG Dˆ“ÜÀ */
+/* ------------------------------------- */
+
+::ng-deep .p-message {
+    border-radius: 8px;
+}
+
+::ng-deep .p-message-content {
+    border-radius: 8px;
+}
+
+/* ------------------------------------- */
+/* ˇ…* */
+/* ------------------------------------- */
+
+@media (max-width: 1024px) {
+    .form-main-content.sequential-layout {
+        gap: 20px;
+    }
+
+    .form-row-2col {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .image-item {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* ------------------------------------- */
+/* Ë®≠ÊñΩÈÅ∏È†ÖÂçÄÂ°ä */
+/* ------------------------------------- */
+
+.facilities-section {
+    padding-bottom: 20px;
+}
+
+.facilities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.facility-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #e0d4c8;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.facility-item:hover {
+    background-color: #fffdf8;
+    border-color: #c5b09b;
+}
+
+.facility-label {
+    font-size: 18px;
+    color: #3a1f0b;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+}
+
+.facilities-loading,
+.facilities-empty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    color: #8b6f5c;
+    font-size: 16px;
+}
+
+.facilities-loading i,
+.facilities-empty i {
+    font-size: 1.5rem;
+}
+
+/* PrimeNG Checkbox Ê®£ÂºèË™øÊï¥ */
+::ng-deep .facility-item .p-checkbox .p-checkbox-box {
+    border-radius: 4px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #c5b09b;
+}
+
+::ng-deep .facility-item .p-checkbox .p-checkbox-box.p-highlight {
+    background-color: #974B2C;
+    border-color: #974B2C;
+}
+
+::ng-deep .facility-item .p-checkbox:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box {
+    border-color: #974B2C;
+}

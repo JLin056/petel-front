@@ -1,65 +1,145 @@
-<div class="hotel-container">
+<div class="property-form-container">
+    <h2 class="page-title">新增旅館資訊</h2>
+    <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
 
-    <h2>新增旅館資訊</h2>
+        <!-- 旅館圖片區 -->
+        <div class="info-section">
+            <h3>旅館圖片</h3>
+            <div class="image-placeholder">
 
-    <!-- 基本資訊 -->
-    <div class="info-section">
-        <h3>基本資訊</h3>
-        <div class="form-grid">
-            <label>旅館名稱</label>
-            <input type="text" pInputText [(ngModel)]="hotel.name" placeholder="請輸入旅館名稱">
+                <!-- 原生檔案選擇 -->
+                <input type="file" accept="image/*" multiple hidden #fileInput (change)="onImageSelect($event)">
+                <button type="button" class="btn-upload" (click)="fileInput.click()">
+                    <i class="pi pi-images"></i>
+                    選擇圖片
+                </button>
 
-            <label>電話</label>
-            <input type="text" pInputText [(ngModel)]="hotel.tel" placeholder="請輸入電話">
-
-            <label>地址</label>
-            <input type="text" pInputText [(ngModel)]="hotel.address" placeholder="請輸入地址">
-        </div>
-    </div>
-
-    <!-- 旅館圖片 -->
-    <div class="info-section">
-        <h3>旅館圖片</h3>
-        <input type="file" (change)="onFileSelect($event)" multiple>
-        <div class="image-preview" *ngIf="hotel.propertyImages.length">
-            <img *ngFor="let img of hotel.propertyImages" [src]="img.base64Data" alt="旅館圖片">
-        </div>
-    </div>
-    <!-- <div class="upload-test">
-<app-upload-img></app-upload-img>
-    </div> -->
-
-    <!-- 旅館說明 -->
-    <div class="info-section">
-        <h3>旅館介紹</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.info"></textarea>
-
-        <h3>入住須知</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.checkNotice"></textarea>
-
-        <h3>寵物須知</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.petNotice"></textarea>
-
-        <h3>旅館規範</h3>
-        <textarea pInputTextarea rows="3" [(ngModel)]="hotel.propertyNotice"></textarea>
-    </div>
-
-    <!-- 設施 -->
-    <div class="info-section">
-        <h3>設施</h3>
-        <div class="facility-list">
-            <div class="facility-item" *ngFor="let f of hotel.facilities; let i = index">
-                <input type="text" pInputText [(ngModel)]="f.facilityName" placeholder="輸入設施名稱">
-                <button pButton icon="pi pi-trash" severity="danger" (click)="removeFacility(i)"></button>
+                <!-- 圖片預覽區 -->
+                @if (existingImages.length > 0 || uploadedImages.length > 0) {
+                <div class="image-preview-area">
+                    <div class="image-grid" cdkDropList (cdkDropListDropped)="onImageDrop($event)">
+                        <!-- 現有圖片 -->
+                        @for (img of existingImages; track img.mediaId; let i = $index) {
+                        <div class="image-item" cdkDrag>
+                            <img [src]="'data:image/jpeg;base64,' + img.base64Data" alt="房型圖片">
+                            <div class="image-overlay">
+                                <span class="sort-number">{{ img.sortOrder }}</span>
+                                <button type="button" class="btn-remove" (click)="removeExistingImage(i)">
+                                    <i class="pi pi-times"></i>
+                                </button>
+                            </div>
+                            <!-- CDK 拖拉預覽 -->
+                            <div class="drag-placeholder" *cdkDragPlaceholder></div>
+                        </div>
+                        }
+                        <!-- 新上傳的圖片 -->
+                        @for (img of uploadedImages; track img.previewUrl; let i = $index) {
+                        <div class="image-item" cdkDrag>
+                            <img [src]="img.previewUrl" alt="預覽圖片">
+                            <div class="image-overlay">
+                                <span class="sort-number">{{ img.sortOrder }}</span>
+                                <button type="button" class="btn-remove" (click)="removeUploadedImage(i)">
+                                    <i class="pi pi-times"></i>
+                                </button>
+                            </div>
+                            <!-- CDK 拖拉預覽 -->
+                            <div class="drag-placeholder" *cdkDragPlaceholder></div>
+                        </div>
+                        }
+                    </div>
+                    <p class="hint-text"><i class="pi pi-arrows-alt"></i> 拖拉圖片可調整順序</p>
+                </div>
+                }
             </div>
-            <button pButton label="新增設施" icon="pi pi-plus" (click)="addFacility()"></button>
         </div>
-    </div>
 
-    <!-- 儲存按鈕 -->
-    <div class="form-actions">
-        <button pButton label="儲存" icon="pi pi-check" class="p-button-success" (click)="saveHotel()"></button>
-        <button pButton label="清除" icon="pi pi-refresh" class="p-button-secondary" (click)="resetForm()"></button>
-    </div>
+        <!-- 基本資訊 -->
+        <div class="info-section">
+            <h3>基本資訊</h3>
+            <div class="form-grid">
+                <label>旅館名稱</label>
+                <input type="text" pInputText formControlName="name" [disabled]="true" />
 
+                <label>特許寵物業許可證號</label>
+                <input type="text" pInputText formControlName="businessCode" [disabled]="true" />
+
+                <label>銀行帳號 <span class="required">*</span></label>
+                <input type="text" pInputText formControlName="bankAccount">
+
+                <label>電話 <span class="required">*</span></label>
+                <input type="text" pInputText formControlName="tel">
+
+                <label>地址 <span class="required">*</span></label>
+                <div class="address-row">
+                    <p-select class="city-input" [options]="avaliableCities" formControlName="city" placeholder="縣市名"
+                        (onChange)="onCityChange($event.value)" />
+                    <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
+                        placeholder="鄉鎮市區名" />
+                    <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
+                        placeholder="詳細地址">
+                </div>
+
+                <!-- 旅館說明 -->
+                <div class="info-section">
+                    <h3>旅館介紹</h3>
+                    <textarea pInputTextarea rows="3" formControlName="info"></textarea>
+
+                    <h3>入住須知</h3>
+                    <textarea pInputTextarea rows="3" formControlName="checkNotice"></textarea>
+
+                    <h3>寵物須知</h3>
+                    <textarea pInputTextarea rows="3" formControlName="petNotice"></textarea>
+
+                    <h3>旅館規範</h3>
+                    <textarea pInputTextarea rows="3" formControlName="propertyNotice"></textarea>
+                </div>
+
+                <!-- 設施選項 -->
+                <div class="form-section full-width facilities-section">
+                    <label class="section-label">旅館設施 (選填)</label>
+
+                    @if (isLoadingFacilities) {
+                    <div class="facilities-loading">
+                        <i class="pi pi-spin pi-spinner"></i>
+                        <span>載入設施選項中...</span>
+                    </div>
+                    }
+
+                    @if (!isLoadingFacilities && allFacilities.length > 0) {
+                    <div class="facilities-grid">
+                        @for (facility of allFacilities; track facility.facilityId) {
+                        <div class="facility-item">
+                            <p-checkbox [(ngModel)]="facility.selected" [ngModelOptions]="{standalone: true}"
+                                [binary]="true" [inputId]="facility.facilityId">
+                            </p-checkbox>
+                            <label [for]="facility.facilityId" class="facility-label">
+                                {{ facility.facilityName }}
+                            </label>
+                        </div>
+                        }
+                    </div>
+                    }
+
+                    @if (!isLoadingFacilities && allFacilities.length === 0) {
+                    <div class="facilities-empty">
+                        <i class="pi pi-info-circle"></i>
+                        <span>目前沒有可用的設施選項</span>
+                    </div>
+                    }
+                </div>
+
+            </div>
+
+            <!-- 按鈕 -->
+            <div class="form-actions">
+                <button pButton label="儲存" icon="pi pi-check" class="btn-save" type="submit"></button>
+                <button pButton label="取消" icon="pi pi-times" class="btn-clear" type="button"
+                    (click)="onCancelClick()"></button>
+            </div>
+    </form>
 </div>
+
+<!-- 取消確認對話框 -->
+<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消新增嗎？已填寫的資料將不會被儲存。"
+    confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()"
+    (cancel)="onCancelCancel()"></app-shared-confirm-dialog>
