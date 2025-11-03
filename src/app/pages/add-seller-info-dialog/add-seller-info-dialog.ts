@@ -45,7 +45,7 @@ export class AddSellerInfoDialog {
    */
   constructor(
     private mediaService: MediaService
-  ){}
+  ) { }
 
   /** dialog 隱藏 */
   onHideDialog() {
