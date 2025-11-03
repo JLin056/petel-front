@@ -1,6 +1,5 @@
-/* petel-auth-dialog 是你本來就有的共用 styleClass */
 ::ng-deep .p-dialog.petel-auth-dialog {
-    border-radius: 20px !important;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -20,7 +19,11 @@
     font-weight: 700;
     font-size: 20px;
 }
-
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+    font-size: 1.6rem;
+    flex: 1;
+    text-align: center;
+}
 
 .review-wrap {
     display: flex;
@@ -31,7 +34,7 @@
 
 .hotel {
     margin: 0;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
     color: #3b2d22;
 }
@@ -39,7 +42,7 @@
 .date {
     margin: 0 0 10px;
     color: #7c6c5b;
-    font-size: 15px;
+    font-size: 20px;
 }
 
 .row {
@@ -67,7 +70,7 @@ label {
     border: 1px solid #d4c2b2;
     border-radius: 10px;
     padding: 10px 12px;
-    font-size: 15px;
+    font-size: 20px;
     resize: vertical;
     line-height: 1.5;
     color: #3b2d22;
@@ -86,17 +89,157 @@ label {
 
 .btns {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
     margin-top: 10px;
 }
 
-.cancel-btn,
-.confirm-btn {
-    min-width: 100px;
+:host ::ng-deep .confirm-btn.p-button {
+    background-color: #f0e4d8;
+    color: #5b4636;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
+    transition: all 0.2s ease;
 }
 
-.confirm-btn ::ng-deep .p-button {
-    background-color: #c68a4a;
-    border: none;
+:host ::ng-deep .confirm-btn.p-button:hover {
+    background-color: #e4d2be;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
+}
+
+:host ::ng-deep .confirm-btn.p-button:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
+
+:host ::ng-deep .confirm-btn.p-button .p-button-label {
+    font-size: 1.25rem;
+}
+/* ================= 平板：≤1024px ================= */
+@media (max-width: 1024px) {
+    :host ::ng-deep .p-dialog.petel-auth-dialog {
+        width: min(92vw, 560px);
+        max-width: 560px;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+        padding: 20px 22px;
+    }
+    :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+        font-size: 1.45rem;
+    }
+
+    .hotel {
+        font-size: 24px;
+    }
+    .date {
+        font-size: 18px;
+    }
+    label {
+        width: 112px;
+        font-size: 20px;
+    }
+    ::ng-deep p-rating .p-rating-icon,
+    ::ng-deep p-rating .pi {
+        font-size: 1.5rem;
+    }
+
+    .review-textarea {
+        font-size: 18px;
+        padding: 10px 12px;
+    }
+    :host ::ng-deep .confirm-btn.p-button {
+        font-size: 1rem;
+        padding: 8px 18px;
+        border-radius: 10px;
+    }
+}
+
+/* ================= 手機：≤768px ================= */
+@media (max-width: 768px) {
+    :host ::ng-deep .p-dialog.petel-auth-dialog {
+        width: 94vw; max-width: 94vw; border-radius: 16px;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+        padding: 16px; border-radius: 0 0 16px 16px; max-height: 74vh;
+    }
+    :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+        font-size: 1.3rem;
+    }
+    .hotel {
+        font-size: 20px;
+    }
+    .date {
+        font-size: 16px;
+    }
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    label {
+        width: auto;
+        font-size: 18px;
+    }
+
+    ::ng-deep p-rating .p-rating-icon,
+    ::ng-deep p-rating .pi {
+        font-size: 1.35rem;
+    }
+
+    .review-textarea {
+        font-size: 16px;
+        padding: 10px 12px;
+        min-height: 110px;
+    }
+    .btns {
+        justify-content: center;
+    }
+    :host ::ng-deep .confirm-btn.p-button {
+        width: 100%;
+        font-size: 0.95rem;
+        padding: 10px 14px;
+    }
+}
+
+/* ================= 超小手機：≤420px ================= */
+@media (max-width: 420px) {
+    :host ::ng-deep .p-dialog.petel-auth-dialog {
+        width: 96vw;
+        max-width: 96vw;
+        border-radius: 14px;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+        padding: 14px 12px;
+    }
+
+    .hotel {
+        font-size: 18px;
+    }
+    .date {
+        font-size: 14px;
+    }
+
+    label {
+        font-size: 16px;
+    }
+    ::ng-deep p-rating .p-rating-icon,
+    ::ng-deep p-rating .pi {
+        font-size: 1.2rem;
+    }
+
+    .review-textarea {
+        font-size: 15px;
+        padding: 8px 10px;
+        min-height: 100px;
+    }
+    :host ::ng-deep .confirm-btn.p-button {
+        font-size: 0.9rem;
+        padding: 9px 12px;
+    }
 }

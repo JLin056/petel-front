@@ -1,128 +1,117 @@
-/* 整體容器 */
 .wrap {
-    max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
-}
-
-/* ========== 商家會員資訊卡片 ========== */
-.user-card {
-    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-    border-radius: 20px;
-    padding: 50px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    display: flex;
-    align-items: center;
-    gap: 70px;
-    margin-bottom: 40px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.user-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
-}
-
-/* 頭像 */
-.user-avatar {
-    position: relative;
-    flex-shrink: 0;
-}
-
-.user-avatar img {
-    width: 150px;
-    height: 150px;
-    border-radius: 20px;
-    object-fit: cover;
-    border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.avatar-badge {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: #974b2c;
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid #fff;
-}
-
-.avatar-badge i {
-    font-size: 14px;
-}
-
-/* 使用者詳情 */
-.user-details {
-    flex: 1;
-}
-
-.user-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 0 0 16px 0;
-}
-
-.user-info-grid {
+    max-width: 1420px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 40px;
 }
 
-.info-item {
+/* 會員資訊區 */
+.user-info-container {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 50px;
+    margin-top: 40px;
+    box-shadow: 0px 5px 0px #F4F4F4;
+}
+
+/* 頭貼 */
+.image {
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: #5a6c7d;
-    font-size: 20px;
+    padding: 40px;
 }
 
-.info-item i {
-    color: #974b2c;
-    font-size: 20px;
+.image img {
+    border-radius: 50%;
+    width: 250px;
 }
 
-/* 使用者操作 */
-.user-actions {
-    flex-shrink: 0;
+/* 右側 - 會員資訊 */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    width: 50%;
+    padding: 30px;
 }
 
-/* 修改會員資訊按鈕 */
-.btn-edit-user {
-    background: #9b735e;
-    /* 👈 改成淺棕色 */
-    color: #ffffff;
-    border: 2px solid #9b735e;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 17px;
+.title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.pi-info-circle {
+    font-size: 2.5rem;
+}
+
+.title h3 {
+    font-size: 2.5rem;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.material-symbols-outlined {
+    font-size: 2.5rem;
+}
+
+.item-text h4 {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.item-text p {
+    font-size: 1.7rem;
+    font-weight: 400;
+}
+
+/* 按鈕區 */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+::ng-deep .p-button.button {
+    border-radius: 20px;
+    font-size: 1.4rem;
     font-weight: 600;
-    cursor: pointer;
+    transition: 0.2s;
+    margin-right: 50px;
+    padding: 10px 16px;
+}
+
+/* 搜尋框 */
+.filter-bar {
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
+    gap: 16px;
+    margin: 20px 8px 20px;
 }
 
-.btn-edit-user:hover {
-    background: #974b2c;
-    /* 👈 hover 變實心 */
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
+.sort-wrap {
+    margin-left: auto;
 }
 
-/* 分隔區 */
-.section-divider {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
-    margin: 50px 0;
+.p-select {
+    min-width: 220px;
+    border-radius: 8px;
+}
+
+.p-select .p-inputtext {
+    border-radius: 8px;
+    padding: 6px 16px;
 }
 
 /* ========== 旅館區域 ========== */
@@ -173,10 +162,8 @@
 /* 新增旅館按鈕 */
 .btn-add-hotel {
     background: white;
-    /* 👈 白色背景 */
     color: #974b2c;
     border: 2px solid #974b2c;
-    /* 👈 外框 */
     padding: 10px 20px;
     border-radius: 10px;
     font-size: 17px;
@@ -190,7 +177,6 @@
 
 .btn-add-hotel:hover {
     background: #974b2c;
-    /* 👈 hover 變實心 */
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
@@ -319,7 +305,6 @@
 .btn-detail {
     flex: 1;
     background: #f6e8e1;
-    /* 👈 淺棕色背景 */
     color: #974b2c;
     border: none;
     padding: 10px 16px;
@@ -341,7 +326,6 @@
 
 .btn-delete {
     background: transparent;
-    /* 👈 完全透明 */
     color: #999;
     border: none;
     padding: 10px 16px;
@@ -417,9 +401,8 @@
 
 /* 空狀態的新增按鈕 */
 .btn-add-first {
-    background: #f7d7c7;
-    /* 👈 改成淺棕色 */
-    color: #974b2c;
+    background: #974b2c;
+    color: #fff3f1;
     border: none;
     padding: 14px 32px;
     border-radius: 10px;
@@ -435,7 +418,6 @@
 
 .btn-add-first:hover {
     background: #974b2c;
-    /* 👈 hover 變實心 */
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(151, 75, 44, 0.4);

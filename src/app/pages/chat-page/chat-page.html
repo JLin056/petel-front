@@ -1,10 +1,5 @@
 <div class="wrap">
     <aside class="list">
-        <!-- <div class="search-bar">
-            <input type="text" placeholder="搜尋聊天室或關鍵字..." />
-            <i class="pi pi-search"></i>
-        </div> -->
-
         <div class="chat-list">
             <div class="chat-item" *ngIf="loadingThreads">
                 <div class="content">
@@ -32,13 +27,6 @@
                     </h4>
                     <p>{{ t.lastMessage || '—' }}</p>
                 </div>
-
-                <!-- <p-tag
-                    [value]="t.orderStatus"
-                    [severity]="getSeverity(t.orderStatus)"
-                    class="status-tag sm">
-                </p-tag> -->
-
             </div>
 
             <div class="chat-item" *ngIf="!loadingThreads && threads.length === 0">

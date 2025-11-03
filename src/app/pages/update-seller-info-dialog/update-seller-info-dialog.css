@@ -1,3 +1,27 @@
+:host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-content {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+:host ::ng-deep .petel-auth-dialog.p-dialog {
+    border-radius: 20px;
+}
+
+.text-input,
+:host ::ng-deep .p-inputtext {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    font-size: 16px;
+    width: 250px;
+    transition: border-color 0.2s;
+}
+
+:host ::ng-deep .p-inputtext:focus {
+    border-color: #e5a15b;
+    box-shadow: 0 0 0 0.05rem rgba(229, 161, 91, 0.3);
+}
+
 :host ::ng-deep .petel-auth-dialog .p-dialog-header {
     padding-left: 30px;
 }
@@ -9,8 +33,8 @@
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    font-size: 1.75rem;
+    gap: 16px;
+    padding: 8px 4px;
 }
 
 /* 頭貼區 */
@@ -18,31 +42,69 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
 }
 
-.avatar-box img {
-    width: 80%;
+.avatar {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
     border-radius: 50%;
+    border: 2px solid #e5d6c5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.avatar-actions {
-    margin-top: 30px;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+.hint {
+    color: #7a6e66;
+    font-size: 20px;
 }
 
-.avatar-actions ::ng-deep .p-button {
-    font-size: 1.5rem;
-    padding: 6px 12px;
-    border-radius: 6px;
+/* 頭貼清單區 */
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    justify-items: center;
+    margin-bottom: 12px;
 }
 
-.avatar-box .error-text {
-    flex-basis: 100%;
-    color: #a24522;
-    font-size: 1.25rem;
+.avatar-item {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: #fff;
+}
+
+.avatar-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.avatar-item.selected {
+    border-color: #e5a15b;
+    box-shadow: 0 0 6px rgba(229, 161, 91, 0.6);
+}
+
+.avatar-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* 小螢幕時改成三列 */
+@media (max-width: 600px) {
+    .avatar-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .avatar-item img {
+        width: 50px;
+        height: 50px;
+    }
 }
 
 /* 表單區 */

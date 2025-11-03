@@ -1,0 +1,88 @@
+<p-dialog
+  header="訂單明細"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '900px', maxWidth: '95vw' }"
+  (onHide)="close()"
+  styleClass="petel-auth-dialog"
+>
+    <div class="od-wrap" *ngIf="!loading && !error && data as d">
+        <div class="header">
+            <img class="cover" [src]="d.header.propertyImageUrl || 'img/hotelImg.png'" alt="旅館首圖" />
+            <div class="meta">
+                <div class="row">
+                     <h3 class="hotel-title">旅館：{{ d.header.propertyName }}</h3>
+                    <span>入住：{{ d.header.checkIn }} ~ {{ d.header.checkOut }}（ {{ d.nights }} 晚 ）</span>
+                </div>
+                <div class="row">
+                    <span>旅館電話：{{ d.header.propertyTel || '—' }}</span>
+                    <span>旅館地址：{{ d.header.propertyAddress || '—' }}</span>
+                </div>
+                <div class="row">
+                    <span>付款方式：{{ d.header.paymentName || '—' }}</span>
+                    <span>訂單狀態：
+                        <p-tag class="status-tag" [value]="d.header.status" [severity]="statusSeverity(d.header.status)"></p-tag>
+                    </span>
+                </div>
+                <div class="row" *ngIf="d.header.guest === 'n'">
+                    <span>入住人：{{ d.header.guestName || '—' }}</span>
+                    <span>電話：{{ d.header.guestPhone || '—' }}</span>
+                </div>
+                <div class="note" *ngIf="d.header.note">備註：{{ d.header.note }}</div>
+            </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="room-items" *ngIf="roomItems?.length">
+            <div class="room-item" *ngFor="let room of roomItems; index as i; trackBy: trackByRoom">
+                <div class="room-header" (click)="toggleRoom(i)">
+                    <div class="room-basic-info">
+                        <span class="room-number">訂購房型 {{ i + 1 }}</span>
+                        <span class="room-name">{{ room.roomName }}</span>
+                    </div>
+                    <div class="room-price-summary">
+                        <i class="pi" [ngClass]="room.expanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+                    </div>
+                </div>
+
+                <div class="room-details" *ngIf="room.expanded">
+                    <table class="room-detail-table">
+                        <tr>
+                            <td class="label-col">房型金額</td>
+                            <td class="value-col">$ {{ price(room.roomPrice) }} <small>(每晚)</small></td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">房型數量</td>
+                            <td class="value-col">{{ room.roomQuantity }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">房型總額</td>
+                            <td class="value-col strong">
+                                $ {{ price(room.roomTotal) }}
+                                <small>(單價 × {{ room.roomQuantity }} 間 × {{ data.nights || 1 }} 晚)</small>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 總金額 -->
+        <div class="order-total" *ngIf="data">
+            <span class="total-label">總金額</span>
+            <span class="total-amount">$ {{ price(data.totalAmount) }}</span>
+        </div>
+
+        <div class="actions">
+            <p-button label="關閉" (onClick)="close()" />
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading">載入中...</div>
+    <div *ngIf="!loading && error" class="error">
+        <p>{{ error }}</p>
+        <p-button label="重新整理" (onClick)="fetch()" />
+    </div>
+</p-dialog>
+

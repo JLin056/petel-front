@@ -1,8 +1,24 @@
-:host ::ng-deep .petel-auth-dialog .p-dialog-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 30px;
+::ng-deep .p-dialog.petel-auth-dialog {
+    width: min(92vw, 640px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+    border-radius: 0 0 20px 20px ;
+    padding: 24px 28px ;
+    background-color: #fffdf9;
+}
+
+/* 頂部標題區 */
+::ng-deep .p-dialog.petel-auth-dialog .p-dialog-header {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    background-color: #f6ede5;
+    color: #3b2d22;
+    font-weight: 700;
+    font-size: 20px;
 }
 :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
     font-size: 1.6rem;
@@ -42,4 +58,93 @@
 }
 :host ::ng-deep .button-container .p-button .p-button-label {
   font-size: 1.25rem;
+}
+/* ========= 平板：≤ 1024px ========= */
+@media (max-width: 1024px) {
+    :host ::ng-deep .petel-auth-dialog.p-dialog {
+        width: min(92vw, 560px);
+        max-width: 560px;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+        padding: 20px 22px;
+    }
+    :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+        font-size: 1.45rem;
+    }
+    .content {
+        font-size: 1.05rem;
+    }
+    .button-container {
+        gap: 16px;
+        margin-top: 22px;
+    }
+    :host ::ng-deep .button-container .p-button,
+    :host ::ng-deep .button-container .p-button .p-button-label {
+        font-size: 1rem;
+    }
+    :host ::ng-deep .button-container .p-button {
+        padding: 8px 18px;
+    }
+}
+
+/* ========= 手機：≤ 768px ========= */
+@media (max-width: 768px) {
+    :host ::ng-deep .petel-auth-dialog.p-dialog {
+        width: 90vw;
+        max-width: 90vw;
+        border-radius: 16px;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+        padding: 16px 16px;
+        border-radius: 0 0 16px 16px;
+        max-height: 72vh;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-header {
+        padding: 14px 16px;
+    }
+    :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+        font-size: 1.3rem;
+    }
+
+    .content {
+        font-size: 1rem;
+    }
+
+    /* 按鈕：直向滿版 */
+    .button-container {
+        margin-top: 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    :host ::ng-deep .button-container .p-button {
+        width: 100%;
+        font-size: 0.95rem;
+        padding: 10px 14px;
+        border-radius: 10px;
+    }
+}
+
+/* ========= 超小手機：≤ 420px ========= */
+@media (max-width: 420px) {
+    :host ::ng-deep .petel-auth-dialog.p-dialog {
+        width: 90vw;
+        max-width: 90vw;
+        border-radius: 14px;
+    }
+    :host ::ng-deep .p-dialog.petel-auth-dialog .p-dialog-content {
+        padding: 14px 12px;
+        border-radius: 0 0 14px 14px;
+    }
+    :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-header .p-dialog-title {
+        font-size: 1.2rem;
+    }
+    .content {
+        font-size: 0.95rem;
+    }
+
+    :host ::ng-deep .button-container .p-button {
+        font-size: 0.9rem;
+        padding: 9px 12px;
+    }
 }
