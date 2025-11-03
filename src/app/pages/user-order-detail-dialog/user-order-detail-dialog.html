@@ -34,33 +34,45 @@
 
         <p-divider></p-divider>
 
-        <p-table [value]="aggregated" responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>房型</th>
-                    <th style="width: 100px; text-align: center;">間數</th>
-                    <th style="width: 140px; text-align: center;">單價</th>
-                    <th style="width: 140px; text-align: center;">小計</th>
-                </tr>
-            </ng-template>
+        <div class="room-items" *ngIf="roomItems?.length">
+            <div class="room-item" *ngFor="let room of roomItems; index as i; trackBy: trackByRoom">
+                <div class="room-header" (click)="toggleRoom(i)">
+                    <div class="room-basic-info">
+                        <span class="room-number">訂購房型 {{ i + 1 }}</span>
+                        <span class="room-name">{{ room.roomName }}</span>
+                    </div>
+                    <div class="room-price-summary">
+                        <i class="pi" [ngClass]="room.expanded ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+                    </div>
+                </div>
 
-            <ng-template pTemplate="body" let-it>
-                <tr>
-                    <td>{{ it.roomName }}</td>
-                    <td class="num">{{ it.quantity }}</td>
-                    <td class="num">$ {{ price(it.price) }}</td>
-                    <td class="num">$ {{ price(it.subtotal) }}</td>
-                </tr>
-            </ng-template>
+                <div class="room-details" *ngIf="room.expanded">
+                    <table class="room-detail-table">
+                        <tr>
+                            <td class="label-col">房型金額</td>
+                            <td class="value-col">$ {{ price(room.roomPrice) }} <small>(每晚)</small></td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">房型數量</td>
+                            <td class="value-col">{{ room.roomQuantity }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">房型總額</td>
+                            <td class="value-col strong">
+                                $ {{ price(room.roomTotal) }}
+                                <small>(單價 × {{ room.roomQuantity }} 間 × {{ data.nights || 1 }} 晚)</small>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-            <ng-template pTemplate="footer">
-                <tr>
-                    <td colspan="2"></td>
-                    <td class="num"><b>總金額</b></td>
-                    <td class="num total"><b>$ {{ price(d?.totalAmount) }}</b></td>
-                </tr>
-            </ng-template>
-        </p-table>
+        <!-- 總金額 -->
+        <div class="order-total" *ngIf="data">
+            <span class="total-label">總金額</span>
+            <span class="total-amount">$ {{ price(data.totalAmount) }}</span>
+        </div>
 
         <div class="actions">
             <p-button label="關閉" (onClick)="close()" />

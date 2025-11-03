@@ -8,6 +8,7 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 
+
 @Component({
   selector: 'app-user-order-detail-dialog',
   imports: [CommonModule, DialogModule, TableModule, TagModule, ButtonModule, DividerModule],
@@ -28,6 +29,7 @@ export class UserOrderDetailDialog implements OnChanges {
     data: USER007Tranrs | null = null;
     /** 房間摘要 */
     aggregated: RoomSummary[] = [];
+    roomItems: RoomItem[] = [];
 
     /**
      * 注入
@@ -38,6 +40,21 @@ export class UserOrderDetailDialog implements OnChanges {
     ) {}
 
     /**
+     * 建立 Room Items
+     */
+    private buildRoomItems() {
+        const nights = Number(this.data?.nights) || 1;
+        this.roomItems = this.aggregated.map(it => ({
+            roomId: it.roomId,
+            roomName: it.roomName,
+            roomPrice: it.price,
+            roomQuantity: it.quantity,
+            roomTotal: it.price * it.quantity * nights,
+            expanded: false // 預設不展開
+        }));
+    }
+
+    /**
      * 取得訂單詳細資訊
      * @returns
      */
@@ -46,6 +63,8 @@ export class UserOrderDetailDialog implements OnChanges {
         this.loading = true;
         this.error = null;
         this.data = null;
+        this.aggregated = [];
+        this.roomItems = [];
 
         const payload = {
             MWHEADER: {
@@ -67,27 +86,30 @@ export class UserOrderDetailDialog implements OnChanges {
                 const items = res.TRANRS.items || [];
 
                 const map = new Map<string, RoomSummary>();
+
                 for (const it of items) {
+                    const perNightQty = Number(it.quantity);
+                    const tonightTotal = Number(it.price);
+                    const unitPrice = tonightTotal / perNightQty;
+
                     const key = `${it.roomId}_${it.price}`;
-                    const exist = map.get(key);
-                    if (exist) {
-                        exist.quantity += it.quantity;
-                        exist.subtotal += it.quantity * it.price;
-                    } else {
+
+                    if (!map.has(key)) {
                         map.set(key, {
                             roomId: it.roomId,
                             roomName: it.roomName,
-                            price: Number(it.price),
-                            quantity: it.quantity,
-                            subtotal: it.quantity * Number(it.price)
+                            price: unitPrice,
+                            quantity: perNightQty
                         });
                     }
-
-                    this.aggregated = Array.from(map.values());
-                    this.aggregated.sort((a, b) => a.roomName.localeCompare(b.roomName));
                 }
+
+                this.aggregated = Array.from(map.values())
+                    .sort((a, b) => a.roomName.localeCompare(b.roomName));
+
+                this.buildRoomItems();
             },
-            error: err => {
+            error: () => {
                 this.error = '系統忙線，請稍後再試';
             },
             complete: () => (this.loading = false)
@@ -124,6 +146,23 @@ export class UserOrderDetailDialog implements OnChanges {
             default: return 'secondary';
         }
     }
+
+    /**
+     * 點擊縮合框
+     * @param i
+     */
+    toggleRoom(i: number) {
+        this.roomItems[i].expanded = !this.roomItems[i].expanded;
+    }
+
+    /**
+     * 追蹤 唯一值
+     * @param _
+     * @param r
+     * @returns
+     */
+    trackByRoom = (_: number, r: RoomItem) => `${r.roomId}_${r.roomPrice}`;
+
 
     /**
      * 偵測變化

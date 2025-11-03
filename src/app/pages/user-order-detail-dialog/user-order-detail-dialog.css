@@ -56,7 +56,7 @@
 }
 
 /* 旅館名稱 */
-.hotel-title{
+.hotel-title {
     margin:0 0 12px;
     font-size:26px;
     font-weight:800;
@@ -64,7 +64,7 @@
 }
 
 /* 每行資訊 */
-.row{
+.row {
     display: flex;
     align-items: center;
     gap: 14px 18px;
@@ -73,72 +73,129 @@
     line-height: 1.7;
     color: #4b3d32;
 }
+.row span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 .status-tag {
     font-size: 16px;
     border-radius: 20px;
     padding: 6px 14px;
     font-weight: 600;
 }
-.label{
-    color: #6b5a4a;
-    min-width: 92px;
+/* 卡片 */
+.room-item {
+    display: grid;
+    gap: 12px;
+    border: 1px solid #eee2d2;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
 }
-.val{
-    color: #3b2d22;
+
+/* 卡片標頭 */
+.room-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #faf6f0;
 }
-.num{
-    text-align: center;
+.room-basic-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+}
+.room-number {
+    background: #ffa265;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: .9rem;
+    white-space: nowrap;
+}
+.room-name {
+    font-weight: 700;
+    color:#273244;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.room-price-summary i {
+    font-size: 1rem;
+    color:#7d6a59;
+}
+
+/* 卡片內容 */
+.room-details {
+    padding: 10px 16px 14px;
+    background: #fff;
+}
+.room-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.room-detail-table td {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0e4d8;
+}
+.room-detail-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.label-col {
+    width: 140px;
+    color:#6b5a4a;
+    white-space: nowrap;
+}
+.value-col {
+    text-align: right;
+    color:#223043;
+    white-space: nowrap;
     font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1;
-    white-space: nowrap;
+    font-feature-settings: "tnum";
 }
-:host ::ng-deep .p-table tfoot td{
-    line-height: 1.2;
-    white-space: nowrap;
-    text-align: center;
-}
-
-/* 欄位寬度 */
-:host ::ng-deep .p-table thead th:nth-child(1),
-:host ::ng-deep .p-table tbody td:nth-child(1){
-    width:auto;
-}
-:host ::ng-deep .p-table thead th:nth-child(2),
-:host ::ng-deep .p-table tbody td:nth-child(2){
-    width:110px;
-}
-:host ::ng-deep .p-table thead th:nth-child(3),
-:host ::ng-deep .p-table tbody td:nth-child(3){
-    width:150px;
-}
-:host ::ng-deep .p-table thead th:nth-child(4),
-:host ::ng-deep .p-table tbody td:nth-child(4){
-    width:170px;
-}
-
-/* dialog 標題列 */
-.dialog-header-content{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-.dialog-title{
+.value-col strong, .value-col.strong {
     font-weight: 800;
-    text-align: center;
+}
+.value-col small {
+    margin-left: 6px;
+    color:#6b5a4a;
+}
+
+/* 總金額條 */
+.order-total {
+    margin-top: 14px;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 14px 18px;
+    background:#fff3e7;
+    border:1px solid #ffe2c6;
+    border-radius:12px;
+}
+.order-total .total-label {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color:#273244;
+}
+.order-total .total-amount {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color:#e07a28;
+    white-space: nowrap;
 }
 
 /* 分隔線 */
 :host ::ng-deep .p-divider.p-divider-horizontal{
     margin:12px 0;
 }
-
 /* 其他 */
-.text-right{
-    text-align:right;
-}
-.total{
-    font-weight:700;
-}
 .loading,.error{
     text-align:center;
     padding:40px 0;
@@ -200,27 +257,41 @@
         font-size: 14px;
         padding: 4px 10px;
     }
-    :host ::ng-deep .p-table th,
-    :host ::ng-deep .p-table td {
-        padding: 10px 12px;
-        font-size: 14px;
+    /* 房型卡片 */
+    .room-header {
+        padding: 12px 14px;
     }
-    :host ::ng-deep .p-table thead th:nth-child(2),
-    :host ::ng-deep .p-table tbody td:nth-child(2){
-        width: 90px;
+    .room-number {
+        font-size: .9rem;
     }
-    :host ::ng-deep .p-table thead th:nth-child(3),
-    :host ::ng-deep .p-table tbody td:nth-child(3){
+    .room-name {
+        font-size: 1.2rem;
+        max-width: 48ch;
+    }
+    .room-details {
+        padding: 10px 14px 12px;
+    }
+    .room-detail-table td {
+        padding: 10px 0;
+    }
+    .label-col {
         width: 120px;
     }
-    :host ::ng-deep .p-table thead th:nth-child(4),
-    :host ::ng-deep .p-table tbody td:nth-child(4){
-        width: 130px;
+    .value-col {
+        font-size: 23px;
     }
-    :host ::ng-deep .petel-auth-dialog .p-table tfoot td,
-    :host ::ng-deep .petel-auth-dialog .p-table tfoot td.total {
-        font-size: 0.85rem;
+
+    /* 總金額 */
+    .order-total {
+        padding: 12px 16px;
     }
+    .order-total .total-label {
+        font-size: 1.1rem;
+    }
+    .order-total .total-amount {
+        font-size: 1.4rem;
+    }
+
     :host ::ng-deep .actions .p-button,
     :host ::ng-deep .actions .p-button .p-button-label {
         font-size: 1rem;
@@ -268,32 +339,54 @@
         font-size: 13px;
         padding: 4px 10px;
     }
-    :host ::ng-deep .p-table {
-        font-size: 0.95rem;
+    /* 房型卡片 */
+    .room-item {
+        border-radius: 10px;
     }
-    :host ::ng-deep .p-table th,
-    :host ::ng-deep .p-table td {
-        padding: 8px 10px;
+    .room-header {
+        padding: 10px 12px;
     }
-    :host ::ng-deep .petel-auth-dialog .p-datatable-thead > tr > th,
-    :host ::ng-deep .petel-auth-dialog .p-datatable-tbody > tr > td,
-    :host ::ng-deep .petel-auth-dialog .p-table thead th,
-    :host ::ng-deep .petel-auth-dialog .p-table tbody td {
-        padding: 8px 10px;
-        font-size: 0.7em;
+    .room-number {
+        font-size: .85rem;
+        padding: 2px 8px;
     }
-    :host ::ng-deep .p-table thead th:nth-child(2),
-    :host ::ng-deep .p-table tbody td:nth-child(2),
-    :host ::ng-deep .p-table thead th:nth-child(3),
-    :host ::ng-deep .p-table tbody td:nth-child(3),
-    :host ::ng-deep .p-table thead th:nth-child(4),
-    :host ::ng-deep .p-table tbody td:nth-child(4) {
-        width: auto;
+    .room-name {
+        font-size: .95rem;
+        max-width: 60vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-    :host ::ng-deep .petel-auth-dialog .p-table tfoot td,
-    :host ::ng-deep .petel-auth-dialog .p-table tfoot td.total,
-    :host ::ng-deep .petel-auth-dialog .p-table tfoot td.num {
-        font-size: 0.7rem;
+    .room-details {
+        padding: 8px 12px 10px;
+    }
+    .room-detail-table td {
+        padding: 8px 0;
+    }
+    .label-col {
+        width: 110px;
+        font-size: 14px;
+    }
+    .value-col {
+        white-space: normal;
+        line-height: 1.5;
+        font-size: .95rem;
+    }
+    .value-col small {
+        display: block;
+        margin-left: 0;
+        margin-top: 2px;
+    }
+
+    /* 總金額 */
+    .order-total {
+        padding: 12px 14px;
+    }
+    .order-total .total-label {
+        font-size: 1.05rem;
+    }
+    .order-total .total-amount {
+        font-size: 1.25rem;
     }
     .actions {
         justify-content: center;
@@ -323,10 +416,29 @@
         font-size: 16px;
     }
 
-    :host ::ng-deep .p-table th,
-    :host ::ng-deep .p-table td {
-        padding: 8px;
-        font-size: 0.9rem;
+    /* 房型卡片 */
+    .room-header {
+        padding: 10px 10px;
+    }
+    .room-name {
+        max-width: 58vw;
+    }
+    .room-detail-table td {
+        padding: 8px 0;
+    }
+    .label-col {
+        width: 100px;
+    }
+    .value-col {
+        font-size: .9rem;
+    }
+
+    /* 總金額 */
+    .order-total .total-label {
+        font-size: 1rem;
+    }
+    .order-total .total-amount {
+        font-size: 1.1rem;
     }
 
     :host ::ng-deep .actions .p-button {
@@ -334,3 +446,4 @@
         padding: 9px 12px;
     }
 }
+

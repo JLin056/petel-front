@@ -3,5 +3,4 @@ interface RoomSummary {
     roomName: string;
     price: number;
     quantity: number;
-    subtotal: number
 }
