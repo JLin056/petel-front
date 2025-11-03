@@ -106,7 +106,7 @@ body {
 
 ::ng-deep .table-wrapper .p-datatable tbody td {
   padding: 8px;
-  font-size: 20px;
+  font-size: 19px;
   color: #5c4a3f;
 }
 
@@ -207,12 +207,10 @@ body {
   text-align: center;
   vertical-align: middle;
   color: #5c4a3f;
-  white-space: nowrap;
-  /* 不換行 */
-  overflow: hidden;
-  /* 超出隱藏 */
-  text-overflow: ellipsis;
-  /* 超出顯示 ... */
+  white-space: normal; /* 不換行 */
+  overflow: visible;   /* 顯示全部內容 */
+  text-overflow: unset; /* 取消省略號 */
+  word-break: break-all; /* 超長文字自動換行 */
 }
 
 /* 按鈕 */
