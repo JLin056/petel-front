@@ -744,11 +744,22 @@
 
 /* 讓下拉選單有固定寬度和邊框 */
 ::ng-deep .room-quantity-select .p-select {
-    min-width: 50px;
+    min-width: 80px;
+    border: 1px solid #cfc1b1 !important;
+    border-radius: 4px;
 }
 
-/* 確保 select 的邊框顯示 */
+/* 確保 select 的 label 也有邊框 */
 ::ng-deep .room-quantity-select .p-select .p-select-label {
-    border: 1px solid #cfc1b1;
-    border-radius: 4px;
+    border: none;
+}
+
+/* hover 和 focus 狀態 */
+::ng-deep .room-quantity-select .p-select:hover {
+    border-color: #a89583 !important;
+}
+
+::ng-deep .room-quantity-select .p-select:focus-within {
+    border-color: #7c4200 !important;
+    box-shadow: 0 0 0 2px rgba(124, 66, 0, 0.1);
 }

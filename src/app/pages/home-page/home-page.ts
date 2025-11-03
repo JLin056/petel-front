@@ -301,8 +301,9 @@ export class HomePage implements OnInit {
                         }
                     });
 
-                    // 成功，跳轉到旅館列表頁，並傳遞搜尋結果
-                    this.router.navigate(['/dogHotels'], {
+                    // 成功，根據寵物類型跳轉到對應的旅館列表頁
+                    const targetRoute = apiParams.petType === 'CAT' ? '/catHotels' : '/dogHotels';
+                    this.router.navigate([targetRoute], {
                         state: {
                             searchResult: response.TRANRS,
                             searchParams: apiParams
@@ -355,8 +356,9 @@ export class HomePage implements OnInit {
 
         console.log('搜尋參數:', searchParams);
 
-        // 跳轉到詳情頁，使用 query parameter 傳遞 propertyId
-        this.router.navigate(['/singleHotel'], {
+        // 根據寵物類型跳轉到對應的詳情頁，使用 query parameter 傳遞 propertyId
+        const targetRoute = petType === 'CAT' ? '/catSingleHotel' : '/dogSingleHotel';
+        this.router.navigate([targetRoute], {
             queryParams: { propertyId: propertyId },
             state: { searchParams: searchParams }
         });
@@ -397,8 +399,9 @@ export class HomePage implements OnInit {
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間${petType === 'CAT' ? '貓貓' : '狗狗'}旅館`);
 
-                    // 成功，跳轉到旅館列表頁
-                    this.router.navigate(['/dogHotels'], {
+                    // 成功，根據寵物類型跳轉到對應的旅館列表頁
+                    const targetRoute = petType === 'CAT' ? '/catHotels' : '/dogHotels';
+                    this.router.navigate([targetRoute], {
                         state: {
                             searchResult: response.TRANRS,
                             searchParams: apiParams
