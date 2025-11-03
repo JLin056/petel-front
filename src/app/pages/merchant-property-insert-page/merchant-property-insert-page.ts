@@ -82,7 +82,7 @@ export class MerchantPropertyInsertPage {
         '',
         [
           Validators.required,
-          Validators.pattern(/^[A-Z][0-9]{11}$/)
+          Validators.pattern(/^[A-Z][0-9]{7}$/)
         ]
       ],
       bankAccount: [
@@ -307,7 +307,7 @@ export class MerchantPropertyInsertPage {
         next: (res) => {
           if (res.MWHEADER.RETURNCODE === '0000') {
             this.messageService.add({ severity: 'success', summary: '成功', detail: '旅館新增成功！' });
-            this.router.navigate(['/merchants/property/info']);
+            this.router.navigate(['/merchants/userPage']);
           } else {
             this.messageService.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '新增失敗' });
           }
