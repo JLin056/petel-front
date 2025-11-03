@@ -17,7 +17,7 @@
             >
                 <div class="img">
                     <img
-                        src="https://petelcathay-user.s3.us-east-1.amazonaws.com/User_Profile/dog_avatar003.png"
+                        [src]="t.avatarB64 || defaultAvatar"
                         alt="頭貼"
                     />
                 </div>
@@ -65,7 +65,7 @@
                     <div class="msg-row">
                         <div class="avatar">
                             <img
-                                src="https://petelcathay-user.s3.us-east-1.amazonaws.com/User_Profile/dog_avatar003.png"
+                                [src]="selectedThread?.avatarB64 || defaultAvatar"
                                 alt="旅館頭貼"
                             />
                         </div>
