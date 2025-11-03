@@ -39,7 +39,7 @@
     border-radius: 16px;
     border: 2px solid #f0e4d8;
     box-shadow: 0 12px 28px rgba(0,0,0,.06);
-    /* padding: 60px; */
+    padding: 60px;
     gap: 60px;
     display: flex;
     flex-direction: column;
@@ -65,7 +65,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 60px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 .input-container label,
 .input-container-password label {
@@ -83,6 +83,16 @@
     font-size: 1.25rem;
     transition: none;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+.error-message {
+    margin-top: -15px;
+    margin-bottom: 5px;
+    height: 30px;
+    margin-left: 160px;
+}
+.error-message ::ng-deep .p-message-text {
+    font-size: 1.2rem;
+    line-height: 1.4;
 }
 /* 密碼 */
 :host ::ng-deep .input-container-password p-password {
@@ -150,7 +160,7 @@
 /* 忘記密碼 */
 .aux-row {
     text-align: right;
-    margin-top: 20px;
+    /* margin-top: 20px; */
     font-size: 1.25rem;
 }
 .auth-link {
@@ -169,41 +179,77 @@
     gap: 6px;
     font-size: 1.25rem;
 }
+/* ====== 斷點：≤ 768px（平板）====== */
+@media (max-width: 768px) {
+    .auth-page {
+        display: flex;
+        flex-direction: column;
+    }
+    .hero {
+        gap: 10px;
+    }
+    .hero h1 {
+        font-size: 40px;
+    }
+    .hero p {
+        font-size: 30px;
+    }
+    .auth-card {
+        width: min(94vw, 560px);
+        padding: 35px 24px;
+        gap: 20px;
+        height: auto;
+    }
 
-/* 錯誤訊息 */
-/* .error-message {
-    background-color: #fff5f5;
-    border: 2px solid #A24522;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    color: #A24522;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.5rem;
+    .button-container {
+        gap: 16px;
+    }
 }
-
-.error-message i {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-} */
-
-/* 欄位驗證錯誤文字 */
-.error-text {
-    display: block;
-    color: #A24522;
-    margin-top: -5px;
-    margin-bottom: 10px;
-    padding-left: 45%;
-    font-size: 1.25rem;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* 無效欄位的邊框顏色 */
-:host ::ng-deep input.ng-invalid.ng-touched,
-:host ::ng-deep .p-password.ng-invalid.ng-touched input {
-    border-color: #a24522;
-    box-shadow: 0 0 4px rgba(162, 69, 34, 0.2);
+/* ====== 斷點：≤ 480px（小手機）====== */
+@media (max-width: 480px) {
+    .auth-page {
+        margin-top: 50px;
+    }
+    .hero {
+        gap: 10px;
+    }
+    .hero h1 {
+        font-size: 30px;
+    }
+    .hero p {
+        font-size: 20px;
+    }
+    .auth-card {
+        padding: 35px 24px;
+        gap: 20px;
+        height: 500px;
+        margin-top: 20px;
+    }
+    .card-title {
+        font-size: 30px;
+    }
+    .input-container label,
+    .input-container-password label {
+        font-size: 1rem;
+    }
+    .input-container input {
+        font-size: 1rem;
+    }
+    .error-message ::ng-deep .p-message-text {
+        font-size: 0.8rem;
+    }
+    .aux-row {
+        font-size: 0.9rem;
+    }
+    .button-container {
+        margin-top: 20px;
+        gap: 16px;
+        font-size: 1rem;
+    }
+    :host ::ng-deep .button-container .p-button .p-button-label {
+        font-size: 1rem;
+    }
+    .auth-footer {
+        font-size: 0.8rem;
+    }
 }

@@ -32,14 +32,13 @@
                 {{ getErrorMessage('password') }}
             </div>
 
-            <!-- <div class="aux-row">
-                <a class="auth-link" routerLink="/forgot">忘記密碼？</a>
-            </div> -->
+            <div class="aux-row">
+                <a class="auth-link" (click)="goForgotPassword()">忘記密碼？</a>
+            </div>
 
             <div class="button-container">
-                <button pButton type="button" class="p-button-secondary ghost">取消</button>
-                <button pButton type="submit" [disabled]="isLoading || loginForm.invalid || loginForm.pending"
-                    [loading]="isLoading" label="登入"></button>
+                <!-- <button pButton type="button" class="p-button-secondary ghost">取消</button> -->
+                <button pButton type="submit" [loading]="isLoading" label="登入"></button>
             </div>
         </form>
 

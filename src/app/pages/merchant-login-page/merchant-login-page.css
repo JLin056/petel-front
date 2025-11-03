@@ -223,3 +223,74 @@
 .app-add-seller-info-dialog {
     pointer-events: auto;
 }
+/* ====== 斷點：≤ 768px（平板）====== */
+@media (max-width: 768px) {
+    .auth-page {
+        display: flex;
+        flex-direction: column;
+    }
+    .hero {
+        gap: 10px;
+    }
+    .hero h1 {
+        font-size: 40px;
+    }
+    .hero p {
+        font-size: 30px;
+    }
+    .auth-card {
+        width: min(94vw, 560px);
+        padding: 35px 24px;
+        gap: 20px;
+        height: auto;
+    }
+
+    .button-container {
+        gap: 16px;
+    }
+}
+/* ====== 斷點：≤ 480px（小手機）====== */
+@media (max-width: 480px) {
+    .hero {
+        gap: 10px;
+    }
+    .hero h1 {
+        font-size: 30px;
+    }
+    .hero p {
+        font-size: 20px;
+    }
+    .auth-card {
+        padding: 35px 24px;
+        gap: 20px;
+        height: 500px;
+        margin-top: 20px;
+    }
+    .card-title {
+        font-size: 30px;
+    }
+    .input-container label,
+    .input-container-password label {
+        font-size: 1rem;
+    }
+    .input-container input {
+        font-size: 1rem;
+    }
+    .error-message ::ng-deep .p-message-text {
+        font-size: 0.8rem;
+    }
+    .aux-row {
+        font-size: 0.9rem;
+    }
+    .button-container {
+        margin-top: 20px;
+        gap: 16px;
+        font-size: 1rem;
+    }
+    :host ::ng-deep .button-container .p-button .p-button-label {
+        font-size: 1rem;
+    }
+    .auth-footer {
+        font-size: 0.8rem;
+    }
+}
