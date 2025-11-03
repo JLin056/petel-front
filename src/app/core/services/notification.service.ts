@@ -37,9 +37,7 @@ export class NotificationService {
     /** SSE 連線 */
     private eventSource: EventSource | null = null;
     private lastEventTime: string | null = null;
-    private reconnectAttempts = 0;
-    private readonly MAX_RECONNECT_ATTEMPTS = 5;
-    private reconnectTimer: any = null;
+    private reconnectCount = 0;
 
     /** SSE 連線狀態 */
     private sseConnectedSubject = new BehaviorSubject<boolean>(false);
@@ -122,7 +120,20 @@ export class NotificationService {
     }
 
     /**
-     * NOTIFY-005: 建立 SSE 連線（即時推播）- 帶自動重連
+     * NOTIFY-005: 建立 SSE 連線（即時推播）
+     *
+     * 自動重連機制：
+     * - 後端已設定 retry: 3000（每 3 秒自動重連）
+     * - 瀏覽器的 EventSource API 會自動處理重連
+     * - 重連成功後會自動補發錯過的通知
+     *
+     * 工作流程：
+     * 1. 建立 SSE 連線
+     * 2. 監聽 'notification' 和 'heartbeat' 事件
+     * 3. 更新 lastEventTime（使用通知的 created_at）
+     * 4. 斷線時瀏覽器自動重連（無需手動處理）
+     * 5. 重連成功後調用 NOTIFY-006 補發錯過的通知
+     *
      * @param onNotification 收到通知時的回調函數
      */
     connectSSE(onNotification?: (notification: NotificationDto) => void): void {
@@ -130,13 +141,8 @@ export class NotificationService {
 
         // 如果已有連線，先關閉
         if (this.eventSource) {
-            this.eventSource.close();
-        }
-
-        // 清除重連 timer
-        if (this.reconnectTimer) {
-            clearTimeout(this.reconnectTimer);
-            this.reconnectTimer = null;
+            console.warn('[SSE] 已存在連線，先斷開舊連線');
+            this.disconnectSSE();
         }
 
         try {
@@ -148,9 +154,12 @@ export class NotificationService {
             // 監聽通知事件
             this.eventSource.addEventListener('notification', (event: MessageEvent) => {
                 try {
-                    console.log('收到新通知 SSE 事件:', event.data);
+                    console.log('[SSE] 收到新通知:', event.data);
                     const notification: NotificationDto = JSON.parse(event.data);
-                    this.lastEventTime = new Date().toISOString();
+
+                    // 【重要】使用通知的 created_at 時間，而非本地時間
+                    this.lastEventTime = notification.created_at || new Date().toISOString();
+                    console.log('[SSE] 更新 lastEventTime:', this.lastEventTime);
 
                     // 觸發回調
                     if (onNotification) {
@@ -160,86 +169,67 @@ export class NotificationService {
                     // 增加未讀數量
                     const currentCount = this.unreadCountSubject.value;
                     this.unreadCountSubject.next(currentCount + 1);
-
-                    console.log('未讀數量已更新:', currentCount + 1);
+                    console.log('[SSE] 未讀數量已更新:', currentCount + 1);
                 } catch (error) {
-                    console.error('解析通知資料失敗:', error);
+                    console.error('[SSE] 解析通知資料失敗:', error);
                 }
             });
 
             // 監聽心跳事件
             this.eventSource.addEventListener('heartbeat', (event: MessageEvent) => {
-                console.log('SSE 心跳:', event.data);
+                console.log('[SSE] 心跳:', event.data);
             });
 
-            // 處理連線錯誤
-            this.eventSource.onerror = (error: Event) => {
-                console.error('SSE 連線錯誤:', error);
-                this.sseConnectedSubject.next(false);
-                this.eventSource?.close();
-                this.eventSource = null;
+            // 監聽連線開啟（包括首次連線和重連成功）
+            this.eventSource.onopen = () => {
+                if (this.reconnectCount === 0) {
+                    // 首次連線
+                    console.log('[SSE] ✅ 首次連線成功');
+                } else {
+                    // 重連成功
+                    console.log(`[SSE] ✅ 重連成功（第 ${this.reconnectCount} 次）`);
 
-                // 自動重連
-                this.attemptReconnect(onNotification);
+                    // 【重要】重連後補發錯過的通知
+                    if (this.lastEventTime) {
+                        console.log('[SSE] 補發錯過的通知，上次時間:', this.lastEventTime);
+                        this.resendMissedEvents(this.lastEventTime).subscribe({
+                            next: (res) => {
+                                if (res.MWHEADER.RETURNCODE === '0000') {
+                                    console.log(`[SSE] ✅ 補發了 ${res.TRANRS.resent_count} 個錯過的通知`);
+                                }
+                            },
+                            error: (err) => console.error('[SSE] ❌ 補發通知失敗:', err)
+                        });
+                    }
+                }
+
+                this.reconnectCount++;
+                this.sseConnectedSubject.next(true);
             };
 
-            // 監聽連線開啟
-            this.eventSource.onopen = () => {
-                console.log('✅ SSE 連線已建立');
-                this.reconnectAttempts = 0;
-                this.sseConnectedSubject.next(true);
-
-                // 如果有上次的事件時間，補發錯過的通知
-                if (this.lastEventTime) {
-                    console.log('補發錯過的通知，上次時間:', this.lastEventTime);
-                    this.resendMissedEvents(this.lastEventTime).subscribe({
-                        next: (res) => {
-                            if (res.MWHEADER.RETURNCODE === '0000') {
-                                console.log(`補發了 ${res.TRANRS.resent_count} 個錯過的通知`);
-                            }
-                        },
-                        error: (err) => console.error('補發通知失敗:', err)
-                    });
+            // 處理連線錯誤（瀏覽器會自動重連）
+            this.eventSource.onerror = (error: Event) => {
+                if (this.eventSource?.readyState === EventSource.CLOSED) {
+                    // 連線已永久關閉
+                    console.error('[SSE] ❌ 連線已關閉');
+                    this.sseConnectedSubject.next(false);
+                } else {
+                    // 連線斷開，瀏覽器會自動重連（後端設定 retry: 3000）
+                    console.warn('[SSE] ⚠️ 連線斷開，3 秒後自動重連...');
+                    this.sseConnectedSubject.next(false);
                 }
             };
         } catch (error) {
-            console.error('建立 SSE 連線失敗:', error);
+            console.error('[SSE] ❌ 建立連線失敗:', error);
             this.sseConnectedSubject.next(false);
-            this.attemptReconnect(onNotification);
         }
-    }
-
-    /**
-     * 嘗試重新連線
-     */
-    private attemptReconnect(onNotification?: (notification: NotificationDto) => void): void {
-        if (this.reconnectAttempts >= this.MAX_RECONNECT_ATTEMPTS) {
-            console.error('❌ SSE 重連次數已達上限，停止重連');
-            return;
-        }
-
-        this.reconnectAttempts++;
-        const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts - 1), 30000); // 指數退避，最多 30 秒
-
-        console.log(`⏳ 將在 ${delay / 1000} 秒後嘗試第 ${this.reconnectAttempts} 次重連...`);
-
-        this.reconnectTimer = setTimeout(() => {
-            console.log(`🔄 開始第 ${this.reconnectAttempts} 次重連...`);
-            this.connectSSE(onNotification);
-        }, delay);
     }
 
     /**
      * 關閉 SSE 連線
      */
     disconnectSSE(): void {
-        console.log('關閉 SSE 連線');
-
-        // 清除重連 timer
-        if (this.reconnectTimer) {
-            clearTimeout(this.reconnectTimer);
-            this.reconnectTimer = null;
-        }
+        console.log('[SSE] 關閉連線');
 
         // 關閉連線
         if (this.eventSource) {
@@ -249,16 +239,17 @@ export class NotificationService {
 
         // 重置狀態
         this.sseConnectedSubject.next(false);
-        this.reconnectAttempts = 0;
+        this.reconnectCount = 0;
 
-        console.log('✅ SSE 連線已關閉');
+        console.log('[SSE] ✅ 連線已關閉');
     }
 
     /**
      * 重置重連計數器（手動重連時使用）
      */
-    resetReconnectAttempts(): void {
-        this.reconnectAttempts = 0;
+    resetReconnectCount(): void {
+        this.reconnectCount = 0;
+        console.log('[SSE] 重連計數器已重置');
     }
 
     /**

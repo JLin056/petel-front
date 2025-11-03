@@ -5,6 +5,7 @@ import { DogListPage } from './pages/dog-list-page/dog-list-page';
 import { CatSinglePage } from './pages/cat-single-page/cat-single-page';
 import { DogSinglePage } from './pages/dog-single-page/dog-single-page';
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
+import { merchantAuthGuard } from './core/guards/merchant-auth.guard';
 import { UserPage } from './pages/user-page/user-page';
 import { ChatPage } from './pages/chat-page/chat-page';
 import { LoginPage } from './pages/login-page/login-page';
@@ -108,48 +109,67 @@ export const routes: Routes = [
         component: MerchantRegisterPage
     },
     {
+        path: 'merchants/userPage/forgotPassword',
+        component: ForgotPasswordPage
+    },
+    {
+        path: 'merchants/userPage/resetPassword',
+        component: ResetPasswordPage
+    },
+    {
         path: 'merchants/userPage/chat',
-        component: ChatPage
+        component: ChatPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/homepage',
-        component: MerchantHomePage
+        component: MerchantHomePage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/info',
-        component: MerchantPropertyInfoPage
+        component: MerchantPropertyInfoPage,
+        canActivate: [merchantAuthGuard]
     },
         {
         path: 'merchants/property/insert',
-        component: MerchantPropertyInsertPage
+        component: MerchantPropertyInsertPage,
+        canActivate: [merchantAuthGuard]
     },
         {
         path: 'merchants/property/edit',
-        component: MerchantPropertyEditPage
+        component: MerchantPropertyEditPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/roomInfo',
-        component: RoomInfoPage
+        component: RoomInfoPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/roomInfo/edit',
-        component: RoomInfoEditPage
+        component: RoomInfoEditPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/roomInfo/insert',
-        component: RoomInfoInsertPage
+        component: RoomInfoInsertPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/userPage',
-        component: UserMerchantPage
+        component: UserMerchantPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/bookings',
-        component: MerchantOrderTablePage
+        component: MerchantOrderTablePage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'merchants/property/reviewList',
-        component: MerchantReviewListPage
+        component: MerchantReviewListPage,
+        canActivate: [merchantAuthGuard]
     },
     {
         path: 'admin/login',

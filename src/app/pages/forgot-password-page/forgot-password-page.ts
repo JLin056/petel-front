@@ -149,20 +149,31 @@ export class ForgotPasswordPage {
         try {
             const url = new URL(this.resetPasswordUrl);
             const token = url.searchParams.get('token');
+
+            const isMerchant = this.router.url.includes('/merchant/userPage');
+
             if (token) {
-                this.router.navigate(['resetPassword'], { queryParams: { token } });
+                if (isMerchant) {
+                    this.router.navigate(['/merchant/userPage/resetPassword'], { queryParams: { token } });
+                } else {
+                    this.router.navigate(['resetPassword'], { queryParams: { token } });
+                }
                 return;
             }
         } catch {
-
+            window.location.href = this.resetPasswordUrl;
         }
-        window.location.href = this.resetPasswordUrl;
     }
 
     /**
      * 前往登入頁
      */
     goLogin(): void {
-        this.router.navigate(['login']);
+        const url = this.router.url;
+        if (url.includes('merchanys/userPage')) {
+            this.router.navigate(['/merchant/userPage/login'])
+        } else {
+            this.router.navigate(['login']);
+        }
     }
 }
