@@ -263,7 +263,7 @@ export class MerchantPropertyInsertPage {
           summary: '圖片上傳失敗',
           detail: `${uploadedImage.file.name} 發生錯誤，請重新選擇`
         });
-        this.uploadedImages = []; 
+        this.uploadedImages = [];
         throw err;
       });
 
@@ -348,8 +348,17 @@ export class MerchantPropertyInsertPage {
       this.merchService.createHotelDetail(tranrq).subscribe({
         next: (res) => {
           if (res.MWHEADER.RETURNCODE === '0000') {
+            const newPropertyId = res.TRANRS.id;
+            if (!newPropertyId) {
+              this.messageService.add({ severity: 'error', summary: '錯誤', detail: '無法取得旅館編號' });
+              return;
+            }
+            console.log('新旅館 ID:', newPropertyId);
             this.messageService.add({ severity: 'success', summary: '成功', detail: '旅館新增成功！' });
-            this.router.navigate(['/merchants/property/info']);
+            this.router.navigate(
+              ['/merchants/property/info'],
+              { state: { propertyId: newPropertyId } }
+            );
           } else {
             this.messageService.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '新增失敗' });
           }
