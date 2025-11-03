@@ -20,16 +20,16 @@ import { Toast } from "primeng/toast";
     selector: 'app-merchant-property-edit-page',
     standalone: true,
     imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    ButtonModule,
-    SharedConfirmDialog,
-    MultiSelectModule,
-    Select,
-    DragDropModule,
-    Toast
-],
+        CommonModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        ButtonModule,
+        SharedConfirmDialog,
+        MultiSelectModule,
+        Select,
+        DragDropModule,
+        Toast
+    ],
     templateUrl: './merchant-property-edit-page.html',
     styleUrl: './merchant-property-edit-page.css'
 })
@@ -80,7 +80,7 @@ export class MerchantPropertyEditPage {
             name: [{ value: '', disabled: true }, Validators.required],
             businessCode: [{ value: '', disabled: true }, [
                 Validators.required,
-                Validators.pattern(/^[A-Z][0-9]{11}$/)
+                Validators.pattern(/^[A-Z][0-9]{7}$/)
             ]],
             bankAccount: [
                 '',
@@ -169,135 +169,123 @@ export class MerchantPropertyEditPage {
     }
 
     /**
-     * 按下儲存按鈕後的業務邏輯
+     * 儲存
      * @returns
      */
     async onSubmit(): Promise<void> {
-
         if (this.propertyForm.invalid) {
-            this.errorMessage = '請填寫所有必填欄位';
+            this.messageService.add({ severity: 'warn', summary: '提醒', detail: '請填寫所有必填欄位' });
             this.propertyForm.markAllAsTouched();
             return;
         }
 
         if (!this.propertyId) {
-            this.errorMessage = '無法取得旅館 ID';
+            this.messageService.add({ severity: 'error', summary: '錯誤', detail: '無法取得旅館 ID' });
             return;
         }
 
-        this.errorMessage = '';
-
-        const propertyImages: MERCH007TranrqPropertyImage[] = [];
-
-        for (let img of this.existingImages) {
-            propertyImages.push({
-                mediaId: img.mediaId,
-                sortOrder: img.sortOrder
-            })
+        if (this.existingImages.length === 0 && this.uploadedImages.length === 0) {
+            this.messageService.add({ severity: 'error', summary: '錯誤', detail: '請至少上傳一張旅館圖片' });
+            return;
         }
 
-        const tranrq: MERCH007Tranrq = {
-            id: this.propertyId,
-            tel: this.propertyForm.controls['tel'].value,
-            city: this.propertyForm.controls['city'].value,
-            district: this.propertyForm.controls['district'].value,
-            addressDetail: this.propertyForm.controls['addressDetail'].value,
-            bankAccount: this.propertyForm.controls['bankAccount'].value,
-            info: this.propertyForm.controls['info'].value,
-            checkNotice: this.propertyForm.controls['checkNotice'].value,
-            petNotice: this.propertyForm.controls['petNotice'].value,
-            propertyNotice: this.propertyForm.controls['propertyNotice'].value,
-            facilities: this.propertyForm.controls['selectedFacilities'].value.map((facility: { facilityId: any; }) => facility.facilityId),
-            propertyImages: propertyImages
-        };
-
-        this.merchService.editHotelDetail(tranrq).subscribe({
-            next: (res) => {
-                if (res.MWHEADER.RETURNCODE === '0000') {
-                    this.router.navigate(['/merchants/property/info']);
-                }
-            },
-            error: (err) => {
-                console.error('API 錯誤:', err);
-            }
-        });
-
         try {
-            // 1. 刪除已標記的圖片
+            // 🔹 1. 刪除舊圖片
             if (this.deletedImageIds.length > 0) {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: '處理中',
-                    detail: `正在刪除 ${this.deletedImageIds.length} 張圖片...`
-                });
-
                 await new Promise<void>((resolve, reject) => {
                     this.mediaService.deleteMedia({
                         MWHEADER: { MSGID: 'MEDIA-003' },
                         TRANRQ: { mediaIds: this.deletedImageIds }
                     }).subscribe({
-                        next: (res) => {
-                            if (res.MWHEADER.RETURNCODE === '0000') {
-                                resolve();
-                            } else {
-                                reject(new Error('刪除圖片失敗'));
-                            }
-                        },
-                        error: (err) => reject(err)
+                        next: (res) => res.MWHEADER.RETURNCODE === '0000' ? resolve() : reject('刪除圖片失敗'),
+                        error: reject
                     });
                 });
             }
 
-            // 2. 上傳新圖片
+            // 🔹 2. 上傳新圖片
             if (this.uploadedImages.length > 0) {
-                this.messageService.add({
-                    severity: 'info',
-                    summary: '上傳中',
-                    detail: `正在上傳 ${this.uploadedImages.length} 張圖片...`
-                });
-
                 await this.uploadAllImages();
             }
 
-            // 3. 更新現有圖片的排序
+            // 🔹 3. 更新現有圖片排序
             if (this.existingImages.length > 0) {
                 const updatePromises = this.existingImages.map((img) =>
                     new Promise<void>((resolve, reject) => {
                         this.mediaService.updateMedia({
                             MWHEADER: { MSGID: 'MEDIA-002' },
                             TRANRQ: {
-                                medias: [{
-                                    mediaId: img.mediaId,
-                                    sortOrder: img.sortOrder
-                                }]
+                                medias: [{ mediaId: img.mediaId, sortOrder: img.sortOrder }]
                             }
                         }).subscribe({
-                            next: (res) => {
-                                if (res.MWHEADER.RETURNCODE === '0000') {
-                                    resolve();
-                                } else {
-                                    reject(new Error('更新圖片排序失敗'));
-                                }
-                            },
-                            error: (err) => reject(err)
+                            next: (res) => res.MWHEADER.RETURNCODE === '0000' ? resolve() : reject('更新圖片排序失敗'),
+                            error: reject
                         });
                     })
                 );
-
                 await Promise.all(updatePromises);
             }
+
+            // 🔹 4. 最後送出旅館資料
+            const tranrq: MERCH007Tranrq = {
+                id: this.propertyId,
+                tel: this.propertyForm.controls['tel'].value,
+                city: this.propertyForm.controls['city'].value,
+                district: this.propertyForm.controls['district'].value,
+                addressDetail: this.propertyForm.controls['addressDetail'].value,
+                bankAccount: this.propertyForm.controls['bankAccount'].value,
+                info: this.propertyForm.controls['info'].value,
+                checkNotice: this.propertyForm.controls['checkNotice'].value,
+                petNotice: this.propertyForm.controls['petNotice'].value,
+                propertyNotice: this.propertyForm.controls['propertyNotice'].value,
+                facilities: this.propertyForm.controls['selectedFacilities'].value.map(
+                    (facility: { facilityId: any }) => facility.facilityId
+                ),
+                propertyImages: this.existingImages.map(img => ({
+                    mediaId: img.mediaId,
+                    sortOrder: img.sortOrder
+                }))
+            };
+
+            this.merchService.editHotelDetail(tranrq).subscribe({
+                next: (res) => {
+                    if (res.MWHEADER.RETURNCODE === '0000') {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: '成功',
+                            detail: '旅館資料已更新'
+                        });
+                        this.router.navigate(['/merchants/property/info']);
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: '錯誤',
+                            detail: res.MWHEADER.RETURNDESC || '更新失敗'
+                        });
+                    }
+                },
+                error: (err) => {
+                    console.error('API 錯誤:', err);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: '旅館資料更新失敗'
+                    });
+                }
+            });
+
         } catch (error: any) {
-            this.errorMessage = error.message || '處理圖片失敗，請稍後再試';
+            console.error(error);
             this.messageService.add({
                 severity: 'error',
                 summary: '錯誤',
-                detail: this.errorMessage
+                detail: error.message || '處理圖片失敗，請稍後再試'
             });
         }
     }
 
     /**
-     * 按下取消按鈕，彈出確認視窗
+     * 刪除確認視窗
      */
     onCancelClick(): void {
         if (this.propertyForm.dirty) {
@@ -316,7 +304,7 @@ export class MerchantPropertyEditPage {
     }
 
     /**
-     * 按下取消按鈕後，又決定繼續編輯
+     * 放棄刪除的繼續編輯
      */
     onCancelCancel(): void {
         this.cancelConfirmVisible = false;
@@ -333,7 +321,7 @@ export class MerchantPropertyEditPage {
     }
 
     /**
-     * 當住宿地址的縣市別更改，此函數會觸發，使得鄉鎮市區選單內的選項都是對應該縣市的行政區
+     * 縣市別更改
      * @param city
      */
     onCityChange(city: string): void {
@@ -341,10 +329,8 @@ export class MerchantPropertyEditPage {
         this.avaliableDistrict = this.rawList
             .filter(o => o.city === city)
             .map(o => o.district);
-        this.propertyForm.controls['district'].setValue(''); // 重設已選區
+        this.propertyForm.controls['district'].setValue('');
     }
-
-    // 下列部分程式碼參考 room-info-edit-page.ts
 
     /**
      * 載入現有圖片
@@ -420,7 +406,7 @@ export class MerchantPropertyEditPage {
     }
 
     /**
-     * 移除現有圖片（加入刪除清單）
+     * 移除現有圖片
      */
     removeExistingImage(index: number): void {
         const image = this.existingImages[index];

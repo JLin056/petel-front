@@ -307,7 +307,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   
     console.log('導航到詳細頁面，房型 ID:', room.id);
 
-    this.router.navigate(['/merchants/property/homepage'], {
+    this.router.navigate(['/merchants/property/roomInfo'], {
       state: {
         roomId: room.id,
       }

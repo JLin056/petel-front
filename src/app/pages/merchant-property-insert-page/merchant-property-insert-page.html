@@ -36,7 +36,7 @@
 
                 <div class="form-field">
                     <label>旅館名稱*</label>
-                    <input type="text" pInputText formControlName="name" />
+                    <input type="text" pInputText formControlName="name" placeholder="請填入與特許寵物業許可證號相符的旅館名稱"/>
                     <small class="error"
                         *ngIf="propertyForm.get('name')?.hasError('required') && propertyForm.get('name')?.touched">
                         旅館名稱為必填欄位
@@ -45,7 +45,7 @@
 
                 <div class="form-field">
                     <label>特許寵物業許可證號*</label>
-                    <input id="businessCode" type="text" pInputText formControlName="businessCode" />
+                    <input id="businessCode" type="text" pInputText formControlName="businessCode" placeholder="填入格式為一個大寫英文字母＋7位數字"/>
                     <small class="error"
                         *ngIf="propertyForm.get('businessCode')?.hasError('required') && propertyForm.get('businessCode')?.touched">
                         特許寵物業許可證號為必填欄位
@@ -58,7 +58,7 @@
 
                 <div class="form-field">
                     <label for="bankAccount">銀行帳號*</label>
-                    <input id="bankAccount" type="text" pInputText formControlName="bankAccount" />
+                    <input id="bankAccount" type="text" pInputText formControlName="bankAccount" placeholder="填入格式須包含銀行代號" />
                     <small class="error"
                         *ngIf="propertyForm.get('bankAccount')?.hasError('required') && propertyForm.get('bankAccount')?.touched">
                         銀行帳號為必填欄位
@@ -71,7 +71,7 @@
 
                 <div class="form-field">
                     <label for="tel">電話*</label>
-                    <input id="tel" type="text" pInputText formControlName="tel" />
+                    <input id="tel" type="text" pInputText formControlName="tel" placeholder="請填入電話" />
                     <small class="error"
                         *ngIf="propertyForm.get('tel')?.hasError('required') && propertyForm.get('tel')?.touched">
                         電話為必填欄位
@@ -84,26 +84,37 @@
 
                 <div class="form-field full-width">
                     <label>地址*</label>
+
                     <div class="address-row">
-                        <p-select class="city-input" [options]="avaliableCities" formControlName="city"
-                            placeholder="縣市名" (onChange)="onCityChange($event.value)">
-                        </p-select>
-                        <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
-                            placeholder="鄉鎮市區名">
-                        </p-select>
-                        <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
-                            placeholder="詳細地址" />
+                        <div class="address-field">
+                            <p-select class="city-input" [options]="avaliableCities" formControlName="city"
+                                placeholder="縣市名" (onChange)="onCityChange($event.value)">
+                            </p-select>
+                            <small class="error"
+                                *ngIf="propertyForm.get('city')?.hasError('required') && propertyForm.get('city')?.touched">
+                                請選擇縣市
+                            </small>
+                        </div>
+
+                        <div class="address-field">
+                            <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
+                                placeholder="鄉鎮市區名">
+                            </p-select>
+                            <small class="error"
+                                *ngIf="propertyForm.get('district')?.hasError('required') && propertyForm.get('district')?.touched">
+                                請選擇鄉鎮市區
+                            </small>
+                        </div>
+
+                        <div class="address-field address-detail">
+                            <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
+                                placeholder="詳細地址" />
+                            <small class="error"
+                                *ngIf="propertyForm.get('addressDetail')?.hasError('required') && propertyForm.get('addressDetail')?.touched">
+                                請輸入詳細地址
+                            </small>
+                        </div>
                     </div>
-                    <small class="error"
-                        *ngIf="propertyForm.get('city')?.hasError('required') && propertyForm.get('city')?.touched">
-                    </small>
-                    <small class="error"
-                        *ngIf="propertyForm.get('district')?.hasError('required') && propertyForm.get('district')?.touched">
-                    </small>
-                    <small class="error"
-                        *ngIf="propertyForm.get('addressDetail')?.hasError('required') && propertyForm.get('addressDetail')?.touched">
-                        請輸入地址
-                    </small>
                 </div>
 
                 <div class="form-field full-width">
@@ -149,7 +160,6 @@
             <h3>旅館規範</h3>
             <div class="form-field">
                 <textarea pInputTextarea rows="3" formControlName="propertyNotice"></textarea>
-                <!-- 旅館規範不是必填，可以不放 small -->
             </div>
         </div>
 

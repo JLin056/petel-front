@@ -203,42 +203,68 @@ export class MerchantPropertyInsertPage {
   private async uploadAllImages(): Promise<{ mediaId: string; sortOrder: number }[]> {
     const results: { mediaId: string; sortOrder: number }[] = [];
 
+    if (!this.uploadedImages || this.uploadedImages.length === 0) {
+      throw new Error('請至少上傳一張圖片');
+    }
+
     for (let index = 0; index < this.uploadedImages.length; index++) {
       const uploadedImage = this.uploadedImages[index];
+
+      // 每次都使用新的 FileReader，避免舊狀態
       const result = await new Promise<{ mediaId: string; sortOrder: number }>((resolve, reject) => {
         const reader = new FileReader();
 
         reader.onload = () => {
-          const base64Data = (reader.result as string).split(',')[1];
-          const postData = {
-            MWHEADER: { MSGID: 'MEDIA-001' },
-            TRANRQ: {
-              category: 'Property_Image',
-              referenceId: '',
-              medias: [{
-                base64Data,
-                fileName: uploadedImage.file.name,
-                mimeType: uploadedImage.file.type,
-                bucket: 'petel-media',
-                sizeBytes: uploadedImage.file.size,
-                visibility: 'PUBLIC',
-                sortOrder: uploadedImage.sortOrder
-              }]
+          try {
+            const base64Data = (reader.result as string).split(',')[1];
+            if (!base64Data || base64Data.trim() === '') {
+              throw new Error('圖片讀取失敗');
             }
-          };
 
-          this.mediaService.uploadMedia(postData).subscribe({
-            next: (res) => {
-              if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.results.length > 0) {
-                resolve({ mediaId: res.TRANRS.results[0].mediaId, sortOrder: uploadedImage.sortOrder });
-              } else reject(new Error(`${uploadedImage.file.name} 上傳失敗`));
-            },
-            error: (err) => reject(err)
-          });
+            const postData = {
+              MWHEADER: { MSGID: 'MEDIA-001' },
+              TRANRQ: {
+                category: 'Property_Image',
+                referenceId: '',
+                medias: [{
+                  base64Data,
+                  fileName: uploadedImage.file.name,
+                  mimeType: uploadedImage.file.type,
+                  bucket: 'petel-media',
+                  sizeBytes: uploadedImage.file.size,
+                  visibility: 'PUBLIC',
+                  sortOrder: uploadedImage.sortOrder
+                }]
+              }
+            };
+
+            this.mediaService.uploadMedia(postData).subscribe({
+              next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.results.length > 0) {
+                  resolve({ mediaId: res.TRANRS.results[0].mediaId, sortOrder: uploadedImage.sortOrder });
+                } else {
+                  reject(new Error(`${uploadedImage.file.name} 上傳失敗`));
+                }
+              },
+              error: (err) => reject(err)
+            });
+          } catch (e) {
+            reject(e);
+          }
         };
 
         reader.onerror = () => reject(new Error(`${uploadedImage.file.name} 讀取失敗`));
         reader.readAsDataURL(uploadedImage.file);
+      }).catch(err => {
+        // 狀態清空
+        console.error('圖片上傳失敗：', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: '圖片上傳失敗',
+          detail: `${uploadedImage.file.name} 發生錯誤，請重新選擇`
+        });
+        this.uploadedImages = []; 
+        throw err;
       });
 
       results.push(result);
@@ -246,6 +272,7 @@ export class MerchantPropertyInsertPage {
 
     return results;
   }
+
 
   /** 
    * 取得 sellerId 
@@ -272,8 +299,23 @@ export class MerchantPropertyInsertPage {
     if (this.propertyForm.invalid) {
       this.errorMessage = '請填寫所有必填欄位';
       this.propertyForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: '提醒',
+        detail: '請確認所有欄位皆已填寫完成'
+      });
       return;
     }
+
+    if (this.uploadedImages.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: '請至少上傳一張圖片'
+      });
+      return;
+    }
+
     const formValue = this.propertyForm.value;
     console.log('送出資料：', formValue);
 
