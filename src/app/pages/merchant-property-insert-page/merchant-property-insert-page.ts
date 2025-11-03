@@ -16,6 +16,7 @@ import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dia
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
 import { firstValueFrom } from 'rxjs';
 import { Res } from '../../core/interfaces/Res.interface';
+import { Toast } from "primeng/toast";
 
 @Component({
   selector: 'app-property-insert',
@@ -28,7 +29,8 @@ import { Res } from '../../core/interfaces/Res.interface';
     MultiSelectModule,
     Select,
     DragDropModule,
-    SharedConfirmDialog
+    SharedConfirmDialog,
+    Toast
   ],
   templateUrl: './merchant-property-insert-page.html',
   styleUrls: ['./merchant-property-insert-page.css'],
@@ -76,17 +78,35 @@ export class MerchantPropertyInsertPage {
   ) {
     this.propertyForm = this.fb.group({
       name: ['', Validators.required],
-      businessCode: ['', Validators.required],
-      bankAccount: ['', Validators.required],
-      tel: ['', Validators.required],
+      businessCode: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[A-Z][0-9]{11}$/)
+        ]
+      ],
+      bankAccount: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9]{14,17}$/),
+        ],
+      ],
+      tel: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[0-9+\-()\s]{6,20}$/),
+        ],
+      ],
       city: ['', Validators.required],
       district: ['', Validators.required],
       addressDetail: ['', Validators.required],
       selectedFacilities: [[]],
-      info: [''],
-      checkNotice: [''],
-      petNotice: [''],
-      propertyNotice: ['']
+      info: ['', Validators.required],
+      checkNotice: ['', Validators.required],
+      petNotice: ['', Validators.required],
+      propertyNotice: ['', Validators.required],
     });
 
     this.loadFacilities();
@@ -254,6 +274,8 @@ export class MerchantPropertyInsertPage {
       this.propertyForm.markAllAsTouched();
       return;
     }
+    const formValue = this.propertyForm.value;
+    console.log('送出資料：', formValue);
 
     try {
       const sellerId = await this.getSellerId();

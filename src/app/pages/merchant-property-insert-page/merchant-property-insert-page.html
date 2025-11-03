@@ -33,50 +33,124 @@
         <div class="info-section">
             <h3>基本資訊</h3>
             <div class="form-grid">
-                <label>旅館名稱</label>
-                <input type="text" pInputText formControlName="name">
 
-                <label>特許寵物業許可證號</label>
-                <input type="text" pInputText formControlName="businessCode">
-
-                <label>銀行帳號 <span class="required">*</span></label>
-                <input type="text" pInputText formControlName="bankAccount">
-
-                <label>電話 <span class="required">*</span></label>
-                <input type="text" pInputText formControlName="tel">
-
-                <label>地址 <span class="required">*</span></label>
-                <div class="address-row">
-                    <p-select class="city-input" [options]="avaliableCities" formControlName="city" placeholder="縣市名"
-                        (onChange)="onCityChange($event.value)">
-                    </p-select>
-                    <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
-                        placeholder="鄉鎮市區名">
-                    </p-select>
-                    <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
-                        placeholder="詳細地址">
+                <div class="form-field">
+                    <label>旅館名稱*</label>
+                    <input type="text" pInputText formControlName="name" />
+                    <small class="error"
+                        *ngIf="propertyForm.get('name')?.hasError('required') && propertyForm.get('name')?.touched">
+                        旅館名稱為必填欄位
+                    </small>
                 </div>
 
-                <label>設施 <span class="required">*</span></label>
-                <p-multiselect [options]="avaliableFacilities" formControlName="selectedFacilities"
-                    optionLabel="facilityName" placeholder="選取旅館可用的設施" [maxSelectedLabels]="3" class="p-multiselect">
-                </p-multiselect>
+                <div class="form-field">
+                    <label>特許寵物業許可證號*</label>
+                    <input id="businessCode" type="text" pInputText formControlName="businessCode" />
+                    <small class="error"
+                        *ngIf="propertyForm.get('businessCode')?.hasError('required') && propertyForm.get('businessCode')?.touched">
+                        特許寵物業許可證號為必填欄位
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('businessCode')?.hasError('pattern') && propertyForm.get('businessCode')?.touched">
+                        特許寵物業許可證號格式錯誤，須為一個英文字母＋7位數字
+                    </small>
+                </div>
+
+                <div class="form-field">
+                    <label for="bankAccount">銀行帳號*</label>
+                    <input id="bankAccount" type="text" pInputText formControlName="bankAccount" />
+                    <small class="error"
+                        *ngIf="propertyForm.get('bankAccount')?.hasError('required') && propertyForm.get('bankAccount')?.touched">
+                        銀行帳號為必填欄位
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('bankAccount')?.hasError('pattern') && propertyForm.get('bankAccount')?.touched">
+                        銀行帳號格式錯誤，須為14～17位數字（含銀行代碼）
+                    </small>
+                </div>
+
+                <div class="form-field">
+                    <label for="tel">電話*</label>
+                    <input id="tel" type="text" pInputText formControlName="tel" />
+                    <small class="error"
+                        *ngIf="propertyForm.get('tel')?.hasError('required') && propertyForm.get('tel')?.touched">
+                        電話為必填欄位
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('tel')?.hasError('pattern') && propertyForm.get('tel')?.touched">
+                        電話格式不正確，須為6~20位數字
+                    </small>
+                </div>
+
+                <div class="form-field full-width">
+                    <label>地址*</label>
+                    <div class="address-row">
+                        <p-select class="city-input" [options]="avaliableCities" formControlName="city"
+                            placeholder="縣市名" (onChange)="onCityChange($event.value)">
+                        </p-select>
+                        <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
+                            placeholder="鄉鎮市區名">
+                        </p-select>
+                        <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
+                            placeholder="詳細地址" />
+                    </div>
+                    <small class="error"
+                        *ngIf="propertyForm.get('city')?.hasError('required') && propertyForm.get('city')?.touched">
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('district')?.hasError('required') && propertyForm.get('district')?.touched">
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('addressDetail')?.hasError('required') && propertyForm.get('addressDetail')?.touched">
+                        請輸入地址
+                    </small>
+                </div>
+
+                <div class="form-field full-width">
+                    <label>設施</label>
+                    <p-multiselect [options]="avaliableFacilities" formControlName="selectedFacilities"
+                        optionLabel="facilityName" placeholder="選取旅館可用的設施" [maxSelectedLabels]="3"
+                        class="p-multiselect">
+                    </p-multiselect>
+                </div>
+
             </div>
         </div>
 
-        <!-- 旅館說明 -->
+        <!-- 旅館介紹 -->
         <div class="info-section">
-            <h3>旅館介紹</h3>
-            <textarea pInputTextarea rows="3" formControlName="info"></textarea>
+            <h3>旅館介紹*</h3>
+            <div class="form-field">
+                <textarea pInputTextarea rows="3" formControlName="info"></textarea>
+                <small class="error"
+                    *ngIf="propertyForm.get('info')?.hasError('required') && propertyForm.get('info')?.touched">
+                    請輸入旅館介紹
+                </small>
+            </div>
 
-            <h3>入住須知</h3>
-            <textarea pInputTextarea rows="3" formControlName="checkNotice"></textarea>
+            <h3>入住須知*</h3>
+            <div class="form-field">
+                <textarea pInputTextarea rows="3" formControlName="checkNotice"></textarea>
+                <small class="error"
+                    *ngIf="propertyForm.get('checkNotice')?.hasError('required') && propertyForm.get('checkNotice')?.touched">
+                    請輸入住須知
+                </small>
+            </div>
 
-            <h3>寵物須知</h3>
-            <textarea pInputTextarea rows="3" formControlName="petNotice"></textarea>
+            <h3>寵物須知*</h3>
+            <div class="form-field">
+                <textarea pInputTextarea rows="3" formControlName="petNotice"></textarea>
+                <small class="error"
+                    *ngIf="propertyForm.get('petNotice')?.hasError('required') && propertyForm.get('petNotice')?.touched">
+                    請輸入寵物須知
+                </small>
+            </div>
 
             <h3>旅館規範</h3>
-            <textarea pInputTextarea rows="3" formControlName="propertyNotice"></textarea>
+            <div class="form-field">
+                <textarea pInputTextarea rows="3" formControlName="propertyNotice"></textarea>
+                <!-- 旅館規範不是必填，可以不放 small -->
+            </div>
         </div>
 
         <!-- 按鈕 -->
@@ -87,6 +161,8 @@
         </div>
     </form>
 </div>
+
+<p-toast position="bottom-right"></p-toast>
 
 <!-- 取消確認對話框 -->
 <app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消新增嗎？已填寫的資料將不會被儲存。"

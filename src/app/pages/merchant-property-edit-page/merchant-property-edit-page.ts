@@ -14,20 +14,22 @@ import { Select } from 'primeng/select';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MessageService } from 'primeng/api';
 import { MERCH025Tranrs } from '../../core/interfaces/MERCH025Res.interface';
+import { Toast } from "primeng/toast";
 
 @Component({
     selector: 'app-merchant-property-edit-page',
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        ButtonModule,
-        SharedConfirmDialog,
-        MultiSelectModule,
-        Select,
-        DragDropModule
-    ],
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    SharedConfirmDialog,
+    MultiSelectModule,
+    Select,
+    DragDropModule,
+    Toast
+],
     templateUrl: './merchant-property-edit-page.html',
     styleUrl: './merchant-property-edit-page.css'
 })
@@ -75,18 +77,33 @@ export class MerchantPropertyEditPage {
         private messageService: MessageService
     ) {
         this.propertyForm = this.fb.group({
-            name: [{ value: '', disabled: true }],
-            businessCode: [{ value: '', disabled: true }],
-            bankAccount: ['', Validators.required],
-            tel: ['', Validators.required],
+            name: [{ value: '', disabled: true }, Validators.required],
+            businessCode: [{ value: '', disabled: true }, [
+                Validators.required,
+                Validators.pattern(/^[A-Z][0-9]{11}$/)
+            ]],
+            bankAccount: [
+                '',
+                [
+                    Validators.required,
+                    Validators.pattern(/^[0-9]{14,17}$/),
+                ],
+            ],
+            tel: [
+                '',
+                [
+                    Validators.required,
+                    Validators.pattern(/^[0-9+\-()\s]{6,20}$/),
+                ],
+            ],
             city: ['', Validators.required],
             district: ['', Validators.required],
             addressDetail: ['', Validators.required],
-            selectedFacilities: [[]],
+            selectedFacilities: [[], Validators.required],
             info: ['', Validators.required],
             checkNotice: ['', Validators.required],
             petNotice: ['', Validators.required],
-            propertyNotice: ['']
+            propertyNotice: ['', Validators.required],
         });
 
         const navigation = this.router.getCurrentNavigation();

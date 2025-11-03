@@ -16,12 +16,10 @@
                 </button>
 
                 <!-- 圖片預覽區 -->
-                @if (existingImages.length > 0 || uploadedImages.length > 0) {
-                <div class="image-preview-area">
+                <div *ngIf="existingImages.length > 0 || uploadedImages.length > 0" class="image-preview-area">
                     <div class="image-grid" cdkDropList (cdkDropListDropped)="onImageDrop($event)">
                         <!-- 現有圖片 -->
-                        @for (img of existingImages; track img.mediaId; let i = $index) {
-                        <div class="image-item" cdkDrag>
+                        <div *ngFor="let img of existingImages; let i = index" class="image-item" cdkDrag>
                             <img [src]="'data:image/jpeg;base64,' + img.base64Data" alt="房型圖片">
                             <div class="image-overlay">
                                 <span class="sort-number">{{ img.sortOrder }}</span>
@@ -29,13 +27,11 @@
                                     <i class="pi pi-times"></i>
                                 </button>
                             </div>
-                            <!-- CDK 拖拉預覽 -->
                             <div class="drag-placeholder" *cdkDragPlaceholder></div>
                         </div>
-                        }
+
                         <!-- 新上傳的圖片 -->
-                        @for (img of uploadedImages; track img.previewUrl; let i = $index) {
-                        <div class="image-item" cdkDrag>
+                        <div *ngFor="let img of uploadedImages; let i = index" class="image-item" cdkDrag>
                             <img [src]="img.previewUrl" alt="預覽圖片">
                             <div class="image-overlay">
                                 <span class="sort-number">{{ img.sortOrder }}</span>
@@ -43,14 +39,12 @@
                                     <i class="pi pi-times"></i>
                                 </button>
                             </div>
-                            <!-- CDK 拖拉預覽 -->
                             <div class="drag-placeholder" *cdkDragPlaceholder></div>
                         </div>
-                        }
                     </div>
                     <p class="hint-text"><i class="pi pi-arrows-alt"></i> 拖拉圖片可調整順序</p>
                 </div>
-                }
+
             </div>
         </div>
 
@@ -58,44 +52,106 @@
         <div class="info-section">
             <h3>基本資訊</h3>
             <div class="form-grid">
-                <label>旅館名稱</label>
-                <input type="text" pInputText formControlName="name" [disabled]="true" />
 
-                <label>特許寵物業許可證號</label>
-                <input type="text" pInputText formControlName="businessCode" [disabled]="true" />
-
-                <label>銀行帳號 <span class="required">*</span></label>
-                <input type="text" pInputText formControlName="bankAccount">
-
-                <label>電話 <span class="required">*</span></label>
-                <input type="text" pInputText formControlName="tel">
-
-                <label>地址 <span class="required">*</span></label>
-                <div class="address-row">
-                    <p-select class="city-input" [options]="avaliableCities" formControlName="city" placeholder="縣市名"
-                        (onChange)="onCityChange($event.value)" />
-                    <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
-                        placeholder="鄉鎮市區名" />
-                    <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
-                        placeholder="詳細地址">
+                <div class="form-field">
+                    <label>旅館名稱</label>
+                    <input type="text" pInputText formControlName="name" [disabled]="true" />
                 </div>
 
-                <label>設施 <span class="required">*</span></label>
-                <p-multiselect [options]="avaliableFacilities" formControlName="selectedFacilities"
-                    optionLabel="facilityName" placeholder="選取旅館可用的設施" [maxSelectedLabels]="3" class="p-multiselect" />
+                <div class="form-field">
+                    <label>特許寵物業許可證號</label>
+                    <input type="text" pInputText formControlName="businessCode" [disabled]="true" />
+                </div>
+
+                <div class="form-field">
+                    <label>銀行帳號 <span class="required">*</span></label>
+                    <input type="text" pInputText formControlName="bankAccount" />
+                    <small class="error"
+                        *ngIf="propertyForm.get('bankAccount')?.hasError('required') && propertyForm.get('bankAccount')?.touched">
+                        銀行帳號為必填欄位
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('bankAccount')?.hasError('pattern') && propertyForm.get('bankAccount')?.touched">
+                        銀行帳號格式錯誤，須為14～17位數字（含銀行代碼）
+                    </small>
+                </div>
+
+                <div class="form-field">
+                    <label>電話 <span class="required">*</span></label>
+                    <input type="text" pInputText formControlName="tel" />
+                    <small class="error"
+                        *ngIf="propertyForm.get('tel')?.hasError('required') && propertyForm.get('tel')?.touched">
+                        電話為必填欄位
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('tel')?.hasError('pattern') && propertyForm.get('tel')?.touched">
+                        電話格式不正確，須為6~20位數字
+                    </small>
+                </div>
+
+                <div class="form-field full-width">
+                    <label>地址 <span class="required">*</span></label>
+                    <div class="address-row">
+                        <p-select class="city-input" [options]="avaliableCities" formControlName="city"
+                            placeholder="縣市名" (onChange)="onCityChange($event.value)">
+                        </p-select>
+                        <p-select class="district-input" [options]="avaliableDistrict" formControlName="district"
+                            placeholder="鄉鎮市區名">
+                        </p-select>
+                        <input class="addressDetail-input" type="text" pInputText formControlName="addressDetail"
+                            placeholder="詳細地址">
+                    </div>
+                    <small class="error"
+                        *ngIf="propertyForm.get('city')?.hasError('required') && propertyForm.get('city')?.touched">
+                        請選擇縣市
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('district')?.hasError('required') && propertyForm.get('district')?.touched">
+                        請選擇鄉鎮市區
+                    </small>
+                    <small class="error"
+                        *ngIf="propertyForm.get('addressDetail')?.hasError('required') && propertyForm.get('addressDetail')?.touched">
+                        請輸入地址
+                    </small>
+                </div>
+
+                <div class="form-field full-width">
+                    <label>設施 <span class="required">*</span></label>
+                    <p-multiselect [options]="avaliableFacilities" formControlName="selectedFacilities"
+                        optionLabel="facilityName" placeholder="選取旅館可用的設施" [maxSelectedLabels]="3"
+                        class="p-multiselect">
+                    </p-multiselect>
+                    <small class="error"
+                        *ngIf="propertyForm.get('selectedFacilities')?.hasError('required') && propertyForm.get('selectedFacilities')?.touched">
+                        請選擇至少一項設施
+                    </small>
+                </div>
+
             </div>
         </div>
 
         <!-- 旅館說明 -->
         <div class="info-section">
-            <h3>旅館介紹</h3>
+            <h3>旅館介紹 <span class="required">*</span></h3>
             <textarea pInputTextarea rows="3" formControlName="info"></textarea>
+            <small class="error"
+                *ngIf="propertyForm.get('info')?.hasError('required') && propertyForm.get('info')?.touched">
+                請輸入旅館介紹
+            </small>
 
-            <h3>入住須知</h3>
+            <h3>入住須知 <span class="required">*</span></h3>
             <textarea pInputTextarea rows="3" formControlName="checkNotice"></textarea>
+            <small class="error"
+                *ngIf="propertyForm.get('checkNotice')?.hasError('required') && propertyForm.get('checkNotice')?.touched">
+                請輸入住須知
+            </small>
 
-            <h3>寵物須知</h3>
+            <h3>寵物須知 <span class="required">*</span></h3>
             <textarea pInputTextarea rows="3" formControlName="petNotice"></textarea>
+            <small class="error"
+                *ngIf="propertyForm.get('petNotice')?.hasError('required') && propertyForm.get('petNotice')?.touched">
+                請輸入寵物須知
+            </small>
 
             <h3>旅館規範</h3>
             <textarea pInputTextarea rows="3" formControlName="propertyNotice"></textarea>
@@ -110,7 +166,11 @@
 
     </form>
 
+    <p-toast position="bottom-right"></p-toast>
+
     <app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消修改嗎？已修改的資料將不會被儲存。"
         confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()" (cancel)="onCancelCancel()">
     </app-shared-confirm-dialog>
+
+    <p-toast position="bottom-right"></p-toast>
 </div>
