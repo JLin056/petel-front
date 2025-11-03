@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    position: fixed;
+    /* position: fixed; */
     height: 110px;
     bottom: 0;
     left: 0;
@@ -17,7 +17,7 @@
     font-size: 10px;
 }
 
-/* ÿÉ¿t */
+/* ï¿½ï¿½ï¿½t */
 @media (max-width: 600px) {
     .footer-logo {
         font-size: 10px;

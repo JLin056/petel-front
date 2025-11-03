@@ -8,10 +8,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
-import { filter, Subject, takeUntil } from 'rxjs';
-import { NavigationEnd, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Auth } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationPanel } from '../notification-panel/notification-panel';
 
 @Component({
   selector: 'app-merchant-userpage-header',
@@ -24,7 +26,8 @@ import { Auth } from '../../../core/services/auth.service';
     InputTextModule,
     SelectModule,
     InputNumberModule,
-    SharedConfirmDialog],
+    SharedConfirmDialog,
+    NotificationPanel],
   templateUrl: './merchant-userpage-header.html',
   styleUrl: './merchant-userpage-header.css'
 })
@@ -35,8 +38,10 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
     confirmVisible = false;
     /** 是否登出中 */
     isLoggedOut = false;
-    /**第一次登入檢查 */
-    isFirstCheck = true;
+    /** 未讀通知數量 */
+    unreadCount = 0;
+    /** 通知面板是否顯示 */
+    notificationPanelVisible = false;
 
     private destroy$ = new Subject<void>();
 
@@ -45,51 +50,42 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
      * @param router
      * @param authService
      * @param toast
+     * @param notificationService
      */
     constructor(
         private router: Router,
         private authService: Auth,
-        private toast: MessageService
+        private toast: MessageService,
+        private notificationService: NotificationService
     ) {
-        // 監聽路由事件，導航結束時檢查登入狀態
-        this.router.events
-        .pipe(filter(e => e instanceof NavigationEnd))
-        .subscribe(() => {
-            if (this.isFirstCheck) {
-            // 初始化已經檢查過，跳過第一次 Router.events
-            this.isFirstCheck = false;
-            return;
-            }
-            this.onCheckLoginStatus();
-        });
-
         // 訂閱 service 的登入狀態，保持元件狀態與 Auth service 同步
         this.authService.isLoggedIn$
         .pipe(takeUntil(this.destroy$))
-        .subscribe(v => this.isLoggedIn = v)
+        .subscribe(v => {
+            this.isLoggedIn = v;
+            // 當登入狀態改變時，更新未讀數量和 SSE 連線
+            if (v) {
+                this.fetchUnreadCount();
+                this.setupSSEConnection();
+            } else {
+                this.unreadCount = 0;
+                this.notificationService.disconnectSSE();
+            }
+        });
+
+        // 訂閱未讀通知數量
+        this.notificationService.unreadCount$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(count => this.unreadCount = count);
     }
 
     /**
-     * 元件初始化時執行一次登入狀態檢查
+     * 元件初始化時訂閱登入狀態
      */
     ngOnInit() {
         this.authService.isLoggedIn$
             .pipe(takeUntil(this.destroy$))
             .subscribe(v => this.isLoggedIn = v);
-
-        if (this.authService.getAccessToken()) {
-            this.onCheckLoginStatus();
-        } else {
-            this.redirectToMerchantLogin();
-        }
-
-        this.router.events
-            .pipe(
-                filter(e => e instanceof NavigationEnd),
-                filter(() => !!this.authService.getAccessToken()),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => this.onCheckLoginStatus());
     }
 
     /**
@@ -114,7 +110,7 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
                     summary: '登出成功',
                     detail: '期待您再次光臨！'
                 });
-                this.router.navigate(['']);
+                this.router.navigate(['merchants/userPage/login']);
                 this.isLoggedOut = false;
             },
             error: () => {
@@ -130,31 +126,6 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
         });
     }
 
-    /**
-     * 確認登入狀態
-     */
-    onCheckLoginStatus() {
-        this.authService.onCheckLoginStatus().subscribe({
-            next: (res) => {
-                const valid = !!res?.TRANRS.valid;
-                if (!valid) {
-                    this.redirectToMerchantLogin();
-                }
-            },
-            error: () => {
-                this.redirectToMerchantLogin();
-            }
-        });
-    }
-
-    private redirectToMerchantLogin() {
-        this.toast.add({
-            severity: 'warn',
-            summary: '未登入',
-            detail: '請先登入後再進入商家頁面'
-        });
-        this.router.navigate(['/merchants/userPage/login']);
-    }
 
     /**
      * 前往聊天頁
@@ -191,9 +162,112 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
     }
 
     /**
+     * 點擊通知鈴鐺
+     */
+    onClickNotification() {
+        if (!this.isLoggedIn) {
+            this.toast.add({
+                severity: 'warn',
+                summary: '尚未登入',
+                detail: '請先登入後查看通知'
+            });
+            this.router.navigate(['/merchants/userPage/login']);
+            return;
+        }
+        // 顯示通知面板
+        this.notificationPanelVisible = true;
+    }
+
+    /**
+     * 取得未讀通知數量
+     */
+    private fetchUnreadCount() {
+        this.notificationService.getUnreadCount().subscribe({
+            next: (res) => {
+                if (res.MWHEADER.RETURNCODE === '0000') {
+                    console.log('商家未讀通知數量:', res.TRANRS.unread_count);
+                }
+            },
+            error: (error) => {
+                console.error('取得未讀通知數量失敗:', error);
+            }
+        });
+    }
+
+    /**
+     * 建立 SSE 即時推播連線
+     */
+    private setupSSEConnection() {
+        console.log('商家設定 SSE 即時推播連線');
+
+        // 建立連線，並傳入收到通知時的回調
+        this.notificationService.connectSSE((notification) => {
+            console.log('商家 Header 收到新通知:', notification);
+
+            // 顯示瀏覽器通知
+            this.showBrowserNotification(notification);
+
+            // 顯示 Toast 提示
+            this.toast.add({
+                severity: 'info',
+                summary: notification.title,
+                detail: notification.message,
+                life: 5000
+            });
+        });
+    }
+
+    /**
+     * 顯示瀏覽器通知
+     */
+    private showBrowserNotification(notification: any) {
+        // 檢查瀏覽器是否支援通知
+        if (!('Notification' in window)) {
+            console.log('瀏覽器不支援通知');
+            return;
+        }
+
+        // 檢查通知權限
+        if (Notification.permission === 'granted') {
+            // 已授權，顯示通知
+            this.createBrowserNotification(notification);
+        } else if (Notification.permission !== 'denied') {
+            // 請求權限
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    this.createBrowserNotification(notification);
+                }
+            });
+        }
+    }
+
+    /**
+     * 建立瀏覽器通知
+     */
+    private createBrowserNotification(notification: any) {
+        const notif = new Notification(notification.title, {
+            body: notification.message,
+            icon: '/assets/logo.png',
+            badge: '/assets/badge.png',
+            tag: notification.id,
+            requireInteraction: false
+        });
+
+        // 點擊通知時開啟通知面板
+        notif.onclick = () => {
+            window.focus();
+            this.notificationPanelVisible = true;
+            notif.close();
+        };
+    }
+
+    /**
      * 元件銷毀時取消訂閱
      */
     ngOnDestroy(): void {
+        // 關閉 SSE 連線
+        this.notificationService.disconnectSSE();
+
         this.destroy$.next();
         this.destroy$.complete();
     }
