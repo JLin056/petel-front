@@ -21,7 +21,7 @@ import { Option } from '../../core/interfaces/option.interface';
 import { priceRange } from '../../core/interfaces/priceRange.interface';
 
 @Component({
-    selector: 'app-hotel-list-page',
+    selector: 'app-cat-list-page',
     imports: [
         CommonModule,
         FormsModule,
@@ -38,10 +38,10 @@ import { priceRange } from '../../core/interfaces/priceRange.interface';
         Rating,
         PaginatorModule
     ],
-    templateUrl: './hotel-list-page.html',
-    styleUrl: './hotel-list-page.css'
+    templateUrl: './cat-list-page.html',
+    styleUrl: './cat-list-page.css'
 })
-export class HotelListPage implements OnInit, OnDestroy {
+export class CatListPage implements OnInit, OnDestroy {
     cities: Option[] | undefined;
     date: Date | undefined;
     types: Option[] | undefined;
@@ -135,7 +135,6 @@ export class HotelListPage implements OnInit, OnDestroy {
 
         this.priceRanges = [
             { min: 0,    max: 1000 },
-            { min: 800,  max: 1000 },
             { min: 1000, max: 1500 },
             { min: 1500, max: 1800 },
             { min: 1800, max: 2200 },
@@ -144,15 +143,18 @@ export class HotelListPage implements OnInit, OnDestroy {
         ]
 
         this.hotFilters = [
-            { id: 'F000000001',  name: '寵物友善' },
-            { id: 'F000000002',  name: '鄰近公園' },
-            { id: 'F000000003',  name: '鄰近寵物餐廳' },
+            { id: 'F000000001',  name: '室內活動空間' },
+            { id: 'F000000002',  name: '室外活動空間' },
+            { id: 'F000000003',  name: '鄰近公園' },
             { id: 'F000000004',  name: '獨立房間' },
-            { id: 'F000000005',  name: '全天候攝影監控' },
+            { id: 'F000000005',  name: '獨立陽台' },
             { id: 'F000000006',  name: '對外窗' },
-            { id: 'F000000007',  name: '獨立陽台' },
+            { id: 'F000000007',  name: '實木跳台' },
             { id: 'F000000008',  name: '流動飲水機' },
-            { id: 'F000000009',  name: '實木跳台' }
+            { id: 'F000000014',  name: '24小時獨立冷暖空調' },
+            { id: 'F000000018',  name: '24小時視訊連線' },
+            { id: 'F000000023',  name: '寵物美容' },
+            { id: 'F000000024',  name: '專車接送' }
         ];
 
         this.sortSelect = [
@@ -332,7 +334,7 @@ export class HotelListPage implements OnInit, OnDestroy {
             pageSize: this.rows
         };
 
-        console.log('=== Hotel List Page - 執行搜尋 ===');
+        console.log('=== Cat List Page - 執行搜尋 ===');
         console.log('搜尋參數:', this.searchParams);
         console.log('API 參數:', apiParams);
 
@@ -479,8 +481,8 @@ export class HotelListPage implements OnInit, OnDestroy {
                 console.log('回應資料:', response);
 
                 if (response.MWHEADER.RETURNCODE === '0000') {
-                    // 成功，導航到旅館詳情頁，使用 query parameter 傳遞 propertyId
-                    this.router.navigate(['/singleHotel'], {
+                    // 成功，導航到貓貓旅館詳情頁，使用 query parameter 傳遞 propertyId
+                    this.router.navigate(['/catSingleHotel'], {
                         queryParams: { propertyId: propertyId },
                         state: {
                             hotelDetail: response.TRANRS.singleHotelDetail,

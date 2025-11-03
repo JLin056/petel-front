@@ -28,6 +28,7 @@ export class MerchantLoginPage {
     errorMessage = '';
     /** 填寫會員資訊 dialog */
     showFillDialog = false;
+
     dialogName = '';
     dialogPhone = '';
     dialogAvatarUrl: string | null = null;
@@ -103,6 +104,13 @@ export class MerchantLoginPage {
         this.router.navigate(['merchants/userPage/register']).then(() => {
             window.scrollTo(0, 0);
         });
+    }
+
+     /**
+     * 前往忘記密碼頁
+    */
+    goForgotPassword() {
+        this.router.navigate(['merchants/userPage/forgotPassword']);
     }
 
     /**

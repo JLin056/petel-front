@@ -62,5 +62,6 @@ export interface Room {
     roomSize:   string;
     basePrice:  number;
     totalUnits: number;
+    petTypeId:  string;
     roomImages: Image[];
 }
