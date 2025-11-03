@@ -36,7 +36,7 @@
 
                 <div class="form-field">
                     <label>旅館名稱*</label>
-                    <input type="text" pInputText formControlName="name" placeholder="請填入與特許寵物業許可證號相符的旅館名稱"/>
+                    <input type="text" pInputText formControlName="name" placeholder="請填入與特許寵物業許可證號相符的旅館名稱" />
                     <small class="error"
                         *ngIf="propertyForm.get('name')?.hasError('required') && propertyForm.get('name')?.touched">
                         旅館名稱為必填欄位
@@ -45,7 +45,8 @@
 
                 <div class="form-field">
                     <label>特許寵物業許可證號*</label>
-                    <input id="businessCode" type="text" pInputText formControlName="businessCode" placeholder="填入格式為一個大寫英文字母＋7位數字"/>
+                    <input id="businessCode" type="text" pInputText formControlName="businessCode"
+                        placeholder="填入格式為一個大寫英文字母＋7位數字" />
                     <small class="error"
                         *ngIf="propertyForm.get('businessCode')?.hasError('required') && propertyForm.get('businessCode')?.touched">
                         特許寵物業許可證號為必填欄位
@@ -58,7 +59,8 @@
 
                 <div class="form-field">
                     <label for="bankAccount">銀行帳號*</label>
-                    <input id="bankAccount" type="text" pInputText formControlName="bankAccount" placeholder="填入格式須包含銀行代號" />
+                    <input id="bankAccount" type="text" pInputText formControlName="bankAccount"
+                        placeholder="填入格式須包含銀行代號" />
                     <small class="error"
                         *ngIf="propertyForm.get('bankAccount')?.hasError('required') && propertyForm.get('bankAccount')?.touched">
                         銀行帳號為必填欄位
@@ -165,9 +167,9 @@
 
         <!-- 按鈕 -->
         <div class="form-actions">
-            <button pButton label="儲存" icon="pi pi-check" class="btn-save" type="submit"></button>
             <button pButton label="取消" icon="pi pi-times" class="btn-clear" type="button"
                 (click)="onCancelClick()"></button>
+            <button pButton label="儲存" icon="pi pi-check" class="btn-save" type="submit"></button>
         </div>
     </form>
 </div>

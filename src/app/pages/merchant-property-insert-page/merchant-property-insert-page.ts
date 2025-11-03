@@ -106,7 +106,7 @@ export class MerchantPropertyInsertPage {
       info: ['', Validators.required],
       checkNotice: ['', Validators.required],
       petNotice: ['', Validators.required],
-      propertyNotice: ['', Validators.required],
+      propertyNotice: [''],
     });
 
     this.loadFacilities();
