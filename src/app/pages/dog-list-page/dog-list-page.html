@@ -1,0 +1,144 @@
+<div class="wrap">
+    <div class="banner-background"></div>
+    <div class="banner">
+        <div class="search-container">
+            <div class="search-bar">
+                <p-floatlabel variant="in" class="search-label">
+                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item"/>
+                    <label class="search-label">縣市</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkIn" [minDate]="minCheckInDate" (onSelect)="onCheckInChange()"/>
+                    <label class="search-label">入住日</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input" [(ngModel)]="searchParams.checkOut" [minDate]="minCheckOutDate"/>
+                    <label class="search-label">退房日</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-select class="search-item" [options]="types" optionLabel="name" optionValue="id" [(ngModel)]="searchParams.petType" />
+                    <label class="search-label">寵物種類</label>
+                </p-floatlabel>
+                <p-floatlabel variant="in" class="search-label">
+                    <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="10" [(ngModel)]="searchParams.petCount" />
+                    <label class="search-label">寵物數量</label>
+                </p-floatlabel>
+                <p-button label="搜尋" styleClass="petel-search-btn" (onClick)="onSearch()"></p-button>
+            </div>
+        </div>
+    </div>
+    <div class="list-container">
+        <!-- 左側搜尋 -->
+        <div class="search-select-container">
+            <!-- 旅館名稱搜尋 -->
+            <!-- <div class="hotel-name-search">
+                <p>搜尋</p>
+                <p-inputgroup>
+                    <input pInputText placeholder="e.g. 熊讚寵物窩" />
+                    <p-inputgroup-addon>
+                        <p-button icon="pi pi-search" severity="secondary" />
+                    </p-inputgroup-addon>
+                </p-inputgroup>
+            </div> -->
+            <!-- 價格選擇框 -->
+            <div class="select-search">
+                <div class="select-search-title">
+                   <p>您的口袋有多深</p>
+                </div>
+                <p-listbox
+                    [options]="priceRanges"
+                    [(ngModel)]="selectedPriceRange"
+                    [multiple]="false"
+                    [metaKeySelection]="false"
+                    (onChange)="onFilterChange()"
+                    class="price-listbox"
+                >
+                    <ng-template let-opt pTemplate="item">
+                        <div class="price-item">
+                            <span class="price-text" *ngIf="opt.min === 0">
+                                $ {{ opt.max | number:'1.0-0' }} 以下
+                            </span>
+                            <span class="price-text" *ngIf="opt.max === 999999">
+                                $ {{ opt.min | number:'1.0-0' }} 以上
+                            </span>
+                            <span class="price-text" *ngIf="opt.min !== 0 && opt.max !== 999999">
+                                $ {{ opt.min | number:'1.0-0' }} - $ {{ opt.max | number:'1.0-0' }}
+                            </span>
+                        </div>
+                    </ng-template>
+                </p-listbox>
+            </div>
+            <!-- 評價選擇框 -->
+            <div class="select-search">
+                <div class="select-search-title">
+                   <p>評價以上我才要</p>
+                </div>
+                <div class="rating-select-search">
+                    <p-rating [(ngModel)]="selectedRating" (onRate)="onFilterChange()" />
+                </div>
+            </div>
+            <!-- 熱門搜尋條件 -->
+            <div class="select-search">
+                <div class="select-search-title">
+                    <p>熱門搜尋條件</p>
+                </div>
+                <p-listbox
+                    [options]="hotFilters"
+                    [(ngModel)]="selectedFilters"
+                    [multiple]="true"
+                    [metaKeySelection]="false"
+                    optionLabel="name"
+                    (onChange)="onFilterChange()"
+                    class="filter-listbox"
+                >
+                </p-listbox>
+            </div>
+        </div>
+        <!-- 右側列表 -->
+        <div class="hotel-container">
+            <div class="tab-container">
+                <h4>{{ getCityName() }}：{{ totalRecords }} 個搜尋結果</h4>
+                <div class="sort-items">
+                    <p-floatlabel variant="in" class="sort-label">
+                        <p-select [options]="sortSelect" optionLabel="name" [(ngModel)]="selectedSort" (onChange)="onSortChange()" class="sort-selectbox"/>
+                        <label class="sort-label">排序</label>
+                    </p-floatlabel>
+                </div>
+            </div>
+            <!-- 旅館列表 -->
+            <div class="hotel-list-container">
+                <!-- 如果沒有結果 -->
+                <div *ngIf="hotels.length === 0" class="no-results">
+                    <p>沒有找到符合條件的旅館，請嘗試調整搜尋條件</p>
+                </div>
+                <!-- 單個旅館列表 -->
+                <div class="hotel-list-item" *ngFor="let hotel of hotels">
+                    <img [src]="getHotelImage(hotel)" [alt]="hotel.name">
+                    <div class="hotel-list-text">
+                        <div class="hotel-list-info">
+                            <h4 class="hotel-name-link" (click)="navigateToDetail(hotel.propertyId)">{{ hotel.name }}</h4>
+                            <div class="hotel-list-review">
+                                <p-rating [(ngModel)]="hotel.avgRating" [readonly]="true" />
+                                <span>{{ hotel.avgRating | number:'1.1-1' }}</span>
+                            </div>
+                            <p class="hotel-list-content">
+                                {{ hotel.info }}<br>
+                                {{ hotel.address }}
+                            </p>
+                        </div>
+                        <div class="hotel-list-price">
+                            <div class="hotel-list-price-detail">
+                                <h4>${{ hotel.minPrice | number:'1.0-0' }}</h4>
+                                <p>（已含稅）</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- 分頁器 -->
+    <div class="card flex justify-center">
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 30]" />
+    </div>
+</div>

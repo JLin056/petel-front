@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './pages/home-page/home-page';
-import { HotelListPage } from './pages/hotel-list-page/hotel-list-page';
+import { CatListPage } from './pages/cat-list-page/cat-list-page';
+import { DogListPage } from './pages/dog-list-page/dog-list-page';
+import { CatSinglePage } from './pages/cat-single-page/cat-single-page';
+import { DogSinglePage } from './pages/dog-single-page/dog-single-page';
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
 import { merchantAuthGuard } from './core/guards/merchant-auth.guard';
-import { HotelSinglePage } from './pages/hotel-single-page/hotel-single-page';
 import { UserPage } from './pages/user-page/user-page';
 import { ChatPage } from './pages/chat-page/chat-page';
 import { LoginPage } from './pages/login-page/login-page';
@@ -40,11 +42,19 @@ export const routes: Routes = [
     },
     {
         path: 'dogHotels',
-        component: HotelListPage
+        component: DogListPage
     },
     {
-        path: 'singleHotel',
-        component: HotelSinglePage
+        path: 'catHotels',
+        component: CatListPage
+    },
+    {
+        path: 'dogSingleHotel',
+        component: DogSinglePage
+    },
+    {
+        path: 'catSingleHotel',
+        component: CatSinglePage
     },
     {
         path: 'history',

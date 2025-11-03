@@ -30,7 +30,7 @@ import { BookService, OrderData, OrderRoom } from '../../core/services/book-serv
 import { Auth } from '../../core/services/auth.service';
 
 @Component({
-    selector: 'app-hotel-single-page',
+    selector: 'app-cat-single-page',
     imports: [
         CommonModule,
         FloatLabel,
@@ -52,10 +52,10 @@ import { Auth } from '../../core/services/auth.service';
         DialogModule,
         ToastModule
     ],
-    templateUrl: './hotel-single-page.html',
-    styleUrl: './hotel-single-page.css'
+    templateUrl: './cat-single-page.html',
+    styleUrl: './cat-single-page.css'
 })
-export class HotelSinglePage implements OnInit {
+export class CatSinglePage implements OnInit {
     // 注入服務
     private http = inject(HttpClient);
     private route = inject(ActivatedRoute);
