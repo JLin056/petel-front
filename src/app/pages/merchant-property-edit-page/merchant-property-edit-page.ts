@@ -99,7 +99,7 @@ export class MerchantPropertyEditPage {
             city: ['', Validators.required],
             district: ['', Validators.required],
             addressDetail: ['', Validators.required],
-            selectedFacilities: [[], Validators.required],
+            selectedFacilities: [[]],
             info: ['', Validators.required],
             checkNotice: ['', Validators.required],
             petNotice: ['', Validators.required],

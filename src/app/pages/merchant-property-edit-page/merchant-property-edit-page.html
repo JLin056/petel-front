@@ -115,15 +115,11 @@
                 </div>
 
                 <div class="form-field full-width">
-                    <label>設施 <span class="required">*</span></label>
+                    <label>設施 <span class="required"></span></label>
                     <p-multiselect [options]="avaliableFacilities" formControlName="selectedFacilities"
                         optionLabel="facilityName" placeholder="選取旅館可用的設施" [maxSelectedLabels]="3"
                         class="p-multiselect">
                     </p-multiselect>
-                    <small class="error"
-                        *ngIf="propertyForm.get('selectedFacilities')?.hasError('required') && propertyForm.get('selectedFacilities')?.touched">
-                        請選擇至少一項設施
-                    </small>
                 </div>
 
             </div>
