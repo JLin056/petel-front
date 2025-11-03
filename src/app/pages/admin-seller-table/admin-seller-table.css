@@ -26,7 +26,7 @@
 }
 
 .search-btn-container {
-  margin-left: auto;
+  /* margin-left: auto; */
 }
 
 .custom-input {
@@ -81,6 +81,15 @@
 /* �th-W� */
 ::ng-deep .p-datatable th {
   font-size: 1.2rem;
+}
+
+/* 固定表頭 */
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 表格內容文字溢出顯示省略號 */

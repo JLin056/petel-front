@@ -15,6 +15,19 @@
 
     <div class="account">
         <i class="pi pi-comments" style="color: #2e2424; font-size: 1.5rem;" (click)="onClickChat()"></i>
+        <div style="position: relative; display: inline-block;">
+            <i
+                class="pi pi-bell"
+                style="color: #2e2424; font-size: 1.5rem; cursor: pointer;"
+                (click)="onClickNotification()"
+            ></i>
+            <span
+                *ngIf="unreadCount > 0"
+                class="notification-badge"
+            >
+                {{ unreadCount > 99 ? '99+' : unreadCount }}
+            </span>
+        </div>
         <i class="pi pi-user" style="color: #2e2424; font-size: 1.5rem;" (click)="onClickProfile()"></i>
         <div class="auth-area">
             <!-- 判斷登入 -->
@@ -30,3 +43,8 @@
 <!-- 登出 dialog -->
 <app-shared-confirm-dialog [(visible)]="confirmVisible" header="登出確認" message="確定要登出嗎？" confirmLabel="登出"
     cancelLabel="取消" (confirm)="onLogout()"></app-shared-confirm-dialog>
+
+<!-- 通知面板 -->
+<app-notification-panel
+    [(visible)]="notificationPanelVisible"
+></app-notification-panel>
