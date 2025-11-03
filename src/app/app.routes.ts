@@ -98,6 +98,14 @@ export const routes: Routes = [
         component: MerchantRegisterPage
     },
     {
+        path: 'merchants/userPage/forgotPassword',
+        component: ForgotPasswordPage
+    },
+    {
+        path: 'merchants/userPage/resetPassword',
+        component: ResetPasswordPage
+    },
+    {
         path: 'merchants/userPage/chat',
         component: ChatPage
     },
