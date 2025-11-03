@@ -33,7 +33,7 @@
             <div class="button-container">
                 <p-button
                     label="修改會員資訊"
-                    styleClass="button"
+                    styleClass="p-button filled"
                     (click)="openEdit()"
                     [outlined]="true"
                 />
@@ -75,7 +75,7 @@
                 <p>快去看看可愛的旅館，幫毛孩安排一趟小旅行吧！</p>
             </div>
 
-            <!-- 有資料才渲染清單 -->
+            <!-- 訂單歷史紀錄 -->
             <ng-container *ngIf="!isLoadingBookings && !bookingsError && (orders?.length ?? 0) > 0">
                 <div *ngFor="let o of orders" class="order-item">
                     <div class="order-item-img">
@@ -100,23 +100,30 @@
                                     </p-tag>
                                 </p>
                                 <p>訂單金額：${{ price(o.totalPrice) }}</p>
-                                <p>旅館評分：{{ o.propertyAvg }}</p>
+                                <p>旅館評分：
+                                    <p-rating [(ngModel)]="o.propertyAvg" [readonly]="true" class="custom-rating"/>
+                                </p>
                             </div>
                         </div>
 
                         <div class="button-container">
                             <p-button
+                                label="詳細資訊"
+                                styleClass="p-button filled"
+                                (onClick)="openOrderDetail(o.orderId)"
+                            >
+                            </p-button>
+
+                            <p-button
                                 label="取消訂單"
-                                styleClass="button"
-                                [outlined]="true"
+                                styleClass="p-button danger"
                                 (click)="confirmDeleteOrder($event, o.orderId)"
                                 [disabled]="isCancelDisabled(o.status)  || cancelingOrderId === o.orderId">
                             </p-button>
 
                             <p-button
                                 label="評論"
-                                styleClass="button"
-                                [outlined]="true"
+                                styleClass="p-button outlined"
                                 (onClick)="openReview(o)"
                                 [disabled]="o.hasReview">
                             </p-button>
@@ -149,4 +156,10 @@
         (confirm)="onDeleteOrderConfirmed()"
         (cancel)="deleteOrderVisible = false"
     ></app-shared-confirm-dialog>
+
+    <!-- 訂單明細 dialog -->
+    <app-user-order-detail-dialog
+        [(visible)]="orderDetailVisible"
+        [orderId]="currentOrderId">
+    </app-user-order-detail-dialog>
 </div>
