@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core'; // 導入 OnDestroy 和 OnInit
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -8,10 +8,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationPanel } from '../notification-panel/notification-panel';
 
@@ -40,8 +40,6 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
     confirmVisible = false;
     /** 是否登出中 */
     isLoggedOut = false;
-    /**第一次登入檢查 */
-    isFirstCheck = true;
     /** 未讀通知數量 */
     unreadCount = 0;
     /** 通知面板是否顯示 */
@@ -65,7 +63,7 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
     }
 
     /**
-     * 元件初始化時執行一次登入狀態檢查
+     * 元件初始化時訂閱登入狀態
      */
     ngOnInit() {
         this.authService.isLoggedIn$
@@ -86,20 +84,6 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
         this.notificationService.unreadCount$
             .pipe(takeUntil(this.destroy$))
             .subscribe(count => this.unreadCount = count);
-
-        if (this.authService.getAccessToken()) {
-            this.onCheckLoginStatus();
-        } else {
-            this.redirectToMerchantLogin();
-        }
-
-        this.router.events
-            .pipe(
-                filter(e => e instanceof NavigationEnd),
-                filter(() => !!this.authService.getAccessToken()),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => this.onCheckLoginStatus());
     }
 
     /**
@@ -125,7 +109,7 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
                     detail: '期待您再次光臨！'
                 });
                 // 登出成功後，AuthService 應會清空 token，並透過 isLoggedIn$ 通知元件狀態更新
-                this.router.navigate(['']);
+                this.router.navigate(['merchants/userPage/login']);
                 this.isLoggedOut = false;
             },
             error: () => {
@@ -141,31 +125,6 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
         });
     }
 
-    /**
-     * 確認登入狀態
-     */
-    onCheckLoginStatus() {
-        this.authService.onCheckLoginStatus().subscribe({
-            next: (res) => {
-                const valid = !!res?.TRANRS.valid;
-                if (!valid) {
-                    this.redirectToMerchantLogin();
-                }
-            },
-            error: () => {
-                this.redirectToMerchantLogin();
-            }
-        });
-    }
-
-    private redirectToMerchantLogin() {
-        this.toast.add({
-            severity: 'warn',
-            summary: '未登入',
-            detail: '請先登入後再進入商家頁面'
-        });
-        this.router.navigate(['/merchants/userPage/login']);
-    }
 
     onClickHome() {
         this.router.navigate(['/merchants/property/homepage']);

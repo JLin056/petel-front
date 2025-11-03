@@ -8,8 +8,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
-import { filter, Subject, takeUntil } from 'rxjs';
-import { NavigationEnd, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Auth } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -38,8 +38,6 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
     confirmVisible = false;
     /** 是否登出中 */
     isLoggedOut = false;
-    /**第一次登入檢查 */
-    isFirstCheck = true;
     /** 未讀通知數量 */
     unreadCount = 0;
     /** 通知面板是否顯示 */
@@ -60,18 +58,6 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
         private toast: MessageService,
         private notificationService: NotificationService
     ) {
-        // 監聽路由事件，導航結束時檢查登入狀態
-        this.router.events
-        .pipe(filter(e => e instanceof NavigationEnd))
-        .subscribe(() => {
-            if (this.isFirstCheck) {
-            // 初始化已經檢查過，跳過第一次 Router.events
-            this.isFirstCheck = false;
-            return;
-            }
-            this.onCheckLoginStatus();
-        });
-
         // 訂閱 service 的登入狀態，保持元件狀態與 Auth service 同步
         this.authService.isLoggedIn$
         .pipe(takeUntil(this.destroy$))
@@ -94,26 +80,12 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
     }
 
     /**
-     * 元件初始化時執行一次登入狀態檢查
+     * 元件初始化時訂閱登入狀態
      */
     ngOnInit() {
         this.authService.isLoggedIn$
             .pipe(takeUntil(this.destroy$))
             .subscribe(v => this.isLoggedIn = v);
-
-        if (this.authService.getAccessToken()) {
-            this.onCheckLoginStatus();
-        } else {
-            this.redirectToMerchantLogin();
-        }
-
-        this.router.events
-            .pipe(
-                filter(e => e instanceof NavigationEnd),
-                filter(() => !!this.authService.getAccessToken()),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => this.onCheckLoginStatus());
     }
 
     /**
@@ -138,7 +110,7 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
                     summary: '登出成功',
                     detail: '期待您再次光臨！'
                 });
-                this.router.navigate(['']);
+                this.router.navigate(['merchants/userPage/login']);
                 this.isLoggedOut = false;
             },
             error: () => {
@@ -154,31 +126,6 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
         });
     }
 
-    /**
-     * 確認登入狀態
-     */
-    onCheckLoginStatus() {
-        this.authService.onCheckLoginStatus().subscribe({
-            next: (res) => {
-                const valid = !!res?.TRANRS.valid;
-                if (!valid) {
-                    this.redirectToMerchantLogin();
-                }
-            },
-            error: () => {
-                this.redirectToMerchantLogin();
-            }
-        });
-    }
-
-    private redirectToMerchantLogin() {
-        this.toast.add({
-            severity: 'warn',
-            summary: '未登入',
-            detail: '請先登入後再進入商家頁面'
-        });
-        this.router.navigate(['/merchants/userPage/login']);
-    }
 
     /**
      * 前往聊天頁
