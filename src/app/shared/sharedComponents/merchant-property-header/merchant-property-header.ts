@@ -85,7 +85,7 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
                     detail: '期待您再次光臨！'
                 });
                 // 登出成功後，AuthService 應會清空 token，並透過 isLoggedIn$ 通知元件狀態更新
-                this.router.navigate(['']);
+                this.router.navigate(['merchants/userPage/login']);
                 this.isLoggedOut = false;
             },
             error: () => {

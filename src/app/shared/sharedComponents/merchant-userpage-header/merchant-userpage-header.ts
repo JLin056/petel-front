@@ -81,7 +81,7 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
                     summary: '登出成功',
                     detail: '期待您再次光臨！'
                 });
-                this.router.navigate(['']);
+                this.router.navigate(['merchants/userPage/login']);
                 this.isLoggedOut = false;
             },
             error: () => {
