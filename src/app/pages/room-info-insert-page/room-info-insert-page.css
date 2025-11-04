@@ -1,5 +1,5 @@
 /* ------------------------------------- */
-/* 基礎設定與容器 - 修正 max-width */
+/* 基礎設定與容器 */
 /* ------------------------------------- */
 
 .room-form-container {
@@ -8,7 +8,6 @@
     margin: 0 auto;
     padding: 30px 40px;
     box-sizing: border-box;
-    /* 🚨 卡片框：20px */
     border-radius: 20px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
     min-height: 85vh;
@@ -33,7 +32,7 @@
     gap: 30px;
 }
 
-/* 🚨 主內容區塊為單欄排列 🚨 */
+/* 主內容區塊為單欄排列 */
 .form-main-content.sequential-layout {
     display: flex;
     flex-direction: column;
@@ -41,14 +40,14 @@
     /* 區塊間距 */
 }
 
-/* 🚨 兩欄並排容器 (2 欄) 🚨 */
+/* 兩欄並排容器 (2 欄) */
 .form-row-2col {
     display: flex;
     gap: 30px;
     width: 100%;
 }
 
-/* 🚨 並排項目，均分空間 🚨 */
+/* 並排項目，均分空間 */
 .form-row-2col .flex-item {
     flex: 1;
     min-width: 0;
@@ -58,9 +57,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    /* 👈 相對定位，讓錯誤訊息可以絕對定位 */
     padding-bottom: 40px;
-    /* 👈 預留錯誤訊息空間 */
 }
 
 .full-width {
@@ -79,13 +76,12 @@
     margin-bottom: 8px;
 }
 
-/* 🚨 統一所有輸入欄位的樣式：包含原生 input, textarea, 及 PrimeNG 的 pInputText (.p-inputtext) 🚨 */
+/* 統一所有輸入欄位的樣式 */
 .input,
 .textarea,
 .p-inputtext {
     width: 100%;
     border: 1px solid #c5b09b;
-    /* 🚨 輸入框圓角：8px */
     border-radius: 8px;
     padding: 6px 15px;
     background-color: white;
@@ -128,7 +124,7 @@
     box-shadow: 0 0 0 3px rgba(151, 75, 44, 0.2);
 }
 
-/* 👇 錯誤訊息使用絕對定位，不佔用文檔流空間 */
+/* 錯誤訊息使用絕對定位 */
 .form-section>p-message {
     position: absolute;
     bottom: 0;
@@ -144,7 +140,6 @@
 .image-upload-section {
     gap: 15px;
     padding-bottom: 0;
-    /* 👈 圖片區塊不需要預留錯誤訊息空間 */
 }
 
 .image-preview-area {
@@ -152,7 +147,6 @@
     height: 250px;
     background-color: #f1e9e0;
     border: 2px dashed #a4642b;
-    /* 🚨 預覽區塊圓角：8px */
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -206,7 +200,6 @@
     margin-top: 0;
     position: relative;
     padding-bottom: 50px;
-    /* 👈 預留錯誤訊息空間 */
 }
 
 /* 強制並排，永遠不換行 */
@@ -225,7 +218,6 @@
     min-width: 0;
 }
 
-/* Label 樣式 - 縮小字體 */
 .size-label {
     font-size: 16px;
     font-weight: 600;
@@ -271,7 +263,6 @@
 
 ::ng-deep .p-editor-container {
     border: 1px solid #c5b09b !important;
-    /* 🚨 列表框圓角：8px */
     border-radius: 8px;
     overflow: hidden;
     background-color: #fffdf8;
@@ -282,7 +273,7 @@
     border-bottom: 1px solid #c5b09b !important;
 }
 
-/* p-editor 內的下拉選單也要 8px */
+/* p-editor 內的下拉選單 */
 ::ng-deep .p-editor-toolbar .ql-picker-label,
 ::ng-deep .p-editor-toolbar .ql-picker-options {
     border-radius: 8px;
@@ -304,7 +295,6 @@
     margin-top: 10px;
     padding: 5px;
     background-color: #fef2f2;
-    /* 🚨 錯誤訊息圓角：8px */
     border-radius: 8px;
 }
 
@@ -326,7 +316,6 @@
     color: white;
     border: none;
     padding: 12px 40px;
-    /* 🚨 按鈕圓角：10px */
     border-radius: 10px;
     cursor: pointer;
     font-size: 18px;
@@ -365,7 +354,6 @@
     border: 1px solid #fca5a5;
     color: #991b1b;
     padding: 12px 16px;
-    /* 🚨 錯誤訊息圓角：8px */
     border-radius: 8px;
     margin-top: 20px;
     text-align: center;
@@ -373,36 +361,36 @@
 }
 
 /* ------------------------------------- */
-/* PrimeNG 組件圓角覆蓋 - 全部統一 8px */
+/* PrimeNG 組件圓角覆蓋 */
 /* ------------------------------------- */
 
-/* p-select 下拉選單 - 8px */
+/* p-select 下拉選單 */
 ::ng-deep .p-select {
     border-radius: 8px;
 }
 
-/* p-select 下拉面板 - 8px */
+/* p-select 下拉面板 */
 ::ng-deep .p-select-overlay,
 ::ng-deep .p-select-panel {
     border-radius: 8px;
 }
 
-/* p-select 內的選項 - 8px */
+/* p-select 內的選項 */
 ::ng-deep .p-select-option {
     border-radius: 8px;
 }
 
-/* p-select 觸發按鈕 - 8px */
+/* p-select 觸發按鈕 */
 ::ng-deep .p-select-trigger {
     border-radius: 0 8px 8px 0;
 }
 
-/* p-message 錯誤訊息 - 8px */
+/* p-message 錯誤訊息 */
 ::ng-deep .p-message {
     border-radius: 8px;
 }
 
-/* p-message 內容 - 8px */
+/* p-message 內容 */
 ::ng-deep .p-message-content {
     border-radius: 8px;
 }
@@ -625,4 +613,27 @@
         width: 120px;
         height: 120px;
     }
+}
+
+/* 專門針對房型介紹 textarea */
+#roomDescriptionInput {
+    border: 1px solid #c5b09b;
+    border-radius: 8px;
+    padding: 10px 15px;
+    background-color: white;
+    font-size: 20px;
+    color: #3a1f0b;
+    width: 100%;
+    font-family: inherit;
+    line-height: 1.6;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* 焦點效果與其他欄位一致 */
+#roomDescriptionInput:focus {
+    outline: none;
+    border-color: #974B2C;
+    box-shadow: 0 0 0 3px rgba(151, 75, 44, 0.2);
 }
