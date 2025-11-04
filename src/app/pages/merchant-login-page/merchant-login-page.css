@@ -84,7 +84,16 @@
     transition: none;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
 }
-
+.error-message {
+    margin-top: -15px;
+    margin-bottom: 5px;
+    height: 30px;
+    margin-left: 160px;
+}
+.error-message ::ng-deep .p-message-text {
+    font-size: 1.2rem;
+    line-height: 1.4;
+}
 /* 密碼 */
 :host ::ng-deep .input-container-password p-password {
     width: 70%;
