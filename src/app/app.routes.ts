@@ -35,6 +35,7 @@ import { MerchantPropertyInfoPage } from './pages/merchant-property-info-page/me
 import { MerchantPropertyInsertPage } from './pages/merchant-property-insert-page/merchant-property-insert-page';
 import { MerchantPropertyEditPage } from './pages/merchant-property-edit-page/merchant-property-edit-page';
 import { MerchantOrderDetailDialog } from './pages/merchant-order-detail-dialog/merchant-order-detail-dialog';
+import { ContactUsPage } from './pages/contact-us-page/contact-us-page';
 
 export const routes: Routes = [
     {
@@ -92,6 +93,10 @@ export const routes: Routes = [
     {
         path: 'book/authorize',
         component: AuthorizingPage
+    },
+    {
+        path: 'contactUs',
+        component: ContactUsPage
     },
     {
         path: 'imageTest',
