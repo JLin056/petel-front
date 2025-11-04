@@ -85,7 +85,15 @@ export class OrderTableComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (params['userName']) {
         this.userNameFilter = params['userName'];
-        // 延遲執行搜尋，等待表格初始化完成
+        this.isSearching = true;
+      }
+      if (params['propertyName']) {
+        this.propertyNameFilter = params['propertyName'];
+        this.isSearching = true;
+      }
+
+      // 如果有任何參數，延遲執行搜尋，等待表格初始化完成
+      if (params['userName'] || params['propertyName']) {
         setTimeout(() => {
           this.onSearch();
         }, 100);

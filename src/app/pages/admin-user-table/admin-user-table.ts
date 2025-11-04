@@ -77,9 +77,18 @@ export class AdminUserTable implements OnInit {
 
     // 檢查 URL 查詢參數
     this.route.queryParams.subscribe(params => {
-      if (params['search']) {
-        this.nameFilter = params['search'];
+      if (params['userName']) {
+        this.nameFilter = params['userName'];
+        this.isSearching = true;
         // 延遲執行搜尋，等待表格初始化完成
+        setTimeout(() => {
+          this.onSearch();
+        }, 100);
+      }
+      // 為了向後兼容，也支援 search 參數
+      else if (params['search']) {
+        this.nameFilter = params['search'];
+        this.isSearching = true;
         setTimeout(() => {
           this.onSearch();
         }, 100);

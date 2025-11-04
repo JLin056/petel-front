@@ -61,14 +61,23 @@ export class AdminSellerTable implements OnInit {
   totalCount: number = 0;
   totalPages: number = 0;
 
+  private isSearching = false; // 追蹤是否為搜尋操作
+
   ngOnInit() {
     this.statuses = [
-      { label: '啟用', value: 'actice' },
+      { label: '啟用', value: 'active' },
       { label: '停用', value: 'INACTIVE' },
       { label: '暫停', value: 'SUSPENDED' }
     ];
 
-    this.loadSellers();
+    // 檢查 URL 查詢參數，如果有 sellerName 就設定過濾條件
+    this.route.queryParams.subscribe(params => {
+      if (params['sellerName']) {
+        this.nameFilter = params['sellerName'];
+        this.isSearching = true; // 標記為搜尋操作
+      }
+      this.loadSellers();
+    });
   }
 
   /**
@@ -111,16 +120,46 @@ export class AdminSellerTable implements OnInit {
             this.currentPage = response.TRANRS.currentPage;
             console.log('賣家列表:', this.sellerList);
             console.log('總筆數:', this.totalCount);
+
+            // 如果是搜尋操作，顯示成功提示
+            if (this.isSearching) {
+              this.messageService.add({
+                severity: 'success',
+                summary: '搜尋成功',
+                detail: `找到 ${this.totalCount} 筆賣家資料`
+              });
+              this.isSearching = false;
+            }
           } else {
             console.error('API 錯誤:', response.MWHEADER.RETURNDESC);
             this.sellerList = [];
             this.totalCount = 0;
+
+            // 如果是搜尋操作，顯示錯誤提示
+            if (this.isSearching) {
+              this.messageService.add({
+                severity: 'error',
+                summary: '搜尋失敗',
+                detail: response.MWHEADER.RETURNDESC
+              });
+              this.isSearching = false;
+            }
           }
         },
         error: (error) => {
           console.error('API 呼叫失敗:', error);
           this.sellerList = [];
           this.totalCount = 0;
+
+          // 如果是搜尋操作，顯示錯誤提示
+          if (this.isSearching) {
+            this.messageService.add({
+              severity: 'error',
+              summary: '搜尋失敗',
+              detail: '網路錯誤，請稍後再試'
+            });
+            this.isSearching = false;
+          }
         }
       });
   }
@@ -130,6 +169,7 @@ export class AdminSellerTable implements OnInit {
    */
   onSearch() {
     this.currentPage = 1; // 重置到第一頁
+    this.isSearching = true; // 標記為搜尋操作
     this.loadSellers();
   }
 
@@ -144,21 +184,6 @@ export class AdminSellerTable implements OnInit {
     console.log('切換到第', this.currentPage, '頁，每頁', this.pageSize, '筆');
     this.loadSellers();
     this.loading = false;
-
-    // 檢查是否有查詢參數
-    this.route.queryParams.subscribe(params => {
-      const sellerName = params['sellerName'];
-      if (sellerName) {
-        // 設置賣家名稱過濾器
-        this.nameFilter = sellerName;
-        // 延遲執行過濾，確保 table 已經初始化
-        setTimeout(() => {
-          if (this.table) {
-            this.table.filter(sellerName, 'NAME', 'contains');
-          }
-        }, 100);
-      }
-    });
   }
 
   getStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
