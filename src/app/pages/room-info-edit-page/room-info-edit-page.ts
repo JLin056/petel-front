@@ -115,12 +115,12 @@ export class RoomInfoEditPage implements OnInit {
     this.roomForm = this.fb.group({
       petTypeObject: [null, Validators.required],
       name: ['', Validators.required],
-      height: ['', [Validators.required, Validators.min(1)]],  // 👈 改成三個欄位
-      length: ['', [Validators.required, Validators.min(1)]],  // 👈 改成三個欄位
-      width: ['', [Validators.required, Validators.min(1)]],   // 👈 改成三個欄位
+      height: ['', [Validators.required, Validators.min(1)]],
+      length: ['', [Validators.required, Validators.min(1)]],
+      width: ['', [Validators.required, Validators.min(1)]],
       description: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(1)]],
-      unit: [null, Validators.required]  // 👈 改成 null（下拉選單）
+      unit: [null, Validators.required]
     });
   }
 
@@ -245,6 +245,11 @@ export class RoomInfoEditPage implements OnInit {
     const allImages = [...this.existingImages, ...this.uploadedImages];
     moveItemInArray(allImages, event.previousIndex, event.currentIndex);
 
+    // 更新整體排序
+    allImages.forEach((img, index) => {
+      img.sortOrder = index + 1;
+    });
+
     // 分離回原陣列
     this.existingImages = allImages.filter(img => 'mediaId' in img) as ExistingImage[];
     this.uploadedImages = allImages.filter(img => 'file' in img) as UploadedImage[];
@@ -339,6 +344,15 @@ export class RoomInfoEditPage implements OnInit {
 
     if (this.roomForm.invalid) {
       this.errorMessage = '請填寫所有必填欄位';
+      return;
+    }
+
+    if (this.existingImages.length + this.uploadedImages.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: '請至少上傳一張圖片'
+      });
       return;
     }
 

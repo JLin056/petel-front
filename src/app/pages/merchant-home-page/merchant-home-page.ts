@@ -190,14 +190,14 @@ export class MerchantHomePage implements OnInit, OnDestroy {
               })));
 
               const sortedImages = res.TRANRS.medias.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+              const firstImage = res.TRANRS.medias.find(m => m.sortOrder === 1) || sortedImages[0];
+              this.roomImages[room.id] = `data:image/jpeg;base64,${firstImage.base64Data}`;
 
               console.log(`📊 排序後的圖片資料:`, sortedImages.map(m => ({
                 mediaId: m.mediaId,
                 sortOrder: m.sortOrder,
                 fileName: m.fileName
               })));
-
-              const firstImage = sortedImages[0];
 
               console.log(`🎯 房型 ${room.id} 選擇的封面圖（sortOrder 最小）:`, {
                 mediaId: firstImage.mediaId,
@@ -250,51 +250,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * 顯示刪除確認對話框
-   * @param room 
-   */
-  showDeleteConfirm(room: any) {
-    if (!room || !room.id) {
-      return;
-    }
-    this.roomToDelete = room;
-    this.deleteRoomVisible = true;
-  }
-
-  /**
-   * 刪除
-   */
-  onDelete() {
-    if (!this.roomToDelete || !this.roomToDelete.id) {
-      return;
-    }
-    this.isDeleting = true;
-
-    this.merchService.deleteRoomDetail(this.roomToDelete.id).subscribe({
-      next: (res) => {
-        console.log('刪除API回應', res);
-        if (res.MWHEADER.RETURNCODE === '0000') {
-          const index = this.roomList.indexOf(this.roomToDelete);
-          if (index > -1) {
-            this.roomList.splice(index, 1);
-          }
-          console.log('已成功刪除房型', this.roomToDelete.name)
-          this.roomToDelete = null;
-          this.deleteRoomVisible = false;
-        } else {
-        }
-        this.isDeleting = false;
-      },
-      error: (err) => {
-        console.error('刪除失敗', err);
-        this.isDeleting = false;
-        this.deleteRoomVisible = false;
-        this.roomToDelete = null;
-      }
-    });
-  }
-
-  /**
    * 查看房型詳細資料 (點擊卡片主要區域觸發)
    * @param room 
    */
@@ -307,7 +262,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   
     console.log('導航到詳細頁面，房型 ID:', room.id);
 
-    this.router.navigate(['/merchants/property/homepage'], {
+    this.router.navigate(['/merchants/property/roomInfo'], {
       state: {
         roomId: room.id,
       }

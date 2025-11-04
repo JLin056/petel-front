@@ -4,18 +4,12 @@
 
         <div class="form-main-content sequential-layout">
 
-            <!-- 1. 房型圖片 (Full Width) -->
+            <!-- 1. 房型圖片 -->
             <div class="form-section full-width image-upload-section">
                 <label class="section-label">房型圖片</label>
 
                 <!-- 原生檔案選擇 -->
-                <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    hidden
-                    #fileInput
-                    (change)="onImageSelect($event)">
+                <input type="file" accept="image/*" multiple hidden #fileInput (change)="onImageSelect($event)">
                 <button type="button" class="btn-upload" (click)="fileInput.click()">
                     <i class="pi pi-images"></i>
                     選擇圖片
@@ -30,9 +24,7 @@
                             <img [src]="img.previewUrl" alt="預覽圖片">
                             <div class="image-overlay">
                                 <span class="sort-number">{{ img.sortOrder }}</span>
-                                <button type="button"
-                                        class="btn-remove"
-                                        (click)="removeImage(i)">
+                                <button type="button" class="btn-remove" (click)="removeImage(i)">
                                     <i class="pi pi-times"></i>
                                 </button>
                             </div>
@@ -46,11 +38,11 @@
                 }
             </div>
 
-            <!-- 2. 房型名稱 & 寵物種類 (Side-by-Side) -->
+            <!-- 2. 房型名稱 & 寵物種類  -->
             <div class="form-row-2col">
                 <!-- 房型名稱 -->
                 <div class="form-section flex-item">
-                    <label class="section-label" for="roomNameInput">房型名稱</label>
+                    <label class="section-label" for="roomNameInput">房型名稱*</label>
                     <input pInputText formControlName="name" type="text" id="roomNameInput"
                         [invalid]="roomForm.get('name')?.invalid && (roomForm.get('name')?.touched || isSubmitted)" />
 
@@ -61,9 +53,9 @@
                     }
                 </div>
 
-                <!-- 寵物種類 - 使用 p-select 👇 -->
+                <!-- 寵物種類 -->
                 <div class="form-section flex-item">
-                    <label class="section-label" for="petTypeInput">寵物種類</label>
+                    <label class="section-label" for="petTypeInput">寵物種類*</label>
 
                     <p-select formControlName="petTypeObject" [options]="petTypes" optionLabel="name"
                         placeholder="請選擇寵物種類" [showClear]="true" inputId="petTypeInput"
@@ -80,11 +72,11 @@
                 </div>
             </div>
 
-            <!-- 3. 價格 & 總房間數 (Side-by-Side) -->
+            <!-- 價格 & 總房間數 -->
             <div class="form-row-2col">
                 <!-- 價格 -->
                 <div class="form-section flex-item">
-                    <label class="section-label" for="priceInput">價格 NT$ / 天</label>
+                    <label class="section-label" for="priceInput">價格 NT$ / 天*</label>
                     <input pInputText formControlName="price" type="number" min="1" step="any" id="priceInput"
                         [invalid]="roomForm.get('price')?.invalid && (roomForm.get('price')?.touched || isSubmitted)" />
 
@@ -95,9 +87,9 @@
                     }
                 </div>
 
-                <!-- 總房數 - 使用 p-select 👇 -->
+                <!-- 總房數 -->
                 <div class="form-section flex-item">
-                    <label class="section-label" for="unitInput">總房間數</label>
+                    <label class="section-label" for="unitInput">總房間數*</label>
 
                     <p-select formControlName="unit" [options]="unitOptions" optionLabel="label" optionValue="value"
                         placeholder="請選擇房間數" [showClear]="true" inputId="unitInput"
@@ -113,9 +105,9 @@
                 </div>
             </div>
 
-            <!-- 4. 空間尺寸 (Full Width) - 方案一 -->
+            <!-- 空間尺寸 -->
             <div class="form-section full-width size-inputs-group">
-                <label class="section-label">空間尺寸 (公分)</label>
+                <label class="section-label">空間尺寸 (公分)*</label>
 
                 <div class="size-inputs-row">
                     <div class="size-input-item">
@@ -147,9 +139,9 @@
                 }
             </div>
 
-            <!-- 5. 房間介紹 (Full Width) -->
+            <!-- 房間介紹  -->
             <div class="form-section full-width">
-                <label class="section-label">房間介紹</label>
+                <label class="section-label">房間介紹*</label>
                 <p-editor formControlName="description" [style]="{'height':'280px', 'background-color':'#fffdf8'}"
                     [invalid]="roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)">
                     <ng-template pTemplate="header">
@@ -192,14 +184,13 @@
     </form>
 </div>
 
+<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消新增嗎？已填寫的資料將不會被儲存。"
+    confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()" (cancel)="onCancelCancel()">
+</app-shared-confirm-dialog>
+
 <!-- 錯誤訊息顯示 -->
 @if (errorMessage) {
 <div class="error-message">
     {{ errorMessage }}
 </div>
 }
-
-<!-- 取消確認對話框 -->
-<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消新增嗎？已填寫的資料將不會被儲存。"
-    confirmLabel="確定" cancelLabel="繼續編輯" (confirm)="onCancelConfirm()"
-    (cancel)="onCancelCancel()"></app-shared-confirm-dialog>
