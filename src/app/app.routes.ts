@@ -173,10 +173,6 @@ export const routes: Routes = [
         canActivate: [merchantAuthGuard]
     },
     {
-        path: 'merchants/property/orderDetails',
-        component: MerchantOrderDetailDialog,
-    },
-    {
         path: 'admin/login',
         component: AdminLoginPage
     },
