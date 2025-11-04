@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -9,12 +9,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { AdminService } from '../../core/services/admin.service';
-import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merchant-order-detail-dialog";
 import { PropertyStateService } from '../../core/services/property-state.service';
-import { MerchService } from '../../core/services/merch-service';
-import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
+import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merchant-order-detail-dialog";
 
 @Component({
   selector: 'app-merchant-order-table-page',
@@ -41,7 +40,6 @@ export class MerchantOrderTablePage implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private merchService: MerchService,
     private propertyStateService: PropertyStateService
   ) { }
 
@@ -61,6 +59,7 @@ export class MerchantOrderTablePage implements OnInit {
 
   // 搜尋條件
   searchOrderId: string = '';
+  searchCheckIn: string = '';
   searchUserName: string = '';
 
   // 詳細資料彈窗相關
@@ -96,20 +95,28 @@ export class MerchantOrderTablePage implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    const postData = {
+    const postData: ADMIN003Req = {
       MWHEADER: {
         MSGID: 'ADMIN-003'
       },
       TRANRQ: {
-        ORDER_ID: this.searchOrderId || undefined,
-        userName: this.searchUserName || undefined,
-        propertyName: this.propertyName || undefined,
         page: {
           pageNumber: this.currentPage,
           pageSize: this.pageSize
         }
       }
     };
+
+    // 加入篩選條件（只有在有值的時候才加入）
+    if (this.searchOrderId) {
+      postData.TRANRQ.ORDER_ID = this.searchOrderId;
+    }
+    if (this.searchCheckIn) {
+      postData.TRANRQ.CHECK_IN = this.searchCheckIn;
+    }
+    if (this.searchUserName) {
+      postData.TRANRQ.userName = this.searchUserName;
+    }
 
     this.adminService.queryOrders(postData).subscribe({
       next: (res) => {
@@ -154,6 +161,7 @@ export class MerchantOrderTablePage implements OnInit {
    */
   onClearSearch() {
     this.searchOrderId = '';
+    this.searchCheckIn = '';
     this.searchUserName = '';
     this.currentPage = 1;
     this.loadOrders();
@@ -222,7 +230,7 @@ export class MerchantOrderTablePage implements OnInit {
 
   formatDate(date: any): string {
     if (!date) return '';
-    if (typeof date === 'string') return date; 
+    if (typeof date === 'string') return date;
     const d = new Date(date);
     const yyyy = d.getFullYear();
     const mm = ('0' + (d.getMonth() + 1)).slice(-2);
