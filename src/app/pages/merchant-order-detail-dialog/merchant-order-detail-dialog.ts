@@ -11,11 +11,13 @@ import { MerchService } from '../../core/services/merch-service';
 import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
 import { BookService } from '../../core/services/book-service';
 import { BOOK004Req } from '../../core/interfaces/BOOK004Req.interface';
+import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-merchant-order-detail-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, TagModule, SelectModule],
+  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, TagModule, SelectModule, SharedConfirmDialog],
   templateUrl: './merchant-order-detail-dialog.html',
   styleUrl: './merchant-order-detail-dialog.css'
 })
@@ -30,6 +32,8 @@ export class MerchantOrderDetailDialog implements OnChanges {
   originalStatus: string = '';
   roomInfo: string = '';
   roomQuantity: number = 0;
+  /** cancelConfirmVisible */
+  cancelConfirmVisible: boolean = false;
 
   statuses: Status[] = [
     { label: '待付款', value: '待付款' },
@@ -40,7 +44,8 @@ export class MerchantOrderDetailDialog implements OnChanges {
 
   constructor(
     private merchService: MerchService,
-    private bookService: BookService
+    private bookService: BookService,
+    private router: Router
   ) { }
 
   ngOnChanges(): void {
@@ -53,14 +58,85 @@ export class MerchantOrderDetailDialog implements OnChanges {
     }
   }
 
+  /**
+   * 取得狀態標籤的嚴重程度
+   */
+  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
+    switch (status) {
+      case '已完成':
+        return 'success';
+      case '已確認':
+      case '已付款':
+        return 'info';
+      case '待付款':
+      case '未付款':
+        return 'warn';
+      case '已取消':
+        return 'danger';
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * 選擇狀態時過濾已取消
+   */
+  get selectableStatuses() {
+    return this.statuses.filter(s => s.value !== '已取消');
+  }
+
   onHideDialog() {
     this.visible = false;
     this.visibleChange.emit(false);
   }
 
   /**
-   * 更新訂單狀態
+   * 點擊取消按鈕
    */
+  onCancelClick(): void {
+    this.cancelConfirmVisible = true;
+  }
+
+  /**
+   * 確認取消
+   */
+  onCancelConfirm(): void {
+    if (!this.order) return;
+
+    const cancelReq: BOOK004Req = {
+      MWHEADER: { MSGID: 'BOOK-004' },
+      TRANRQ: { order_id: this.order.ORDER_ID }
+    };
+
+    this.bookService.onCancelBookingApi(cancelReq).subscribe({
+      next: (res) => {
+        if (res.MWHEADER.RETURNCODE === '0000') {
+          this.order!.STATUS = '已取消';
+          this.originalStatus = '已取消';
+          this.updateOrderStatus();
+        } else {
+          alert('取消訂單失敗：' + res.MWHEADER.RETURNDESC);
+        }
+        this.cancelConfirmVisible = false;
+      },
+      error: (err) => {
+        console.error(err);
+        alert('取消訂單時發生錯誤，請稍後再試');
+        this.cancelConfirmVisible = false;
+      }
+    });
+  }
+  /**
+   * 取消取消動作
+   */
+  onCancelCancel(): void {
+    this.cancelConfirmVisible = false;
+    this.router.navigate(['/merchants/property/orderDetails']);
+  }
+
+  /**
+ * 更新訂單狀態
+ */
   private updateOrderStatus() {
     if (!this.order) return;
 
@@ -92,26 +168,6 @@ export class MerchantOrderDetailDialog implements OnChanges {
   }
 
   /**
- * 取得狀態標籤的嚴重程度
- */
-  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
-    switch (status) {
-      case '已完成':
-        return 'success';
-      case '已確認':
-      case '已付款':
-        return 'info';
-      case '待付款':
-      case '未付款':
-        return 'warn';
-      case '已取消':
-        return 'danger';
-      default:
-        return null;
-    }
-  }
-
-  /**
    * 更新備註
    */
   private updateNote() {
@@ -125,6 +181,10 @@ export class MerchantOrderDetailDialog implements OnChanges {
     this.onHideDialog();
   }
 
+  /**
+   * 儲存
+   * @returns 
+   */
   onSave() {
     if (!this.order) return;
 

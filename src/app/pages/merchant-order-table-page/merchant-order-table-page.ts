@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -9,13 +9,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
 import { Order, Status } from '../../core/interfaces/ADMIN003Res.interface';
 import { AdminService } from '../../core/services/admin.service';
-import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merchant-order-detail-dialog";
 import { PropertyStateService } from '../../core/services/property-state.service';
-import { MerchService } from '../../core/services/merch-service';
-import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
-import { ADMIN003Req } from '../../core/interfaces/ADMIN003Req.interface';
+import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merchant-order-detail-dialog";
 
 @Component({
   selector: 'app-merchant-order-table-page',
@@ -42,7 +40,6 @@ export class MerchantOrderTablePage implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private merchService: MerchService,
     private propertyStateService: PropertyStateService
   ) { }
 

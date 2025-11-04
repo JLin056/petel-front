@@ -14,8 +14,14 @@
             <div class="detail-grid single-col">
                 <div class="detail-item full-width">
                     <span class="detail-label">狀態:</span>
-                    <p-select [(ngModel)]="order.STATUS" [options]="statuses" optionLabel="label" optionValue="value"
-                        placeholder="選擇狀態" styleClass="status-select-dialog" [disabled]="order.STATUS === '已取消'" />
+                    <p-select [(ngModel)]="order.STATUS" [options]="selectableStatuses" optionLabel="label"
+                        optionValue="value" placeholder="選擇狀態" styleClass="status-select-dialog"
+                        [disabled]="order.STATUS === '已取消'" />
+                </div>
+                <div class="detail-item full-width">
+                    <span class="detail-label">狀態:</span>
+                    <p-button label="取消訂單" styleClass="button" (onClick)="onCancelClick()"
+                        [disabled]="order?.STATUS === '已取消'" />
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">建立時間:</span>
@@ -103,3 +109,7 @@
         <p-button label="儲存" severity="primary" (onClick)="onSave()" />
     </ng-template>
 </p-dialog>
+
+<app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消訂單嗎？取消訂單後無法復原。"
+    confirmLabel="確定" cancelLabel="返回" (confirm)="onCancelConfirm()" (cancel)="onCancelCancel()">
+</app-shared-confirm-dialog>

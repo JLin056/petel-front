@@ -32,6 +32,7 @@ import { UploadPropertyImage } from './pages/sellers-property-page/upload-proper
 import { MerchantPropertyInfoPage } from './pages/merchant-property-info-page/merchant-property-info-page';
 import { MerchantPropertyInsertPage } from './pages/merchant-property-insert-page/merchant-property-insert-page';
 import { MerchantPropertyEditPage } from './pages/merchant-property-edit-page/merchant-property-edit-page';
+import { MerchantOrderDetailDialog } from './pages/merchant-order-detail-dialog/merchant-order-detail-dialog';
 
 export const routes: Routes = [
     {
@@ -160,6 +161,10 @@ export const routes: Routes = [
         path: 'merchants/property/reviewList',
         component: MerchantReviewListPage,
         canActivate: [merchantAuthGuard]
+    },
+    {
+        path: 'merchants/property/orderDetails',
+        component: MerchantOrderDetailDialog,
     },
     {
         path: 'admin/login',
