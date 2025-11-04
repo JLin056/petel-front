@@ -29,8 +29,7 @@ import { Rating } from 'primeng/rating';
     selector: 'app-user-page',
     imports: [CommonModule, FormsModule, AvatarModule, UpdateUserDialog, ToastModule, ButtonModule, SharedConfirmDialog, TagModule, SelectModule, AddReviewDialog, UserOrderDetailDialog, Rating],
     templateUrl: './user-page.html',
-    styleUrl: './user-page.css',
-    providers: [ConfirmationService, MessageService]
+    styleUrl: './user-page.css'
 })
 export class UserPage implements OnInit{
     /** 編輯 dialog */

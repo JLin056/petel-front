@@ -1,0 +1,330 @@
+<div class="banner">
+    <div class="search-container">
+        <div class="search-bar">
+            <p-floatlabel variant="in" class="search-label">
+                <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city"
+                    [showClear]="true" class="search-item" />
+                <label class="search-label">縣市</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"
+                    [(ngModel)]="searchParams.checkIn" [minDate]="minCheckInDate" (onSelect)="onCheckInChange()" />
+                <label class="search-label">入住日</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-datepicker class="search-item" dateFormat="yy.mm.dd" showIcon iconDisplay="input"
+                    [(ngModel)]="searchParams.checkOut" [minDate]="minCheckOutDate" />
+                <label class="search-label">退房日</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-select class="search-item" [options]="types" optionLabel="name" optionValue="id"
+                    [(ngModel)]="searchParams.petType" />
+                <label class="search-label">寵物種類</label>
+            </p-floatlabel>
+            <p-floatlabel variant="in" class="search-label">
+                <p-inputnumber class="search-item" mode="decimal" [showButtons]="true" inputId="minmax-buttons"
+                    [min]="1" [max]="10" [(ngModel)]="searchParams.petCount" />
+                <label class="search-label">寵物數量</label>
+            </p-floatlabel>
+            <p-button label="搜尋" styleClass="petel-search-btn" (onClick)="onSearch()"></p-button>
+        </div>
+    </div>
+</div>
+
+<!-- 圖片網格 - 點擊可打開全螢幕相簿 -->
+<div class="image-grid-container">
+    <div class="image-grid">
+        <div *ngFor="let image of images; let i = index" class="grid-item" (click)="imageClick(i)">
+            <img [src]="image.thumbnailImageSrc" [alt]="image.alt || '旅館圖片'" />
+            <div class="image-overlay">
+                <i class="pi pi-search-plus"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全螢幕 Galleria -->
+<p-galleria [value]="images" [(visible)]="displayCustom" [(activeIndex)]="activeIndex"
+    [responsiveOptions]="responsiveOptions" [containerStyle]="{ 'max-width': '850px' }" [numVisible]="7"
+    [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="false">
+    <ng-template pTemplate="item" let-item>
+        <img [src]="item.itemImageSrc" [alt]="item.alt || '旅館圖片'"
+        style="width: 100%; height: 100%; display: block; object-fit: contain;" />
+    </ng-template>
+</p-galleria>
+
+<div>
+    <p-tabs [(value)]="activeTabValue">
+        <p-tablist>
+            <p-tab value="0">店家資訊</p-tab>
+            <p-tab value="1">房型/價目表</p-tab>
+            <p-tab value="2">顧客評價</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <!-- 頂部資訊容器 -->
+                <div class="store-header-container" *ngIf="hotelDetail">
+                    <!-- 店家名稱 (H1) -->
+                    <h1 class="store-name">{{ hotelDetail.name }}</h1>
+
+                    <!-- 評分和評論數 row -->
+                    <div class="rating-row">
+                        <!-- 評分 (星星) -->
+                        <p-rating [(ngModel)]="hotelDetail.avgRating" [readonly]="true" />
+                        <!-- 顯示評分和評論數 -->
+                        <p class="review-count">{{ hotelDetail.avgRating | number:'1.1-1' }} ({{ hotelDetail.reviewCount
+                            }} 則評論)</p>
+                    </div>
+
+                    <!-- 地址 row -->
+                    <div class="address-row">
+                        <i class="pi pi-map-marker address-icon"></i>
+                        <p class="address-text">{{ hotelDetail.city }} {{ hotelDetail.district }}</p>
+                    </div>
+                </div>
+                <div class="info-layout">
+                    <p-card header="店家資訊" class="left-card" *ngIf="hotelDetail">
+                        <div class="info-content-fixed">
+                            <p>{{ hotelDetail.info }}</p>
+                        </div>
+                        <div class="facilities-section">
+                            <p-divider />
+                            <p>設施</p>
+                            <div class="chip-container"
+                                *ngIf="hotelDetail.facilities && hotelDetail.facilities.length > 0">
+                                <p-chip *ngFor="let facility of hotelDetail.facilities" [label]="facility.facilityName"
+                                    icon="pi pi-check" />
+                            </div>
+                            <div *ngIf="!hotelDetail.facilities || hotelDetail.facilities.length === 0">
+                                <p>暫無設施資訊</p>
+                            </div>
+                        </div>
+                    </p-card>
+
+                    <div class="right-cards">
+                        <p-card header="評價" class="right-card">
+                            <p-divider />
+                            <div class="card-body" *ngIf="getHighestRatedReview() as topReview">
+                                <div class="card-header-row">
+                                    <div class="card-title-group">
+                                        <p-rating [ngModel]="getReviewAverageScore(topReview)" [readonly]="true" />
+                                        <p>{{ topReview.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" *ngIf="!getHighestRatedReview()">
+                                <p>暫無評價</p>
+                            </div>
+                        </p-card>
+                        <p-card header="注意事項" class="right-card">
+                            <p-divider />
+                            <div class="card-body" *ngIf="hotelDetail">
+                                <div class="card-header-row">
+                                    <div class="card-title-group">
+                                        <p>{{ hotelDetail.propertyNotice || '暫無注意事項' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-card>
+                    </div>
+
+                </div>
+
+                <!-- 須知區塊容器 -->
+                <div class="notes-container" *ngIf="hotelDetail">
+                    <div class="pet-note">
+                        <p class="note-title">毛孩須知</p>
+                        <p-divider />
+                        <p class="note-content">{{ hotelDetail.petNotice || '暫無毛孩須知' }}</p>
+                    </div>
+
+                    <div class="checkIn-note">
+                        <p class="note-title">入住須知</p>
+                        <p-divider />
+                        <p class="note-content">{{ hotelDetail.checkNotice || '暫無入住須知' }}</p>
+                    </div>
+                </div>
+
+                <div class="order-button">
+                    <p-button label="返回搜尋列表" class="card-btn" styleClass="card-btn" (onClick)="goBackToList()" />
+                </div>
+            </p-tabpanel>
+            <p-tabpanel value="1">
+                <!-- 頂部資訊容器 -->
+                <div class="store-header-container" *ngIf="hotelDetail">
+                    <!-- 店家名稱 (H1) -->
+                    <h1 class="store-name">{{ hotelDetail.name }}</h1>
+
+                    <!-- 評分和評論數 row -->
+                    <div class="rating-row">
+                        <!-- 評分 (星星) -->
+                        <p-rating [(ngModel)]="hotelDetail.avgRating" [readonly]="true" />
+                        <!-- 顯示評分和評論數 -->
+                        <p class="review-count">{{ hotelDetail.avgRating | number:'1.1-1' }} ({{ hotelDetail.reviewCount
+                            }} 則評論)</p>
+                    </div>
+
+                    <!-- 地址 row -->
+                    <div class="address-row">
+                        <i class="pi pi-map-marker address-icon"></i>
+                        <p class="address-text">{{ hotelDetail.city }} {{ hotelDetail.district }}</p>
+                    </div>
+                </div>
+
+                <div class="dog-size-img">
+                    <p>狗狗體型對照圖</p>
+                    <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/%E7%8B%97%E7%8B%97%E9%AB%94%E5%9E%8B%E5%9C%96%E8%A1%A8+-4.png"
+                        alt="狗狗體型對照圖">
+                </div>
+
+                <div class="dog-container" *ngIf="hotelDetail && hotelDetail.rooms">
+                    <div class="mini-dog">
+                        <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/%E8%BF%B7%E4%BD%A0%E7%8A%AC.jpg"
+                            alt="迷你犬">
+                        <p>迷你犬</p>
+                        <p class="card-price" *ngIf="!dogSizeDisabled.mini">NT $ {{ dogSizePrices.mini | number:'1.0-0' }} / 天</p>
+                        <p-select
+                            [options]="dogSizeOptions.mini"
+                            [(ngModel)]="dogSizeSelections.mini"
+                            optionLabel="name"
+                            optionValue="id"
+                            [placeholder]="dogSizeDisabled.mini ? '不接受此體型的狗狗' : '請輸入預訂數量'"
+                            [disabled]="dogSizeDisabled.mini"
+                            class="dog-size-select">
+                        </p-select>
+                    </div>
+                     <div class="small-dog">
+                        <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/%E5%B0%8F%E5%9E%8B%E7%8A%AC.png"
+                            alt="小型犬">
+                        <p>小型犬</p>
+                        <p class="card-price" *ngIf="!dogSizeDisabled.small">NT $ {{ dogSizePrices.small | number:'1.0-0' }} / 天</p>
+                        <p-select
+                            [options]="dogSizeOptions.small"
+                            [(ngModel)]="dogSizeSelections.small"
+                            optionLabel="name"
+                            optionValue="id"
+                            [placeholder]="dogSizeDisabled.small ? '不接受此體型的狗狗' : '請輸入預訂數量'"
+                            [disabled]="dogSizeDisabled.small"
+                            class="dog-size-select">
+                        </p-select>
+                    </div>
+                     <div class="medium-dog">
+                        <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/%E4%B8%AD%E5%9E%8B%E7%8A%AC+(1).png"
+                            alt="中型犬">
+                        <p>中型犬</p>
+                        <p class="card-price" *ngIf="!dogSizeDisabled.medium">NT $ {{ dogSizePrices.medium | number:'1.0-0' }} / 天</p>
+                        <p-select
+                            [options]="dogSizeOptions.medium"
+                            [(ngModel)]="dogSizeSelections.medium"
+                            optionLabel="name"
+                            optionValue="id"
+                            [placeholder]="dogSizeDisabled.medium ? '不接受此體型的狗狗' : '請輸入預訂數量'"
+                            [disabled]="dogSizeDisabled.medium"
+                            class="dog-size-select">
+                        </p-select>
+                    </div>
+                     <div class="big-dog">
+                        <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/%E5%A4%A7%E5%9E%8B%E7%8A%AC.png"
+                            alt="大型犬">
+                        <p>大型犬</p>
+                        <p class="card-price" *ngIf="!dogSizeDisabled.big">NT $ {{ dogSizePrices.big | number:'1.0-0' }} / 天</p>
+                        <p-select
+                            [options]="dogSizeOptions.big"
+                            [(ngModel)]="dogSizeSelections.big"
+                            optionLabel="name"
+                            optionValue="id"
+                            [placeholder]="dogSizeDisabled.big ? '不接受此體型的狗狗' : '請輸入預訂數量'"
+                            [disabled]="dogSizeDisabled.big"
+                            class="dog-size-select">
+                        </p-select>
+                    </div>
+                     <div class="huge-dog">
+                        <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/%E8%B6%85%E5%A4%A7%E5%9E%8B%E7%8A%AC.png"
+                            alt="超大型犬">
+                        <p>超大型犬</p>
+                        <p class="card-price" *ngIf="!dogSizeDisabled.huge">NT $ {{ dogSizePrices.huge | number:'1.0-0' }} / 天</p>
+                        <p-select
+                            [options]="dogSizeOptions.huge"
+                            [(ngModel)]="dogSizeSelections.huge"
+                            optionLabel="name"
+                            optionValue="id"
+                            [placeholder]="dogSizeDisabled.huge ? '不接受此體型的狗狗' : '請輸入預訂數量'"
+                            [disabled]="dogSizeDisabled.huge"
+                            class="dog-size-select">
+                        </p-select>
+                    </div>
+                </div>
+
+
+                <div class="order-button">
+                    <p-button label="我要預訂" class="booking-btn" styleClass="booking-btn" (onClick)="onBooking()" />
+                </div>
+            </p-tabpanel>
+            <p-tabpanel value="2">
+                <!-- 頂部資訊容器 -->
+                <div class="store-header-container" *ngIf="hotelDetail">
+                    <!-- 店家名稱 (H1) -->
+                    <h1 class="store-name">{{ hotelDetail.name }}</h1>
+
+                    <!-- 評分和評論數 row -->
+                    <div class="rating-row">
+                        <!-- 評分 (星星) -->
+                        <p-rating [(ngModel)]="hotelDetail.avgRating" [readonly]="true" />
+                        <!-- 顯示評分和評論數 -->
+                        <p class="review-count">{{ hotelDetail.avgRating | number:'1.1-1' }} ({{ hotelDetail.reviewCount
+                            }} 則評論)</p>
+                    </div>
+
+                    <!-- 地址 row -->
+                    <div class="address-row">
+                        <i class="pi pi-map-marker address-icon"></i>
+                        <p class="address-text">{{ hotelDetail.city }} {{ hotelDetail.district }}</p>
+                    </div>
+                </div>
+                <p-divider />
+                <div class="score-layout" *ngIf="hotelDetail">
+                    <div>
+                        <p>價格評分 </p>
+                        <p>{{ getAveragePriceScore() | number:'1.1-1' }}</p>
+                    </div>
+                    <p-divider layout="vertical" />
+                    <div>
+                        <p>環境評分 </p>
+                        <p>{{ getAverageEnvScore() | number:'1.1-1' }}</p>
+                    </div>
+                    <p-divider layout="vertical" />
+                    <div>
+                        <p>服務評分 </p>
+                        <p>{{ getAverageServiceScore() | number:'1.1-1' }}</p>
+                    </div>
+                </div>
+                <p-divider />
+                <!-- 排序控制項 -->
+                <div class="sort-control">
+                    <label for="review-sort-by">排序依據：</label>
+                    <p-select [options]="reviewSortOptions" [(ngModel)]="selectedReviewSortOption" optionLabel="name"
+                        placeholder="選擇排序方式" inputId="review-sort-by" />
+                </div>
+                <div class="review-grid" *ngIf="hotelDetail && hotelDetail.reviews">
+                    <p-fieldset class="p-fieldset" *ngFor="let review of getSortedReviews()">
+                        <ng-template pTemplate="header">
+                            <div class="review-head">
+                                <p-avatar [image]="getUserAvatar(review)" shape="circle" />
+                                <span class="font-bold">{{ review.userName || '匿名用戶' }}</span>
+                            </div>
+                        </ng-template>
+                        <div class="review-content">
+                            <div class="review-rating-row">
+                                <p-rating [ngModel]="getReviewAverageScore(review)" [readonly]="true" />
+                                <span class="review-score">{{ getReviewAverageScore(review) | number:'1.1-1' }}</span>
+                            </div>
+                            <br>
+                            <p>{{ review.content }}</p>
+                        </div>
+                    </p-fieldset>
+                </div>
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+</div>
+

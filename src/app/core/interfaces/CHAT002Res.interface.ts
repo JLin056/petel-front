@@ -25,4 +25,5 @@ export interface Chat {
     displayName:     string;
     lastMessage:     null | string;
     lastMessageTime: Date | null;
+    avatarB64: string;
 }

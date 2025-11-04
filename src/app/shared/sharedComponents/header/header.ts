@@ -239,8 +239,8 @@ export class Header {
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間貓貓旅館`);
 
-                    // 成功，跳轉到旅館列表頁
-                    this.router.navigate(['/dogHotels'], {
+                    // 成功，跳轉到貓貓旅館列表頁
+                    this.router.navigate(['/catHotels'], {
                         state: {
                             searchResult: response.TRANRS,
                             searchParams: apiParams
