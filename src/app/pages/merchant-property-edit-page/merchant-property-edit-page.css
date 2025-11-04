@@ -63,71 +63,71 @@ textarea[pInputTextarea]:focus {
 }
 
 .address-row {
-  display: flex;
-  gap: 6px;
-  width: 100%;
+    display: flex;
+    gap: 6px;
+    width: 100%;
 }
 
 .p-select {
-  width: 100%;
-  padding: 2px 3px;
-  border-radius: 8px;
-  border: 1px solid #d9c2b0;
-  font-size: 16px;
-  min-height: 40px;
-  box-shadow: none;
-  transition: all 0.2s;
-  background: #fff;
+    width: 100%;
+    padding: 2px 3px;
+    border-radius: 8px;
+    border: 1px solid #d9c2b0;
+    font-size: 16px;
+    min-height: 40px;
+    box-shadow: none;
+    transition: all 0.2s;
+    background: #fff;
 }
 
 .p-select:focus,
 .p-select.p-focus {
-  border-color: #974b2c;
-  box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
+    border-color: #974b2c;
+    box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
 }
 
 .address-row .city-input {
-  flex: 3.25 1 0;
+    flex: 3.25 1 0;
 }
 
 .address-row .district-input {
-  flex: 3.25 1 0;
+    flex: 3.25 1 0;
 }
 
 .address-row .addressDetail-input {
-  flex: 3.5 1 0;
+    flex: 3.5 1 0;
 }
 
 /* 針對多選元件外觀自訂 */
 .p-multiselect {
-  width: 100%;
-  border-radius: 8px;
-  padding: 4px 6px;
-  border: 1px solid #d9c2b0;
-  font-size: 16px;
-  min-height: 40px;
-  box-shadow: none;
-  transition: all 0.2s;
+    width: 100%;
+    border-radius: 8px;
+    padding: 4px 6px;
+    border: 1px solid #d9c2b0;
+    font-size: 16px;
+    min-height: 40px;
+    box-shadow: none;
+    transition: all 0.2s;
 }
 
 /* 聚焦時樣式同步 input */
 .p-multiselect.p-focus {
-  border-color: #974b2c;
-  box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
+    border-color: #974b2c;
+    box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
 }
 
 /* 選單下拉內容圓角對齊 */
 .p-multiselect-panel {
-  border-radius: 8px;
+    border-radius: 8px;
 }
 
 /* 按鈕、label spacing 微調 */
 .p-multiselect-label {
-  padding: 0;
-  min-height: 24px;
-  line-height: 24px;
-  font-size: 16px;
-  color: inherit;
+    padding: 0;
+    min-height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+    color: inherit;
 }
 
 /* ------------------------------------- */
@@ -142,7 +142,7 @@ textarea[pInputTextarea]:focus {
 
 .image-preview-area {
     width: 100%;
-    min-height: 250px;
+    min-height: 200px;
     background-color: #f1e9e0;
     border: 2px dashed #a4642b;
     border-radius: 8px;
@@ -193,7 +193,7 @@ textarea[pInputTextarea]:focus {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 40%);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 40%);
     display: flex;
     justify-content: space-between;
     padding: 8px;
@@ -220,7 +220,7 @@ textarea[pInputTextarea]:focus {
     height: 28px;
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
@@ -236,8 +236,16 @@ textarea[pInputTextarea]:focus {
     cursor: not-allowed;
 }
 
-.btn-remove i {
+/* .btn-remove i {
     font-size: 14px;
+} */
+ /* 明明寫法與roomInfoInsertPage一樣，卻不能改大小 */
+.image-overlay .btn-remove i {
+    font-size: 14px !important;
+    /* line-height: 1;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important; */
 }
 
 .upload-spinner {
@@ -312,27 +320,46 @@ textarea[pInputTextarea]:focus {
 /* CDK 拖拉樣式 */
 .image-item.cdk-drag-preview {
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    opacity: 0.8;
+    opacity: 0.5;
     cursor: grabbing;
+    transform: rotate(3deg);
 }
 
 .image-item.cdk-drag-animating {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+/* 拖拉時其他圖片淡化但可見 */
 .image-grid.cdk-drop-list-dragging .image-item:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    opacity: 0.6 !important;
+    visibility: visible !important;
 }
 
+/* 拖拉佔位符 - 讓目標位置更明顯 */
 .drag-placeholder {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(151, 75, 44, 0.2);
-    border: 2px dashed #974B2C;
+    width: 150px;
+    height: 150px;
+    background: rgba(151, 75, 44, 0.3);
+    border: 3px dashed #974B2C;
     border-radius: 8px;
+    box-shadow: 0 0 0 4px rgba(151, 75, 44, 0.1);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* 脈動動畫 */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
 }
 
 .image-placeholder {

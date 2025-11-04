@@ -1,6 +1,6 @@
 import { MediaService } from './../../core/services/media.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -30,6 +30,7 @@ import { MERCH025Tranrs } from '../../core/interfaces/MERCH025Res.interface';
     ],
     templateUrl: './merchant-property-edit-page.html',
     styleUrl: './merchant-property-edit-page.css'
+    // encapsulation: ViewEncapsulation.None  // 註解掉，避免樣式干擾
 })
 export class MerchantPropertyEditPage {
 
