@@ -81,7 +81,7 @@ export class OrderTableComponent implements OnInit {
       { label: '未付款', value: '未付款' }
     ];
 
-    // 檢查 URL 查詢參數
+    // 檢查 URL 查詢參數，設定過濾條件
     this.route.queryParams.subscribe(params => {
       if (params['userName']) {
         this.userNameFilter = params['userName'];
@@ -91,14 +91,8 @@ export class OrderTableComponent implements OnInit {
         this.propertyNameFilter = params['propertyName'];
         this.isSearching = true;
       }
-
-      // 如果有任何參數，延遲執行搜尋，等待表格初始化完成
-      if (params['userName'] || params['propertyName']) {
-        setTimeout(() => {
-          this.onSearch();
-        }, 100);
-      }
     });
+    // 初始化時不自動載入，等待 lazy table 觸發
   }
 
   /**
