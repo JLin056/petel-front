@@ -15,16 +15,15 @@
                 <div class="detail-item full-width status-row">
                     <span class="detail-label">狀態:</span>
                     <div class="status-actions">
-                        <p-select [(ngModel)]="order.STATUS" [options]="selectableStatuses" optionLabel="label"
+                        <p-select [(ngModel)]="editedStatus" [options]="selectableStatuses" optionLabel="label"
                             optionValue="value" placeholder="選擇狀態" styleClass="status-select-dialog"
-                            [disabled]="order.STATUS === '已取消'"></p-select>
-
-                        <button class="cancel-button" (click)="onCancelClick()" [disabled]="order?.STATUS === '已取消'">
+                            [disabled]="order.STATUS === '已取消'">
+                        </p-select>
+                        <button class="cancel-button" (click)="onCancelClick()">
                             取消訂單
                         </button>
                     </div>
                 </div>
-
                 <div class="detail-item">
                     <span class="detail-label">建立時間:</span>
                     <span class="detail-value">{{ order.CREATED_AT }}</span>
@@ -70,11 +69,12 @@
             <div class="detail-grid">
                 <div class="detail-item full-width">
                     <span class="detail-label">房型:</span>
-                    <span class="detail-value">{{ roomInfo || '未提供房型資訊' }}</span>
+                    <span class="detail-value">{{ roomInfo || '已取消，本筆訂單資訊不提供' }}</span>
                 </div>
                 <div class="detail-item full-width">
                     <span class="detail-label">訂購房數:</span>
-                    <span class="detail-value highlight">{{ roomQuantity ? (roomQuantity + ' 間') : '未提供數量資訊' }}</span>
+                    <span class="detail-value highlight">{{ roomQuantity ? (roomQuantity + ' 間') : '已取消，本筆訂單資訊不提供'
+                        }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">入住日期:</span>
@@ -108,7 +108,7 @@
 
     <ng-template pTemplate="footer">
         <p-button label="關閉" severity="secondary" (onClick)="onHideDialog()" />
-        <p-button label="儲存" severity="primary" (onClick)="onSave()" />
+        <p-button label="儲存" severity="primary" (onClick)="onSave()" [disabled]="order?.STATUS === '已取消'" />
     </ng-template>
 </p-dialog>
 <app-shared-confirm-dialog [(visible)]="cancelConfirmVisible" header="取消確認" message="確定要取消訂單嗎？取消訂單後無法復原。"

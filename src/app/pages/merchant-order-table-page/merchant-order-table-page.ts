@@ -81,8 +81,8 @@ export class MerchantOrderTablePage implements OnInit {
    */
   initStatuses() {
     this.statuses = [
-      { label: '待付款', value: '待付款' },
-      { label: '已確認', value: '已確認' },
+      { label: '未付款', value: '未付款' },
+      { label: '已付款', value: '已付款' },
       { label: '已完成', value: '已完成' },
       { label: '已取消', value: '已取消' }
     ];
@@ -120,20 +120,17 @@ export class MerchantOrderTablePage implements OnInit {
 
     this.adminService.queryOrders(postData).subscribe({
       next: (res) => {
-        console.log('=== ADMIN-003 API 完整回應 ===');
-        console.log('回應:', res);
-        console.log('TRANRS:', res.TRANRS);
-        console.log('orders 陣列:', res.TRANRS?.orders);
-
         if (res.MWHEADER.RETURNCODE === '0000') {
-          this.orderList = res.TRANRS?.orders || [];
-          this.totalRecords = res.TRANRS?.totalCount || 0;
+          const allOrders = res.TRANRS?.orders || [];
+          if (this.propertyId) {
+            this.orderList = allOrders.filter(o => o.PROPERTY_NAME === this.propertyName);
+          } else {
+            this.orderList = allOrders;
+          }
+          this.totalRecords = res.TRANRS.totalCount;
           console.log('訂單列表載入成功，總數:', this.totalRecords);
           console.log('訂單列表:', this.orderList);
 
-          if (this.orderList.length > 0) {
-            const firstOrder = this.orderList[0];
-          }
         } else {
           this.orderList = [];
           console.error('API 返回錯誤:', res.MWHEADER);
@@ -180,9 +177,9 @@ export class MerchantOrderTablePage implements OnInit {
     switch (status) {
       case '已完成':
         return 'success';
-      case '已確認':
+      case '已付款':
         return 'info';
-      case '待付款':
+      case '未付款':
         return 'warn';
       case '已取消':
         return 'danger';
