@@ -25,16 +25,16 @@ export class MerchantPropertyInfoPage implements OnInit {
     /** errorMessage */
     errorMessage: string = '';
 
-    /** propertyData - 儲存從 API 取得的旅館資料 */
+    /** propertyData */
     propertyData: HOTEL002Tranrs | null = null;
 
-    /** facilityData - 儲存從 API 取得的設施資料 */
+    /** facilityData */
     facilityData: HOTEL004Tranrs | null = null;
 
     /** propertyId */
     propertyId: string = '';
 
-    /** hotel - 整合後的旅館資料物件，供 HTML 使用 */
+    /** hotel */
     hotel: any = {
         name: '',
         businessCode: '',
@@ -45,7 +45,7 @@ export class MerchantPropertyInfoPage implements OnInit {
         checkNotice: '',
         petNotice: '',
         propertyNotice: '',
-        propertyImages: [], // 保留給之後的圖片 API
+        propertyImages: [], 
         facilities: []
     };
 
@@ -58,15 +58,12 @@ export class MerchantPropertyInfoPage implements OnInit {
         private propertyStateService: PropertyStateService,
         private mediaService: MediaService
     ) {
-        // 優先從 router state 取得旅館 ID
         const navigation = this.router.getCurrentNavigation();
         if (navigation?.extras?.state && navigation.extras.state['propertyId']) {
             this.propertyId = navigation.extras.state['propertyId'];
-            // 儲存到 service 中，供其他頁面使用
             this.propertyStateService.setCurrentPropertyId(this.propertyId);
             console.log('從 router state 接收到的旅館 ID:', this.propertyId);
         } else {
-            // 如果沒有從 router state 取得，則從 service 取得
             this.propertyId = this.propertyStateService.getCurrentPropertyId();
             console.log('從 PropertyStateService 取得的旅館 ID:', this.propertyId);
         }
@@ -76,7 +73,6 @@ export class MerchantPropertyInfoPage implements OnInit {
      * 初始化
      */
     ngOnInit(): void {
-        // 檢查是否有旅館 ID
         if (!this.propertyId) {
             console.warn('缺少旅館 ID，導回商家會員頁');
             this.errorMessage = '無法取得旅館資料';
@@ -91,7 +87,7 @@ export class MerchantPropertyInfoPage implements OnInit {
     }
 
     /**
-     * 載入旅館資料 (同時呼叫 HOTEL002 和 HOTEL004)
+     * 載入旅館資料
      */
     private loadPropertyData(): void {
         this.isLoading = true;
@@ -108,7 +104,6 @@ export class MerchantPropertyInfoPage implements OnInit {
                 console.log('HOTEL002 回應:', results.hotelDetail);
                 console.log('HOTEL004 回應:', results.hotelFacilities);
 
-                // 檢查兩個 API 是否都成功
                 const detailSuccess = results.hotelDetail.MWHEADER.RETURNCODE === '0000';
                 const facilitySuccess = results.hotelFacilities.MWHEADER.RETURNCODE === '0000';
 
@@ -116,7 +111,6 @@ export class MerchantPropertyInfoPage implements OnInit {
                     this.propertyData = results.hotelDetail.TRANRS;
                     this.facilityData = results.hotelFacilities.TRANRS;
 
-                    // 整合資料到 hotel 物件
                     this.updateHotelData();
 
                     console.log('取得的旅館資料:', this.propertyData);
@@ -159,7 +153,7 @@ export class MerchantPropertyInfoPage implements OnInit {
                 checkNotice: detail.checkNotice || '',
                 petNotice: detail.petNotice || '',
                 propertyNotice: detail.propertyNotice || '',
-                propertyImages: [], // 保留圖片，等之後串接其他 API
+                propertyImages: [], 
                 facilities: this.facilityData?.facilities.map(f => ({ facilityName: f.name })) || []
             };
 
@@ -182,7 +176,6 @@ export class MerchantPropertyInfoPage implements OnInit {
                 }
             });
 
-            // 儲存旅館名稱到 service，供其他頁面使用
             if (detail.name) {
                 this.propertyStateService.setCurrentPropertyName(detail.name);
             }
@@ -207,7 +200,6 @@ export class MerchantPropertyInfoPage implements OnInit {
             return;
         }
 
-        // 從 propertyData.property_details[0] 取得完整資料
         const detail = this.propertyData.property_details[0];
 
         const propertyForEdit = {
@@ -216,8 +208,6 @@ export class MerchantPropertyInfoPage implements OnInit {
         };
 
         console.log('導航到編輯頁面，傳遞資料:', propertyForEdit);
-
-        // 注意：路由路徑是 /merchants/property/edit
         this.router.navigate(['/merchants/property/edit'], { state: { property: propertyForEdit } });
     }
 }

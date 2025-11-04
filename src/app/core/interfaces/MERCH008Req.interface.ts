@@ -11,4 +11,11 @@ export interface MERCH008Tranrq {
     checkNotice: string;
     petNotice: string;
     propertyNotice?: string;
+    facilities?: string[];
+    propertyImages?: MERCH008TranrqPropertyImage[];
+}
+
+export interface MERCH008TranrqPropertyImage {
+    mediaId: string;
+    sortOrder?: number;
 }
