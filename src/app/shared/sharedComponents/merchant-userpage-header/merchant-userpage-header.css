@@ -13,6 +13,13 @@
     z-index: 1000;
 }
 
+.logo-img {
+    width: 300px;
+    height: 60px;
+    border-radius: 8px;
+    transform: scale(0.6) translate(-200px, 1px);
+}
+
 .navbar-items {
     display: flex;
     list-style: none;

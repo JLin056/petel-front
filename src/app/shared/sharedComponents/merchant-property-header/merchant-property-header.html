@@ -1,6 +1,7 @@
 <div class="header">
     <div class="logo">
-        <a href="#"><img src="img/Logo.png" alt="Petel Logo" class="logo-img"></a>
+        <a href="#"><img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/petel_logo_004.png"
+                alt="Petel Logo" class="logo-img"></a>
     </div>
 
     <div class="navbar">
@@ -16,15 +17,9 @@
     <div class="account">
         <i class="pi pi-comments" style="color: #2e2424; font-size: 1.5rem;" (click)="onClickChat()"></i>
         <div style="position: relative; display: inline-block;">
-            <i
-                class="pi pi-bell"
-                style="color: #2e2424; font-size: 1.5rem; cursor: pointer;"
-                (click)="onClickNotification()"
-            ></i>
-            <span
-                *ngIf="unreadCount > 0"
-                class="notification-badge"
-            >
+            <i class="pi pi-bell" style="color: #2e2424; font-size: 1.5rem; cursor: pointer;"
+                (click)="onClickNotification()"></i>
+            <span *ngIf="unreadCount > 0" class="notification-badge">
                 {{ unreadCount > 99 ? '99+' : unreadCount }}
             </span>
         </div>
@@ -45,6 +40,4 @@
     cancelLabel="取消" (confirm)="onLogout()"></app-shared-confirm-dialog>
 
 <!-- 通知面板 -->
-<app-notification-panel
-    [(visible)]="notificationPanelVisible"
-></app-notification-panel>
+<app-notification-panel [(visible)]="notificationPanelVisible"></app-notification-panel>
