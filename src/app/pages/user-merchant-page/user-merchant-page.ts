@@ -78,6 +78,31 @@ export class UserMerchantPage implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  /** 載入商家頭像 */
+  private loadAvatar(mediaId: string): void {
+    console.log('🖼️ 載入商家頭像，mediaId:', mediaId);
+
+    const sub = this.mediaService.onGetMediaApi({
+      MWHEADER: { MSGID: 'MEDIA-004' },
+      TRANRQ: { mediaIds: [mediaId] }
+    }).subscribe({
+      next: (res) => {
+        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
+          const media = res.TRANRS.medias[0];
+          this.user.avatarUrl = `data:${media.mimeType || 'image/jpeg'};base64,${media.base64Data}`;
+          console.log('✅ 商家頭像載入成功');
+        } else {
+          console.warn('⚠️ 無法取得商家頭像，使用預設圖');
+        }
+      },
+      error: (err) => {
+        console.error('❌ 載入商家頭像失敗:', err);
+      }
+    });
+
+    this.subscriptions.push(sub);
+  }
+
   /** 取得商家會員資訊 */
   fetchSellerInfo(): void {
     this.isLoading = true;
@@ -101,10 +126,16 @@ export class UserMerchantPage implements OnInit, OnDestroy {
             name: data.name,
             email: data.email || '無電子郵件',
             phone: data.phone || '無電話號碼',
-            avatarUrl: data.mediaId ? `data:image/png;base64,${data.mediaId}` : 'assets/img/avatar.png',
+            avatarUrl: 'assets/img/avatar.png', // 預設頭像，稍後透過 API 載入
             id: data.id,
             mediaId: data.mediaId
           };
+
+          // 如果有 mediaId，載入頭像
+          if (data.mediaId) {
+            this.loadAvatar(data.mediaId);
+          }
+
           if (data.id) {
             this.loadHotels(data.id);
           }
@@ -145,14 +176,20 @@ export class UserMerchantPage implements OnInit, OnDestroy {
       next: (res) => {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.toast.add({ severity: 'success', summary: '成功', detail: '會員資料已更新' });
+
+          // 更新基本資訊
           this.user = {
             ...this.user,
-            ...updated,
-            avatarUrl: updated.avatarMediaId
-              ? `data:image/png;base64,${updated.avatarMediaId}`
-              : this.user.avatarUrl,
+            name: updated.name,
+            phone: updated.phone,
             mediaId: updated.avatarMediaId || this.user.mediaId
           };
+
+          // 如果有新的頭像，重新載入
+          if (updated.avatarMediaId) {
+            this.loadAvatar(updated.avatarMediaId);
+          }
+
           this.showFillDialog = false;
         } else {
           this.toast.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '修改失敗' });
@@ -279,7 +316,7 @@ export class UserMerchantPage implements OnInit, OnDestroy {
   }
 
   /** 追蹤 hotelList 的 trackBy */
-  trackByHotelId(index: number, hotel: any): string {
+  trackByHotelId(_index: number, hotel: any): string {
     return hotel.id;
   }
 }
