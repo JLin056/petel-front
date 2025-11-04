@@ -325,8 +325,8 @@ export class DogSinglePage implements OnInit {
      */
     loadPropertyImages(): void {
         const defaultImage: GalleryImage = {
-            itemImageSrc: 'img/hotelImg.png',
-            thumbnailImageSrc: 'img/hotelImg.png',
+            itemImageSrc: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/16950.jpg',
+            thumbnailImageSrc: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/16950.jpg',
             alt: '旅館圖片',
             title: '旅館圖片'
         };
