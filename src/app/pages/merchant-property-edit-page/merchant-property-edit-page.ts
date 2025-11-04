@@ -110,34 +110,61 @@ export class MerchantPropertyEditPage {
 
         if (navigation?.extras?.state) {
             this.propertyId = navigation.extras.state['property']?.id || '';
-            this.hotelService.querySingleHotelDetailForMerchant(this.propertyId).subscribe({
+
+            // 先載入所有可用的 facilities
+            this.merchService.queryAllFacilities().subscribe({
                 next: (response) => {
-                    if (response.MWHEADER.RETURNCODE === '0000') {
-                        this.propertyData = response.TRANRS.singleHotelDetail;
-                        const propertyFacilities = this.propertyData.facilities;
-                        this.propertyForm.patchValue({
-                            name: this.propertyData.name || '',
-                            businessCode: this.propertyData.businessCode || '',
-                            bankAccount: this.propertyData.bankAccount || '',
-                            tel: this.propertyData.tel || '',
-                            city: this.propertyData.city || '',
-                            district: this.propertyData.district || '',
-                            addressDetail: this.extractDetailAddress(this.propertyData.address) || '',
-                            selectedFacilities: propertyFacilities || '',
-                            info: this.propertyData.info || '',
-                            checkNotice: this.propertyData.checkNotice || '',
-                            petNotice: this.propertyData.petNotice || '',
-                            propertyNotice: this.propertyData.propertyNotice || '',
-                        });
-                    } else {
-                        setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
-                    }
+                    this.avaliableFacilities = response;
+
+                    // 再載入旅館詳細資料
+                    this.hotelService.querySingleHotelDetailForMerchant(this.propertyId).subscribe({
+                        next: (response) => {
+                            if (response.MWHEADER.RETURNCODE === '0000') {
+                                this.propertyData = response.TRANRS.singleHotelDetail;
+                                const propertyFacilities = this.propertyData.facilities;
+
+                                // 從 avaliableFacilities 中找出對應的物件引用
+                                const selectedFacilities = this.avaliableFacilities.filter((availFacility: MERCH025Tranrs) =>
+                                    propertyFacilities.some((propFacility: { facilityId: string; facilityName: string }) =>
+                                        propFacility.facilityId === availFacility.facilityId
+                                    )
+                                );
+
+                                console.log('🔹 [載入] 設施配對結果:', {
+                                    原始設施數: propertyFacilities.length,
+                                    配對成功數: selectedFacilities.length,
+                                    設施: selectedFacilities.map((f: { facilityName: any; }) => f.facilityName)
+                                });
+
+                                this.propertyForm.patchValue({
+                                    name: this.propertyData.name || '',
+                                    businessCode: this.propertyData.businessCode || '',
+                                    bankAccount: this.propertyData.bankAccount || '',
+                                    tel: this.propertyData.tel || '',
+                                    city: this.propertyData.city || '',
+                                    district: this.propertyData.district || '',
+                                    addressDetail: this.extractDetailAddress(this.propertyData.address) || '',
+                                    selectedFacilities: selectedFacilities,
+                                    info: this.propertyData.info || '',
+                                    checkNotice: this.propertyData.checkNotice || '',
+                                    petNotice: this.propertyData.petNotice || '',
+                                    propertyNotice: this.propertyData.propertyNotice || '',
+                                });
+                            } else {
+                                setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                            }
+                        },
+                        error: (error) => {
+                            console.error('獲取資訊失敗:', error);
+                            setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                        }
+                    });
                 },
                 error: (error) => {
-                    console.error('獲取資訊失敗:', error);
+                    console.error('獲取設施資訊失敗:', error);
                     setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
                 }
-            })
+            });
             this.merchService.queryPostal().subscribe({
                 next: (response) => {
                     this.rawList = response;
@@ -147,16 +174,6 @@ export class MerchantPropertyEditPage {
                     this.avaliableDistrict = [
                         ...new Set(response.map(o => o.district))
                     ];
-                },
-                error: (error) => {
-                    console.error('獲取資訊失敗:', error);
-                    setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
-                }
-            });
-
-            this.merchService.queryAllFacilities().subscribe({
-                next: (response) => {
-                    this.avaliableFacilities = response;
                 },
                 error: (error) => {
                     console.error('獲取資訊失敗:', error);
@@ -227,6 +244,17 @@ export class MerchantPropertyEditPage {
             }
 
             // 🔹 4. 最後送出旅館資料
+            const selectedFacilitiesValue = this.propertyForm.controls['selectedFacilities'].value;
+            const facilityIds = selectedFacilitiesValue.map(
+                (facility: { facilityId: any }) => facility.facilityId
+            );
+
+            console.log('🔹 [MERCH-007] 送出資料:', {
+                propertyId: this.propertyId,
+                facilitiesCount: facilityIds.length,
+                facilities: facilityIds
+            });
+
             const tranrq: MERCH007Tranrq = {
                 id: this.propertyId,
                 tel: this.propertyForm.controls['tel'].value,
@@ -238,9 +266,7 @@ export class MerchantPropertyEditPage {
                 checkNotice: this.propertyForm.controls['checkNotice'].value,
                 petNotice: this.propertyForm.controls['petNotice'].value,
                 propertyNotice: this.propertyForm.controls['propertyNotice'].value,
-                facilities: this.propertyForm.controls['selectedFacilities'].value.map(
-                    (facility: { facilityId: any }) => facility.facilityId
-                ),
+                facilities: facilityIds,
                 propertyImages: this.existingImages.map(img => ({
                     mediaId: img.mediaId,
                     sortOrder: img.sortOrder
