@@ -11,11 +11,13 @@ import { MerchService } from '../../core/services/merch-service';
 import { MERCH014Tranrq } from '../../core/interfaces/MERCH014Req.interface';
 import { BookService } from '../../core/services/book-service';
 import { BOOK004Req } from '../../core/interfaces/BOOK004Req.interface';
+import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-merchant-order-detail-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, TagModule, SelectModule],
+  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, TagModule, SelectModule, SharedConfirmDialog],
   templateUrl: './merchant-order-detail-dialog.html',
   styleUrl: './merchant-order-detail-dialog.css'
 })
@@ -38,9 +40,13 @@ export class MerchantOrderDetailDialog implements OnChanges {
     { label: '已取消', value: '已取消' }
   ];
 
+  // 取消確認彈窗
+  cancelConfirmVisible = false;
+
   constructor(
     private merchService: MerchService,
-    private bookService: BookService
+    private bookService: BookService,
+    private router: Router
   ) { }
 
   ngOnChanges(): void {
@@ -167,5 +173,20 @@ export class MerchantOrderDetailDialog implements OnChanges {
     } else {
       this.updateNote();
     }
+  }
+
+  /**
+   * 按下取消按鈕後，又決定繼續編輯
+   */
+  onCancelCancel(): void {
+    this.cancelConfirmVisible = false;
+  }
+
+  /**
+   * 放棄修改
+   */
+  onCancelConfirm(): void {
+    this.cancelConfirmVisible = false;
+    this.router.navigate(['/merchants/property/info']);
   }
 }
