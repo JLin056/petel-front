@@ -1,18 +1,18 @@
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
-import { MerchService } from '../../core/services/merch-service';
-import { Router } from '@angular/router';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
-import { MessageService } from 'primeng/api';
+import { SelectModule } from 'primeng/select';
+import { MERCH004Tranrq } from '../../core/interfaces/MERCH004Req.interface';
 import { MediaService } from '../../core/services/media.service';
-import { Tranrq } from '../../core/interfaces/MERCH004Req.interface';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MerchService } from '../../core/services/merch-service';
 import { PropertyStateService } from '../../core/services/property-state.service';
+import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
 
 interface PetTypeOption {
   name: string;
@@ -36,11 +36,11 @@ interface UploadedImage {
     CommonModule,
     ReactiveFormsModule,
     EditorModule,
-    SharedConfirmDialog,
     InputTextModule,
     MessageModule,
     SelectModule,
-    DragDropModule
+    DragDropModule,
+    SharedConfirmDialog
   ],
   templateUrl: './room-info-insert-page.html',
   styleUrl: './room-info-insert-page.css',
@@ -112,6 +112,14 @@ export class RoomInfoInsertPage implements OnInit {
     });
   }
 
+  /** 自訂 HTML 必填驗證器 */
+  htmlRequiredValidator(control: any) {
+    const value = control.value || '';
+    // 移除 HTML 標籤及空白
+    const text = value.replace(/<[^>]*>/g, '').trim();
+    return text.length > 0 ? null : { required: true };
+  }
+
   /**
    * 處理圖片選擇
    */
@@ -148,8 +156,6 @@ export class RoomInfoInsertPage implements OnInit {
 
       this.uploadedImages.push(uploadedImage);
     });
-
-    // 清空 input，允許重複選擇同一檔案
     input.value = '';
   }
 
@@ -159,7 +165,6 @@ export class RoomInfoInsertPage implements OnInit {
   private async uploadAllImages(): Promise<{ mediaId: string; sortOrder: number }[]> {
     const results: { mediaId: string; sortOrder: number }[] = [];
 
-    // 循序上傳每一張圖片
     for (let index = 0; index < this.uploadedImages.length; index++) {
       const uploadedImage = this.uploadedImages[index];
 
@@ -251,20 +256,34 @@ export class RoomInfoInsertPage implements OnInit {
     });
   }
 
+  /**
+   * 提交表單
+   * @returns 
+   */
   async onSubmit(): Promise<void> {
-    this.isSubmitted = true;
-    this.roomForm.markAllAsTouched();
-
     if (this.roomForm.invalid) {
-      this.errorMessage = '請填寫所有必填欄位';
+      this.roomForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: '提醒',
+        detail: '請確認所有欄位皆已填寫完成'
+      });
       return;
     }
 
-    this.errorMessage = '';
-    this.isSubmitting = true;
+    if (this.uploadedImages.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: '錯誤',
+        detail: '請至少上傳一張圖片'
+      });
+      return;
+    }
+
+    const formValue = this.roomForm.value;
+    console.log('送出資料：', formValue);
 
     try {
-      // 先上傳所有圖片
       let roomImages: { mediaId: string; sortOrder: number }[] = [];
 
       if (this.uploadedImages.length > 0) {
@@ -283,11 +302,10 @@ export class RoomInfoInsertPage implements OnInit {
         });
       }
 
-      // 建立房型資料
       const formData = this.roomForm.value;
       const roomSizeText = `${formData.height}x${formData.length}x${formData.width}`;
 
-      const tranrq = {
+      const tranrq: MERCH004Tranrq = {
         propertyId: this.propertyId,
         name: formData.name,
         totalUnits: Number(formData.unit),
@@ -298,42 +316,36 @@ export class RoomInfoInsertPage implements OnInit {
         roomImages: roomImages
       };
 
-      // 送出房型資料
       this.merchService.createRoomDetail(tranrq).subscribe({
-        next: (res: any) => {
+        next: (res) => {
           if (res.MWHEADER.RETURNCODE === '0000') {
-            const newRoomId = res.TRANRS?.roomId || res.TRANRS?.id;
-
-            if (newRoomId) {
-              this.router.navigate(['/merchants/property/roomInfo'], {
-                state: { roomId: newRoomId }
-              });
-              this.messageService.add({
-                severity: 'success',
-                summary: '成功',
-                detail: '房型新增成功'
-              });
-            } else {
-              this.messageService.add({
-                severity: 'warn',
-                summary: '成功',
-                detail: '房型新增成功，但無法導航至詳細頁'
-              });
-              this.router.navigate(['/merchants/property/homepage']);
+            const newRoomId = res.TRANRS.id;
+            if (!newRoomId) {
+              this.messageService.add({ severity: 'error', summary: '錯誤', detail: '無法取得房型編號' });
+              return;
             }
+            this.messageService.add({
+              severity: 'success',
+              summary: '成功',
+              detail: '房型新增成功'
+            });
+
+            this.router.navigate(
+              ['/merchants/property/roomInfo'],
+              { state: { roomId: newRoomId } }
+            );
           } else {
-            this.errorMessage = res.MWHEADER.RETURNDESC || '新增失敗';
+            this.messageService.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '新增失敗' });
           }
 
           this.isSubmitting = false;
         },
         error: (err) => {
-          console.error('API 錯誤:', err);
+          this.messageService.add({ severity: 'error', summary: '錯誤', detail: '系統發生錯誤，請稍後再試' });
           this.isSubmitting = false;
         }
       });
     } catch (error: any) {
-      this.errorMessage = error.message || '圖片上傳失敗，請稍後再試';
       this.isSubmitting = false;
       this.messageService.add({
         severity: 'error',
@@ -343,6 +355,9 @@ export class RoomInfoInsertPage implements OnInit {
     }
   }
 
+  /**
+   * 按下取消按鈕，彈出確認視窗
+   */
   onCancelClick(): void {
     if (this.roomForm.dirty) {
       this.cancelConfirmVisible = true;
@@ -351,11 +366,17 @@ export class RoomInfoInsertPage implements OnInit {
     }
   }
 
+  /**
+   * 放棄新增
+   */
   onCancelConfirm(): void {
     this.cancelConfirmVisible = false;
     this.router.navigate(['/merchants/property/homepage']);
   }
 
+  /**
+   * 按下取消按鈕後，又決定繼續編輯
+   */
   onCancelCancel(): void {
     this.cancelConfirmVisible = false;
   }
@@ -372,7 +393,6 @@ export class RoomInfoInsertPage implements OnInit {
     if (control?.hasError('pattern')) {
       return '請輸入有效的數字';
     }
-
     return '';
   }
 }

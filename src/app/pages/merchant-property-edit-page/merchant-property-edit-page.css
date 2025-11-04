@@ -27,6 +27,12 @@
     padding-bottom: 10px;
 }
 
+.info-section {
+    margin-bottom: 30px;
+    /* 👈 這行是新增的 */
+}
+
+
 /* ------------------------------------- */
 /* 表單格子 */
 /* ------------------------------------- */
@@ -66,9 +72,21 @@ textarea[pInputTextarea]:focus {
     display: flex;
     gap: 6px;
     width: 100%;
+    display: flex;
+    gap: 6px;
+    width: 100%;
 }
 
 .p-select {
+    width: 100%;
+    padding: 2px 3px;
+    border-radius: 8px;
+    border: 1px solid #d9c2b0;
+    font-size: 16px;
+    min-height: 40px;
+    box-shadow: none;
+    transition: all 0.2s;
+    background: #fff;
     width: 100%;
     padding: 2px 3px;
     border-radius: 8px;
@@ -84,22 +102,35 @@ textarea[pInputTextarea]:focus {
 .p-select.p-focus {
     border-color: #974b2c;
     box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
+    border-color: #974b2c;
+    box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
 }
 
 .address-row .city-input {
+    flex: 3.25 1 0;
     flex: 3.25 1 0;
 }
 
 .address-row .district-input {
     flex: 3.25 1 0;
+    flex: 3.25 1 0;
 }
 
 .address-row .addressDetail-input {
+    flex: 3.5 1 0;
     flex: 3.5 1 0;
 }
 
 /* 針對多選元件外觀自訂 */
 .p-multiselect {
+    width: 100%;
+    border-radius: 8px;
+    padding: 4px 6px;
+    border: 1px solid #d9c2b0;
+    font-size: 16px;
+    min-height: 40px;
+    box-shadow: none;
+    transition: all 0.2s;
     width: 100%;
     border-radius: 8px;
     padding: 4px 6px;
@@ -114,15 +145,23 @@ textarea[pInputTextarea]:focus {
 .p-multiselect.p-focus {
     border-color: #974b2c;
     box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
+    border-color: #974b2c;
+    box-shadow: 0 0 5px rgba(151, 75, 44, 0.3);
 }
 
 /* 選單下拉內容圓角對齊 */
 .p-multiselect-panel {
     border-radius: 8px;
+    border-radius: 8px;
 }
 
 /* 按鈕、label spacing 微調 */
 .p-multiselect-label {
+    padding: 0;
+    min-height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+    color: inherit;
     padding: 0;
     min-height: 24px;
     line-height: 24px;
@@ -193,6 +232,7 @@ textarea[pInputTextarea]:focus {
     left: 0;
     right: 0;
     bottom: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 40%);
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, transparent 40%);
     display: flex;
     justify-content: space-between;
@@ -385,7 +425,6 @@ textarea[pInputTextarea]:focus {
     cursor: pointer;
     font-size: 16px;
     margin-bottom: 15px;
-    /* 與圖片間距 */
     transition: background-color 0.2s;
 }
 
@@ -397,7 +436,6 @@ textarea[pInputTextarea]:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    /* 圖片間距 */
     margin-top: 12px;
 }
 
@@ -422,13 +460,11 @@ textarea[pInputTextarea]:focus {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    /* 設施間距加大 */
 }
 
 .facility-item {
     display: flex;
     gap: 15px;
-    /* input 與刪除按鈕間距 */
     align-items: center;
 }
 
@@ -439,7 +475,6 @@ textarea[pInputTextarea]:focus {
     display: flex;
     justify-content: center;
     gap: 30px;
-    /* 儲存與清除按鈕間距 */
     margin-top: 35px;
 }
 
@@ -452,7 +487,7 @@ textarea[pInputTextarea]:focus {
 }
 
 .btn-save:hover {
-    background-color: #a4642b;
+    background-color: #974b2c;
 }
 
 .btn-clear {
@@ -464,7 +499,30 @@ textarea[pInputTextarea]:focus {
 }
 
 .btn-clear:hover {
-    background-color: #554133;
+    background-color: #6c5443;
+}
+
+.btn-save,
+.btn-clear {
+    border: none !important;
+    /* 移除按鈕邊框 */
+    outline: none !important;
+    /* 移除聚焦外框 */
+    box-shadow: none !important;
+    /* 移除陰影 */
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-save:hover,
+.btn-clear:hover {
+    transform: translateY(-1px);
+}
+
+.btn-save:focus,
+.btn-clear:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 /* ------------------------------------- */

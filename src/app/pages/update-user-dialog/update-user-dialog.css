@@ -1,6 +1,5 @@
 :host ::ng-deep .petel-auth-dialog.p-dialog .p-dialog-content {
     border-radius: 20px;
-    overflow: hidden;
 }
 
 :host ::ng-deep .petel-auth-dialog.p-dialog {

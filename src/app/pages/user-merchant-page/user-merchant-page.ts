@@ -1,19 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ButtonModule } from "primeng/button";
 import { ToastModule } from 'primeng/toast';
+import { Subscription } from 'rxjs';
+import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
 import { propertyList } from '../../core/interfaces/MERCH013Res.interface';
-import { MerchService } from '../../core/services/merch-service';
-import { SharedConfirmDialog } from "../shared-confirm-dialog/shared-confirm-dialog";
-import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
 import { AdminService } from '../../core/services/admin.service';
-import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
-import { PropertyStateService } from '../../core/services/property-state.service';
 import { MediaService } from '../../core/services/media.service';
-import { Subscription } from 'rxjs';
-import { ButtonModule } from "primeng/button";
+import { MerchService } from '../../core/services/merch-service';
+import { PropertyStateService } from '../../core/services/property-state.service';
+import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
 
 @Component({
   selector: 'app-user-merchant-page',
@@ -21,7 +20,6 @@ import { ButtonModule } from "primeng/button";
   imports: [
     CommonModule,
     ToastModule,
-    SharedConfirmDialog,
     UpdateSellerInfoDialog,
     ButtonModule
 ],
@@ -80,6 +78,31 @@ export class UserMerchantPage implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  /** 載入商家頭像 */
+  private loadAvatar(mediaId: string): void {
+    console.log('🖼️ 載入商家頭像，mediaId:', mediaId);
+
+    const sub = this.mediaService.onGetMediaApi({
+      MWHEADER: { MSGID: 'MEDIA-004' },
+      TRANRQ: { mediaIds: [mediaId] }
+    }).subscribe({
+      next: (res) => {
+        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
+          const media = res.TRANRS.medias[0];
+          this.user.avatarUrl = `data:${media.mimeType || 'image/jpeg'};base64,${media.base64Data}`;
+          console.log('✅ 商家頭像載入成功');
+        } else {
+          console.warn('⚠️ 無法取得商家頭像，使用預設圖');
+        }
+      },
+      error: (err) => {
+        console.error('❌ 載入商家頭像失敗:', err);
+      }
+    });
+
+    this.subscriptions.push(sub);
+  }
+
   /** 取得商家會員資訊 */
   fetchSellerInfo(): void {
     this.isLoading = true;
@@ -103,10 +126,16 @@ export class UserMerchantPage implements OnInit, OnDestroy {
             name: data.name,
             email: data.email || '無電子郵件',
             phone: data.phone || '無電話號碼',
-            avatarUrl: data.mediaId ? `data:image/png;base64,${data.mediaId}` : 'assets/img/avatar.png',
+            avatarUrl: 'assets/img/avatar.png', // 預設頭像，稍後透過 API 載入
             id: data.id,
             mediaId: data.mediaId
           };
+
+          // 如果有 mediaId，載入頭像
+          if (data.mediaId) {
+            this.loadAvatar(data.mediaId);
+          }
+
           if (data.id) {
             this.loadHotels(data.id);
           }
@@ -147,14 +176,20 @@ export class UserMerchantPage implements OnInit, OnDestroy {
       next: (res) => {
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.toast.add({ severity: 'success', summary: '成功', detail: '會員資料已更新' });
+
+          // 更新基本資訊
           this.user = {
             ...this.user,
-            ...updated,
-            avatarUrl: updated.avatarMediaId
-              ? `data:image/png;base64,${updated.avatarMediaId}`
-              : this.user.avatarUrl,
+            name: updated.name,
+            phone: updated.phone,
             mediaId: updated.avatarMediaId || this.user.mediaId
           };
+
+          // 如果有新的頭像，重新載入
+          if (updated.avatarMediaId) {
+            this.loadAvatar(updated.avatarMediaId);
+          }
+
           this.showFillDialog = false;
         } else {
           this.toast.add({ severity: 'error', summary: '錯誤', detail: res.MWHEADER.RETURNDESC || '修改失敗' });
@@ -280,56 +315,8 @@ export class UserMerchantPage implements OnInit, OnDestroy {
     this.router.navigate(['/merchants/property/info'], { state: { propertyId: property.id } });
   }
 
-  /** 刪除旅館確認框 */
-  showDeleteHotelConfirm(property: any) {
-    if (!property || !property.id) {
-      this.toast.add({ severity: 'error', summary: '錯誤', detail: '無法取得旅館資訊' });
-      return;
-    }
-    this.propertyToDelete = property;
-    this.deletePropertyVisible = true;
-  }
-
-  /** 刪除旅館 */
-  onDelete() {
-    if (!this.propertyToDelete || !this.propertyToDelete.id) {
-      this.toast.add({ severity: 'error', summary: '錯誤', detail: '無法取得旅館，請稍後再試' });
-      return;
-    }
-    this.isDeleting = true;
-
-    const postData = {
-      MWHEADER: { MSGID: 'ADMIN-006' },
-      TRANRQ: { propertyId: this.propertyToDelete.id }
-    };
-
-    const sub = this.adminService.deleteHotel(postData).subscribe({
-      next: (res) => {
-        this.isDeleting = false;
-        if (res.MWHEADER.RETURNCODE === '0000') {
-          const index = this.hotelList.indexOf(this.propertyToDelete);
-          if (index > -1) this.hotelList.splice(index, 1);
-          this.toast.add({ severity: 'success', summary: '成功', detail: '旅館已刪除' });
-          this.propertyToDelete = null;
-          this.deletePropertyVisible = false;
-        } else {
-          this.toast.add({ severity: 'error', summary: '錯誤', detail: '刪除旅館失敗' });
-        }
-      },
-      error: (err) => {
-        console.error('刪除失敗:', err);
-        this.isDeleting = false;
-        this.deletePropertyVisible = false;
-        this.propertyToDelete = null;
-        this.toast.add({ severity: 'error', summary: '錯誤', detail: '刪除旅館失敗' });
-      }
-    });
-
-    this.subscriptions.push(sub);
-  }
-
   /** 追蹤 hotelList 的 trackBy */
-  trackByHotelId(index: number, hotel: any): string {
+  trackByHotelId(_index: number, hotel: any): string {
     return hotel.id;
   }
 }
