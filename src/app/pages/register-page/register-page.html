@@ -39,12 +39,13 @@
                     inputStyleClass="petel-input"
                     [disabled]="isLoading"
                     placeholder="請輸入密碼"
+                    [toggleMask]="true"
                 ></p-password>
                 </div>
                 <div class="error-message">
                     @if (passwordControl?.invalid && (passwordControl?.touched)) {
                         <p-message severity="error" size="small" variant="simple">
-                            @if (passwordControl?.hasError('required')) { 新密碼為必填欄位。 }
+                            @if (passwordControl?.hasError('required')) { 密碼為必填欄位。 }
                             @if (passwordControl?.hasError('minlength')) { 長度至少 6 碼。 }
                             @if (passwordControl?.hasError('maxlength')) { 長度不可超過 64 碼。 }
                         </p-message>
@@ -60,6 +61,7 @@
                     inputStyleClass="petel-input"
                     [disabled]="isLoading"
                     placeholder="請再次輸入密碼"
+                    [toggleMask]="true"
                 ></p-password>
             </div>
             <div class="error-message">

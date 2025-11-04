@@ -7,15 +7,14 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
-import { USER001Req } from '../../core/interfaces/USER001Req.interface';
 import { Auth } from '../../core/services/auth.service';
 import { MerchService } from '../../core/services/merch-service';
 import { AddSellerInfoDialog } from '../add-seller-info-dialog/add-seller-info-dialog';
-import { MERCH009Tranrq } from '../../core/interfaces/MERCH009Req.interface';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-merchant-login-page',
-    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, AddSellerInfoDialog],
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, AddSellerInfoDialog, MessageModule],
     templateUrl: './merchant-login-page.html',
     styleUrl: './merchant-login-page.css'
 })

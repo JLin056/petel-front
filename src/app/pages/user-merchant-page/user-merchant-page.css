@@ -191,11 +191,14 @@
 
 /* 旅館卡片 */
 .hotel-card {
+    display: flex;
+    flex-direction: column;
     background: white;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
+    height: 460px;
 }
 
 .hotel-card:hover {
@@ -257,7 +260,13 @@
 
 /* 內容區 */
 .hotel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: 24px;
+    box-sizing: border-box;
+    min-height: 220px;
 }
 
 .hotel-name {
@@ -292,6 +301,15 @@
     color: #974b2c;
     font-size: 19px;
     width: 16px;
+}
+
+/* ✅ 長地址截斷 */
+.info-row span {
+    display: inline-block;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* 按鈕組 */
@@ -399,7 +417,6 @@
     margin: 0 0 32px 0;
 }
 
-/* 空狀態的新增按鈕 */
 .btn-add-first {
     background: #974b2c;
     color: #fff3f1;

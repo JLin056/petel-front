@@ -38,7 +38,7 @@
                 }
             </div>
 
-            <!-- 2. 房型名稱 & 寵物種類  -->
+            <!-- 房型名稱 & 寵物種類  -->
             <div class="form-row-2col">
                 <!-- 房型名稱 -->
                 <div class="form-section flex-item">
@@ -141,36 +141,16 @@
 
             <!-- 房間介紹  -->
             <div class="form-section full-width">
-                <label class="section-label">房間介紹*</label>
-                <p-editor formControlName="description" [style]="{'height':'280px', 'background-color':'#fffdf8'}"
-                    [invalid]="roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)">
-                    <ng-template pTemplate="header">
-                        <span class="ql-formats">
-                            <button type="button" class="ql-bold" aria-label="Bold"></button>
-                            <button type="button" class="ql-italic" aria-label="Italic"></button>
-                            <button type="button" class="ql-underline" aria-label="Underline"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <button type="button" class="ql-list" value="ordered" aria-label="Ordered List"></button>
-                            <button type="button" class="ql-list" value="bullet" aria-label="Bullet List"></button>
-                        </span>
-                        <span class="ql-formats">
-                            <select class="ql-align">
-                                <option selected></option>
-                                <option value="center"></option>
-                                <option value="right"></option>
-                            </select>
-                        </span>
-                    </ng-template>
-                </p-editor>
-
+                <label class="section-label" for="roomDescriptionInput">房型介紹*</label>
+                <textarea pInputTextarea formControlName="description" id="roomDescriptionInput" rows="5"
+                    [ngClass]="{'ng-invalid ng-dirty': roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)}"
+                    class="w-full"></textarea>
                 @if (roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)) {
                 <p-message severity="error" size="small" variant="simple">
                     {{ getErrorMessage('description') }}
                 </p-message>
                 }
             </div>
-
         </div>
 
         <div class="form-buttons full-width">

@@ -146,6 +146,10 @@ export class Header {
         this.router.navigate(['']);
     }
 
+    onClickContact(){
+        this.router.navigate(['contactUs'])
+    }
+
     /**
      * 前往狗狗旅館（帶參數搜尋）
      */

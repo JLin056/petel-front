@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -63,11 +63,11 @@ export class MerchantPropertyInsertPage {
 
   /**
    * 建構子注入
-   * @param fb 
-   * @param merchService 
-   * @param mediaService 
-   * @param router 
-   * @param messageService 
+   * @param fb
+   * @param merchService
+   * @param mediaService
+   * @param router
+   * @param messageService
    */
   constructor(
     private fb: FormBuilder,
@@ -113,7 +113,7 @@ export class MerchantPropertyInsertPage {
     this.loadPostalData();
   }
 
-  /** 
+  /**
    * 載入郵遞區號資料
    */
   private loadPostalData(): void {
@@ -126,8 +126,8 @@ export class MerchantPropertyInsertPage {
     });
   }
 
-  /** 
-   * 載入設施 
+  /**
+   * 載入設施
    */
   private loadFacilities(): void {
     this.merchService.queryAllFacilities().subscribe({
@@ -136,7 +136,7 @@ export class MerchantPropertyInsertPage {
     });
   }
 
-  /** 
+  /**
    * 縣市變動更新區域
    */
   onCityChange(city: string): void {
@@ -147,8 +147,8 @@ export class MerchantPropertyInsertPage {
     this.propertyForm.controls['district'].setValue('');
   }
 
-  /** 
-   * 圖片選擇 
+  /**
+   * 圖片選擇
    */
   onImageSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -172,23 +172,23 @@ export class MerchantPropertyInsertPage {
     input.value = '';
   }
 
-  /** 
-   * 拖拉排序 
+  /**
+   * 拖拉排序
    */
   onImageDrop(event: CdkDragDrop<any[]>): void {
     moveItemInArray(this.uploadedImages, event.previousIndex, event.currentIndex);
     this.updateSortOrder();
   }
 
-  /** 
-   * 更新排序 
+  /**
+   * 更新排序
   */
   private updateSortOrder(): void {
     this.uploadedImages.forEach((img, index) => img.sortOrder = index + 1);
   }
 
-  /** 
-   * 移除圖片 
+  /**
+   * 移除圖片
   */
   removeUploadedImage(index: number): void {
     const image = this.uploadedImages[index];
@@ -197,7 +197,7 @@ export class MerchantPropertyInsertPage {
     this.updateSortOrder();
   }
 
-  /** 
+  /**
    * 上傳所有圖片
    */
   private async uploadAllImages(): Promise<{ mediaId: string; sortOrder: number }[]> {
@@ -274,8 +274,8 @@ export class MerchantPropertyInsertPage {
   }
 
 
-  /** 
-   * 取得 sellerId 
+  /**
+   * 取得 sellerId
    */
   private async getSellerId(): Promise<string> {
     const accountId = localStorage.getItem('accountId') || '';
@@ -292,8 +292,8 @@ export class MerchantPropertyInsertPage {
     }
   }
 
-  /** 
-   * 送出表單 
+  /**
+   * 送出表單
    */
   async onSubmit(): Promise<void> {
     if (this.propertyForm.invalid) {
@@ -397,6 +397,40 @@ export class MerchantPropertyInsertPage {
    */
   onCancelCancel(): void {
     this.cancelConfirmVisible = false;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onGlobalKeydown(e: KeyboardEvent) {
+    if (e.ctrlKey && e.altKey && (e.key === 'd' || e.key === 'D')) {
+        e.preventDefault();
+        this.fillDemoData();
+    }
+  }
+
+  /**
+   * 帶入 demo 資料
+   */
+  fillDemoData(): void {
+    const demoCity = this.avaliableCities[0] ?? '臺北市';
+    this.onCityChange(demoCity);
+    const demoDistrict = this.avaliableDistrict[0] ?? '';
+
+    const demoFacilities = this.avaliableFacilities.slice(1, 4);
+
+    this.propertyForm.patchValue({
+        name: '毛孩樂園寵物旅館',
+        businessCode: 'A1234567',
+        bankAccount: '12345678901234',
+        tel: '02-1234-5678',
+        city: demoCity,
+        district: demoDistrict,
+        addressDetail: '信義路一段21號',
+        selectedFacilities: demoFacilities,
+        info: '近捷運、全天候空調與獨立通風，鄰近公園每日兩次散步。',
+        checkNotice: '入住須出示疫苗證明，攜帶慣用飼料與牽繩。',
+        petNotice: '若有分離焦慮請事先告知，初次入住可安排適應時段。',
+        propertyNotice: '春節連假須預付訂金，臨時取消依規定酌收手續費。'
+    });
   }
 }
 
