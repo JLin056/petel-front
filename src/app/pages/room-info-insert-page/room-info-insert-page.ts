@@ -1,6 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -258,7 +258,7 @@ export class RoomInfoInsertPage implements OnInit {
 
   /**
    * 提交表單
-   * @returns 
+   * @returns
    */
   async onSubmit(): Promise<void> {
     if (this.roomForm.invalid) {
@@ -394,5 +394,31 @@ export class RoomInfoInsertPage implements OnInit {
       return '請輸入有效的數字';
     }
     return '';
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onGlobalKeydown(e: KeyboardEvent) {
+    if (e.ctrlKey && e.altKey && (e.key === 'd' || e.key === 'D')) {
+        e.preventDefault();
+        this.fillDemoData();
+    }
+  }
+
+  /**
+   * 帶入 demo 資料
+   */
+  fillDemoData(): void {
+    const demoPet = this.petTypes?.[0] ?? { name: '貓', id: 'W001' };
+    this.roomForm.patchValue({
+        petTypeObject: demoPet,
+        name: '溫馨棒棒貓套房',
+        height: 200,
+        length: 200,
+        width: 200,
+        description: '含每日兩次散步、獨立通風與舒壓香氛，提供舒適乾淨的休憩空間。',
+        price: 1500,
+        unit: 5
+    });
+    this.roomForm.markAllAsTouched();
   }
 }
