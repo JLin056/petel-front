@@ -15,35 +15,45 @@
                 </button>
 
                 <!-- 圖片預覽區 -->
-                <div *ngIf="existingImages.length > 0 || uploadedImages.length > 0" class="image-preview-area">
+                @if (existingImages.length > 0 || uploadedImages.length > 0) {
+                <div class="image-preview-area">
                     <div class="image-grid" cdkDropList (cdkDropListDropped)="onImageDrop($event)">
                         <!-- 現有圖片 -->
-                        <div *ngFor="let img of existingImages; let i = index" class="image-item" cdkDrag>
+                        @for (img of existingImages; track img.mediaId; let i = $index) {
+                        <div class="image-item" cdkDrag>
                             <img [src]="'data:image/jpeg;base64,' + img.base64Data" alt="房型圖片">
                             <div class="image-overlay">
                                 <span class="sort-number">{{ img.sortOrder }}</span>
-                                <button type="button" class="btn-remove" (click)="removeExistingImage(i)">
+                                <button type="button"
+                                        class="btn-remove"
+                                        (click)="removeExistingImage(i)">
                                     <i class="pi pi-times"></i>
                                 </button>
                             </div>
+                            <!-- CDK 拖拉預覽 -->
                             <div class="drag-placeholder" *cdkDragPlaceholder></div>
                         </div>
-
+                        }
                         <!-- 新上傳的圖片 -->
-                        <div *ngFor="let img of uploadedImages; let i = index" class="image-item" cdkDrag>
+                        @for (img of uploadedImages; track img.previewUrl; let i = $index) {
+                        <div class="image-item" cdkDrag>
                             <img [src]="img.previewUrl" alt="預覽圖片">
                             <div class="image-overlay">
                                 <span class="sort-number">{{ img.sortOrder }}</span>
-                                <button type="button" class="btn-remove" (click)="removeUploadedImage(i)">
+                                <button type="button"
+                                        class="btn-remove"
+                                        (click)="removeUploadedImage(i)">
                                     <i class="pi pi-times"></i>
                                 </button>
                             </div>
+                            <!-- CDK 拖拉預覽 -->
                             <div class="drag-placeholder" *cdkDragPlaceholder></div>
                         </div>
+                        }
                     </div>
                     <p class="hint-text"><i class="pi pi-arrows-alt"></i> 拖拉圖片可調整順序</p>
                 </div>
-
+                }
             </div>
         </div>
 
