@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-merchant-home-page',
-  imports: [CommonModule, SharedConfirmDialog],
+  imports: [CommonModule],
   templateUrl: './merchant-home-page.html',
   styleUrl: './merchant-home-page.css'
 })
@@ -77,28 +77,24 @@ export class MerchantHomePage implements OnInit, OnDestroy {
     console.log('商家首頁取得的 propertyId:', this.propertyId);
     this.loadRooms();
 
-    // 監聽 queryParams 變化（當從編輯頁面帶 refresh 參數回來時觸發）
+    // 監聽 queryParams 
     this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       if (params['refresh']) {
         console.log('🔄 偵測到 refresh 參數，強制重新載入房型和圖片');
         console.log('🔗 Refresh 時間戳:', params['refresh']);
-        // 清除所有快取的圖片
         this.roomImages = {};
-        // 重新載入房型列表和圖片
         this.loadRooms();
       }
     });
 
-    // 監聽路由變化（作為備用機制）
+    // 監聽路由變化
     this.navigationSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (event.url.includes('/merchants/property/homepage')) {
           console.log('🔄 導航回首頁，強制重新載入房型和圖片資料');
           console.log('🔗 導航 URL:', event.url);
-          // 清除所有快取的圖片
           this.roomImages = {};
-          // 重新載入房型列表和圖片
           this.loadRooms();
         }
       });
@@ -190,14 +186,14 @@ export class MerchantHomePage implements OnInit, OnDestroy {
               })));
 
               const sortedImages = res.TRANRS.medias.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+              const firstImage = res.TRANRS.medias.find(m => m.sortOrder === 1) || sortedImages[0];
+              this.roomImages[room.id] = `data:image/jpeg;base64,${firstImage.base64Data}`;
 
               console.log(`📊 排序後的圖片資料:`, sortedImages.map(m => ({
                 mediaId: m.mediaId,
                 sortOrder: m.sortOrder,
                 fileName: m.fileName
               })));
-
-              const firstImage = sortedImages[0];
 
               console.log(`🎯 房型 ${room.id} 選擇的封面圖（sortOrder 最小）:`, {
                 mediaId: firstImage.mediaId,
@@ -250,52 +246,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * 顯示刪除確認對話框
-   * @param room 
-   */
-  showDeleteConfirm(room: any) {
-    if (!room || !room.id) {
-      return;
-    }
-    this.roomToDelete = room;
-    this.deleteRoomVisible = true;
-  }
-
-  /**
-   * 刪除
-   */
-  onDelete() {
-    if (!this.roomToDelete || !this.roomToDelete.id) {
-      return;
-    }
-    this.isDeleting = true;
-
-    this.merchService.deleteRoomDetail(this.roomToDelete.id).subscribe({
-      next: (res) => {
-        console.log('刪除API回應', res);
-        if (res.MWHEADER.RETURNCODE === '0000') {
-          const index = this.roomList.indexOf(this.roomToDelete);
-          if (index > -1) {
-            this.roomList.splice(index, 1);
-          }
-          console.log('已成功刪除房型', this.roomToDelete.name)
-          this.roomToDelete = null;
-          this.deleteRoomVisible = false;
-        } else {
-        }
-        this.isDeleting = false;
-      },
-      error: (err) => {
-        console.error('刪除失敗', err);
-        this.isDeleting = false;
-        this.deleteRoomVisible = false;
-        this.roomToDelete = null;
-      }
-    });
-  }
-
-  /**
-   * 查看房型詳細資料 (點擊卡片主要區域觸發)
+   * 查看房型詳細資料 
    * @param room 
    */
   onDetail(room: any): void {
@@ -307,7 +258,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   
     console.log('導航到詳細頁面，房型 ID:', room.id);
 
-    this.router.navigate(['/merchants/property/homepage'], {
+    this.router.navigate(['/merchants/property/roomInfo'], {
       state: {
         roomId: room.id,
       }

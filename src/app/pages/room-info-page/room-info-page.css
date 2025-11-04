@@ -1,17 +1,14 @@
-/* room-info-page.css - 完整版 */
-
 /* ------------------------------------- */
-/* 基礎設定與容器 */
+/* 容器與基礎設定 */
 /* ------------------------------------- */
-
 .room-form-container {
     background-color: #f8f1e9;
     max-width: 900px;
-    margin: 0 auto;
-    padding: 25px 60px;
+    margin: 40px auto;
+    padding: 30px 60px;
     box-sizing: border-box;
     border-radius: 20px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     min-height: 85vh;
     font-family: 'Arial', sans-serif;
 }
@@ -21,25 +18,24 @@
     font-weight: bold;
     color: #3a1f0b;
     border-bottom: 3px solid #3a1f0b;
-    padding-bottom: 8px;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
     text-align: center;
 }
 
 /* ------------------------------------- */
-/* 表單佈局 */
+/* 表單與區塊排版 */
 /* ------------------------------------- */
-
 .form-body {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 }
 
 .form-main-content.sequential-layout {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 25px;
 }
 
 .form-row-2col {
@@ -56,7 +52,6 @@
 .form-section {
     display: flex;
     flex-direction: column;
-    position: relative;
     padding-bottom: 20px;
 }
 
@@ -67,24 +62,20 @@
 /* ------------------------------------- */
 /* 標籤樣式 */
 /* ------------------------------------- */
-
 .section-label {
-    font-size: 32px;
-    display: block;
+    font-size: 28px;
     font-weight: 600;
     color: #3a1f0b;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 /* ------------------------------------- */
-/* 圖片區塊 - 簡潔版 */
+/* 圖片區塊 */
 /* ------------------------------------- */
-
 .image-section {
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 
-/* 圖片畫廊容器 */
 .images-gallery {
     display: flex;
     gap: 15px;
@@ -92,20 +83,19 @@
     margin-top: 8px;
 }
 
-/* 單張圖片 */
 .gallery-image {
     width: 200px;
     height: 200px;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     flex-shrink: 0;
 }
 
 .gallery-image:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
 }
 
 .gallery-image img {
@@ -115,100 +105,55 @@
     display: block;
 }
 
-/* 載入中狀態 */
-.images-loading {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 20px 0;
-    color: #974b2c;
-    font-size: 16px;
-}
-
-.images-loading i {
-    font-size: 1.5rem;
-}
-
-/* 沒有圖片狀態 */
+.images-loading,
 .images-empty {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 20px 0;
-    color: #8b6f5c;
+    padding: 15px 0;
     font-size: 16px;
+    color: #974b2c;
 }
 
-.images-empty i {
-    font-size: 1.5rem;
-}
-
-/* 舊版樣式保留（以防萬一） */
-.image-preview-area {
-    width: 100%;
-    height: 200px;
-    background-color: #f1e9e0;
-    border: 2px dashed #a4642b;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
-}
-
-.image-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #a4642b;
-    font-size: 18px;
-    font-weight: 500;
-}
-
-.image-placeholder i {
-    font-size: 45px;
-    margin-bottom: 10px;
+.images-empty {
+    color: #8b6f5c;
 }
 
 /* ------------------------------------- */
-/* 資訊顯示區塊（純文字顯示）*/
+/* 文字資訊區塊 */
 /* ------------------------------------- */
-
 .info-section {
-    padding-bottom: 0 !important;
+    padding-bottom: 0;
 }
 
 .info-text {
     width: 100%;
     padding: 10px 0;
-    background-color: transparent;
-    border: none;
-    font-size: 24px;
+    font-size: 22px;
     color: #3a1f0b;
-    min-height: 30px;
+    min-height: 28px;
     display: flex;
     align-items: center;
 }
 
 .price-text {
-    font-weight: bold;
+    font-weight: normal;
     color: #3a1f0b;
-    font-size: 26px;
+    font-size: 22px;
 }
 
 /* ------------------------------------- */
-/* 房間介紹內容區塊 */
+/* 房型介紹內容區塊 */
 /* ------------------------------------- */
-
 .description-content {
     width: 100%;
     min-height: 150px;
-    padding: 15px 0;
+    padding: 12px 0;
     background-color: transparent;
     border: none;
+    font-size: 20px;
+    line-height: 1.7;
     color: #3a1f0b;
-    font-size: 22px;
-    line-height: 1.8;
     overflow-wrap: break-word;
 }
 
@@ -218,61 +163,18 @@
     font-style: italic;
 }
 
-.description-content h1 {
-    font-size: 28px;
-    font-weight: bold;
-    margin: 12px 0;
-    color: #3a1f0b;
-}
-
-.description-content h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #3a1f0b;
-}
-
-.description-content p {
-    margin: 8px 0;
-}
-
-.description-content ul,
-.description-content ol {
-    margin: 8px 0;
-    padding-left: 35px;
-}
-
-.description-content li {
-    margin: 5px 0;
-}
-
-.description-content strong {
-    font-weight: bold;
-}
-
-.description-content em {
-    font-style: italic;
-}
-
-.description-content u {
-    text-decoration: underline;
-}
-
 /* ------------------------------------- */
 /* 按鈕區塊 */
 /* ------------------------------------- */
-
 .form-buttons {
     display: flex;
     justify-content: center;
-    gap: 100px;
-    margin-bottom: 20px;
+    gap: 30px;
+    margin-top: 25px;
 }
 
 .btn-save,
 .btn-cancel {
-    background-color: #974B2C;
-    color: white;
     border: none;
     padding: 14px 45px;
     border-radius: 10px;
@@ -280,11 +182,12 @@
     font-size: 18px;
     font-weight: 600;
     transition: background-color 0.2s;
-    min-width: 200px;
+    min-width: 180px;
+    color: #fff;
 }
 
 .btn-save {
-    background-color: #974B2C;
+    background-color: #974b2c;
 }
 
 .btn-save:hover {
@@ -299,39 +202,19 @@
     background-color: #554133;
 }
 
-.btn-save:disabled,
-.btn-cancel:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.form-buttons button i {
-    margin-right: 10px;
-    font-size: 18px;
-}
-
 /* ------------------------------------- */
-/* Loading 容器 */
+/* Loading & 錯誤訊息 */
 /* ------------------------------------- */
-
 .loading-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
     gap: 15px;
-}
-
-.loading-container p {
-    font-size: 20px;
+    padding: 40px 20px;
+    font-size: 18px;
     color: #6c5443;
-    margin: 0;
 }
-
-/* ------------------------------------- */
-/* 錯誤訊息顯示 */
-/* ------------------------------------- */
 
 .error-message {
     background-color: #fef2f2;
@@ -339,28 +222,22 @@
     color: #991b1b;
     padding: 10px 14px;
     border-radius: 8px;
-    margin-top: 15px;
+    margin-bottom: 15px;
     text-align: center;
-    font-weight: 500;
 }
 
 /* ------------------------------------- */
-/* 響應式優化 */
+/* 響應式 */
 /* ------------------------------------- */
-
 @media (max-width: 1024px) {
-    .form-main-content.sequential-layout {
-        gap: 15px;
-    }
-
     .form-row-2col {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
     }
 
     .form-buttons {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
     }
 
     .room-form-container {
@@ -372,7 +249,7 @@
     }
 
     .section-label {
-        font-size: 26px;
+        font-size: 24px;
     }
 
     .info-text {

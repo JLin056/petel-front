@@ -7,11 +7,11 @@
     </div>
     }
 
-    <!-- 上半部：當月銷售額（只有在有房間時才顯示） -->
+    <!-- 上半部：當月銷售額（只有在有房間時才顯示）
     @if (!isLoading && stats.length > 0 && roomList.length > 0) {
     <h2 class="page-title">本月經營分析</h2>
 
-    <!-- 統計卡片（從後端載入） -->
+    統計卡片（從後端載入）
     <div class="stats-cards">
         @for (stat of stats; track $index) {
         <div class="card">
@@ -26,7 +26,7 @@
         </div>
         }
     </div>
-    }
+    } -->
 
     <!-- 下半部：房型資訊 -->
     <div class="section-header-row">
@@ -76,10 +76,6 @@
                         <i class="pi pi-pencil"></i>
                         <span>編輯</span>
                     </button>
-                    <button class="btn-action btn-delete" (click)="showDeleteConfirm(room)">
-                        <i class="pi pi-trash"></i>
-                        <span>刪除</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -96,8 +92,3 @@
     </div>
     }
 </div>
-
-<!-- 登出 dialog -->
-<app-shared-confirm-dialog [(visible)]="deleteRoomVisible" header="刪除確認"
-    [message]="'確定要刪除房型「' + (roomToDelete?.name || '') + '」嗎？'" confirmLabel="確定" cancelLabel="取消"
-    (confirm)="onDelete()" (cancel)="deleteRoomVisible = false"></app-shared-confirm-dialog>
