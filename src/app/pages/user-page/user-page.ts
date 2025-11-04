@@ -221,7 +221,7 @@ export class UserPage implements OnInit{
                 if (res.MWHEADER.RETURNCODE === '0000') {
                     const list = res?.TRANRS?.orders;
                     this.orders = Array.isArray(list) ? list : [];
-                } else if (res.MWHEADER.RETURNDESC === '查無資料') {
+                } else if (res.MWHEADER.RETURNDESC === '查無歷史訂單資料') {
                     this.orders = [];
                     this.bookingsError = '';
                 } else {
