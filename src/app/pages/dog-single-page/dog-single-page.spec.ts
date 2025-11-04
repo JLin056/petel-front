@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HotelSinglePage } from './hotel-single-page';
+import { DogSinglePage } from './dog-single-page';
 
-describe('HotelSinglePage', () => {
-  let component: HotelSinglePage;
-  let fixture: ComponentFixture<HotelSinglePage>;
+describe('DogSinglePage', () => {
+  let component: DogSinglePage;
+  let fixture: ComponentFixture<DogSinglePage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HotelSinglePage]
+      imports: [DogSinglePage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HotelSinglePage);
+    fixture = TestBed.createComponent(DogSinglePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
