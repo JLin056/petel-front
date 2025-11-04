@@ -8,11 +8,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
 import { Auth } from '../../core/services/auth.service';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-admin-login-page',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, MessageModule],
     templateUrl: './admin-login-page.html',
     styleUrl: './admin-login-page.css'
 })
