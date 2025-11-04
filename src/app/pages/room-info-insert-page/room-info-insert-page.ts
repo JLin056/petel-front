@@ -287,19 +287,7 @@ export class RoomInfoInsertPage implements OnInit {
       let roomImages: { mediaId: string; sortOrder: number }[] = [];
 
       if (this.uploadedImages.length > 0) {
-        this.messageService.add({
-          severity: 'info',
-          summary: '上傳中',
-          detail: `正在上傳 ${this.uploadedImages.length} 張圖片...`
-        });
-
         roomImages = await this.uploadAllImages();
-
-        this.messageService.add({
-          severity: 'success',
-          summary: '成功',
-          detail: '所有圖片上傳完成'
-        });
       }
 
       const formData = this.roomForm.value;

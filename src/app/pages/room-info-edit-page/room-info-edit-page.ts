@@ -367,12 +367,6 @@ export class RoomInfoEditPage implements OnInit {
     try {
       // 刪除已標記的圖片
       if (this.deletedImageIds.length > 0) {
-        this.messageService.add({
-          severity: 'info',
-          summary: '處理中',
-          detail: `正在刪除 ${this.deletedImageIds.length} 張圖片...`
-        });
-
         await new Promise<void>((resolve, reject) => {
           this.mediaService.deleteMedia({
             MWHEADER: { MSGID: 'MEDIA-003' },
@@ -392,12 +386,6 @@ export class RoomInfoEditPage implements OnInit {
 
       // 上傳新圖片
       if (this.uploadedImages.length > 0) {
-        this.messageService.add({
-          severity: 'info',
-          summary: '上傳中',
-          detail: `正在上傳 ${this.uploadedImages.length} 張圖片...`
-        });
-
         await this.uploadAllImages();
       }
 
