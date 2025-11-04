@@ -120,20 +120,17 @@ export class MerchantOrderTablePage implements OnInit {
 
     this.adminService.queryOrders(postData).subscribe({
       next: (res) => {
-        console.log('=== ADMIN-003 API 完整回應 ===');
-        console.log('回應:', res);
-        console.log('TRANRS:', res.TRANRS);
-        console.log('orders 陣列:', res.TRANRS?.orders);
-
         if (res.MWHEADER.RETURNCODE === '0000') {
-          this.orderList = res.TRANRS?.orders || [];
-          this.totalRecords = res.TRANRS?.totalCount || 0;
+          const allOrders = res.TRANRS?.orders || [];
+          if (this.propertyId) {
+            this.orderList = allOrders.filter(o => o.PROPERTY_NAME === this.propertyName);
+          } else {
+            this.orderList = allOrders;
+          }
+          this.totalRecords = res.TRANRS.totalCount || 0;
           console.log('訂單列表載入成功，總數:', this.totalRecords);
           console.log('訂單列表:', this.orderList);
 
-          if (this.orderList.length > 0) {
-            const firstOrder = this.orderList[0];
-          }
         } else {
           this.orderList = [];
           console.error('API 返回錯誤:', res.MWHEADER);
