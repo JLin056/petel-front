@@ -4,11 +4,12 @@ export interface MERCH008Tranrs {
     name: string;
     tel: string;
     businessCode: string;
-    postalCode: string;
+    postalCode?: string;
     address: string;
     bankAccount: string;
     info: string;
     checkNotice: string;
     petNotice: string;
     propertyNotice?: string;
+    facilities?: string[];
 }
