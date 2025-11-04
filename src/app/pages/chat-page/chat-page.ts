@@ -33,6 +33,9 @@ export class ChatPage {
     messages: ChatMessage[] = [];
     loadingMessages = false;
 
+    defaultAvatar = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/User_Profile/dog_avatar003.png';
+    otherAvatarSrc = '';
+
     draft = '';
 
     /** 滾軸 */
@@ -137,6 +140,7 @@ export class ChatPage {
     selectThread(thread: Chat): void {
         if (this.selectedThread?.threadId === thread.threadId) return;
         this.selectedThread = thread;
+        this.draft = '';
 
         // 重設訊息分頁狀態
         this.room = null;
