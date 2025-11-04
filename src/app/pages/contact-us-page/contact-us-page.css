@@ -1,0 +1,113 @@
+/* ======= 外層容器：上下左右置中 ======= */
+.contact-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 120px);
+  background-color: #fffcf8;
+}
+
+/* ======= 主要卡片 ======= */
+.contact-box {
+  text-align: center;
+  background-color: #fffbf6;
+  border-radius: 20px;
+  padding: 80px 60px;
+  box-shadow: 0 4px 15px rgba(150, 100, 50, 0.1);
+  color: #5c4027;
+  max-width: 580px;
+  width: 90%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(150, 100, 50, 0.15);
+}
+
+/* ======= Icon ======= */
+.icon {
+  font-size: 72px;
+  color: #b07a3f;
+  margin-bottom: 28px;
+}
+
+/* ======= 標題 ======= */
+.title {
+  font-size: 34px;
+  color: #7a4b28;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+/* ======= 說明文字 ======= */
+.desc {
+  font-size: 20px;
+  color: #6f6f6f;
+  line-height: 1.8;
+  margin-bottom: 26px;
+}
+
+/* ======= 聯絡資訊區塊 ======= */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+}
+
+.info-icon {
+  color: #b07a3f;
+  font-size: 24px;
+}
+
+.info-link {
+  color: #b07a3f;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.info-link:hover {
+  color: #a0672f;
+  text-decoration: underline;
+}
+
+/* ======= 手機與平板 ======= */
+@media (max-width: 768px) {
+  .contact-box {
+    padding: 60px 30px;
+  }
+
+  .icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .desc {
+    font-size: 18px;
+  }
+
+  .info-item {
+    font-size: 18px;
+  }
+
+  .info-icon {
+    font-size: 22px;
+  }
+
+  .info-link {
+    font-size: 18px;
+  }
+}
