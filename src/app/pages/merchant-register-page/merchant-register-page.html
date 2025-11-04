@@ -19,8 +19,13 @@
                 placeholder="請輸入信箱"
             />
             </div>
-            <div *ngIf="emailControl?.invalid && emailControl?.touched" class="error-text">
-                {{ getErrorMessage('email') }}
+            <div class="error-message">
+                @if (emailControl?.invalid && emailControl?.touched) {
+                    <p-message severity="error" size="small" variant="simple">
+                        @if (emailControl?.hasError('required')) { 信箱為必填欄位。 }
+                        @if (emailControl?.hasError('email')) { 請輸入有效的信箱格式 }
+                    </p-message>
+                }
             </div>
 
         <div class="input-container-password">
@@ -32,10 +37,17 @@
                 inputStyleClass="petel-input"
                 [disabled]="isLoading"
                 placeholder="請輸入密碼"
+                [toggleMask]="true"
             ></p-password>
             </div>
-            <div *ngIf="passwordControl?.invalid && passwordControl?.touched" class="error-text">
-                {{ getErrorMessage('password') }}
+            <div class="error-message">
+                @if (passwordControl?.invalid && (passwordControl?.touched)) {
+                    <p-message severity="error" size="small" variant="simple">
+                        @if (passwordControl?.hasError('required')) { 密碼為必填欄位。 }
+                        @if (passwordControl?.hasError('minlength')) { 長度至少 6 碼。 }
+                        @if (passwordControl?.hasError('maxlength')) { 長度不可超過 64 碼。 }
+                    </p-message>
+                }
             </div>
 
         <div class="input-container-password">
@@ -47,16 +59,19 @@
                 inputStyleClass="petel-input"
                 [disabled]="isLoading"
                 placeholder="請再次輸入密碼"
+                [toggleMask]="true"
             ></p-password>
         </div>
-        <div *ngIf="confirmControl?.touched && registerForm.hasError('passwordsMismatch')" class="error-text">
-            {{ getErrorMessage('confirm') }}
+        <div class="error-message">
+            @if (confirmControl?.touched && registerForm.hasError('passwordsMismatch')) {
+                <p-message severity="error" size="small" variant="simple">
+                    @if (confirmControl?.hasError('required')) { 請再次輸入密碼。 }
+                    @if (registerForm.hasError('passwordsMismatch')) { 兩次密碼不一致。 }
+                </p-message>
+            }
         </div>
 
         <div class="button-container">
-            <!-- <button pButton type="button" class="p-button-secondary ghost" (click)="goLoginPage()" [disabled]="isLoading">
-            取消
-            </button> -->
             <button
                 pButton
                 type="submit"

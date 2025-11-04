@@ -16,10 +16,11 @@ import { Auth } from '../../core/services/auth.service';
 import { AUTH001Req } from '../../core/interfaces/AUTH001Req.interface';
 import { AUTH001Res } from '../../core/interfaces/AUTH001Res.interface';
 import { MessageService } from 'primeng/api';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-merchant-register-page',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, MessageModule],
   templateUrl: './merchant-register-page.html',
   styleUrl: './merchant-register-page.css'
 })
