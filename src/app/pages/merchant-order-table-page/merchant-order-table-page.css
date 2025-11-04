@@ -184,6 +184,11 @@ body {
   font-size: 1rem;
 }
 
+.table-container {
+  display: flex;
+  justify-content: center; /* 水平置中 */
+}
+
 /* 表格外框 */
 .table-wrapper {
   background: #ffffff;
@@ -191,8 +196,11 @@ body {
   padding: 20px;
   box-shadow: 0 3px 10px rgba(220, 190, 150, 0.15);
   border: 1px solid #e5ddd1;
-  margin: 0 20px;
+  margin: 40px 20px 20px 20px;
+  width: calc(100% - 40px);    
+  max-width: 1200px;          
 }
+
 
 /* 表格樣式 */
 :host ::ng-deep .p-datatable-thead>tr>th {

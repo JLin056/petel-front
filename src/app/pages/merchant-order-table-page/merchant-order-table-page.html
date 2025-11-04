@@ -8,75 +8,77 @@
 </div>
 }
 
-<div class="search-container">
-  <!-- 搜尋條件 -->
-  <div class="search-row">
-    <div class="search-input">
-      <label>訂單編號</label>
-      <input pInputText type="text" [(ngModel)]="searchOrderId" placeholder="輸入訂單編號" />
+<div class="table-container">
+  <div class="search-container">
+    <!-- 搜尋條件 -->
+    <div class="search-row">
+      <div class="search-input">
+        <label>訂單編號</label>
+        <input pInputText type="text" [(ngModel)]="searchOrderId" placeholder="輸入訂單編號" />
+      </div>
+      <div class="search-input">
+        <label>入住日期</label>
+        <input pInputText type="text" [(ngModel)]="searchCheckIn" placeholder="YYYY-MM-DD" />
+      </div>
+      <div class="search-input">
+        <label>會員姓名</label>
+        <input pInputText type="text" [(ngModel)]="searchUserName" placeholder="輸入會員姓名" />
+      </div>
+      <div class="search-buttons">
+        <p-button label="搜尋" icon="pi pi-search" (onClick)="onSearch()" [loading]="loading" />
+        <p-button label="清除" icon="pi pi-times" severity="secondary" (onClick)="onClearSearch()" />
+      </div>
     </div>
-    <div class="search-input">
-      <label>入住日期</label>
-      <input pInputText type="text" [(ngModel)]="searchCheckIn" placeholder="YYYY-MM-DD" />
-    </div>
-    <div class="search-input">
-      <label>會員姓名</label>
-      <input pInputText type="text" [(ngModel)]="searchUserName" placeholder="輸入會員姓名" />
-    </div>
-    <div class="search-buttons">
-      <p-button label="搜尋" icon="pi pi-search" (onClick)="onSearch()" [loading]="loading" />
-      <p-button label="清除" icon="pi pi-times" severity="secondary" (onClick)="onClearSearch()" />
+
+    <div class="table-wrapper">
+      <p-table #dt [value]="orderList" dataKey="ORDER_ID" [rows]="pageSize" [rowsPerPageOptions]="[5,10,15]"
+        [loading]="loading" [paginator]="true" [lazy]="true" [totalRecords]="totalRecords"
+        (onPage)="onPageChange($event)" [tableStyle]="{ 'min-width': '70rem', 'table-layout': 'fixed' }">
+
+        <ng-template #header>
+          <tr>
+            <th style="width: 120px">訂單編號</th>
+            <th style="width: 120px">入住日期</th>
+            <th style="width: 120px">退房日期</th>
+            <th style="width: 120px">會員姓名</th>
+            <th style="width: 150px">房型</th>
+            <th style="width: 110px">總價格</th>
+            <th style="width: 120px">付款方式</th>
+            <th style="width: 90px">狀態</th>
+            <th style="width: 80px">操作</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-order>
+          <tr>
+            <td>{{ order.ORDER_ID }}</td>
+            <td>{{ order.CHECK_IN }}</td>
+            <td>{{ order.CHECK_OUT }}</td>
+            <td>{{ order.USER_NAME }}</td>
+            <td>{{ order.ROOM || '未提供房型資訊' }}</td>
+            <td>NT$ {{ order.HOTEL_CHARGES.toLocaleString() || '0' }}</td>
+            <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
+            <td class="status-cell">
+              <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)" styleClass="custom-tag">
+              </p-tag>
+            </td>
+            <td>
+              <p-button label="詳細" icon="pi pi-eye" size="small" styleClass="button"
+                (onClick)="showOrderDetail(order)" />
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="8" class="text-center py-4">目前沒有訂單資料</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </div>
 
-  <div class="table-wrapper">
-    <p-table #dt [value]="orderList" dataKey="ORDER_ID" [rows]="pageSize" [rowsPerPageOptions]="[5,10,15]"
-      [loading]="loading" [paginator]="true" [lazy]="true" [totalRecords]="totalRecords" (onPage)="onPageChange($event)"
-      [tableStyle]="{ 'min-width': '70rem', 'table-layout': 'fixed' }">
-
-      <ng-template #header>
-        <tr>
-          <th style="width: 120px">訂單編號</th>
-          <th style="width: 120px">入住日期</th>
-          <th style="width: 120px">退房日期</th>
-          <th style="width: 120px">會員姓名</th>
-          <th style="width: 150px">房型</th>
-          <th style="width: 110px">總價格</th>
-          <th style="width: 120px">付款方式</th>
-          <th style="width: 90px">狀態</th>
-          <th style="width: 80px">操作</th>
-        </tr>
-      </ng-template>
-
-      <ng-template #body let-order>
-        <tr>
-          <td>{{ order.ORDER_ID }}</td>
-          <td>{{ order.CHECK_IN }}</td>
-          <td>{{ order.CHECK_OUT }}</td>
-          <td>{{ order.USER_NAME }}</td>
-          <td>{{ order.ROOM || '未提供房型資訊' }}</td>
-          <td>NT$ {{ order.HOTEL_CHARGES.toLocaleString() || '0' }}</td>
-          <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
-          <td class="status-cell">
-            <p-tag [value]="order.STATUS" [severity]="getSeverity(order.STATUS)" styleClass="custom-tag">
-            </p-tag>
-          </td>
-          <td>
-            <p-button label="詳細" icon="pi pi-eye" size="small" styleClass="button" (onClick)="showOrderDetail(order)" />
-          </td>
-        </tr>
-      </ng-template>
-
-      <ng-template #emptymessage>
-        <tr>
-          <td colspan="8" class="text-center py-4">目前沒有訂單資料</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-</div>
-
-<!-- Dialog -->
-<app-merchant-order-detail-dialog [(visible)]="showDetailDialog" [order]="selectedOrder"
-  (noteUpdated)="onNoteUpdated($event)" (statusUpdated)="onStatusUpdated($event)">
-</app-merchant-order-detail-dialog>
+  <!-- Dialog -->
+  <app-merchant-order-detail-dialog [(visible)]="showDetailDialog" [order]="selectedOrder"
+    (noteUpdated)="onNoteUpdated($event)" (statusUpdated)="onStatusUpdated($event)">
+  </app-merchant-order-detail-dialog>
