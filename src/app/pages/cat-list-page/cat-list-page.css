@@ -20,6 +20,9 @@
     padding: 10px;
     position: relative;
     top: -20px;
+    margin: 0 auto;
+    max-width: 1350px;
+    width: 100%;
 }
 
 .search-bar {
@@ -42,23 +45,28 @@
 :host ::ng-deep .p-inputnumber.p-component input {
   border: none; /* 移除內層 input 原框 */
   box-shadow: none;
+  border-radius: 8px;
 }
 
 ::ng-deep .petel-search-btn.p-button {
   background-color: #EDA33A;
-  color: #A24522;
-  padding: 10px 20px;
+  color: white;
+  padding: 12px 24px;
   border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
 }
 /* 左側搜尋欄 */
 .list-container {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
     gap: 30px;
     margin-top: 30px;
 }
 .search-select-container {
-    padding: 30px;
+    padding-top: 88px;
+    padding-left: 30px;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -68,9 +76,11 @@
     border: solid 1px #A24522;
     padding: 20px;
     background-color: #F0E4D8;
+    border-radius: 8px;
 }
 .hotel-name-search p{
     color: #A24522;
+    text-align: center;
 }
 /* select 框 */
 .select-search {
@@ -78,6 +88,7 @@
     background-color: #F0E4D8;
     display: flex;
     flex-direction: column;
+    border-radius: 8px;
 }
 .select-search-title {
     border-bottom: solid 1px #A24522;
@@ -85,9 +96,15 @@
 .select-search-title p {
     color: #A24522;
     margin: 15px;
+    text-align: center;
 }
 .select-search ::ng-deep .p-listbox {
     border: none;
+}
+
+.select-search ::ng-deep .p-listbox .p-listbox-list .p-listbox-option {
+    white-space: nowrap;
+    font-size: 1.2rem;
 }
 /* 評價框 */
 .rating-select-search {
@@ -95,7 +112,14 @@
     justify-content: center;
     background-color: white;
     padding: 30px;
+    border-radius: 8px;
 }
+
+.rating-select-search-title p {
+    color: #A24522;
+    text-align: center;
+}
+
 .rating-select-search ::ng-deep .p-rating .p-rating-item {
     font-size: 4rem;
 }
@@ -117,7 +141,7 @@
 }
 .sort-label ::ng-deep .p-select {
     border: solid 1px #A24522;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .sort-selectbox {
@@ -126,6 +150,8 @@
 
 /* 旅館列表 */
 .hotel-list-container {
+    flex: 1;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -138,6 +164,7 @@
     gap: 30px;
     border: 1px solid #A24522;
     padding: 20px;
+    border-radius: 8px;
 }
 
 .hotel-list-item img {
@@ -151,6 +178,8 @@
 .hotel-list-text {
     display: flex;
     gap: 10px;
+    align-items: center;
+    flex: 1;
 }
 /* 單個旅館列表右側字體區 - 左側 */
 .hotel-list-info {
@@ -201,4 +230,239 @@
 .card {
     border: none;
     margin-bottom: 10px;
+}
+
+/* 分頁器被選取的頁碼圓角 */
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    border-radius: 8px;  /* 調整這個數值來控制圓潤程度 */
+}
+
+/* 如果想讓所有分頁按鈕都圓一點 */
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+    border-radius: 8px;
+}
+
+/* 其他分頁器按鈕（上一頁、下一頁等）也圓潤一點 */
+::ng-deep .p-paginator .p-paginator-first,
+::ng-deep .p-paginator .p-paginator-prev,
+::ng-deep .p-paginator .p-paginator-next,
+::ng-deep .p-paginator .p-paginator-last {
+    border-radius: 8px;
+}
+
+/* ==================== RWD 響應式設計 ==================== */
+
+/* 手機裝置 (最大 480px) */
+@media (max-width: 480px) {
+    /* 搜尋列 */
+    .search-container {
+        padding: 15px;
+        top: -10px;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-item {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    ::ng-deep .petel-search-btn.p-button {
+        width: 100%;
+        font-size: 1rem;
+        padding: 10px 16px;
+    }
+
+    /* 左右排列改為上下 */
+    .list-container {
+        flex-direction: column;
+        margin-top: 15px;
+        gap: 20px;
+    }
+
+    .search-select-container {
+        padding: 0 15px;
+        width: 100%;
+        order: 2;  /* 讓篩選區移到下方 */
+    }
+
+    .hotel-container {
+        order: 1;  /* 讓旅館列表先顯示 */
+    }
+
+    /* 搜尋卡片 */
+    .hotel-name-search,
+    .select-search,
+    .rating-select-search {
+        padding: 15px;
+    }
+
+    .select-search ::ng-deep .p-listbox .p-listbox-list .p-listbox-option {
+        font-size: 1rem;
+    }
+
+    /* 旅館列表 */
+    .tab-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 0 15px;
+    }
+
+    .tab-container h4 {
+        font-size: 1.5rem;
+    }
+
+    .sort-selectbox {
+        width: 100%;
+    }
+
+    .hotel-list-container {
+        margin: 0 15px 20px 15px;
+    }
+
+    .hotel-list-item {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .hotel-list-item img {
+        width: 100%;
+        height: auto;
+        max-height: 250px;
+    }
+
+    .hotel-list-text {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hotel-list-info,
+    .hotel-list-price {
+        width: 100%;
+    }
+
+    .hotel-list-price {
+        align-items: flex-start;
+        margin-right: 0;
+    }
+
+    .hotel-list-item h4 {
+        font-size: 1.3rem;
+    }
+}
+
+/* 平板裝置 (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .search-bar {
+        flex-wrap: wrap;
+    }
+
+    .search-item {
+        flex: 1 1 45%;
+        min-width: 150px;
+    }
+
+    ::ng-deep .petel-search-btn.p-button {
+        flex: 1 1 100%;
+        font-size: 1.1rem;
+    }
+
+    .list-container {
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .search-select-container {
+        padding: 0 20px;
+        width: 100%;
+    }
+
+    .hotel-list-container {
+        margin: 0 20px 25px 20px;
+    }
+
+    .hotel-list-item {
+        gap: 20px;
+    }
+
+    .hotel-list-item img {
+        width: 250px;
+        height: 220px;
+    }
+
+    .tab-container h4 {
+        font-size: 1.8rem;
+    }
+}
+
+/* 平板裝置橫向 (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .search-container {
+        max-width: 95%;
+    }
+
+    .search-bar {
+        flex-wrap: wrap;
+    }
+
+    .list-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .search-select-container {
+        padding-left: 0;
+        padding-top: 88px;
+        min-width: 220px;
+    }
+
+    .hotel-list-container {
+        margin-right: 0;
+    }
+
+    .hotel-list-item img {
+        width: 250px;
+        height: 220px;
+    }
+
+    .tab-container h4 {
+        font-size: 1.8rem;
+    }
+
+    .select-search ::ng-deep .p-listbox .p-listbox-list .p-listbox-option {
+        font-size: 1rem;
+    }
+}
+
+/* 小型桌面 (1025px - 1280px) */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .search-container {
+        max-width: 95%;
+    }
+
+    .list-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .search-select-container {
+        padding-left: 15px;
+        min-width: 240px;
+    }
+
+    .hotel-list-item img {
+        width: 280px;
+    }
+}
+
+/* 大型桌面 (1281px 以上) - 維持原設計 */
+@media (min-width: 1281px) {
+    .search-container {
+        max-width: 1350px;
+    }
 }

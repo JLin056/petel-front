@@ -85,12 +85,13 @@
                 </div>
                 <div class="info-layout">
                     <p-card header="店家資訊" class="left-card" *ngIf="hotelDetail">
+                        <p-divider />
                         <div class="info-content-fixed">
                             <p>{{ hotelDetail.info }}</p>
                         </div>
                         <div class="facilities-section">
-                            <p-divider />
                             <p>設施</p>
+                            <p-divider />
                             <div class="chip-container" *ngIf="hotelDetail.facilities && hotelDetail.facilities.length > 0">
                                 <p-chip *ngFor="let facility of hotelDetail.facilities" [label]="facility.facilityName" icon="pi pi-check" />
                             </div>

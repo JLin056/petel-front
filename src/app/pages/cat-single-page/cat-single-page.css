@@ -1,3 +1,12 @@
+/* Tab 標籤字體大小 */
+::ng-deep .p-tab {
+    font-size: 1rem !important;
+}
+
+::ng-deep .p-tab .p-tab-label {
+    font-size: 1rem !important;
+}
+
 /* 搜尋列 */
 .banner {
     display: flex;
@@ -394,8 +403,10 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 固定兩個一排 */
-    gap: 10px;
-    /* chip 之間的間距 */
+    column-gap: 5px;
+    /* 左右列之間的間距 */
+    row-gap: 10px;
+    /* 上下行之間的間距 */
     margin-top: 10px;
 }
 
@@ -414,6 +425,16 @@
     /* 圓角 */
     width: auto;
     /* 不要太長，根據內容調整 */
+}
+
+/* 左列的 chip 往右移 */
+::ng-deep .chip-container .p-chip:nth-child(odd) {
+    margin-left: 50px;
+}
+
+/* 右列的 chip 往左移 */
+::ng-deep .chip-container .p-chip:nth-child(even) {
+    margin-right: 50px;
 }
 
 /* Chip icon 和文字間隔 */
@@ -460,6 +481,18 @@
     border-radius: 0;
 }
 
+/* 左邊卡片的 header 樣式 */
+::ng-deep .left-card .p-card-header {
+    background-color: #f5efe8 !important;
+    padding: 1rem 1.25rem !important;
+    font-weight: 600 !important;
+    color: #7c4200 !important;
+    font-size: 1rem !important;
+    /* 與內文相同大小 */
+    border-bottom: 1px solid #e8dfd4 !important;
+    margin: 0 !important;
+}
+
 /* 右邊卡片的 header 底色 */
 ::ng-deep .right-card .p-card-header {
     background-color: #f5efe8 !important;
@@ -467,6 +500,8 @@
     padding: 1rem 1.25rem !important;
     font-weight: 600 !important;
     color: #7c4200 !important;
+    font-size: 1rem !important;
+    /* 與內文相同大小 */
     border-bottom: 1px solid #e8dfd4 !important;
     margin: 0 !important;
 }
@@ -662,7 +697,11 @@
 /* 標題 */
 .card-title {
     font-weight: 600;
+<<<<<<< Updated upstream
     font-size: 1rem;
+=======
+    font-size: 1.25rem;
+>>>>>>> Stashed changes
     margin: 0 0 0.5rem 0;
     color: #333;
 }
