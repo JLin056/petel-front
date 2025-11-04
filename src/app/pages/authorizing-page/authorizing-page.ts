@@ -201,6 +201,23 @@ export class AuthorizingPage implements OnInit, OnDestroy {
         event.returnValue = '您的預訂資訊可能會遺失，請問確認要重整此頁嗎？';
     }
 
+    /**
+     * for Demo 用的 按鈕
+     */
+    fillDemoCard(): void {
+        this.form.patchValue({
+            cardName: 'Lin Huang Lin',
+            cardPhone: '0923532697',
+            cardNo: '4134-6345-5864-4311',
+            cardCVV2: '232',
+            cardValidMM: '12',
+            cardValidYY: '30'
+        });
+
+        // 讓驗證狀態立刻更新
+        this.form.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    }
+
     // 簡化取得控制項：beginning
     get cardName() {
         return this.form.controls.cardName;

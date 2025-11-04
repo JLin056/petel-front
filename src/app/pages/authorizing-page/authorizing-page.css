@@ -331,6 +331,28 @@ small {
     transform: translateY(0);
 }
 
+/* demo 一鍵填入 button */
+.demo_button {
+    padding: 8px 14px;
+    background: #f59e0b;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+}
+.demo_button:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+}
+.demo_button:active {
+    background: #b45309;
+    transform: translateY(0);
+}
+
 /* RWD 響應式設計 */
 @media (max-width: 1200px) {
     .authorizing-container {
