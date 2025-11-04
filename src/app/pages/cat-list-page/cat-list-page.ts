@@ -271,11 +271,56 @@ export class CatListPage implements OnInit, OnDestroy {
             }
         }
 
+        // 🔹 檢查 petType 是否改變，如果改變則導向對應的頁面
+        if (this.searchParams.petType !== 'CAT') {
+            console.log(`⚠️ petType 已改變為 ${this.searchParams.petType}，導向對應頁面`);
+            const targetRoute = this.searchParams.petType === 'DOG' ? '/dogHotels' : '/catHotels';
+
+            // 先執行搜尋取得結果，再導頁
+            const apiParams = {
+                petType: this.searchParams.petType,
+                checkIn: this.searchParams.checkIn,
+                checkOut: this.searchParams.checkOut,
+                petCount: this.searchParams.petCount,
+                city: this.searchParams.city,
+                pageNumber: 1,
+                pageSize: this.rows
+            };
+
+            this.hotelService.queryHotels(apiParams).subscribe({
+                next: (response) => {
+                    if (response.MWHEADER.RETURNCODE === '0000') {
+                        this.router.navigate([targetRoute], {
+                            state: {
+                                searchResult: response.TRANRS,
+                                searchParams: this.searchParams
+                            }
+                        });
+                    } else {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: '錯誤',
+                            detail: response.MWHEADER.RETURNDESC || '查詢失敗'
+                        });
+                    }
+                },
+                error: (error) => {
+                    console.error('API 錯誤:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: '錯誤',
+                        detail: '連接後端 API 失敗，請稍後再試'
+                    });
+                }
+            });
+            return;
+        }
+
         // 重置分頁
         this.first = 0;
         this.currentPage = 1;
 
-        // 執行搜尋
+        // 執行搜尋（在當前頁面）
         this.performSearch();
     }
 

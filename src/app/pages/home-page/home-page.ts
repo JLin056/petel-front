@@ -20,6 +20,12 @@ interface Hotel {
     petType: string;  // 用於跳轉時傳遞 petType
 }
 
+// Banner 圖片類型
+interface BannerImage {
+    src: string;
+    alt: string;
+}
+
 @Component({
   selector: 'app-home-page',
   imports: [FormsModule, Select, ButtonModule, DatePicker, FloatLabel, IftaLabelModule, InputNumber, CarouselModule],
@@ -32,6 +38,14 @@ export class HomePage implements OnInit {
     types: Option[] | undefined;
     dogHotels: Hotel[] = [];
     catHotels: Hotel[] = [];
+
+    // Banner 圖片列表
+    bannerImages: BannerImage[] = [
+        { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/you-deng-zai-sha-fa-shang-de-ke-ai-xiao-rong-gou.jpg', alt: 'Petel 廣告圖 1' },
+        { src: 'img/homePageLogo.png', alt: 'Petel 廣告圖 2' },
+        { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/zai-shi-nei-fang-song-de-ke-ai-mao.jpg', alt: 'Petel 廣告圖 3' },
+        { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/2206.i203.011.S.m004.c13.pet+services+cartoon.jpg', alt: 'Petel 廣告圖 4' },
+    ];
 
     // 搜尋參數
     searchParams = {

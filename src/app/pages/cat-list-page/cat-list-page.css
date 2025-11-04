@@ -8,10 +8,16 @@
     justify-content: center;
 }
 
-.banner-background {
+/* .banner-background {
     height: 20px;
     width: 100%;
     background-color: #974B2C;
+} */
+
+.banner-background {
+    height: 50px;
+    width: 100%;
+    background-color: #ffffff;
 }
 
 .search-container {
@@ -63,6 +69,8 @@
     align-items: flex-start;
     gap: 30px;
     margin-top: 30px;
+    padding-left: 80px;
+    padding-right: 80px;
 }
 .search-select-container {
     padding-top: 88px;
