@@ -113,7 +113,7 @@ export class OrderDetailDialog {
   navigateToMember() {
     if (this.order?.USER_NAME) {
       this.router.navigate(['/admin/userTable'], {
-        queryParams: { search: this.order.USER_NAME }
+        queryParams: { userName: this.order.USER_NAME }
       });
       this.onHideDialog();
     }
@@ -123,7 +123,7 @@ export class OrderDetailDialog {
   navigateToHotel() {
     if (this.order?.PROPERTY_NAME) {
       this.router.navigate(['/admin/hotelTable'], {
-        queryParams: { search: this.order.PROPERTY_NAME }
+        queryParams: { propertyName: this.order.PROPERTY_NAME }
       });
       this.onHideDialog();
     }

@@ -75,16 +75,19 @@ export class AdminUserTable implements OnInit {
       { label: '暫停', value: 'SUSPENDED' }
     ];
 
-    // 檢查 URL 查詢參數
+    // 檢查 URL 查詢參數，設定過濾條件
     this.route.queryParams.subscribe(params => {
-      if (params['search']) {
+      if (params['userName']) {
+        this.nameFilter = params['userName'];
+        this.isSearching = true;
+      }
+      // 為了向後兼容，也支援 search 參數
+      else if (params['search']) {
         this.nameFilter = params['search'];
-        // 延遲執行搜尋，等待表格初始化完成
-        setTimeout(() => {
-          this.onSearch();
-        }, 100);
+        this.isSearching = true;
       }
     });
+    // 初始化時不自動載入，等待 lazy table 觸發
   }
 
   /**

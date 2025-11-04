@@ -59,11 +59,14 @@ export class AdminHotelTable implements OnInit {
   private isSearching = false; // 追蹤是否為搜尋操作
 
   ngOnInit() {
-    // 檢查 URL 查詢參數，如果有 sellerName 就設定過濾條件
+    // 檢查 URL 查詢參數，如果有查詢條件就設定過濾
     this.route.queryParams.subscribe(params => {
       if (params['sellerName']) {
         this.sellerNameFilter = params['sellerName'];
-        // 標記為搜尋操作，稍後會顯示提示
+        this.isSearching = true;
+      }
+      if (params['propertyName']) {
+        this.propertyNameFilter = params['propertyName'];
         this.isSearching = true;
       }
     });
