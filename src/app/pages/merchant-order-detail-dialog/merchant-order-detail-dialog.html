@@ -19,8 +19,9 @@
                             optionValue="value" placeholder="選擇狀態" styleClass="status-select-dialog"
                             [disabled]="order.STATUS === '已取消'"></p-select>
 
-                        <p-button label="取消訂單" styleClass="cancel-button" (onClick)="onCancelClick()"
-                            [disabled]="order?.STATUS === '已取消'"></p-button>
+                        <button class="cancel-button" (click)="onCancelClick()" [disabled]="order?.STATUS === '已取消'">
+                            取消訂單
+                        </button>
                     </div>
                 </div>
 

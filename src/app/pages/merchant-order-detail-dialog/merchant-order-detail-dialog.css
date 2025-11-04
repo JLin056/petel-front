@@ -192,6 +192,32 @@
 .status-actions {
   display: flex;
   align-items: center;
-  gap: 8.5rem; 
+  gap: 8.5rem;
 }
 
+.cancel-button {
+  background: linear-gradient(135deg, #ff7f50, #ff6a33);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.15rem;
+  padding: 0.7rem 1.6rem;
+  box-shadow: 0 3px 6px rgba(255, 111, 51, 0.3);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background: linear-gradient(135deg, #e56a2d, #cc5020);
+  box-shadow: 0 5px 10px rgba(229, 106, 45, 0.4);
+  transform: translateY(-1px);
+}
+
+.cancel-button:disabled {
+  background: #f8d1c0;
+  color: #ffffff;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}

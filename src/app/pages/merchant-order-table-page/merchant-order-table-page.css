@@ -214,7 +214,7 @@ body {
   background-color: #ebae88 !important;
   border: none !important;
   color: #fff !important;
-  border-radius: 6px !important;
+  border-radius: 10px !important;
   padding: 8px 16px !important;
   font-weight: 600 !important;
   font-size: 18px !important;
@@ -223,6 +223,7 @@ body {
 
 :host ::ng-deep .button:hover {
   background-color: #d69772 !important;
+  border-radius: 10px !important;
 }
 
 :host ::ng-deep .p-tag.custom-tag {
