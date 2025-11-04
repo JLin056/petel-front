@@ -118,7 +118,7 @@ export class RoomInfoEditPage implements OnInit {
       height: ['', [Validators.required, Validators.min(1)]],
       length: ['', [Validators.required, Validators.min(1)]],
       width: ['', [Validators.required, Validators.min(1)]],
-      description: ['', Validators.required],
+      description: [''],
       price: ['', [Validators.required, Validators.min(1)]],
       unit: [null, Validators.required]
     });
@@ -425,7 +425,6 @@ export class RoomInfoEditPage implements OnInit {
               return {
                 mediaId: img.mediaId,
                 sortOrder: img.sortOrder,
-                // 保留原始的其他欄位
                 fileName: originalData?.fileName,
                 mimeType: originalData?.mimeType,
                 bucket: originalData?.bucket,
@@ -461,12 +460,12 @@ export class RoomInfoEditPage implements OnInit {
           });
         });
       } else if (imagesToUpdate.length > 0 && USE_DELETE_AND_REUPLOAD) {
-        // 替代方案:刪除所有圖片後重新上傳
-        console.log('⚠️ 使用替代方案:刪除後重新上傳來更新排序');
+        // 刪除所有圖片後重新上傳
+        console.log('⚠️ 刪除後重新上傳來更新排序');
 
         const allMediaIds = this.existingImages.map(img => img.mediaId);
 
-        // 1. 刪除所有現有圖片
+        // 刪除所有現有圖片
         await new Promise<void>((resolve, reject) => {
           this.mediaService.deleteMedia({
             MWHEADER: { MSGID: 'MEDIA-003' },
@@ -484,7 +483,7 @@ export class RoomInfoEditPage implements OnInit {
           });
         });
 
-        // 2. 依新順序重新上傳所有圖片
+        // 依新順序重新上傳所有圖片
         for (let index = 0; index < this.existingImages.length; index++) {
           const img = this.existingImages[index];
           const originalData = this.originalImageData.get(img.mediaId);
@@ -545,11 +544,10 @@ export class RoomInfoEditPage implements OnInit {
               summary: '成功',
               detail: '房型修改成功'
             });
-            setTimeout(() => {
-              this.router.navigate(['/merchants/property/homepage'], {
-                queryParams: { refresh: new Date().getTime() }
-              });
-            }, 1500);
+            this.router.navigate(['/merchants/property/roomInfo'], {
+              state: { roomId: this.roomId }
+            });
+
           } else {
             this.errorMessage = '修改失敗';
           }

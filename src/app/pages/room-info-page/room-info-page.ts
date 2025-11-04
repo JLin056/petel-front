@@ -142,7 +142,6 @@ export class RoomInfoPage implements OnInit {
         console.log('圖片 API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias) {
-          // 依照 sortOrder 排序
           this.roomImages = res.TRANRS.medias
             .map(media => ({
               mediaId: media.mediaId,

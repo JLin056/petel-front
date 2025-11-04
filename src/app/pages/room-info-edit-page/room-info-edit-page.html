@@ -149,9 +149,8 @@
 
             <!-- 房間介紹 -->
             <div class="form-section full-width">
-                <label class="section-label">房間介紹*</label>
-                <p-editor formControlName="description" [style]="{'height':'280px','background-color':'#fffdf8'}"
-                    [invalid]="roomForm.get('description')?.invalid && (roomForm.get('description')?.touched || isSubmitted)">
+                <label class="section-label">房間介紹</label>
+                <p-editor formControlName="description" [style]="{'height':'280px','background-color':'#fffdf8'}">
                     <ng-template pTemplate="header">
                         <span class="ql-formats">
                             <button type="button" class="ql-bold" aria-label="Bold"></button>

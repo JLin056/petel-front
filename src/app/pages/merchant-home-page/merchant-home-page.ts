@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-merchant-home-page',
-  imports: [CommonModule, SharedConfirmDialog],
+  imports: [CommonModule],
   templateUrl: './merchant-home-page.html',
   styleUrl: './merchant-home-page.css'
 })
@@ -77,28 +77,24 @@ export class MerchantHomePage implements OnInit, OnDestroy {
     console.log('商家首頁取得的 propertyId:', this.propertyId);
     this.loadRooms();
 
-    // 監聽 queryParams 變化（當從編輯頁面帶 refresh 參數回來時觸發）
+    // 監聽 queryParams 
     this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       if (params['refresh']) {
         console.log('🔄 偵測到 refresh 參數，強制重新載入房型和圖片');
         console.log('🔗 Refresh 時間戳:', params['refresh']);
-        // 清除所有快取的圖片
         this.roomImages = {};
-        // 重新載入房型列表和圖片
         this.loadRooms();
       }
     });
 
-    // 監聽路由變化（作為備用機制）
+    // 監聽路由變化
     this.navigationSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (event.url.includes('/merchants/property/homepage')) {
           console.log('🔄 導航回首頁，強制重新載入房型和圖片資料');
           console.log('🔗 導航 URL:', event.url);
-          // 清除所有快取的圖片
           this.roomImages = {};
-          // 重新載入房型列表和圖片
           this.loadRooms();
         }
       });
@@ -250,7 +246,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * 查看房型詳細資料 (點擊卡片主要區域觸發)
+   * 查看房型詳細資料 
    * @param room 
    */
   onDetail(room: any): void {
