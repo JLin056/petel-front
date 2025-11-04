@@ -96,16 +96,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 卡片底部 -->
-        <ng-template pTemplate="footer">
-            <div class="card-footer">
-                <p-button [label]="isReviewExpanded(review.orderId) ? '收合評價' : '查看完整評價'"
-                    [icon]="isReviewExpanded(review.orderId) ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
-                    [outlined]="true" severity="secondary" size="small" (onClick)="toggleReviewExpand(review.orderId)">
-                </p-button>
-            </div>
-        </ng-template>
     </p-card>
     } @empty {
     <div class="no-reviews-wrapper">
