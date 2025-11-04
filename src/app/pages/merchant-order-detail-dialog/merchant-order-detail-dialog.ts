@@ -32,8 +32,6 @@ export class MerchantOrderDetailDialog implements OnChanges {
   originalStatus = '';
   roomInfo = '';
   roomQuantity = 0;
-  // 新增一個變數存暫存狀態
-  editedStatus = '';
   cancelConfirmVisible = false;
 
   statuses: Status[] = [
@@ -53,9 +51,9 @@ export class MerchantOrderDetailDialog implements OnChanges {
     if (!this.order) return;
     this.editedNote = this.order.NOTE || '';
     this.originalStatus = this.order.STATUS;
-    this.editedStatus = this.order.STATUS; // ← 下拉選單改這個
     this.roomInfo = this.order.ROOM || (this.order as any).room || '未提供房型資訊';
     this.roomQuantity = this.order.QUANTITY || (this.order as any).quantity || 0;
+    this.order.STATUS = this.statuses.find(s => s.value === this.order!.STATUS)?.value || this.order.STATUS;
   }
 
   getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {
@@ -73,7 +71,6 @@ export class MerchantOrderDetailDialog implements OnChanges {
    */
   get selectableStatuses(): Status[] {
     if (!this.order) return this.statuses;
-    // 保留已取消讓目前訂單顯示
     return this.statuses.filter(s => s.value !== '已取消' || s.value === this.order!.STATUS);
   }
 
@@ -178,7 +175,7 @@ export class MerchantOrderDetailDialog implements OnChanges {
   onSave(): void {
     if (!this.order) return;
 
-    const statusChanged = this.editedStatus !== this.originalStatus;
+    const statusChanged = this.order.STATUS !== this.originalStatus;
     const noteChanged = this.editedNote !== (this.order.NOTE || '');
 
     if (!statusChanged && !noteChanged) {
@@ -188,7 +185,6 @@ export class MerchantOrderDetailDialog implements OnChanges {
 
     // 更新狀態
     if (statusChanged) {
-      this.order.STATUS = this.editedStatus;
       this.updateOrderStatus();
     }
 

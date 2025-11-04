@@ -34,10 +34,6 @@ import { MerchantOrderDetailDialog } from "../merchant-order-detail-dialog/merch
   styleUrl: './merchant-order-table-page.css'
 })
 export class MerchantOrderTablePage implements OnInit {
-  toggleStatusMenu($event: PointerEvent, _t52: any) {
-    throw new Error('Method not implemented.');
-  }
-
   constructor(
     private adminService: AdminService,
     private propertyStateService: PropertyStateService
@@ -62,7 +58,7 @@ export class MerchantOrderTablePage implements OnInit {
   searchCheckIn: string = '';
   searchUserName: string = '';
 
-  // 詳細資料彈窗相關
+  /** showDetailDialog */
   showDetailDialog = false;
   selectedOrder: Order | null = null;
 
@@ -107,7 +103,7 @@ export class MerchantOrderTablePage implements OnInit {
       }
     };
 
-    // 加入篩選條件（只有在有值的時候才加入）
+    // 加入篩選條件
     if (this.searchOrderId) {
       postData.TRANRQ.ORDER_ID = this.searchOrderId;
     }
@@ -127,7 +123,7 @@ export class MerchantOrderTablePage implements OnInit {
           } else {
             this.orderList = allOrders;
           }
-          this.totalRecords = res.TRANRS.totalCount;
+          this.totalRecords = res.TRANRS.totalCount || 0;
           console.log('訂單列表載入成功，總數:', this.totalRecords);
           console.log('訂單列表:', this.orderList);
 
