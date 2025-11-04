@@ -385,6 +385,7 @@ textarea[pInputTextarea]:focus {
     border-radius: 8px;
     box-shadow: 0 0 0 4px rgba(151, 75, 44, 0.1);
     animation: pulse 1s ease-in-out infinite;
+    flex-shrink: 0;  /* 防止被壓縮 */
 }
 
 /* 脈動動畫 */
