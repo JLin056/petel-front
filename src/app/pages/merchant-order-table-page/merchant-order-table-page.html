@@ -55,7 +55,7 @@
             <td>{{ order.CHECK_IN }}</td>
             <td>{{ order.CHECK_OUT }}</td>
             <td>{{ order.USER_NAME }}</td>
-            <td>{{ order.ROOM || '未提供房型資訊' }}</td>
+            <td>{{ order.ROOM || '已取消 資訊隱藏' }}</td>
             <td>NT$ {{ order.HOTEL_CHARGES.toLocaleString() || '0' }}</td>
             <td>{{ order.PAYMENT_METHOD || '未提供' }}</td>
             <td class="status-cell">

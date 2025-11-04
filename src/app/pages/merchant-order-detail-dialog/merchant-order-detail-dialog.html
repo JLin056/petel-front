@@ -18,13 +18,11 @@
                         <p-select [(ngModel)]="order.STATUS" [options]="selectableStatuses" optionLabel="label"
                             optionValue="value" placeholder="選擇狀態" styleClass="status-select-dialog"
                             [disabled]="order.STATUS === '已取消'"></p-select>
-
                         <button class="cancel-button" (click)="onCancelClick()" [disabled]="order?.STATUS === '已取消'">
                             取消訂單
                         </button>
                     </div>
                 </div>
-
                 <div class="detail-item">
                     <span class="detail-label">建立時間:</span>
                     <span class="detail-value">{{ order.CREATED_AT }}</span>
@@ -70,11 +68,12 @@
             <div class="detail-grid">
                 <div class="detail-item full-width">
                     <span class="detail-label">房型:</span>
-                    <span class="detail-value">{{ roomInfo || '未提供房型資訊' }}</span>
+                    <span class="detail-value">{{ roomInfo || '已取消，本筆訂單資訊不提供' }}</span>
                 </div>
                 <div class="detail-item full-width">
                     <span class="detail-label">訂購房數:</span>
-                    <span class="detail-value highlight">{{ roomQuantity ? (roomQuantity + ' 間') : '未提供數量資訊' }}</span>
+                    <span class="detail-value highlight">{{ roomQuantity ? (roomQuantity + ' 間') : '已取消，本筆訂單資訊不提供'
+                        }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">入住日期:</span>

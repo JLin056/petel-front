@@ -35,8 +35,8 @@ export class MerchantOrderDetailDialog implements OnChanges {
   cancelConfirmVisible = false;
 
   statuses: Status[] = [
-    { label: '待付款', value: '待付款' },
-    { label: '已確認', value: '已確認' },
+    { label: '未付款', value: '未付款' },
+    { label: '已付款', value: '已付款' },
     { label: '已完成', value: '已完成' },
     { label: '已取消', value: '已取消' }
   ];
@@ -49,7 +49,6 @@ export class MerchantOrderDetailDialog implements OnChanges {
 
   ngOnChanges(): void {
     if (!this.order) return;
-
     this.editedNote = this.order.NOTE || '';
     this.originalStatus = this.order.STATUS;
     this.roomInfo = this.order.ROOM || (this.order as any).room || '未提供房型資訊';
@@ -57,18 +56,13 @@ export class MerchantOrderDetailDialog implements OnChanges {
     this.order.STATUS = this.statuses.find(s => s.value === this.order!.STATUS)?.value || this.order.STATUS;
   }
 
-  /** 
-   * 判斷狀態顏色 
-   */
-  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | null {
+  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {
     switch (status) {
       case '已完成': return 'success';
-      case '已確認':
       case '已付款': return 'info';
-      case '待付款':
       case '未付款': return 'warn';
       case '已取消': return 'danger';
-      default: return null;
+      default: return 'secondary';
     }
   }
 
@@ -77,7 +71,6 @@ export class MerchantOrderDetailDialog implements OnChanges {
    */
   get selectableStatuses(): Status[] {
     if (!this.order) return this.statuses;
-    // 保留已取消讓目前訂單顯示
     return this.statuses.filter(s => s.value !== '已取消' || s.value === this.order!.STATUS);
   }
 
@@ -152,6 +145,7 @@ export class MerchantOrderDetailDialog implements OnChanges {
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.statusUpdated.emit({ orderId: this.order.ORDER_ID, status: this.order.STATUS });
+          this.onHideDialog();
           this.toast.add({ severity: 'success', summary: '成功', detail: '狀態更新成功' });
         } else {
           this.toast.add({ severity: 'error', summary: '狀態更新失敗', detail: res.MWHEADER.RETURNDESC });
@@ -184,16 +178,19 @@ export class MerchantOrderDetailDialog implements OnChanges {
     const statusChanged = this.order.STATUS !== this.originalStatus;
     const noteChanged = this.editedNote !== (this.order.NOTE || '');
 
+    if (!statusChanged && !noteChanged) {
+      this.toast.add({ severity: 'info', summary: '提醒', detail: '沒有變更' });
+      return;
+    }
+
+    // 更新狀態
     if (statusChanged) {
       this.updateOrderStatus();
     }
 
+    // 更新備註
     if (noteChanged) {
       this.updateNote();
-    }
-
-    if (!statusChanged && !noteChanged) {
-      this.toast.add({ severity: 'info', summary: '提醒', detail: '沒有變更' });
     }
   }
 }
