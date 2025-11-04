@@ -1,10 +1,26 @@
 <div class="wrap">
     <div class="banner">
-        <img src="img/homePageLogo.png" alt="Petel 廣告圖">
+        <div class="banner-carousel">
+            <p-carousel
+                [value]="bannerImages"
+                [numVisible]="1"
+                [numScroll]="1"
+                [circular]="true"
+                [autoplayInterval]="5000"
+                [showNavigators]="true"
+                [showIndicators]="true"
+            >
+                <ng-template pTemplate="item" let-image>
+                    <div class="banner-image-container">
+                        <img [src]="image.src" [alt]="image.alt" class="banner-image">
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div>
         <div class="search-container">
             <div class="search-bar">
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item"/>
+                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="!!searchParams.city" class="search-item"/>
                     <label class="search-label">縣市</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">

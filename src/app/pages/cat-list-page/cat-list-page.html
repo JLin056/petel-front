@@ -4,7 +4,7 @@
         <div class="search-container">
             <div class="search-bar">
                 <p-floatlabel variant="in" class="search-label">
-                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item"/>
+                    <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="!!searchParams.city" class="search-item"/>
                     <label class="search-label">縣市</label>
                 </p-floatlabel>
                 <p-floatlabel variant="in" class="search-label">
@@ -30,16 +30,6 @@
     <div class="list-container">
         <!-- 左側搜尋 -->
         <div class="search-select-container">
-            <!-- 旅館名稱搜尋 -->
-            <!-- <div class="hotel-name-search">
-                <p>搜尋</p>
-                <p-inputgroup>
-                    <input pInputText placeholder="e.g. 熊讚寵物窩" />
-                    <p-inputgroup-addon>
-                        <p-button icon="pi pi-search" severity="secondary" />
-                    </p-inputgroup-addon>
-                </p-inputgroup>
-            </div> -->
             <!-- 價格選擇框 -->
             <div class="select-search">
                 <div class="select-search-title">

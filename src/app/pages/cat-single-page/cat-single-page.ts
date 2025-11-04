@@ -182,21 +182,39 @@ export class CatSinglePage implements OnInit {
 
     /**
      * 處理旅館圖片（從 hotelDetail.propertyImages 轉換為 GalleryImage 格式）
+     * 固定顯示 4 張照片，不足的用預設圖片補足
      */
     loadPropertyImages(): void {
+        const defaultImage: GalleryImage = {
+            itemImageSrc: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/16950.jpg',
+            thumbnailImageSrc: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/16950.jpg',
+            alt: '旅館圖片',
+            title: '旅館圖片'
+        };
+
         if (this.hotelDetail && this.hotelDetail.propertyImages && this.hotelDetail.propertyImages.length > 0) {
-            this.images = this.hotelDetail.propertyImages
+            // 載入實際圖片
+            const actualImages = this.hotelDetail.propertyImages
                 .sort((a, b) => a.sortOrder - b.sortOrder) // 按 sortOrder 排序
+                .slice(0, 4) // 最多取 4 張
                 .map(img => ({
                     itemImageSrc: `data:${img.mimeType};base64,${img.base64Data}`,
                     thumbnailImageSrc: `data:${img.mimeType};base64,${img.base64Data}`,
                     alt: img.fileName || '旅館圖片',
                     title: img.fileName || ''
                 }));
-            console.log(`已載入 ${this.images.length} 張旅館圖片`);
+
+            // 補足到 4 張
+            this.images = [...actualImages];
+            while (this.images.length < 4) {
+                this.images.push({ ...defaultImage });
+            }
+
+            console.log(`已載入 ${actualImages.length} 張實際圖片，補足為 4 張`);
         } else {
             console.warn('沒有旅館圖片，使用預設圖片');
-            this.setDefaultImages();
+            // 全部使用預設圖片
+            this.images = [defaultImage, defaultImage, defaultImage, defaultImage];
         }
     }
 
@@ -719,8 +737,12 @@ export class CatSinglePage implements OnInit {
                 console.log('回應資料:', response);
 
                 if (response.MWHEADER.RETURNCODE === '0000') {
+                    // 🔹 根據 petType 決定要導向的頁面
+                    const targetRoute = apiParams.petType === 'CAT' ? '/catHotels' : '/dogHotels';
+                    console.log(`導向頁面: ${targetRoute}`);
+
                     // 成功，跳轉到旅館列表頁，並傳遞搜尋結果
-                    this.router.navigate(['/dogHotels'], {
+                    this.router.navigate([targetRoute], {
                         state: {
                             searchResult: response.TRANRS,
                             searchParams: apiParams

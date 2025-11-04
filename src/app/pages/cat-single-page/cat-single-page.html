@@ -2,7 +2,7 @@
     <div class="search-container">
         <div class="search-bar">
             <p-floatlabel variant="in" class="search-label">
-                <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="true" class="search-item" />
+                <p-select [options]="cities" optionLabel="name" optionValue="name" [(ngModel)]="searchParams.city" [showClear]="!!searchParams.city" class="search-item" />
                 <label class="search-label">縣市</label>
             </p-floatlabel>
             <p-floatlabel variant="in" class="search-label">
@@ -55,7 +55,7 @@
     </ng-template>
 </p-galleria>
 
-<div>
+<div class="tabs-container">
     <p-tabs [(value)]="activeTabValue">
         <p-tablist>
             <p-tab value="0">店家資訊</p-tab>
@@ -312,10 +312,11 @@
 <p-dialog
     [(visible)]="displayRoomDialog"
     [modal]="true"
-    [style]="{width: '50vw'}"
+    [style]="{width: '600px'}"
     [draggable]="false"
     [resizable]="false"
-    [header]="selectedRoom?.name || '房型詳細資訊'">
+    [header]="selectedRoom?.name || '房型詳細資訊'"
+    styleClass="petel-auth-dialog">
     <div *ngIf="selectedRoom" class="room-detail-content">
         <p>{{ selectedRoom.info }}</p>
     </div>

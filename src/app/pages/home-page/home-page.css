@@ -9,26 +9,49 @@
     flex-direction: column;
     align-items: center;
     padding: 40px;
+    position: relative;
+}
+
+/* Banner 輪播區域 */
+.banner-carousel {
+    width: 100%;
+    max-width: 1500px;
+    margin-bottom: 20px;
+}
+
+.banner-image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.banner-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
 /* 搜尋列 */
 .search-container {
     background-color: #FFF1C2;
     border-radius: 10px;
-    padding: 10px;
+    padding: 10px 50px;
     position: relative;
-    top: -30px;
+    top: 0px;
+    max-width: 1500px;
+    width: 100%;
 }
 
 .search-bar {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .search-item {
-    min-width: 150px;
+    min-width: 230px;
 }
 
 .search-label ::ng-deep {
@@ -40,18 +63,27 @@
 :host ::ng-deep .p-inputnumber.p-component input {
   border: none; /* 移除內層 input 原框 */
   box-shadow: none;
+  border-radius: 8px;
 }
 
 ::ng-deep .petel-search-btn.p-button {
   background-color: #EDA33A;
-  color: #A24522;
-  padding: 10px 20px;
+  color: white;
+  padding: 12px 24px;
   border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* 推薦旅館區域 */
 .recommend-container {
     background-color: #F0E4D8;
+    padding-left: 100px;
+    padding-right: 100px;
+    /* margin-left: 100px;
+    margin-right: 100px; */
 }
 
 .recommend-container-dog h3,
@@ -90,21 +122,27 @@
 }
 
 /* 狗狗貓貓旅館頁面選擇 */
+.choose-pet-container {
+    padding-bottom: 100px;
+}
+
 .choose-pet-container h3 {
-    padding: 50px;
+    padding: 150px;
+    margin-top: -80px;
+    margin-bottom: -80px;
 }
 
 .choose-pet-items {
     display: flex;
     justify-content: center;
-    gap: 50px;
+    gap: 200px;
 }
 
 .choose-pet {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
     padding-bottom: 30px;
 }
 
