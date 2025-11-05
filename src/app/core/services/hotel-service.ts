@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { environment } from '../../../environment';
+import { HttpWithRetry } from './http-with-retry.service';
 import { Tranrq as HOTEL001Tranrq } from '../interfaces/HOTEL001Req.interface';
 import { Tranrs as HOTEL001Tranrs } from '../interfaces/HOTEL001Res.interface';
 import { HOTEL002Tranrq } from '../interfaces/HOTEL002Req.interface';
@@ -21,7 +21,7 @@ import { HOTEL006Tranrs } from '../interfaces/HOTEL006Res.interface';
 })
 export class HotelService {
 
-    http = inject(HttpClient);
+    http = inject(HttpWithRetry);
 
     /**
      * HOTEL-001 查詢旅館列表

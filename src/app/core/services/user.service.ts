@@ -1,4 +1,3 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environment';
 import { USER001Req } from '../interfaces/USER001Req.interface';
@@ -11,13 +10,14 @@ import { USER002Req } from '../interfaces/USER002Req.interface';
 import { USER002Res } from '../interfaces/USER002Res.interface';
 import { USER007Req } from '../interfaces/USER007Req.interface';
 import { USER007Res } from '../interfaces/USER007Res.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-    /** 注入 HttpClient */
-    constructor(private http: HttpClient) { }
+    /** 注入 HttpWithRetry（自動重試 401） */
+    constructor(private http: HttpWithRetry) { }
 
     /** 註冊 API URL */
     addUserUrl = `${environment.BASE_URL}/user/create`;

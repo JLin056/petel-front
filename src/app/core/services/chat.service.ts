@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environment';
 import { CHAT002Req } from '../interfaces/CHAT002Req.interface';
@@ -8,13 +8,14 @@ import { CHAT003Req } from '../interfaces/CHAT003Req.interface';
 import { CHAT003Res } from '../interfaces/CHAT003Res.interface';
 import { CHAT001Req } from '../interfaces/CHAT001Req.interface';
 import { CHAT001Res } from '../interfaces/CHAT001Res.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ChatService {
-    /** 注入 HttpClient */
-    constructor(private http: HttpClient){}
+    /** 注入 HttpWithRetry（自動重試 401） */
+    constructor(private http: HttpWithRetry){}
 
     /** 建立聊天室 URL */
     createChatRoomUrl = `${environment.BASE_URL}/chat/create`;

@@ -11,7 +11,7 @@ import { Auth } from '../../../core/services/auth.service';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
 import { MessageService } from 'primeng/api';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, filter, Subject, takeUntil } from 'rxjs';
 import { HotelService } from '../../../core/services/hotel-service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationPanel } from '../notification-panel/notification-panel';
@@ -47,7 +47,6 @@ export class Header {
     notificationPanelVisible = false;
 
     private destroy$ = new Subject<void>();
-    private lastToken: string | null = null; // 記錄上次的 token
 
     /**
      * 注入
@@ -72,22 +71,25 @@ export class Header {
             )
             .subscribe(() => {
                 this.onCheckLoginStatus();
-                // 檢查 token 是否變化，如果變化則重新建立 SSE 連線
-                this.checkTokenAndReconnectSSE();
+                // ✅ 移除 checkTokenAndReconnectSSE，token 刷新由 NotificationService 自動處理
             });
 
         // 訂閱 service 的登入狀態
         this.authService.isLoggedIn$
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                takeUntil(this.destroy$),
+                distinctUntilChanged()  // ✅ 只在值真正改變時才觸發
+            )
             .subscribe(v => {
                 this.isLoggedIn = v;
                 // 當登入狀態改變時，更新未讀數量和 SSE 連線
                 if (v) {
+                    console.log('[用戶 Header] 用戶已登入，初始化通知系統');
                     this.fetchUnreadCount();
                     this.setupSSEConnection();
                 } else {
+                    console.log('[用戶 Header] 用戶已登出，關閉通知系統');
                     this.unreadCount = 0;
-                    this.lastToken = null;
                     this.notificationService.disconnectSSE();
                 }
             });
@@ -370,24 +372,6 @@ export class Header {
         });
     }
 
-    /**
-     * 檢查 token 是否變化，如果變化則重新建立 SSE 連線
-     */
-    private checkTokenAndReconnectSSE() {
-        const currentToken = this.authService.getAccessToken();
-
-        // 如果沒有 token，不處理
-        if (!currentToken) {
-            return;
-        }
-
-        // 如果 token 變化了，重新建立 SSE 連線
-        if (this.lastToken && this.lastToken !== currentToken) {
-            console.log('[Header] Token 已更新，重新建立 SSE 連線');
-            this.notificationService.resetReconnectCount(); // 重置錯誤計數
-            this.setupSSEConnection();
-        }
-    }
 
     /**
      * 顯示瀏覽器通知

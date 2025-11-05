@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environment';
 import { MEDIA004Req } from '../interfaces/MEDIA004Req.interface';
@@ -10,6 +9,7 @@ import { MEDIA002Res } from '../interfaces/MEDIA002Res.interface';
 import { MEDIA003Req } from '../interfaces/MEDIA003Req.interface';
 import { MEDIA003Res } from '../interfaces/MEDIA003Res.interface';
 import { Observable } from 'rxjs';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,10 +17,10 @@ import { Observable } from 'rxjs';
 export class MediaService {
 
     /**
-     * 注入
+     * 注入 HttpWithRetry（自動重試 401）
      * @param http
      */
-    constructor(private http: HttpClient){}
+    constructor(private http: HttpWithRetry){}
 
     /** API URLs */
     uploadMediaUrl = `${environment.BASE_URL}/medias/upload/base64`;
