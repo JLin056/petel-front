@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { MerchService } from '../../core/services/merch-service';
-import { MediaService } from '../../core/services/media.service';
-import { PropertyStateService } from '../../core/services/property-state.service';
 import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { MediaService } from '../../core/services/media.service';
+import { MerchService } from '../../core/services/merch-service';
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-merchant-home-page',

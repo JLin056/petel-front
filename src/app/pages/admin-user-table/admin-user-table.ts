@@ -133,11 +133,11 @@ export class AdminUserTable implements OnInit {
 
           // 如果是搜尋操作，顯示成功提示
           if (this.isSearching) {
-            this.messageService.add({
-              severity: 'success',
-              summary: '搜尋成功',
-              detail: `找到 ${this.totalRecords} 筆會員資料`
-            });
+            // this.messageService.add({
+            //   severity: 'success',
+            //   summary: '搜尋成功',
+            //   detail: `找到 ${this.totalRecords} 筆會員資料`
+            // });
             this.isSearching = false;
           }
         } else {
