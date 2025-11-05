@@ -44,11 +44,12 @@
                 </div>
                 }
 
-                <!-- 沒有圖片時顯示 -->
+                <!-- 沒有圖片時顯示預設圖片 -->
                 @if (!isLoadingImages && roomImages.length === 0) {
-                <div class="images-empty">
-                    <i class="pi pi-images"></i>
-                    <span>目前沒有房型圖片</span>
+                <div class="images-gallery">
+                    <div class="gallery-image">
+                        <img src="https://petelcathay-user.s3.us-east-1.amazonaws.com/Room_Image/VILLA+MINI+3-DKtb_Hrb.jpg" alt="預設房型圖片">
+                    </div>
                 </div>
                 }
             </div>

@@ -273,12 +273,12 @@ export class UserMerchantPage implements OnInit, OnDestroy {
             console.log(`✅ ${property.name} 封面圖設定完成`);
           } else {
             console.warn(`⚠️ ${property.name} 沒有圖片，使用預設圖`);
-            this.hotelImages[property.id] = 'img/hotelImg.png';
+            this.hotelImages[property.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
           }
         },
         error: (err) => {
           console.error(`❌ ${property.name} 封面圖載入失敗`, err);
-          this.hotelImages[property.id] = 'img/hotelImg.png';
+          this.hotelImages[property.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
         }
       });
 
