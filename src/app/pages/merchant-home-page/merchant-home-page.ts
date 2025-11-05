@@ -70,7 +70,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
     console.log('商家首頁取得的 propertyId:', this.propertyId);
     this.loadRooms();
 
-    // 監聽 queryParams 
+    // 監聽 queryParams
     this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       if (params['refresh']) {
         console.log('🔄 偵測到 refresh 參數，強制重新載入房型和圖片');
@@ -148,7 +148,7 @@ export class MerchantHomePage implements OnInit, OnDestroy {
     if (!roomSize) return '';
 
     const sizes = roomSize.split('x');
-    if (sizes.length !== 3) return roomSize; 
+    if (sizes.length !== 3) return roomSize;
 
     const [height, length, width] = sizes;
     return `${height}cm x ${length}cm x ${width}cm`;
@@ -197,10 +197,12 @@ export class MerchantHomePage implements OnInit, OnDestroy {
               console.log(`✅ 房型 ${room.id} 的封面圖已設定`);
             } else {
               console.warn(`⚠️ 房型 ${room.id} 沒有圖片資料`);
+              this.roomImages[room.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
             }
           },
           error: (err) => {
             console.error(`❌ 載入房型 ${room.id} 圖片失敗:`, err);
+            this.roomImages[room.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
           }
         });
       }
@@ -225,8 +227,8 @@ export class MerchantHomePage implements OnInit, OnDestroy {
 
   /**
    * 修改房型
-   * @param room 
-   * @returns 
+   * @param room
+   * @returns
    */
   onEdit(room: any): void {
     if (!room || !room.id) {
@@ -238,16 +240,16 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * 查看房型詳細資料 
-   * @param room 
+   * 查看房型詳細資料
+   * @param room
    */
   onDetail(room: any): void {
-    console.log('點擊房型詳細資料，完整的 Room 物件:', room); 
+    console.log('點擊房型詳細資料，完整的 Room 物件:', room);
 
     if (!room || !room.id) {
       return;
     }
-  
+
     console.log('導航到詳細頁面，房型 ID:', room.id);
 
     this.router.navigate(['/merchants/property/roomInfo'], {
