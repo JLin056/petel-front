@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environment';
@@ -9,6 +9,7 @@ import { NOTIFY004Res } from '../interfaces/NOTIFY004Res.interface';
 import { NOTIFY006Req } from '../interfaces/NOTIFY006Req.interface';
 import { NOTIFY006Res } from '../interfaces/NOTIFY006Res.interface';
 import { NotificationDto } from '../interfaces/notification.interface';
+import { Auth } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -43,7 +44,10 @@ export class NotificationService {
     private sseConnectedSubject = new BehaviorSubject<boolean>(false);
     public readonly sseConnected$ = this.sseConnectedSubject.asObservable();
 
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+        private authService: Auth
+    ) { }
 
     /**
      * NOTIFY-002: 查詢通知列表
@@ -145,9 +149,22 @@ export class NotificationService {
             this.disconnectSSE();
         }
 
+        // 取得 access token
+        const token = this.authService.getAccessToken();
+        if (!token) {
+            console.error('[SSE] ❌ 無法建立連線：未找到 access token');
+            this.sseConnectedSubject.next(false);
+            return;
+        }
+
         try {
-            // 建立新連線（注意：EventSource 不支援自訂 headers，需要透過 cookie 傳遞認證）
-            this.eventSource = new EventSource(this.subscribeUrl, {
+            // 建立新連線
+            // 注意：EventSource 不支援自訂 headers，所以將 token 作為 query parameter 傳遞
+            // 後端的 NotificationController 支援透過 ?token=xxx 進行認證
+            const urlWithToken = `${this.subscribeUrl}?token=${encodeURIComponent(token)}`;
+            console.log('[SSE] 建立連線 URL:', this.subscribeUrl);
+
+            this.eventSource = new EventSource(urlWithToken, {
                 withCredentials: true
             });
 
