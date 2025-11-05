@@ -136,9 +136,10 @@
 }
 
 .section-title {
-    font-size: 30px;
+    font-size: 45px;
     font-weight: bold;
-    margin: 0;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 /* 新增房型按鈕 */
@@ -149,7 +150,7 @@
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 500;
     transition: all 0.2s;
 }
@@ -179,7 +180,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
     border: 1px solid #e8dfd5;
-    min-height: 220px;
+    height: 260px; 
 }
 
 .room-card:hover {
@@ -189,11 +190,13 @@
 
 /* 圖片容器 - 固定寬度 */
 .room-image-container {
-    position: relative;
     width: 300px;
     min-width: 300px;
+    height: 220px; 
     overflow: hidden;
+    height: 260px;
     background-color: #f5f0ea;
+    border-right: 1px solid #e8dfd5;
 }
 
 .room-image {
@@ -201,6 +204,7 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+    object-fit: cover;
 }
 
 .room-card:hover .room-image {
