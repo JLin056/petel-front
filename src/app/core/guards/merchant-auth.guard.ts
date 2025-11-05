@@ -19,7 +19,7 @@ export const merchantAuthGuard: CanActivateFn = (route, state) => {
 
   if (!token) {
     // 沒有 token，導向商家登入頁並帶上 redirect 參數
-    console.log('Merchant Guard: 未登入，導向商家登入頁');
+    // console.log('Merchant Guard: 未登入，導向商家登入頁');
     messageService.add({
       severity: 'warn',
       summary: '未登入',
@@ -36,12 +36,12 @@ export const merchantAuthGuard: CanActivateFn = (route, state) => {
 
   if (role === 'seller') {
     // 已登入且是 seller 角色
-    console.log('Merchant Guard: 已驗證為 seller');
+    // console.log('Merchant Guard: 已驗證為 seller');
     return true;
   }
 
   // 有 token 但角色不是 seller
-  console.log('Merchant Guard: 角色不符，導向商家登入頁');
+//   console.log('Merchant Guard: 角色不符，導向商家登入頁');
   messageService.add({
     severity: 'warn',
     summary: '權限不足',

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from "primeng/button";
 import { ToastModule } from 'primeng/toast';
-import { Subscription } from 'rxjs';
+import { finalize, Subject, Subscription, takeUntil } from 'rxjs';
 import { MERCH010Tranrq } from '../../core/interfaces/MERCH010Req.interface';
 import { MERCH011Tranrs } from '../../core/interfaces/MERCH011Res.interface';
 import { propertyList } from '../../core/interfaces/MERCH013Res.interface';
@@ -13,6 +13,7 @@ import { MediaService } from '../../core/services/media.service';
 import { MerchService } from '../../core/services/merch-service';
 import { PropertyStateService } from '../../core/services/property-state.service';
 import { UpdateSellerInfoDialog } from '../update-seller-info-dialog/update-seller-info-dialog';
+import { Auth } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-merchant-page',
@@ -59,6 +60,7 @@ export class UserMerchantPage implements OnInit, OnDestroy {
   hotelImages: { [hotelId: string]: string } = {};
 
   private subscriptions: Subscription[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private confirm: ConfirmationService,
@@ -66,6 +68,7 @@ export class UserMerchantPage implements OnInit, OnDestroy {
     private router: Router,
     private merchService: MerchService,
     private adminService: AdminService,
+    private authService: Auth,
     private propertyStateService: PropertyStateService,
     private mediaService: MediaService
   ) { }
@@ -76,16 +79,20 @@ export class UserMerchantPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /** 載入商家頭像 */
   private loadAvatar(mediaId: string): void {
-    console.log('🖼️ 載入商家頭像，mediaId:', mediaId);
+    // console.log('🖼️ 載入商家頭像，mediaId:', mediaId);
 
     const sub = this.mediaService.onGetMediaApi({
       MWHEADER: { MSGID: 'MEDIA-004' },
       TRANRQ: { mediaIds: [mediaId] }
-    }).subscribe({
+    })
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
       next: (res) => {
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
           const media = res.TRANRS.medias[0];
@@ -106,51 +113,54 @@ export class UserMerchantPage implements OnInit, OnDestroy {
   /** 取得商家會員資訊 */
   fetchSellerInfo(): void {
     this.isLoading = true;
-    const accountId = localStorage.getItem('accountId');
 
-    if (!accountId) {
-      this.toast.add({ severity: 'error', summary: '錯誤', detail: '無法取得帳號資訊，請重新登入' });
-      this.isLoading = false;
-      setTimeout(() => this.router.navigate(['/merchants/login']), 2000);
-      return;
+    const token = this.authService.getAccessToken();
+    if (!token) {
+        this.isLoading = false;
+        this.toast.add({ severity: 'error', summary: '未登入', detail: '請先登入商家帳號' });
+        this.router.navigate(['/merchants/userPage/login']);
+        return;
     }
 
-    const sub = this.merchService.getSellerInfo(accountId).subscribe({
-      next: (res) => {
-        this.isLoading = false;
+    this.merchService.getSellerInfo()
+        .pipe(
+            takeUntil(this.destroy$),
+            finalize(() => (this.isLoading = false))
+        )
+        .subscribe({
+            next: (res) => {
+                this.isLoading = false;
 
-        if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-          const data = res.TRANRS;
-          this.user = {
-            accountId: data.accountId,
-            name: data.name,
-            email: data.email || '無電子郵件',
-            phone: data.phone || '無電話號碼',
-            avatarUrl: 'assets/img/avatar.png', // 預設頭像，稍後透過 API 載入
-            id: data.id,
-            mediaId: data.mediaId
-          };
+                if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
+                    const data = res.TRANRS;
+                    this.user = {
+                        accountId: data.accountId,
+                        name: data.name,
+                        email: data.email || '無電子郵件',
+                        phone: data.phone || '無電話號碼',
+                        avatarUrl: 'assets/img/avatar.png', // 預設頭像，稍後透過 API 載入
+                        id: data.id,
+                        mediaId: data.mediaId
+                    };
 
-          // 如果有 mediaId，載入頭像
-          if (data.mediaId) {
-            this.loadAvatar(data.mediaId);
-          }
+                    // 如果有 mediaId，載入頭像
+                    if (data.mediaId) {
+                        this.loadAvatar(data.mediaId);
+                    }
 
-          if (data.id) {
-            this.loadHotels(data.id);
-          }
-        } else {
-          this.toast.add({ severity: 'error', summary: '錯誤', detail: '取得商家資訊失敗' });
-        }
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('API 錯誤:', err);
-        this.toast.add({ severity: 'error', summary: '錯誤', detail: '載入失敗，請稍後再試' });
-      }
-    });
-
-    this.subscriptions.push(sub);
+                    if (data.id) {
+                        this.loadHotels(data.id);
+                    }
+                } else {
+                    this.toast.add({ severity: 'error', summary: '錯誤', detail: '取得商家資訊失敗' });
+                }
+            },
+            error: (err) => {
+                this.isLoading = false;
+                console.error('API 錯誤:', err);
+                this.toast.add({ severity: 'error', summary: '錯誤', detail: '載入失敗，請稍後再試' });
+            }
+        });
   }
 
   /** 修改會員資訊彈跳視窗 */

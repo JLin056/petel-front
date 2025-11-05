@@ -11,6 +11,8 @@ import { Auth } from '../../core/services/auth.service';
 import { MerchService } from '../../core/services/merch-service';
 import { AddSellerInfoDialog } from '../add-seller-info-dialog/add-seller-info-dialog';
 import { MessageModule } from 'primeng/message';
+import { finalize, take } from 'rxjs';
+import { AUTH002Res } from '../../core/interfaces/AUTH002Res.interface';
 
 @Component({
     selector: 'app-merchant-login-page',
@@ -98,8 +100,6 @@ export class MerchantLoginPage {
      * 前往註冊頁
      */
     goRegister() {
-        // 確保不被阻擋，直接導航
-        this.showFillDialog = false; // 如果 dialog 打開，先關閉
         this.router.navigate(['merchants/userPage/register']).then(() => {
             window.scrollTo(0, 0);
         });
@@ -136,56 +136,42 @@ export class MerchantLoginPage {
             }
         };
 
-        this.authService.onLoginApi(payload).subscribe({
-            next: (res) => {
-                this.isLoading = false;
+        this.authService.onLoginApi(payload).pipe(
+            take(1),
+            finalize(() => (this.isLoading = false))
+        ).subscribe({
+            next: (res: AUTH002Res) => {
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    console.log('=== 登入成功 ===');
-                    console.log('完整回應:', res);
-                    console.log('TRANRS:', res.TRANRS);
-                    console.log('accountId:', res.TRANRS.AccountId);
-                    if (res.TRANRS.AccountId) {
-                        localStorage.setItem('accountId', res.TRANRS.AccountId);
-                        console.log('已儲存 accountId 到 localStorage:', res.TRANRS.AccountId);
-                    } else {
-                        console.error('警告：API 回應中沒有 accountId！');
-                    }
-                    const savedAccountId = localStorage.getItem('accountId');
-                    console.log('驗證儲存結果:', savedAccountId);
-
-                    if (res.TRANRS.accessToken) {
-                        localStorage.setItem('token', res.TRANRS.accessToken);
-                        this.authService.setAccessToken(res.TRANRS.accessToken);
-                    }
-
+                    // 判斷是否填寫過會員資訊
                     this.authService.onProfileCheck().subscribe({
                         next: (chk) => {
                             if (chk?.TRANRS?.filled === false) {
+                                // 尚未填 → 打開 dialog
                                 this.toast.add({
                                     severity: 'info',
                                     summary: '請完成會員資料',
                                     detail: '請填寫姓名與電話以繼續使用服務'
-                                });
+                                })
                                 this.showFillDialog = true;
                             } else {
                                 // 已填 → 直接導頁
+                                const redirect = this.getRedirectUrl();
                                 this.toast.add({
                                     severity: 'success',
                                     summary: '登入成功',
                                     detail: '歡迎回來！'
                                 });
-                                this.router.navigate(['/merchants/userPage']);
+                                this.router.navigateByUrl(redirect, { replaceUrl: true });
                             }
                         },
                         error: () => {
-                            this.isLoading = false;
                             this.toast.add({
                                 severity: 'error',
                                 summary: '資料檢查失敗',
                                 detail: '請稍後再試'
                             });
                         }
-                    })
+                    });
                 } else {
                     this.toast.add({
                         severity: 'error',
@@ -196,11 +182,7 @@ export class MerchantLoginPage {
             },
             error: () => {
                 this.isLoading = false;
-                this.toast.add({
-                    severity: 'error',
-                    summary: '系統錯誤',
-                    detail: '請稍後再試'
-                });
+                this.toast.add({ severity: 'error', summary: '系統錯誤', detail: '請稍後再試' });
             }
         });
     }
