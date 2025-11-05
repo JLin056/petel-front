@@ -99,7 +99,8 @@ export class MerchantOrderTablePage implements OnInit {
         page: {
           pageNumber: this.currentPage,
           pageSize: this.pageSize
-        }
+        },
+        propertyName: this.propertyName
       }
     };
 
