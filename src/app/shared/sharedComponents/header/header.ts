@@ -47,6 +47,7 @@ export class Header {
     notificationPanelVisible = false;
 
     private destroy$ = new Subject<void>();
+    private lastToken: string | null = null; // 記錄上次的 token
 
     /**
      * 注入
@@ -69,7 +70,11 @@ export class Header {
                 filter(e => e instanceof NavigationEnd),
                 filter(() => !!this.authService.getAccessToken())
             )
-            .subscribe(() => this.onCheckLoginStatus());
+            .subscribe(() => {
+                this.onCheckLoginStatus();
+                // 檢查 token 是否變化，如果變化則重新建立 SSE 連線
+                this.checkTokenAndReconnectSSE();
+            });
 
         // 訂閱 service 的登入狀態
         this.authService.isLoggedIn$
@@ -82,6 +87,7 @@ export class Header {
                     this.setupSSEConnection();
                 } else {
                     this.unreadCount = 0;
+                    this.lastToken = null;
                     this.notificationService.disconnectSSE();
                 }
             });
@@ -344,6 +350,9 @@ export class Header {
     private setupSSEConnection() {
         console.log('設定 SSE 即時推播連線');
 
+        // 記錄當前 token
+        this.lastToken = this.authService.getAccessToken();
+
         // 建立連線，並傳入收到通知時的回調
         this.notificationService.connectSSE((notification) => {
             console.log('Header 收到新通知:', notification);
@@ -359,6 +368,25 @@ export class Header {
                 life: 5000
             });
         });
+    }
+
+    /**
+     * 檢查 token 是否變化，如果變化則重新建立 SSE 連線
+     */
+    private checkTokenAndReconnectSSE() {
+        const currentToken = this.authService.getAccessToken();
+
+        // 如果沒有 token，不處理
+        if (!currentToken) {
+            return;
+        }
+
+        // 如果 token 變化了，重新建立 SSE 連線
+        if (this.lastToken && this.lastToken !== currentToken) {
+            console.log('[Header] Token 已更新，重新建立 SSE 連線');
+            this.notificationService.resetReconnectCount(); // 重置錯誤計數
+            this.setupSSEConnection();
+        }
     }
 
     /**

@@ -39,6 +39,9 @@ export class NotificationService {
     private eventSource: EventSource | null = null;
     private lastEventTime: string | null = null;
     private reconnectCount = 0;
+    private consecutiveErrorCount = 0;
+    private maxConsecutiveErrors = 3; // 連續失敗 3 次後停止重連
+    private currentToken: string | null = null; // 記錄當前使用的 token
 
     /** SSE 連線狀態 */
     private sseConnectedSubject = new BehaviorSubject<boolean>(false);
@@ -143,16 +146,33 @@ export class NotificationService {
     connectSSE(onNotification?: (notification: NotificationDto) => void): void {
         console.log('=== 建立 SSE 連線 ===');
 
+        // 取得 access token
+        const token = this.authService.getAccessToken();
+        if (!token) {
+            console.error('[SSE] ❌ 無法建立連線：未找到 access token');
+            this.sseConnectedSubject.next(false);
+            return;
+        }
+
+        // 檢查是否需要重新建立連線（token 已更新）
+        const tokenChanged = this.currentToken && this.currentToken !== token;
+        if (tokenChanged) {
+            console.log('[SSE] ⚠️ Token 已更新，重新建立連線');
+            this.disconnectSSE();
+        }
+
         // 如果已有連線，先關閉
         if (this.eventSource) {
             console.warn('[SSE] 已存在連線，先斷開舊連線');
             this.disconnectSSE();
         }
 
-        // 取得 access token
-        const token = this.authService.getAccessToken();
-        if (!token) {
-            console.error('[SSE] ❌ 無法建立連線：未找到 access token');
+        // 記錄當前使用的 token
+        this.currentToken = token;
+
+        // 檢查連續錯誤次數
+        if (this.consecutiveErrorCount >= this.maxConsecutiveErrors) {
+            console.error(`[SSE] ❌ 連續失敗 ${this.consecutiveErrorCount} 次，停止重連。請檢查 token 是否有效或稍後再試。`);
             this.sseConnectedSubject.next(false);
             return;
         }
@@ -199,6 +219,9 @@ export class NotificationService {
 
             // 監聽連線開啟（包括首次連線和重連成功）
             this.eventSource.onopen = () => {
+                // 連線成功，重置錯誤計數
+                this.consecutiveErrorCount = 0;
+
                 if (this.reconnectCount === 0) {
                     // 首次連線
                     console.log('[SSE] ✅ 首次連線成功');
@@ -226,13 +249,22 @@ export class NotificationService {
 
             // 處理連線錯誤（瀏覽器會自動重連）
             this.eventSource.onerror = (error: Event) => {
+                // 增加連續錯誤計數
+                this.consecutiveErrorCount++;
+                console.warn(`[SSE] ⚠️ 連線錯誤（第 ${this.consecutiveErrorCount} 次）`);
+
                 if (this.eventSource?.readyState === EventSource.CLOSED) {
                     // 連線已永久關閉
                     console.error('[SSE] ❌ 連線已關閉');
                     this.sseConnectedSubject.next(false);
+                } else if (this.consecutiveErrorCount >= this.maxConsecutiveErrors) {
+                    // 連續錯誤次數過多，強制關閉連線
+                    console.error(`[SSE] ❌ 連續錯誤 ${this.consecutiveErrorCount} 次，強制關閉連線`);
+                    console.error('[SSE] 💡 可能原因：token 已過期。請重新整理頁面或重新登入。');
+                    this.disconnectSSE();
                 } else {
                     // 連線斷開，瀏覽器會自動重連（後端設定 retry: 3000）
-                    console.warn('[SSE] ⚠️ 連線斷開，3 秒後自動重連...');
+                    console.warn(`[SSE] ⚠️ 連線斷開，3 秒後自動重連...（剩餘嘗試次數：${this.maxConsecutiveErrors - this.consecutiveErrorCount}）`);
                     this.sseConnectedSubject.next(false);
                 }
             };
@@ -257,6 +289,8 @@ export class NotificationService {
         // 重置狀態
         this.sseConnectedSubject.next(false);
         this.reconnectCount = 0;
+        this.currentToken = null;
+        // 注意：不重置 consecutiveErrorCount，讓它在下次 connectSSE 時檢查
 
         console.log('[SSE] ✅ 連線已關閉');
     }
@@ -266,7 +300,8 @@ export class NotificationService {
      */
     resetReconnectCount(): void {
         this.reconnectCount = 0;
-        console.log('[SSE] 重連計數器已重置');
+        this.consecutiveErrorCount = 0;
+        console.log('[SSE] 重連計數器和錯誤計數已重置');
     }
 
     /**
