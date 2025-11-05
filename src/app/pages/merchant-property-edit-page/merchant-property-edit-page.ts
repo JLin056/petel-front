@@ -152,18 +152,18 @@ export class MerchantPropertyEditPage {
                                     propertyNotice: this.propertyData.propertyNotice || '',
                                 });
                             } else {
-                                setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                                this.router.navigate(['/merchants/property/homepage']);
                             }
                         },
                         error: (error) => {
                             console.error('獲取資訊失敗:', error);
-                            setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                            this.router.navigate(['/merchants/property/homepage']);
                         }
                     });
                 },
                 error: (error) => {
                     console.error('獲取設施資訊失敗:', error);
-                    setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                    this.router.navigate(['/merchants/property/homepage']);
                 }
             });
             this.merchService.queryPostal().subscribe({
@@ -178,7 +178,7 @@ export class MerchantPropertyEditPage {
                 },
                 error: (error) => {
                     console.error('獲取資訊失敗:', error);
-                    setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                    this.router.navigate(['/merchants/property/homepage']);
                 }
             });
 
@@ -208,7 +208,7 @@ export class MerchantPropertyEditPage {
         }
 
         try {
-            // 🔹 1. 刪除舊圖片
+            // 刪除舊圖片
             if (this.deletedImageIds.length > 0) {
                 await new Promise<void>((resolve, reject) => {
                     this.mediaService.deleteMedia({
@@ -221,12 +221,12 @@ export class MerchantPropertyEditPage {
                 });
             }
 
-            // 🔹 2. 上傳新圖片
+            // 上傳新圖片
             if (this.uploadedImages.length > 0) {
                 await this.uploadAllImages();
             }
 
-            // 🔹 3. 更新現有圖片排序
+            // 更新現有圖片排序
             if (this.existingImages.length > 0) {
                 const updatePromises = this.existingImages.map((img) =>
                     new Promise<void>((resolve, reject) => {
@@ -244,7 +244,7 @@ export class MerchantPropertyEditPage {
                 await Promise.all(updatePromises);
             }
 
-            // 🔹 4. 最後送出旅館資料
+            // 送出旅館資料
             const selectedFacilitiesValue = this.propertyForm.controls['selectedFacilities'].value;
             const facilityIds = selectedFacilitiesValue.map(
                 (facility: { facilityId: any }) => facility.facilityId
@@ -534,16 +534,4 @@ export class MerchantPropertyEditPage {
 
         return results;
     }
-}
-
-interface UploadedImage {
-    file: File;
-    previewUrl: string;
-    sortOrder: number;
-}
-
-interface ExistingImage {
-    mediaId: string;
-    base64Data: string;
-    sortOrder: number;
 }

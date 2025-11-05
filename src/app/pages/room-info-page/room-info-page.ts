@@ -78,9 +78,7 @@ export class RoomInfoPage implements OnInit {
     if (!this.roomId) {
       console.warn('缺少房型 ID，導回首頁');
       this.errorMessage = '無法取得房型資料';
-      setTimeout(() => {
-        this.router.navigate(['/merchants/property/homepage']);
-      }, 2000);
+      this.router.navigate(['/merchants/property/homepage']);
       return;
     }
 

@@ -1,5 +1,5 @@
 <div class="merchant-dashboard">
-    <!-- Loading 狀態 -->
+    <!-- Loading -->
     @if (isLoading) {
     <div class="loading-container">
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #974b2c;"></i>
@@ -7,28 +7,7 @@
     </div>
     }
 
-    <!-- 上半部：當月銷售額（只有在有房間時才顯示）
-    @if (!isLoading && stats.length > 0 && roomList.length > 0) {
-    <h2 class="page-title">本月經營分析</h2>
-
-    統計卡片（從後端載入）
-    <div class="stats-cards">
-        @for (stat of stats; track $index) {
-        <div class="card">
-            <div class="card-icon" [style.color]="stat.color">
-                <i [class]="stat.icon"></i>
-            </div>
-            <div class="card-content">
-                <div class="card-value">{{ stat.value }}</div>
-                <div class="card-label">{{ stat.label }}</div>
-                <div class="card-change">{{ stat.change }}</div>
-            </div>
-        </div>
-        }
-    </div>
-    } -->
-
-    <!-- 下半部：房型資訊 -->
+    <!-- 房型資訊 -->
     <div class="section-header-row">
         <h2 class="section-title">房型資訊</h2>
         @if (roomList.length > 0) {
