@@ -2,7 +2,7 @@
     background-color: #974B2C;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     height: 85px;
     position: fixed;
     top: 0;
@@ -17,9 +17,10 @@
     width: 300px;
     height: 60px;
     border-radius: 8px;
-    transform: scale(0.6) translate(-200px, 1px);
+    transform: scale(0.6);
 }
 
+/* 導覽列 */
 .navbar-items {
     display: flex;
     list-style: none;
@@ -43,7 +44,7 @@
 .account {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 50px;
 }
 
 .account i {
@@ -71,6 +72,21 @@
     color: #974B2C;
 }
 
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* 響應式調整 */
 @media (max-width: 768px) {
     .navbar-items li {
@@ -79,7 +95,7 @@
     }
 
     .account {
-        gap: 20px;
+        gap: 15px;
     }
 
     .LoginLogout {
@@ -92,7 +108,7 @@
     .header {
         flex-direction: column;
         height: auto;
-        padding: 10px 0;
+        padding: 10px;
     }
 
     .navbar-items {
@@ -109,20 +125,4 @@
         gap: 10px;
         margin-top: 10px;
     }
-}
-
-/* 通知徽章樣式 */
-.notification-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #e74c3c;
-    color: white;
-    border-radius: 10px;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: bold;
-    min-width: 18px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
