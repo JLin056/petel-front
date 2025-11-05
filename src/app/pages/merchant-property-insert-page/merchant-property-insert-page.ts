@@ -274,16 +274,16 @@ export class MerchantPropertyInsertPage {
    * 取得 sellerId
    */
   private async getSellerId(): Promise<string> {
-    const accountId = localStorage.getItem('accountId') || '';
+
     try {
-      const res: Res<MERCH011Tranrs> = await firstValueFrom(this.merchService.getSellerInfo(accountId));
+      const res: Res<MERCH011Tranrs> = await firstValueFrom(this.merchService.getSellerInfo());
       if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
         return res.TRANRS.id;
       } else {
         throw new Error('取得商家會員資訊失敗');
       }
     } catch (error) {
-      console.error('取得商家會員資訊錯誤', error);
+    //   console.error('取得商家會員資訊錯誤', error);
       throw error;
     }
   }

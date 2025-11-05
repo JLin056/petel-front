@@ -241,22 +241,12 @@ export class MerchService {
      * MERCH-011 取得商家會員資訊
      * @returns
      */
-    getSellerInfo(accountId: string) {
-        const header: Mwheader = {
-            MSGID: 'MERCH-011'
-        };
-        const actualAccountId = accountId || localStorage.getItem('accountId') || '';
-
-        const tranrq = {
-            accountId: actualAccountId
-        };
-
-        const postData: Req<{}> = {
-            MWHEADER: header,
-            TRANRQ: tranrq
-        }
-
-        return this.http.post<Res<MERCH011Tranrs>>('http://localhost:8080/merchants/sellers/get', postData, { withCredentials: true });
+    getSellerInfo() {
+        return this.http.post<Res<MERCH011Tranrs>>(
+            'http://localhost:8080/merchants/sellers/get',
+            null,
+            { withCredentials: true }
+        );
     }
 
     /**
