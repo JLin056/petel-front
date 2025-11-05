@@ -180,7 +180,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
     border: 1px solid #e8dfd5;
-    height: 260px; 
+    height: 260px;
 }
 
 .room-card:hover {
@@ -192,7 +192,7 @@
 .room-image-container {
     width: 300px;
     min-width: 300px;
-    height: 220px; 
+    height: 220px;
     overflow: hidden;
     height: 260px;
     background-color: #f5f0ea;
