@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import {
     AbstractControl,
     FormBuilder,
@@ -9,23 +9,23 @@ import {
     Validators
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
-import { Auth } from '../../core/services/auth.service';
 import { AUTH001Req } from '../../core/interfaces/AUTH001Req.interface';
 import { AUTH001Res } from '../../core/interfaces/AUTH001Res.interface';
-import { MessageService } from 'primeng/api';
-import { MessageModule } from 'primeng/message';
+import { Auth } from '../../core/services/auth.service';
 
 @Component({
-  selector: 'app-merchant-register-page',
-  imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, MessageModule],
-  templateUrl: './merchant-register-page.html',
-  styleUrl: './merchant-register-page.css'
+    selector: 'app-merchant-register-page',
+    imports: [CommonModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, MessageModule],
+    templateUrl: './merchant-register-page.html',
+    styleUrl: './merchant-register-page.css'
 })
 export class MerchantRegisterPage {
-/** 註冊表單 */
+    /** 註冊表單 */
     registerForm!: FormGroup;
     /** 是否還在跑 */
     isLoading = false;
@@ -44,7 +44,7 @@ export class MerchantRegisterPage {
         private authService: Auth,
         private router: Router,
         private toast: MessageService
-    ) {}
+    ) { }
 
     /**
      * 驗證密碼是否一致
@@ -95,7 +95,7 @@ export class MerchantRegisterPage {
      * @readonly
      * @memberof RegisterPage
      */
-    get confirmControl()  {
+    get confirmControl() {
         return this.registerForm.get('confirm');
     }
 
@@ -107,9 +107,9 @@ export class MerchantRegisterPage {
     getErrorMessage(controlName: 'email' | 'password' | 'confirm'): string {
         const control = this.registerForm.get(controlName);
         if (control?.hasError('required')) {
-        if (controlName === 'email') return '信箱為必填欄位';
-        if (controlName === 'password') return '密碼為必填欄位';
-        if (controlName === 'confirm') return '確認密碼為必填欄位';
+            if (controlName === 'email') return '信箱為必填欄位';
+            if (controlName === 'password') return '密碼為必填欄位';
+            if (controlName === 'confirm') return '確認密碼為必填欄位';
         }
         if (controlName === 'email' && control?.hasError('email')) {
             return '請輸入有效的信箱格式';
@@ -137,26 +137,26 @@ export class MerchantRegisterPage {
     onRegister() {
         this.registerForm.markAllAsTouched();
         if (this.registerForm.invalid) {
-        this.errorMessage = this.registerForm.hasError('passwordsMismatch')
-            ? '密碼與確認密碼不一致'
-            : '請正確填寫所有欄位';
+            this.errorMessage = this.registerForm.hasError('passwordsMismatch')
+                ? '密碼與確認密碼不一致'
+                : '請正確填寫所有欄位';
             this.toast.add({
                 severity: 'warn',
                 summary: '註冊失敗',
                 detail: this.errorMessage
             })
-        return;
+            return;
         }
 
         this.isLoading = true;
 
         const payload: AUTH001Req = {
-        MWHEADER: { MSGID: 'AUTH-001' },
-        TRANRQ: {
-            email: this.registerForm.value.email,
-            password: this.registerForm.value.password,
-            role: 'seller'
-        }
+            MWHEADER: { MSGID: 'AUTH-001' },
+            TRANRQ: {
+                email: this.registerForm.value.email,
+                password: this.registerForm.value.password,
+                role: 'seller'
+            }
         };
 
         this.authService.onRegisterApi(payload).subscribe({
@@ -184,12 +184,12 @@ export class MerchantRegisterPage {
      */
     ngOnInit(): void {
         this.registerForm = this.fb.group(
-        {
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]],
-            confirm: ['', [Validators.required]]
-        },
-        { validators: this.passwordsMatch.bind(this) }
+            {
+                email: ['', [Validators.required, Validators.email]],
+                password: ['', [Validators.required, Validators.minLength(6)]],
+                confirm: ['', [Validators.required]]
+            },
+            { validators: this.passwordsMatch.bind(this) }
         );
     }
 }
