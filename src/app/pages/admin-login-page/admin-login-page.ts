@@ -9,6 +9,7 @@ import { PasswordModule } from 'primeng/password';
 import { AUTH002Req } from '../../core/interfaces/AUTH002Req.interface';
 import { Auth } from '../../core/services/auth.service';
 import { MessageModule } from 'primeng/message';
+import { finalize, take } from 'rxjs';
 
 @Component({
     selector: 'app-admin-login-page',
@@ -89,20 +90,14 @@ export class AdminLoginPage implements OnInit {
             }
         };
 
-        this.authService.onLoginApi(payload).subscribe({
+        this.authService.onLoginApi(payload).pipe(
+            take(1),
+            finalize(() => (this.isLoading = false))
+        ).subscribe({
             next: (res) => {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    console.log('=== 管理員登入成功 ===');
-
-                    if (res.TRANRS.AccountId) {
-                        localStorage.setItem('accountId', res.TRANRS.AccountId);
-                    }
-
-                    if (res.TRANRS.accessToken) {
-                        localStorage.setItem('token', res.TRANRS.accessToken);
-                        this.authService.setAccessToken(res.TRANRS.accessToken);
-                    }
+                    // console.log('=== 管理員登入成功 ===');
 
                     this.toast.add({
                         severity: 'success',
@@ -123,7 +118,7 @@ export class AdminLoginPage implements OnInit {
             },
             error: (err) => {
                 this.isLoading = false;
-                console.error('登入錯誤:', err);
+                // console.error('登入錯誤:', err);
                 this.toast.add({
                     severity: 'error',
                     summary: '系統錯誤',
