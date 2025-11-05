@@ -29,13 +29,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   private navigationSubscription?: Subscription;
   /** queryParamsSubscription */
   private queryParamsSubscription?: Subscription;
-  /** stats 先寫死*/
-  stats: Stat[] = [
-    { label: '營業額', value: '$55,000', change: '+10% (較上月)', icon: 'pi pi-chart-line', color: '#b7a298' },
-    { label: '預約數', value: '45', change: '+8% (較上月)', icon: 'pi pi-book', color: '#b7a298' },
-    { label: '平均評價', value: '4.8/5', change: '+0.3 (較上月)', icon: 'pi pi-star-fill', color: '#b7a298' },
-    { label: '取消率', value: '5%', change: '-1% (較上月)', icon: 'pi pi-times-circle', color: '#b7a298' }
-  ];
   /** isLoading */
   isLoading = false;
   /** isDeleting */
@@ -129,7 +122,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
             petTypeName: this.petTypeMap[room.petTypeId],
             formattedRoomSize: this.formatRoomSize(room.roomSize)
           }));
-          this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats;
           console.log('房間列表載入成功', this.roomList);
 
           this.loadRoomImages();
