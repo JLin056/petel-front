@@ -91,9 +91,7 @@ export class RoomInfoInsertPage implements OnInit {
         summary: '無法取得旅館資訊',
         detail: '請先選擇旅館'
       });
-      setTimeout(() => {
-        this.router.navigate(['/merchants/property/homepage']);
-      }, 2000);
+      this.router.navigate(['/merchants/property/homepage']);
       return;
     }
     this.initForm();
@@ -387,8 +385,8 @@ export class RoomInfoInsertPage implements OnInit {
   @HostListener('document:keydown', ['$event'])
   onGlobalKeydown(e: KeyboardEvent) {
     if (e.ctrlKey && e.altKey && (e.key === 'd' || e.key === 'D')) {
-        e.preventDefault();
-        this.fillDemoData();
+      e.preventDefault();
+      this.fillDemoData();
     }
   }
 
@@ -398,14 +396,14 @@ export class RoomInfoInsertPage implements OnInit {
   fillDemoData(): void {
     const demoPet = this.petTypes?.[0] ?? { name: '貓', id: 'W001' };
     this.roomForm.patchValue({
-        petTypeObject: demoPet,
-        name: '溫馨棒棒貓套房',
-        height: 200,
-        length: 200,
-        width: 200,
-        description: '含每日兩次散步、獨立通風與舒壓香氛，提供舒適乾淨的休憩空間。',
-        price: 1500,
-        unit: 5
+      petTypeObject: demoPet,
+      name: '溫馨棒棒貓套房',
+      height: 200,
+      length: 200,
+      width: 200,
+      description: '含每日兩次散步、獨立通風與舒壓香氛，提供舒適乾淨的休憩空間。',
+      price: 1500,
+      unit: 5
     });
     this.roomForm.markAllAsTouched();
   }

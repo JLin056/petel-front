@@ -45,7 +45,7 @@ export class MerchantPropertyInfoPage implements OnInit {
         checkNotice: '',
         petNotice: '',
         propertyNotice: '',
-        propertyImages: [], 
+        propertyImages: [],
         facilities: []
     };
 
@@ -76,9 +76,8 @@ export class MerchantPropertyInfoPage implements OnInit {
         if (!this.propertyId) {
             console.warn('缺少旅館 ID，導回商家會員頁');
             this.errorMessage = '無法取得旅館資料';
-            setTimeout(() => {
-                this.router.navigate(['/merchants/userPage']);
-            }, 2000);
+            this.router.navigate(['/merchants/userPage']);
+            ;
             return;
         }
 
@@ -153,7 +152,7 @@ export class MerchantPropertyInfoPage implements OnInit {
                 checkNotice: detail.checkNotice || '',
                 petNotice: detail.petNotice || '',
                 propertyNotice: detail.propertyNotice || '',
-                propertyImages: [], 
+                propertyImages: [],
                 facilities: this.facilityData?.facilities.map(f => ({ facilityName: f.name })) || []
             };
 

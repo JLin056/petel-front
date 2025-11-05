@@ -36,7 +36,7 @@ export class App implements OnInit {
       this.isMerchantRoute = event.url.includes('/merchants/property') ||
         event.url.includes('/orderTable');
       this.isMerchantUserpageRoute = event.url.includes('/merchants/userPage');
-      this.isMerchantUserpageFooterRoute = event.url.includes('/merchants/userPage');
+      this.isMerchantUserpageFooterRoute = event.url.includes('/merchants');
     });
   }
 }
