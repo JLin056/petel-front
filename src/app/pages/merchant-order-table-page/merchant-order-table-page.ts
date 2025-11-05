@@ -65,9 +65,6 @@ export class MerchantOrderTablePage implements OnInit {
   ngOnInit() {
     this.propertyId = this.propertyStateService.getCurrentPropertyId();
     this.propertyName = this.propertyStateService.getCurrentPropertyName();
-    console.log('訂單管理頁面取得的 propertyId:', this.propertyId);
-    console.log('訂單管理頁面取得的 propertyName:', this.propertyName);
-
     this.initStatuses();
     this.loadOrders();
   }
@@ -103,7 +100,6 @@ export class MerchantOrderTablePage implements OnInit {
         propertyName: this.propertyName
       }
     };
-
     // 加入篩選條件
     if (this.searchOrderId) {
       postData.TRANRQ.ORDER_ID = this.searchOrderId;
@@ -125,8 +121,6 @@ export class MerchantOrderTablePage implements OnInit {
             this.orderList = allOrders;
           }
           this.totalRecords = res.TRANRS.totalCount || 0;
-          console.log('訂單列表載入成功，總數:', this.totalRecords);
-          console.log('訂單列表:', this.orderList);
 
         } else {
           this.orderList = [];
@@ -189,8 +183,6 @@ export class MerchantOrderTablePage implements OnInit {
    * 狀態更新事件（從 dialog 接收）
    */
   onStatusUpdated(data: { orderId: string; status: string }) {
-    console.log('訂單狀態已更新:', data);
-
     // 更新列表中的訂單狀態
     const index = this.orderList.findIndex(o => o.ORDER_ID === data.orderId);
     if (index !== -1) {
