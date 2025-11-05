@@ -89,7 +89,6 @@ export class RoomInfoEditPage implements OnInit {
     if (navigation?.extras?.state) {
       this.roomData = navigation.extras.state['room'];
       this.roomId = this.roomData?.id || '';
-      console.log('接收到的房型資料:', this.roomData);
     }
   }
 
@@ -97,11 +96,10 @@ export class RoomInfoEditPage implements OnInit {
     this.initForm();
 
     if (!this.roomData || !this.roomId) {
-      console.warn('沒有房型資料，導回首頁');
       this.errorMessage = '無法取得房型資料';
-      setTimeout(() => {
-        this.router.navigate(['/merchants/property/homepage']);
-      }, 2000);
+      // setTimeout(() => {
+      //   this.router.navigate(['/merchants/property/homepage']);
+      // }, 2000);
       return;
     }
 
@@ -144,8 +142,6 @@ export class RoomInfoEditPage implements OnInit {
       price: this.roomData.basePrice || '',
       unit: this.roomData.totalUnits || null
     });
-
-    console.log('表單已填入資料:', this.roomForm.value);
     this.loadExistingImages();
   }
 
@@ -170,8 +166,6 @@ export class RoomInfoEditPage implements OnInit {
             this.originalImageOrder.set(media.mediaId, media.sortOrder || 0);
             this.originalImageData.set(media.mediaId, media);
           });
-          console.log('已載入現有圖片:', this.existingImages.length);
-          console.log('原始圖片資料:', res.TRANRS.medias);
         }
       },
       error: (err) => {
@@ -398,13 +392,6 @@ export class RoomInfoEditPage implements OnInit {
       const USE_DELETE_AND_REUPLOAD = false;
 
       if (imagesToUpdate.length > 0 && !USE_DELETE_AND_REUPLOAD) {
-        console.log(`有 ${imagesToUpdate.length} 張圖片的排序需要更新`);
-        console.log('需要更新的圖片:', imagesToUpdate.map(img => ({
-          mediaId: img.mediaId,
-          oldOrder: this.originalImageOrder.get(img.mediaId),
-          newOrder: img.sortOrder
-        })));
-
         const updatePayload = {
           MWHEADER: { MSGID: 'MEDIA-002' },
           TRANRQ: {
@@ -422,35 +409,23 @@ export class RoomInfoEditPage implements OnInit {
           }
         };
 
-        console.log('MEDIA-002 請求內容:', JSON.stringify(updatePayload, null, 2));
-
         // 批次更新所有需要變更的圖片
         await new Promise<void>((resolve, reject) => {
           this.mediaService.updateMedia(updatePayload).subscribe({
             next: (res) => {
-              console.log('MEDIA-002 回應:', res);
               if (res.MWHEADER.RETURNCODE === '0000') {
-                console.log('圖片排序更新成功');
                 resolve();
               } else {
-                console.error('更新圖片排序失敗:', res.MWHEADER);
                 reject(new Error('更新圖片排序失敗: ' + res.MWHEADER.RETURNDESC));
               }
             },
             error: (err) => {
-              console.error('更新圖片排序 API 錯誤:', err);
-              console.error('HTTP 狀態碼:', err.status);
-              console.error('錯誤訊息:', err.message);
-              console.error('後端回應:', err.error);
-              console.error('完整錯誤物件:', JSON.stringify(err, null, 2));
               reject(err);
             }
           });
         });
       } else if (imagesToUpdate.length > 0 && USE_DELETE_AND_REUPLOAD) {
         // 刪除所有圖片後重新上傳
-        console.log('⚠️ 刪除後重新上傳來更新排序');
-
         const allMediaIds = this.existingImages.map(img => img.mediaId);
 
         // 刪除所有現有圖片
@@ -461,7 +436,6 @@ export class RoomInfoEditPage implements OnInit {
           }).subscribe({
             next: (res) => {
               if (res.MWHEADER.RETURNCODE === '0000') {
-                console.log('已刪除所有圖片');
                 resolve();
               } else {
                 reject(new Error('刪除圖片失敗'));
@@ -504,8 +478,6 @@ export class RoomInfoEditPage implements OnInit {
             });
           });
         }
-
-        console.log('✅ 所有圖片已重新上傳並更新排序');
       } else {
         console.log('沒有圖片排序需要更新');
       }
@@ -542,7 +514,6 @@ export class RoomInfoEditPage implements OnInit {
           this.isSubmitting = false;
         },
         error: (err) => {
-          console.error('API 錯誤:', err);
           this.errorMessage = '網路或伺服器錯誤，請稍後再試';
           this.isSubmitting = false;
         }

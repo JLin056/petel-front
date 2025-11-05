@@ -76,7 +76,6 @@ export class MerchantReviewListPage implements OnInit {
 
     this.merchService.queryPropertyReviews(tranrq).subscribe({
       next: (res) => {
-        console.log('API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.reviews = res.TRANRS?.reviews || [];
@@ -84,12 +83,6 @@ export class MerchantReviewListPage implements OnInit {
           this.avgPriceScore = res.TRANRS?.avgPriceScore || 0;
           this.avgEnvScore = res.TRANRS?.avgEnvScore || 0;
           this.avgServiceScore = res.TRANRS?.avgServiceScore || 0;
-          console.log('評價列表載入成功', this.reviews);
-          console.log('統計資料:', {
-            avgPriceScore: this.avgPriceScore,
-            avgEnvScore: this.avgEnvScore,
-            avgServiceScore: this.avgServiceScore
-          });
         } else {
           this.reviews = [];
         }
@@ -106,7 +99,6 @@ export class MerchantReviewListPage implements OnInit {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 10;
     this.currentPage = Math.floor(this.first / this.rows) + 1;
-    console.log('頁面變更:', { page: this.currentPage, pageSize: this.rows });
     this.loadReviews();
   }
 

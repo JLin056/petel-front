@@ -256,8 +256,6 @@ export class MerchantPropertyInsertPage {
         reader.onerror = () => reject(new Error(`${uploadedImage.file.name} 讀取失敗`));
         reader.readAsDataURL(uploadedImage.file);
       }).catch(err => {
-        // 狀態清空
-        console.error('圖片上傳失敗：', err);
         this.messageService.add({
           severity: 'error',
           summary: '圖片上傳失敗',
@@ -266,10 +264,8 @@ export class MerchantPropertyInsertPage {
         this.uploadedImages = [];
         throw err;
       });
-
       results.push(result);
     }
-
     return results;
   }
 
@@ -317,7 +313,6 @@ export class MerchantPropertyInsertPage {
     }
 
     const formValue = this.propertyForm.value;
-    console.log('送出資料：', formValue);
 
     try {
       const sellerId = await this.getSellerId();
@@ -353,7 +348,6 @@ export class MerchantPropertyInsertPage {
               this.messageService.add({ severity: 'error', summary: '錯誤', detail: '無法取得旅館編號' });
               return;
             }
-            console.log('新旅館 ID:', newPropertyId);
             this.messageService.add({ severity: 'success', summary: '成功', detail: '旅館新增成功！' });
             this.router.navigate(
               ['/merchants/property/info'],

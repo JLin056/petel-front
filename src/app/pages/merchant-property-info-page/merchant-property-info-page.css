@@ -24,7 +24,6 @@
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* 設施清單 */
 .facility-list {
     list-style: none;
     padding-left: 0;
@@ -43,12 +42,6 @@
     color: #a4642b;
     font-size: 22px;
 }
-
-/* room-info-page.css - 完整版 */
-
-/* ------------------------------------- */
-/* 基礎設定與容器 */
-/* ------------------------------------- */
 
 .room-form-container {
     background-color: #f8f1e9;
@@ -71,10 +64,6 @@
     margin-bottom: 20px;
     text-align: center;
 }
-
-/* ------------------------------------- */
-/* 表單佈局 */
-/* ------------------------------------- */
 
 .form-body {
     display: flex;
@@ -110,10 +99,6 @@
     width: 100%;
 }
 
-/* ------------------------------------- */
-/* 標籤樣式 */
-/* ------------------------------------- */
-
 .section-label {
     font-size: 32px;
     display: block;
@@ -121,10 +106,6 @@
     color: #3a1f0b;
     margin-bottom: 6px;
 }
-
-/* ------------------------------------- */
-/* 圖片上傳區塊 */
-/* ------------------------------------- */
 
 .image-upload-section {
     gap: 15px;
@@ -157,10 +138,6 @@
     margin-bottom: 10px;
 }
 
-/* ------------------------------------- */
-/* 資訊顯示區塊（純文字顯示）*/
-/* ------------------------------------- */
-
 .info-section {
     padding-bottom: 0 !important;
 }
@@ -182,10 +159,6 @@
     color: #3a1f0b;
     font-size: 26px;
 }
-
-/* ------------------------------------- */
-/* 房間介紹內容區塊 */
-/* ------------------------------------- */
 
 .description-content {
     width: 100%;
@@ -245,10 +218,6 @@
     text-decoration: underline;
 }
 
-/* ------------------------------------- */
-/* 按鈕區塊 */
-/* ------------------------------------- */
-
 .form-buttons {
     display: flex;
     justify-content: center;
@@ -297,10 +266,6 @@
     font-size: 18px;
 }
 
-/* ------------------------------------- */
-/* Loading 容器 */
-/* ------------------------------------- */
-
 .loading-container {
     display: flex;
     flex-direction: column;
@@ -316,10 +281,6 @@
     margin: 0;
 }
 
-/* ------------------------------------- */
-/* 錯誤訊息顯示 */
-/* ------------------------------------- */
-
 .error-message {
     background-color: #fef2f2;
     border: 1px solid #fca5a5;
@@ -330,10 +291,6 @@
     text-align: center;
     font-weight: 500;
 }
-
-/* ------------------------------------- */
-/* 響應式優化 */
-/* ------------------------------------- */
 
 @media (max-width: 1024px) {
     .form-main-content.sequential-layout {

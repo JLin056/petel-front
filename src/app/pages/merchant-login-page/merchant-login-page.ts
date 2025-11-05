@@ -140,18 +140,12 @@ export class MerchantLoginPage {
             next: (res) => {
                 this.isLoading = false;
                 if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS) {
-                    console.log('=== 登入成功 ===');
-                    console.log('完整回應:', res);
-                    console.log('TRANRS:', res.TRANRS);
-                    console.log('accountId:', res.TRANRS.AccountId);
                     if (res.TRANRS.AccountId) {
                         localStorage.setItem('accountId', res.TRANRS.AccountId);
-                        console.log('已儲存 accountId 到 localStorage:', res.TRANRS.AccountId);
                     } else {
                         console.error('警告：API 回應中沒有 accountId！');
                     }
                     const savedAccountId = localStorage.getItem('accountId');
-                    console.log('驗證儲存結果:', savedAccountId);
 
                     if (res.TRANRS.accessToken) {
                         localStorage.setItem('token', res.TRANRS.accessToken);
@@ -168,7 +162,6 @@ export class MerchantLoginPage {
                                 });
                                 this.showFillDialog = true;
                             } else {
-                                // 已填 → 直接導頁
                                 this.toast.add({
                                     severity: 'success',
                                     summary: '登入成功',

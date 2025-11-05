@@ -1,6 +1,3 @@
-/* ------------------------------------- */
-/* 外層容器與標題 */
-/* ------------------------------------- */
 .hotel-container {
     max-width: 900px;
     margin: 30px auto;
@@ -18,7 +15,6 @@
     margin-bottom: 30px;
 }
 
-/* 區塊標題 */
 .info-section h3 {
     font-size: 24px;
     color: #6c3f2d;
@@ -29,9 +25,7 @@
 
 .info-section {
     margin-bottom: 30px;
-    /* 👈 這行是新增的 */
 }
-
 
 /* ------------------------------------- */
 /* 表單格子 */
@@ -155,7 +149,7 @@ textarea[pInputTextarea]:focus {
     border-radius: 8px;
 }
 
-/* 按鈕、label spacing 微調 */
+/* 按鈕、label spacing */
 .p-multiselect-label {
     padding: 0;
     min-height: 24px;
@@ -176,7 +170,6 @@ textarea[pInputTextarea]:focus {
 .image-upload-section {
     gap: 15px;
     padding-bottom: 0;
-    /* 👈 圖片區塊不需要預留錯誤訊息空間 */
 }
 
 .image-preview-area {
@@ -260,7 +253,6 @@ textarea[pInputTextarea]:focus {
     height: 28px;
     border-radius: 50%;
     cursor: pointer;
-    /* display: flex; */
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
@@ -276,16 +268,8 @@ textarea[pInputTextarea]:focus {
     cursor: not-allowed;
 }
 
-/* .btn-remove i {
-    font-size: 14px;
-} */
- /* 明明寫法與roomInfoInsertPage一樣，卻不能改大小 */
 .image-overlay .btn-remove i {
     font-size: 14px !important;
-    /* line-height: 1;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important; */
 }
 
 .upload-spinner {
@@ -454,9 +438,6 @@ textarea[pInputTextarea]:focus {
     object-fit: cover;
 }
 
-/* ------------------------------------- */
-/* 設施列表 */
-/* ------------------------------------- */
 .facility-list {
     display: flex;
     flex-direction: column;
@@ -469,9 +450,6 @@ textarea[pInputTextarea]:focus {
     align-items: center;
 }
 
-/* ------------------------------------- */
-/* 按鈕區塊 */
-/* ------------------------------------- */
 .form-actions {
     display: flex;
     justify-content: center;
@@ -506,11 +484,8 @@ textarea[pInputTextarea]:focus {
 .btn-save,
 .btn-clear {
     border: none !important;
-    /* 移除按鈕邊框 */
     outline: none !important;
-    /* 移除聚焦外框 */
     box-shadow: none !important;
-    /* 移除陰影 */
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
 }

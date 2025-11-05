@@ -1,14 +1,9 @@
-/* ------------------------------------- */
-/* 頁面整體佈局 */
-/* ------------------------------------- */
-
 .reviews-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 25px 15px;
 }
 
-/* 頁面標題區塊 */
 .page-header {
     margin-bottom: 40px;
     margin-top: 50px;
@@ -35,10 +30,6 @@
     color: #8b7355;
     margin: 0;
 }
-
-/* ------------------------------------- */
-/* 評價卡片樣式 */
-/* ------------------------------------- */
 
 .review-card {
     margin-bottom: 18px;
@@ -74,7 +65,6 @@
     transform: translateY(-2px);
 }
 
-/* 卡片頭部 */
 .review-card-header {
     display: flex;
     justify-content: space-between;
@@ -108,7 +98,6 @@
     font-size: 20px;
 }
 
-/* 卡片內容區塊 */
 .review-content-wrapper {
     display: flex;
     gap: 18px;
@@ -116,7 +105,6 @@
     min-height: auto;
 }
 
-/* 左側評價文字區塊 */
 .review-text-section {
     flex: 1;
     display: flex;
@@ -162,12 +150,10 @@
     margin-left: 6px;
 }
 
-/* 分隔線 */
 .review-divider {
     margin: 0;
 }
 
-/* 右側評分區塊 */
 .rating-section {
     flex: 0 0 250px;
     display: flex;
@@ -213,7 +199,7 @@
     text-align: right;
 }
 
-/* PrimeNG Rating 組件樣式覆蓋 */
+/* PrimeNG Rating */
 ::ng-deep .rating-display .p-rating-item {
     font-size: 20px;
 }
@@ -222,7 +208,6 @@
     font-size: 20px;
 }
 
-/* 卡片底部 */
 .card-footer {
     display: flex;
     justify-content: flex-end;
@@ -247,10 +232,6 @@
     padding: 6px 12px;
     font-size: 20px;
 }
-
-/* ------------------------------------- */
-/* 無評價狀態 */
-/* ------------------------------------- */
 
 .no-reviews-wrapper {
     display: flex;
@@ -292,10 +273,6 @@
     margin: 0;
 }
 
-/* ------------------------------------- */
-/* Loading 狀態 */
-/* ------------------------------------- */
-
 .loading-wrapper {
     display: flex;
     flex-direction: column;
@@ -316,10 +293,6 @@
     margin: 0;
 }
 
-/* ------------------------------------- */
-/* 錯誤訊息 */
-/* ------------------------------------- */
-
 .error-message {
     display: flex;
     align-items: center;
@@ -339,17 +312,13 @@
     color: #ef4444;
 }
 
-/* ------------------------------------- */
-/* 分頁器 */
-/* ------------------------------------- */
-
 .paginator-wrapper {
     margin-top: 40px;
     display: flex;
     justify-content: center;
 }
 
-/* PrimeNG Paginator 按鈕圓角覆蓋 - 列表框：8px */
+/* PrimeNG Paginator 按鈕圓角覆蓋 */
 ::ng-deep .paginator-wrapper .p-paginator .p-paginator-pages .p-paginator-page {
     border-radius: 10px;
 }

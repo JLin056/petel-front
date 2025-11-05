@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SharedConfirmDialog } from '../shared-confirm-dialog/shared-confirm-dialog';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { MerchService } from '../../core/services/merch-service';
-import { MediaService } from '../../core/services/media.service';
-import { PropertyStateService } from '../../core/services/property-state.service';
 import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { MediaService } from '../../core/services/media.service';
+import { MerchService } from '../../core/services/merch-service';
+import { PropertyStateService } from '../../core/services/property-state.service';
 
 @Component({
   selector: 'app-merchant-home-page',
@@ -29,13 +28,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
   private navigationSubscription?: Subscription;
   /** queryParamsSubscription */
   private queryParamsSubscription?: Subscription;
-  /** stats 先寫死*/
-  stats: Stat[] = [
-    { label: '營業額', value: '$55,000', change: '+10% (較上月)', icon: 'pi pi-chart-line', color: '#b7a298' },
-    { label: '預約數', value: '45', change: '+8% (較上月)', icon: 'pi pi-book', color: '#b7a298' },
-    { label: '平均評價', value: '4.8/5', change: '+0.3 (較上月)', icon: 'pi pi-star-fill', color: '#b7a298' },
-    { label: '取消率', value: '5%', change: '-1% (較上月)', icon: 'pi pi-times-circle', color: '#b7a298' }
-  ];
   /** isLoading */
   isLoading = false;
   /** isDeleting */
@@ -70,34 +62,9 @@ export class MerchantHomePage implements OnInit, OnDestroy {
     this.propertyId = this.propertyStateService.getCurrentPropertyId();
 
     if (!this.propertyId) {
-      console.error('PropertyId 未設定');
       return;
     }
-
-    console.log('商家首頁取得的 propertyId:', this.propertyId);
     this.loadRooms();
-
-    // 監聽 queryParams 
-    this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
-      if (params['refresh']) {
-        console.log('🔄 偵測到 refresh 參數，強制重新載入房型和圖片');
-        console.log('🔗 Refresh 時間戳:', params['refresh']);
-        this.roomImages = {};
-        this.loadRooms();
-      }
-    });
-
-    // 監聽路由變化
-    this.navigationSubscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        if (event.url.includes('/merchants/property/homepage')) {
-          console.log('🔄 導航回首頁，強制重新載入房型和圖片資料');
-          console.log('🔗 導航 URL:', event.url);
-          this.roomImages = {};
-          this.loadRooms();
-        }
-      });
   }
 
   ngOnDestroy(): void {
@@ -121,7 +88,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
 
     this.merchService.queryPropertyRooms(tranrq).subscribe({
       next: (res) => {
-        console.log('API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.roomList = (res.TRANRS?.rooms || []).map((room: any) => ({
@@ -129,8 +95,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
             petTypeName: this.petTypeMap[room.petTypeId],
             formattedRoomSize: this.formatRoomSize(room.roomSize)
           }));
-          this.stats = res.TRANRS?.stats?.length > 0 ? res.TRANRS.stats : this.stats;
-          console.log('房間列表載入成功', this.roomList);
 
           this.loadRoomImages();
         } else {
@@ -166,10 +130,8 @@ export class MerchantHomePage implements OnInit, OnDestroy {
    * 載入所有房型的封面圖片
    */
   private loadRoomImages(): void {
-    console.log('🖼️ 開始載入所有房型的封面圖片...');
     this.roomList.forEach(room => {
       if (room.id) {
-        console.log(`📤 發送 MEDIA-004 請求，房型 ID: ${room.id}`);
         this.mediaService.onGetMediaApi({
           MWHEADER: { MSGID: 'MEDIA-004' },
           TRANRQ: { roomId: room.id }
@@ -178,29 +140,10 @@ export class MerchantHomePage implements OnInit, OnDestroy {
             console.log(`📥 收到房型 ${room.id} 的圖片回應:`, res);
 
             if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias && res.TRANRS.medias.length > 0) {
-              console.log(`✅ 房型 ${room.id} 有 ${res.TRANRS.medias.length} 張圖片`);
-              console.log(`📊 原始圖片資料（未排序）:`, res.TRANRS.medias.map(m => ({
-                mediaId: m.mediaId,
-                sortOrder: m.sortOrder,
-                fileName: m.fileName
-              })));
 
               const sortedImages = res.TRANRS.medias.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
               const firstImage = res.TRANRS.medias.find(m => m.sortOrder === 1) || sortedImages[0];
               this.roomImages[room.id] = `data:image/jpeg;base64,${firstImage.base64Data}`;
-
-              console.log(`📊 排序後的圖片資料:`, sortedImages.map(m => ({
-                mediaId: m.mediaId,
-                sortOrder: m.sortOrder,
-                fileName: m.fileName
-              })));
-
-              console.log(`🎯 房型 ${room.id} 選擇的封面圖（sortOrder 最小）:`, {
-                mediaId: firstImage.mediaId,
-                sortOrder: firstImage.sortOrder,
-                fileName: firstImage.fileName
-              });
-
               this.roomImages[room.id] = `data:image/jpeg;base64,${firstImage.base64Data}`;
               console.log(`✅ 房型 ${room.id} 的封面圖已設定`);
             } else {
@@ -250,14 +193,9 @@ export class MerchantHomePage implements OnInit, OnDestroy {
    * @param room 
    */
   onDetail(room: any): void {
-    console.log('點擊房型詳細資料，完整的 Room 物件:', room); 
-
     if (!room || !room.id) {
       return;
     }
-  
-    console.log('導航到詳細頁面，房型 ID:', room.id);
-
     this.router.navigate(['/merchants/property/roomInfo'], {
       state: {
         roomId: room.id,

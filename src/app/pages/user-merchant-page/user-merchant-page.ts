@@ -80,7 +80,6 @@ export class UserMerchantPage implements OnInit, OnDestroy {
 
   /** 載入商家頭像 */
   private loadAvatar(mediaId: string): void {
-    console.log('🖼️ 載入商家頭像，mediaId:', mediaId);
 
     const sub = this.mediaService.onGetMediaApi({
       MWHEADER: { MSGID: 'MEDIA-004' },
@@ -90,7 +89,6 @@ export class UserMerchantPage implements OnInit, OnDestroy {
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
           const media = res.TRANRS.medias[0];
           this.user.avatarUrl = `data:${media.mimeType || 'image/jpeg'};base64,${media.base64Data}`;
-          console.log('✅ 商家頭像載入成功');
         } else {
           console.warn('⚠️ 無法取得商家頭像，使用預設圖');
         }
@@ -111,7 +109,7 @@ export class UserMerchantPage implements OnInit, OnDestroy {
     if (!accountId) {
       this.toast.add({ severity: 'error', summary: '錯誤', detail: '無法取得帳號資訊，請重新登入' });
       this.isLoading = false;
-      setTimeout(() => this.router.navigate(['/merchants/login']), 2000);
+      // setTimeout(() => this.router.navigate(['/merchants/login']), 2000);
       return;
     }
 
@@ -241,26 +239,18 @@ export class UserMerchantPage implements OnInit, OnDestroy {
     this.hotelList.forEach(property => {
       if (!property.id) return;
 
-      console.log(`🖼️ 載入旅館 ${property.name} (ID: ${property.id}) 封面圖片`);
-
       const sub = this.mediaService.onGetMediaApi({
         MWHEADER: { MSGID: 'MEDIA-004' },
         TRANRQ: { propertyId: property.id }
       }).subscribe({
         next: (res) => {
           if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
-            console.log(`📊 ${property.name} 原始圖片資料:`, res.TRANRS.medias.map((m: any) => ({
-              mediaId: m.mediaId,
-              sortOrder: m.sortOrder,
-              fileName: m.fileName
-            })));
 
             // 排序取第一張
             const sorted = res.TRANRS.medias.sort((a: any, b: any) => (a.sortOrder || 0) - (b.sortOrder || 0));
             const first = sorted[0];
 
             this.hotelImages[property.id] = `data:image/jpeg;base64,${first.base64Data}`;
-            console.log(`✅ ${property.name} 封面圖設定完成`);
           } else {
             console.warn(`⚠️ ${property.name} 沒有圖片，使用預設圖`);
             this.hotelImages[property.id] = 'img/hotelImg.png';

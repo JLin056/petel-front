@@ -1,4 +1,3 @@
-/* 整頁背景 + 爪印（可拿掉） */
 .auth-page {
     min-height: 83vh;
     display: flex;
@@ -8,7 +7,6 @@
     background: #fff9f3;
 }
 
-/* 左側介紹 */
 .hero {
     flex: 1 1 20%;
     display: flex;
@@ -47,13 +45,12 @@
 .card-title {
     font-size: 3rem;
 }
-/* 表單 */
+
 .form {
     display: flex;
     flex-direction: column;
 }
 
-/* 輸入框 */
 .input-container,
 .input-container-password {
     display: flex;
@@ -89,7 +86,7 @@
     font-size: 1.2rem;
     line-height: 1.4;
 }
-/* 密碼 */
+
 :host ::ng-deep .input-container-password p-password {
     width: 70%;
     padding: 0;
@@ -122,7 +119,6 @@
     outline: none;
 }
 
-/* 按鈕 */
 .button-container {
     margin-top: 40px;
     display: flex;
@@ -130,6 +126,7 @@
     gap: 40px;
     font-size: 2rem;
 }
+
 :host ::ng-deep .button-container .p-button {
     font-size: 1.25rem;
     border-radius: 10px;
@@ -141,33 +138,38 @@
     box-shadow: 0 4px 8px rgba(240, 228, 216, 0.6);
     transition: none;
 }
+
 :host ::ng-deep .button-container .p-button:hover {
     background-color: #e4d2be;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(240, 228, 216, 0.8);
 }
+
 :host ::ng-deep .button-container .p-button:disabled {
     opacity: 0.4;
 
 }
+
 :host ::ng-deep .button-container .p-button .p-button-label {
     font-size: 1.25rem;
 }
-/* 忘記密碼 */
+
 .aux-row {
     text-align: right;
     margin-top: 20px;
     font-size: 1.25rem;
 }
+
 .auth-link {
     text-decoration: none;
     color: #A24522;
     cursor: pointer;
 }
+
 .auth-link:hover {
     opacity: 0.7;
 }
-/* 底部 */
+
 .auth-footer {
     display: flex;
     justify-content: center;
@@ -176,26 +178,6 @@
     font-size: 1.25rem;
 }
 
-/* 錯誤訊息 */
-/* .error-message {
-    background-color: #fff5f5;
-    border: 2px solid #A24522;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    color: #A24522;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.5rem;
-}
-
-.error-message i {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-} */
-
-/* 欄位驗證錯誤文字 */
 .error-text {
     display: block;
     color: #A24522;
@@ -213,6 +195,7 @@
     border-color: #a24522;
     box-shadow: 0 0 4px rgba(162, 69, 34, 0.2);
 }
+
 /* ====== 斷點：≤ 768px（平板）====== */
 @media (max-width: 768px) {
     .auth-page {
@@ -238,6 +221,7 @@
         gap: 16px;
     }
 }
+
 /* ====== 斷點：≤ 480px（小手機）====== */
 @media (max-width: 480px) {
     .hero {

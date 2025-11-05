@@ -183,12 +183,10 @@ export class MerchantOrderDetailDialog implements OnChanges {
       return;
     }
 
-    // 更新狀態
     if (statusChanged) {
       this.updateOrderStatus();
     }
 
-    // 更新備註
     if (noteChanged) {
       this.updateNote();
     }

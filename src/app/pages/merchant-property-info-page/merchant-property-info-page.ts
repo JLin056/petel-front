@@ -62,10 +62,8 @@ export class MerchantPropertyInfoPage implements OnInit {
         if (navigation?.extras?.state && navigation.extras.state['propertyId']) {
             this.propertyId = navigation.extras.state['propertyId'];
             this.propertyStateService.setCurrentPropertyId(this.propertyId);
-            console.log('從 router state 接收到的旅館 ID:', this.propertyId);
         } else {
             this.propertyId = this.propertyStateService.getCurrentPropertyId();
-            console.log('從 PropertyStateService 取得的旅館 ID:', this.propertyId);
         }
     }
 
@@ -74,15 +72,12 @@ export class MerchantPropertyInfoPage implements OnInit {
      */
     ngOnInit(): void {
         if (!this.propertyId) {
-            console.warn('缺少旅館 ID，導回商家會員頁');
             this.errorMessage = '無法取得旅館資料';
-            setTimeout(() => {
-                this.router.navigate(['/merchants/userPage']);
-            }, 2000);
+            // setTimeout(() => {
+            //     this.router.navigate(['/merchants/userPage']);
+            // }, 2000);
             return;
         }
-
-        // 載入旅館資料
         this.loadPropertyData();
     }
 
@@ -93,16 +88,12 @@ export class MerchantPropertyInfoPage implements OnInit {
         this.isLoading = true;
         this.errorMessage = '';
 
-        console.log('準備呼叫 API，旅館 ID:', this.propertyId);
-
         // 使用 forkJoin 同時呼叫兩個 API
         forkJoin({
             hotelDetail: this.hotelService.queryHotelDetail(this.propertyId),
             hotelFacilities: this.hotelService.queryHotelFacilities(this.propertyId)
         }).subscribe({
             next: (results) => {
-                console.log('HOTEL002 回應:', results.hotelDetail);
-                console.log('HOTEL004 回應:', results.hotelFacilities);
 
                 const detailSuccess = results.hotelDetail.MWHEADER.RETURNCODE === '0000';
                 const facilitySuccess = results.hotelFacilities.MWHEADER.RETURNCODE === '0000';
@@ -110,19 +101,11 @@ export class MerchantPropertyInfoPage implements OnInit {
                 if (detailSuccess && facilitySuccess) {
                     this.propertyData = results.hotelDetail.TRANRS;
                     this.facilityData = results.hotelFacilities.TRANRS;
-
                     this.updateHotelData();
-
-                    console.log('取得的旅館資料:', this.propertyData);
-                    console.log('取得的設施資料:', this.facilityData);
                 } else {
                     this.errorMessage = '載入旅館資料失敗';
                     this.propertyData = null;
                     this.facilityData = null;
-                    console.error('API 回傳錯誤:', {
-                        detail: results.hotelDetail.MWHEADER,
-                        facility: results.hotelFacilities.MWHEADER
-                    });
                 }
                 this.isLoading = false;
             },
@@ -179,8 +162,6 @@ export class MerchantPropertyInfoPage implements OnInit {
             if (detail.name) {
                 this.propertyStateService.setCurrentPropertyName(detail.name);
             }
-
-            console.log('已更新 hotel 物件:', this.hotel);
         }
     }
 
@@ -206,8 +187,6 @@ export class MerchantPropertyInfoPage implements OnInit {
             id: this.propertyId,
             ...detail
         };
-
-        console.log('導航到編輯頁面，傳遞資料:', propertyForEdit);
         this.router.navigate(['/merchants/property/edit'], { state: { property: propertyForEdit } });
     }
 }

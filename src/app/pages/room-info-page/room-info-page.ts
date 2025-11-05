@@ -66,7 +66,6 @@ export class RoomInfoPage implements OnInit {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.roomId = navigation.extras.state['roomId'] || '';
-      console.log('接收到的房型 ID:', this.roomId);
     }
   }
 
@@ -76,14 +75,12 @@ export class RoomInfoPage implements OnInit {
   ngOnInit(): void {
     // 檢查是否有房型 ID
     if (!this.roomId) {
-      console.warn('缺少房型 ID，導回首頁');
       this.errorMessage = '無法取得房型資料';
-      setTimeout(() => {
-        this.router.navigate(['/merchants/property/homepage']);
-      }, 2000);
+      // setTimeout(() => {
+      //   this.router.navigate(['/merchants/property/homepage']);
+      // }, 2000);
       return;
     }
-
     // 載入房型資料
     this.loadRoomData();
   }
@@ -95,30 +92,24 @@ export class RoomInfoPage implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    console.log('準備呼叫 API，房型 ID:', this.roomId);
-
     const tranrq = {
       id: this.roomId
     };
 
     this.merchService.getRoomDetail(tranrq).subscribe({
       next: (res) => {
-        console.log('API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.roomData = res.TRANRS;
-          console.log('取得的房型資料:', this.roomData);
           // 載入房型圖片
           this.loadRoomImages();
         } else {
           this.errorMessage = '載入房型資料失敗';
           this.roomData = null;
-          console.error('API 回傳錯誤:', res.MWHEADER);
         }
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('載入房型資料失敗', err);
         this.errorMessage = '無法載入房型資料，請檢查網路連線';
         this.roomData = null;
         this.isLoading = false;
@@ -139,7 +130,6 @@ export class RoomInfoPage implements OnInit {
       TRANRQ: { roomId: this.roomId }
     }).subscribe({
       next: (res) => {
-        console.log('圖片 API 回應:', res);
 
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias) {
           this.roomImages = res.TRANRS.medias
@@ -150,10 +140,7 @@ export class RoomInfoPage implements OnInit {
               fileName: media.fileName
             }))
             .sort((a, b) => a.sortOrder - b.sortOrder);
-
-          console.log('已載入房型圖片:', this.roomImages.length, '張');
         } else {
-          console.warn('沒有圖片資料或載入失敗');
           this.roomImages = [];
         }
         this.isLoadingImages = false;
@@ -224,8 +211,6 @@ export class RoomInfoPage implements OnInit {
       ...this.roomData,
       propertyId: (this.roomData as any).propertyId || 'P000000001'
     };
-
-    console.log('導航到修改頁面，傳遞資料:', roomForEdit);
 
     this.router.navigate(['/merchants/property/roomInfo/edit'], {
       state: { room: roomForEdit }

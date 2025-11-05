@@ -21,7 +21,7 @@
 
         <div class="form-main-content sequential-layout">
 
-            <!-- 1. 房型圖片 (Full Width) -->
+            <!-- 房型圖片 -->
             <div class="form-section full-width image-section">
                 <label class="section-label">房型圖片</label>
 
@@ -53,7 +53,7 @@
                 }
             </div>
 
-            <!-- 2. 房型名稱 & 寵物種類 (Side-by-Side) -->
+            <!-- 房型名稱 & 寵物種類 -->
             <div class="form-row-2col">
                 <!-- 房型名稱 -->
                 <div class="form-section flex-item info-section">
@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <!-- 3. 價格 & 總房間數 (Side-by-Side) -->
+            <!-- 價格 & 總房間數 -->
             <div class="form-row-2col">
                 <!-- 價格 -->
                 <div class="form-section flex-item info-section">
@@ -83,13 +83,13 @@
                 </div>
             </div>
 
-            <!-- 4. 空間尺寸 (Full Width) -->
+            <!-- 空間尺寸 -->
             <div class="form-section full-width info-section">
                 <label class="section-label">空間尺寸</label>
                 <div class="info-text">{{ formatRoomSize() }}</div>
             </div>
 
-            <!-- 5. 房間介紹 (Full Width) -->
+            <!-- 房間介紹 -->
             <div class="form-section full-width info-section">
                 <label class="section-label">房間介紹</label>
                 <div class="description-content" [innerHTML]="getFormattedDescription()"></div>

@@ -6,7 +6,6 @@
     gap: 40px;
 }
 
-/* 會員資訊區 */
 .user-info-container {
     display: flex;
     justify-content: space-evenly;
@@ -15,7 +14,6 @@
     box-shadow: 0px 5px 0px #F4F4F4;
 }
 
-/* 頭貼 */
 .image {
     display: flex;
     align-items: center;
@@ -27,7 +25,6 @@
     width: 250px;
 }
 
-/* 右側 - 會員資訊 */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -77,7 +74,6 @@
     font-weight: 400;
 }
 
-/* 按鈕區 */
 .button-container {
     display: flex;
     justify-content: flex-start;
@@ -114,13 +110,11 @@
     padding: 6px 16px;
 }
 
-/* ========== 旅館區域 ========== */
 .hotels-section {
     margin-top: 40px;
     margin-bottom: 100px;
 }
 
-/* 標題列 */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -159,7 +153,6 @@
     font-weight: 500;
 }
 
-/* 新增旅館按鈕 */
 .btn-add-hotel {
     background: white;
     color: #974b2c;
@@ -182,14 +175,12 @@
     box-shadow: 0 4px 12px rgba(151, 75, 44, 0.3);
 }
 
-/* ========== 旅館網格 ========== */
 .hotels-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
 }
 
-/* 旅館卡片 */
 .hotel-card {
     display: flex;
     flex-direction: column;
@@ -206,7 +197,6 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* 圖片區 */
 .hotel-image-wrapper {
     position: relative;
     width: 100%;
@@ -258,7 +248,6 @@
     transform: translateY(0);
 }
 
-/* 內容區 */
 .hotel-content {
     flex: 1;
     display: flex;
@@ -303,7 +292,7 @@
     width: 16px;
 }
 
-/* ✅ 長地址截斷 */
+/* 長地址截斷 */
 .info-row span {
     display: inline-block;
     max-width: 230px;
@@ -312,7 +301,6 @@
     white-space: nowrap;
 }
 
-/* 按鈕組 */
 .hotel-actions {
     display: flex;
     gap: 10px;
@@ -359,7 +347,6 @@
     color: #ce525f;
 }
 
-/* ========== 載入與空狀態 ========== */
 .loading-state {
     display: flex;
     flex-direction: column;

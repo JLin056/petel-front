@@ -111,31 +111,20 @@ export class MerchantPropertyEditPage {
 
         if (navigation?.extras?.state) {
             this.propertyId = navigation.extras.state['property']?.id || '';
-
-            // 先載入所有可用的 facilities
             this.merchService.queryAllFacilities().subscribe({
                 next: (response) => {
                     this.avaliableFacilities = response;
-
-                    // 再載入旅館詳細資料
                     this.hotelService.querySingleHotelDetailForMerchant(this.propertyId).subscribe({
                         next: (response) => {
                             if (response.MWHEADER.RETURNCODE === '0000') {
                                 this.propertyData = response.TRANRS.singleHotelDetail;
                                 const propertyFacilities = this.propertyData.facilities;
-
-                                // 從 avaliableFacilities 中找出對應的物件引用
                                 const selectedFacilities = this.avaliableFacilities.filter((availFacility: MERCH025Tranrs) =>
                                     propertyFacilities.some((propFacility: { facilityId: string; facilityName: string }) =>
                                         propFacility.facilityId === availFacility.facilityId
                                     )
                                 );
 
-                                console.log('🔹 [載入] 設施配對結果:', {
-                                    原始設施數: propertyFacilities.length,
-                                    配對成功數: selectedFacilities.length,
-                                    設施: selectedFacilities.map((f: { facilityName: any; }) => f.facilityName)
-                                });
 
                                 this.propertyForm.patchValue({
                                     name: this.propertyData.name || '',
@@ -152,18 +141,18 @@ export class MerchantPropertyEditPage {
                                     propertyNotice: this.propertyData.propertyNotice || '',
                                 });
                             } else {
-                                setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                                // setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
                             }
                         },
                         error: (error) => {
                             console.error('獲取資訊失敗:', error);
-                            setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                            // setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
                         }
                     });
                 },
                 error: (error) => {
                     console.error('獲取設施資訊失敗:', error);
-                    setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                    // setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
                 }
             });
             this.merchService.queryPostal().subscribe({
@@ -178,7 +167,7 @@ export class MerchantPropertyEditPage {
                 },
                 error: (error) => {
                     console.error('獲取資訊失敗:', error);
-                    setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
+                    // setTimeout(() => this.router.navigate(['/merchants/property/homepage']), 2000);
                 }
             });
 
@@ -208,7 +197,7 @@ export class MerchantPropertyEditPage {
         }
 
         try {
-            // 🔹 1. 刪除舊圖片
+            // 刪除舊圖片
             if (this.deletedImageIds.length > 0) {
                 await new Promise<void>((resolve, reject) => {
                     this.mediaService.deleteMedia({
@@ -221,12 +210,12 @@ export class MerchantPropertyEditPage {
                 });
             }
 
-            // 🔹 2. 上傳新圖片
+            // 上傳新圖片
             if (this.uploadedImages.length > 0) {
                 await this.uploadAllImages();
             }
 
-            // 🔹 3. 更新現有圖片排序
+            // 更新現有圖片排序
             if (this.existingImages.length > 0) {
                 const updatePromises = this.existingImages.map((img) =>
                     new Promise<void>((resolve, reject) => {
@@ -243,18 +232,10 @@ export class MerchantPropertyEditPage {
                 );
                 await Promise.all(updatePromises);
             }
-
-            // 🔹 4. 最後送出旅館資料
             const selectedFacilitiesValue = this.propertyForm.controls['selectedFacilities'].value;
             const facilityIds = selectedFacilitiesValue.map(
                 (facility: { facilityId: any }) => facility.facilityId
             );
-
-            console.log('🔹 [MERCH-007] 送出資料:', {
-                propertyId: this.propertyId,
-                facilitiesCount: facilityIds.length,
-                facilities: facilityIds
-            });
 
             const tranrq: MERCH007Tranrq = {
                 id: this.propertyId,

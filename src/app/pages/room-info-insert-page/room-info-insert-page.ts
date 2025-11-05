@@ -91,9 +91,9 @@ export class RoomInfoInsertPage implements OnInit {
         summary: '無法取得旅館資訊',
         detail: '請先選擇旅館'
       });
-      setTimeout(() => {
-        this.router.navigate(['/merchants/property/homepage']);
-      }, 2000);
+      // setTimeout(() => {
+      //   this.router.navigate(['/merchants/property/homepage']);
+      // }, 2000);
       return;
     }
     this.initForm();
@@ -281,7 +281,6 @@ export class RoomInfoInsertPage implements OnInit {
     }
 
     const formValue = this.roomForm.value;
-    console.log('送出資料：', formValue);
 
     try {
       let roomImages: { mediaId: string; sortOrder: number }[] = [];

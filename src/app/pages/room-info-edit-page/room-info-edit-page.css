@@ -1,7 +1,3 @@
-/* ------------------------------------- */
-/* 基礎設定與容器 */
-/* ------------------------------------- */
-
 .room-form-container {
     background-color: #f8f1e9;
     max-width: 1100px;
@@ -22,10 +18,6 @@
     margin-bottom: 30px;
 }
 
-/* ------------------------------------- */
-/* 表單佈局：單欄依序排列 + 內部並排 Flexbox */
-/* ------------------------------------- */
-
 .form-body {
     display: flex;
     flex-direction: column;
@@ -37,7 +29,6 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    /* 區塊間距 */
 }
 
 /* 兩欄並排容器 (2 欄) */
@@ -133,10 +124,6 @@
     margin-top: 8px;
 }
 
-/* ------------------------------------- */
-/* 圖片上傳區塊優化 */
-/* ------------------------------------- */
-
 .image-upload-section {
     gap: 15px;
     padding-bottom: 0;
@@ -227,7 +214,6 @@
     flex-shrink: 0;
 }
 
-/* 輸入框樣式 */
 .size-input-item .p-inputtext {
     flex: 1;
     text-align: center;
@@ -237,7 +223,6 @@
     min-width: 60px;
 }
 
-/* 錯誤訊息包裝器 - 絕對定位 */
 .size-error-wrapper {
     position: absolute;
     bottom: 0;
@@ -246,15 +231,11 @@
     width: 100%;
 }
 
-/* 錯誤訊息本身 */
 .size-inputs-group .size-error-wrapper ::ng-deep .p-message {
     width: 100%;
     justify-content: center;
 }
 
-/* ------------------------------------- */
-/* p-editor 調整 (列表框) */
-/* ------------------------------------- */
 
 /* p-editor 的父容器也要預留空間 */
 .form-section.full-width:has(p-editor) {
@@ -279,9 +260,6 @@
     border-radius: 8px;
 }
 
-/* ------------------------------------- */
-/* 錯誤訊息樣式 */
-/* ------------------------------------- */
 .validation-error {
     color: #dc3545;
     font-size: 14px;
@@ -297,10 +275,6 @@
     background-color: #fef2f2;
     border-radius: 8px;
 }
-
-/* ------------------------------------- */
-/* 按鈕區塊 */
-/* ------------------------------------- */
 
 .form-buttons {
     display: flex;
@@ -346,9 +320,6 @@
     cursor: not-allowed;
 }
 
-/* ------------------------------------- */
-/* 錯誤訊息顯示 (API 錯誤) */
-/* ------------------------------------- */
 .error-message {
     background-color: #fef2f2;
     border: 1px solid #fca5a5;
@@ -359,10 +330,6 @@
     text-align: center;
     font-weight: 500;
 }
-
-/* ------------------------------------- */
-/* PrimeNG 組件圓角覆蓋 */
-/* ------------------------------------- */
 
 /* p-select 下拉選單 */
 ::ng-deep .p-select {
@@ -411,10 +378,6 @@
 ::ng-deep .p-select-option:hover {
     border-radius: 8px;
 }
-
-/* ------------------------------------- */
-/* 圖片上傳與預覽區塊 */
-/* ------------------------------------- */
 
 .image-upload-section ::ng-deep .p-fileupload-choose {
     background-color: #974B2C;
