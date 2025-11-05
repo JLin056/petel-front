@@ -184,6 +184,7 @@
                             alt="迷你犬">
                         <p>迷你犬</p>
                         <p class="card-price" *ngIf="!dogSizeDisabled.mini">NT $ {{ dogSizePrices.mini | number:'1.0-0' }} / 天</p>
+                        <p class="card-price" *ngIf="dogSizeDisabled.mini">NT $ -- / 天</p>
                         <p-select
                             [options]="dogSizeOptions.mini"
                             [(ngModel)]="dogSizeSelections.mini"
@@ -199,6 +200,7 @@
                             alt="小型犬">
                         <p>小型犬</p>
                         <p class="card-price" *ngIf="!dogSizeDisabled.small">NT $ {{ dogSizePrices.small | number:'1.0-0' }} / 天</p>
+                        <p class="card-price" *ngIf="dogSizeDisabled.small">NT $ -- / 天</p>
                         <p-select
                             [options]="dogSizeOptions.small"
                             [(ngModel)]="dogSizeSelections.small"
@@ -214,6 +216,7 @@
                             alt="中型犬">
                         <p>中型犬</p>
                         <p class="card-price" *ngIf="!dogSizeDisabled.medium">NT $ {{ dogSizePrices.medium | number:'1.0-0' }} / 天</p>
+                        <p class="card-price" *ngIf="dogSizeDisabled.medium">NT $ -- / 天</p>
                         <p-select
                             [options]="dogSizeOptions.medium"
                             [(ngModel)]="dogSizeSelections.medium"
@@ -229,6 +232,7 @@
                             alt="大型犬">
                         <p>大型犬</p>
                         <p class="card-price" *ngIf="!dogSizeDisabled.big">NT $ {{ dogSizePrices.big | number:'1.0-0' }} / 天</p>
+                        <p class="card-price" *ngIf="dogSizeDisabled.big">NT $ -- / 天</p>
                         <p-select
                             [options]="dogSizeOptions.big"
                             [(ngModel)]="dogSizeSelections.big"
@@ -244,6 +248,7 @@
                             alt="超大型犬">
                         <p>超大型犬</p>
                         <p class="card-price" *ngIf="!dogSizeDisabled.huge">NT $ {{ dogSizePrices.huge | number:'1.0-0' }} / 天</p>
+                        <p class="card-price" *ngIf="dogSizeDisabled.huge">NT $ -- / 天</p>
                         <p-select
                             [options]="dogSizeOptions.huge"
                             [(ngModel)]="dogSizeSelections.huge"
