@@ -139,9 +139,6 @@ export class HomePage implements OnInit {
             pageNumber: 1,
             pageSize: 5    // 只取5間
         };
-
-        console.log('=== 首頁 - 載入狗狗旅館精選 ===');
-
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
                 if (response.MWHEADER.RETURNCODE === '0000') {
@@ -157,15 +154,10 @@ export class HomePage implements OnInit {
                         image: this.getHotelImageUrl(hotel),
                         petType: 'DOG'
                     }));
-
-                    console.log(`成功載入 ${this.dogHotels.length} 間狗狗旅館`);
                 } else {
-                    console.error('載入狗狗旅館失敗:', response.MWHEADER.RETURNDESC);
                 }
             },
-            error: (error) => {
-                console.error('API 錯誤:', error);
-            }
+            error: () => {}
         });
     }
 
@@ -188,9 +180,6 @@ export class HomePage implements OnInit {
             pageNumber: 1,
             pageSize: 5    // 只取5間
         };
-
-        console.log('=== 首頁 - 載入貓貓旅館精選 ===');
-
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
                 if (response.MWHEADER.RETURNCODE === '0000') {
@@ -206,15 +195,10 @@ export class HomePage implements OnInit {
                         image: this.getHotelImageUrl(hotel),
                         petType: 'CAT'
                     }));
-
-                    console.log(`成功載入 ${this.catHotels.length} 間貓貓旅館`);
                 } else {
-                    console.error('載入貓貓旅館失敗:', response.MWHEADER.RETURNDESC);
                 }
             },
-            error: (error) => {
-                console.error('API 錯誤:', error);
-            }
+            error: () => {}
         });
     }
 
@@ -292,26 +276,13 @@ export class HomePage implements OnInit {
             pageNumber: 1,
             pageSize: 10
         };
-
-        console.log('=== Home Page - 執行搜尋 ===');
-        console.log('搜尋參數:', this.searchParams);
-        console.log('API 參數:', apiParams);
-
         // 調用 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('=== API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     // 調試：檢查圖片數據
-                    console.log('=== 首頁搜尋結果 ===');
-                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間旅館`);
                     response.TRANRS.hotels?.forEach((hotel, index) => {
-                        console.log(`旅館 ${index + 1}: ${hotel.name}`);
-                        console.log(`  - 圖片數量: ${hotel.images?.length || 0}`);
                         if (hotel.images && hotel.images.length > 0) {
-                            console.log(`  - 第一張圖片結構:`, hotel.images[0]);
                         }
                     });
 
@@ -333,7 +304,6 @@ export class HomePage implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('API 錯誤:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -349,10 +319,6 @@ export class HomePage implements OnInit {
      * @param petType 寵物種類
      */
     navigateToDetail(propertyId: string, petType: string) {
-        console.log('=== 首頁 - 跳轉到旅館詳情頁 ===');
-        console.log('propertyId:', propertyId);
-        console.log('petType:', petType);
-
         // 使用默認日期：今天和明天
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -367,9 +333,6 @@ export class HomePage implements OnInit {
             petType: petType,
             petCount: 1
         };
-
-        console.log('搜尋參數:', searchParams);
-
         // 根據寵物類型跳轉到對應的詳情頁，使用 query parameter 傳遞 propertyId
         const targetRoute = petType === 'CAT' ? '/catSingleHotel' : '/dogSingleHotel';
         this.router.navigate([targetRoute], {
@@ -383,9 +346,6 @@ export class HomePage implements OnInit {
      * @param petType 寵物種類 ('CAT' 或 'DOG')
      */
     onSearchByPetType(petType: string) {
-        console.log('=== 按寵物種類搜尋 ===');
-        console.log('寵物種類:', petType);
-
         // 使用默認日期：今天和明天
         const today = new Date();
         const tomorrow = new Date(today);
@@ -401,18 +361,10 @@ export class HomePage implements OnInit {
             pageNumber: 1,
             pageSize: 10
         };
-
-        console.log('API 參數:', apiParams);
-
         // 調用 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('=== API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
-                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間${petType === 'CAT' ? '貓貓' : '狗狗'}旅館`);
-
                     // 成功，根據寵物類型跳轉到對應的旅館列表頁
                     const targetRoute = petType === 'CAT' ? '/catHotels' : '/dogHotels';
                     this.router.navigate([targetRoute], {
@@ -431,7 +383,6 @@ export class HomePage implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('API 錯誤:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',

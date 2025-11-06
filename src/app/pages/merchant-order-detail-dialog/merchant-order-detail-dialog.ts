@@ -113,8 +113,7 @@ export class MerchantOrderDetailDialog implements OnChanges {
           this.cancelConfirmVisible = false;
         }
       },
-      error: err => {
-        console.error(err);
+      error: (_err) => {
         this.toast.add({ severity: 'error', summary: '錯誤', detail: '取消訂單時發生錯誤，請稍後再試' });
         this.cancelConfirmVisible = false;
       }
@@ -151,8 +150,7 @@ export class MerchantOrderDetailDialog implements OnChanges {
           this.toast.add({ severity: 'error', summary: '狀態更新失敗', detail: res.MWHEADER.RETURNDESC });
         }
       },
-      error: err => {
-        console.error(err);
+      error: (_err) => {
         this.toast.add({ severity: 'error', summary: '錯誤', detail: '狀態更新時發生錯誤，請稍後再試' });
       }
     });

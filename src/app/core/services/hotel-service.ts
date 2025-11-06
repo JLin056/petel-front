@@ -66,10 +66,6 @@ export class HotelService {
             TRANRQ: tranrq
         };
 
-        console.log('=== HOTEL-001 API 請求參數 ===');
-        console.log('API URL:', `${environment.BASE_URL}/hotels/query`);
-        console.log('請求資料:', JSON.stringify(postData, null, 2));
-
         return this.http.post<Res<HOTEL001Tranrs>>(`${environment.BASE_URL}/hotels/query`, postData);
     }
 
@@ -150,10 +146,6 @@ export class HotelService {
             TRANRQ: tranrq
         };
 
-        console.log('=== HOTEL-005 API 請求參數 ===');
-        console.log('API URL:', `${environment.BASE_URL}/hotels/singleHotelDetail`);
-        console.log('請求資料:', JSON.stringify(postData, null, 2));
-
         return this.http.post<Res<HOTEL005Tranrs>>(`${environment.BASE_URL}/hotels/singleHotelDetail`, postData);
     }
 
@@ -175,10 +167,6 @@ export class HotelService {
             MWHEADER: header,
             TRANRQ: tranrq
         };
-
-        console.log('=== HOTEL-006 API 請求參數 ===');
-        console.log('API URL:', `${environment.BASE_URL}/hotels/singleHotelDetail/forSeller`);
-        console.log('請求資料:', JSON.stringify(postData, null, 2));
 
         return this.http.post<Res<HOTEL006Tranrs>>(`${environment.BASE_URL}/hotels/singleHotelDetail/forSeller`, postData);
     }

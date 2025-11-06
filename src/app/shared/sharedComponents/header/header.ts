@@ -86,11 +86,9 @@ export class Header {
                 this.isLoggedIn = v;
                 // 當登入狀態改變時，更新未讀數量和 SSE 連線
                 if (v) {
-                    console.log('[用戶 Header] 用戶已登入，初始化通知系統');
                     this.fetchUnreadCount();
                     this.setupSSEConnection();
                 } else {
-                    console.log('[用戶 Header] 用戶已登出，關閉通知系統');
                     this.unreadCount = 0;
                     this.notificationService.disconnectSSE();
                 }
@@ -164,8 +162,6 @@ export class Header {
      * 前往狗狗旅館（帶參數搜尋）
      */
     onClickDog() {
-        console.log('=== Header - 狗狗旅館 ===');
-
         // 使用默認日期：今天和明天
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -183,15 +179,10 @@ export class Header {
             pageSize: 10
         };
 
-        console.log('API 參數:', apiParams);
-
         // 調用 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('API 回應:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
-                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間狗狗旅館`);
 
                     // 成功，跳轉到旅館列表頁
                     this.router.navigate(['/dogHotels'], {
@@ -209,8 +200,7 @@ export class Header {
                     });
                 }
             },
-            error: (error) => {
-                console.error('API 錯誤:', error);
+            error: () => {
                 this.toast.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -224,8 +214,6 @@ export class Header {
      * 前往貓貓旅館（帶參數搜尋）
      */
     onClickCat() {
-        console.log('=== Header - 貓貓旅館 ===');
-
         // 使用默認日期：今天和明天
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -243,15 +231,10 @@ export class Header {
             pageSize: 10
         };
 
-        console.log('API 參數:', apiParams);
-
         // 調用 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('API 回應:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
-                    console.log(`找到 ${response.TRANRS.hotels?.length || 0} 間貓貓旅館`);
 
                     // 成功，跳轉到貓貓旅館列表頁
                     this.router.navigate(['/catHotels'], {
@@ -269,8 +252,7 @@ export class Header {
                     });
                 }
             },
-            error: (error) => {
-                console.error('API 錯誤:', error);
+            error: () => {
                 this.toast.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -339,11 +321,9 @@ export class Header {
         this.notificationService.getUnreadCount().subscribe({
             next: (res) => {
                 if (res.MWHEADER.RETURNCODE === '0000') {
-                    console.log('未讀通知數量:', res.TRANRS.unread_count);
                 }
             },
             error: (error) => {
-                console.error('取得未讀通知數量失敗:', error);
             }
         });
     }
@@ -352,14 +332,11 @@ export class Header {
      * 建立 SSE 即時推播連線
      */
     private setupSSEConnection() {
-        console.log('設定 SSE 即時推播連線');
-
         // 記錄當前 token
         this.lastToken = this.authService.getAccessToken();
 
         // 建立連線，並傳入收到通知時的回調
         this.notificationService.connectSSE((notification) => {
-            console.log('Header 收到新通知:', notification);
 
             // 顯示瀏覽器通知
             this.showBrowserNotification(notification);
@@ -381,7 +358,6 @@ export class Header {
     private showBrowserNotification(notification: any) {
         // 檢查瀏覽器是否支援通知
         if (!('Notification' in window)) {
-            console.log('瀏覽器不支援通知');
             return;
         }
 

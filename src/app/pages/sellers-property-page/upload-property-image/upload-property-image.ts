@@ -57,8 +57,7 @@ export class UploadPropertyImage {
                         // 步驟 B: 直接 PUT 檔案到 S3
                         this.uploadToS3(file, presignedUrl);
                     },
-                    error: (err) => {
-                        console.error('取得 Presigned URL 失敗:', err);
+                    error: (_err) => {
                         this.messageService.add({severity: 'error', summary: '上傳失敗', detail: `無法取得 ${file.name} 的上傳權限。`});
                     }
                 });
@@ -87,8 +86,7 @@ export class UploadPropertyImage {
                 this.messageService.add({severity: 'success', summary: '上傳成功', detail: `${file.name} 已成功上傳到 S3。`});
                 // 可以在這裡執行您上傳成功後的邏輯，例如通知後端檔案已就緒
             },
-            error: (err) => {
-                console.error('S3 上傳失敗:', err);
+            error: (_err) => {
                 this.messageService.add({severity: 'error', summary: '上傳失敗', detail: `${file.name} 上傳 S3 失敗。`});
             }
         });

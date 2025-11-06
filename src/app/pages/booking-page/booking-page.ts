@@ -122,9 +122,8 @@ export class BookingPage implements OnInit {
                     this.messageService.add({ severity: 'warn', summary: 'Warn', detail: '會員資訊取得異常' });
                 }
             },
-            error: (error) => {
+            error: (_error) => {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: '獲取會員資訊失敗' });
-                console.error('獲取會員資訊失敗:', error);
             }
         });
 
@@ -357,14 +356,13 @@ export class BookingPage implements OnInit {
             }
         }).subscribe({
             next: (response) => {
-                console.log(response);
                 if (response.MWHEADER.RETURNCODE !== "0000" || response.TRANRS.totalCount) {
                     return 'img/hotelImg.png';
                 }
                 const img = response.TRANRS.medias[0];
                 return `data:${img.mimeType};base64,${img.base64Data}`;
             },
-            error: (error) => {
+            error: (_error) => {
                 return 'img/hotelImg.png';
             }
         });

@@ -164,23 +164,13 @@ export class DogSinglePage implements OnInit {
             checkIn: this.searchParams.checkIn,
             checkOut: this.searchParams.checkOut
         };
-
-        console.log('=== 調用 HOTEL-005 API ===');
-        console.log('API 參數:', apiParams);
-
         this.hotelService.querySingleHotelDetail(apiParams).subscribe({
             next: (response) => {
-                console.log('=== HOTEL-005 API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     this.hotelDetail = response.TRANRS.singleHotelDetail;
-                    console.log('旅館詳情:', this.hotelDetail);
-
                     // 處理狗狗體型選項
                     this.processDogSizeOptions();
                 } else {
-                    console.warn('API 返回錯誤:', response.MWHEADER);
                     this.messageService.add({
                         severity: 'error',
                         summary: '錯誤',
@@ -189,8 +179,6 @@ export class DogSinglePage implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('=== HOTEL-005 API 錯誤 ===');
-                console.error('錯誤詳情:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -205,14 +193,8 @@ export class DogSinglePage implements OnInit {
      */
     processDogSizeOptions(): void {
         if (!this.hotelDetail || !this.hotelDetail.rooms) {
-            console.warn('沒有房型資料');
             return;
         }
-
-        console.log('=== 處理狗狗體型選項 ===');
-        console.log('房型總數:', this.hotelDetail.rooms.length);
-        console.log('完整房型資料:', JSON.stringify(this.hotelDetail.rooms, null, 2));
-
         // 初始化所有體型為 disabled，選項為空陣列
         this.dogSizeDisabled = {
             mini: true,
@@ -248,26 +230,12 @@ export class DogSinglePage implements OnInit {
 
         // 遍歷所有房型
         this.hotelDetail.rooms.forEach((room, index) => {
-            console.log(`\n--- 處理第 ${index + 1} 個房型 ---`);
-            console.log('完整 room 物件:', room);
-
             const petType = (room as any).petType || room.petTypeId;
             const totalUnits = room.totalUnits || 0;
-
-            console.log(`房型: ${room.name}`);
-            console.log(`  - (room as any).petType: ${(room as any).petType}`);
-            console.log(`  - room.petTypeId: ${room.petTypeId}`);
-            console.log(`  - 最終 petType: ${petType}`);
-            console.log(`  - totalUnits: ${totalUnits}`);
-
             // 如果 petType 為 0 或沒有，跳過（保持 disabled）
             if (!petType || petType === 0 || petType === '0') {
-                console.log(`  ❌ 跳過此房型（petType 為 0 或不存在）`);
                 return;
             }
-
-            console.log(`  ✓ petType 有效，繼續處理`);
-
             // 建立選項陣列 (0 到 totalUnits)
             const options: Option[] = [];
             for (let i = 0; i <= totalUnits; i++) {
@@ -280,40 +248,30 @@ export class DogSinglePage implements OnInit {
                     this.dogSizeOptions.mini = options;
                     this.dogSizeDisabled.mini = false;
                     this.dogSizePrices.mini = room.basePrice;
-                    console.log(`迷你犬選項: 0-${totalUnits}, 價格: ${room.basePrice}`);
                     break;
                 case 'W003': // 小型犬
                     this.dogSizeOptions.small = options;
                     this.dogSizeDisabled.small = false;
                     this.dogSizePrices.small = room.basePrice;
-                    console.log(`小型犬選項: 0-${totalUnits}, 價格: ${room.basePrice}`);
                     break;
                 case 'W004': // 中型犬
                     this.dogSizeOptions.medium = options;
                     this.dogSizeDisabled.medium = false;
                     this.dogSizePrices.medium = room.basePrice;
-                    console.log(`中型犬選項: 0-${totalUnits}, 價格: ${room.basePrice}`);
                     break;
                 case 'W005': // 大型犬
                     this.dogSizeOptions.big = options;
                     this.dogSizeDisabled.big = false;
                     this.dogSizePrices.big = room.basePrice;
-                    console.log(`大型犬選項: 0-${totalUnits}, 價格: ${room.basePrice}`);
                     break;
                 case 'W006': // 超大型犬
                     this.dogSizeOptions.huge = options;
                     this.dogSizeDisabled.huge = false;
                     this.dogSizePrices.huge = room.basePrice;
-                    console.log(`超大型犬選項: 0-${totalUnits}, 價格: ${room.basePrice}`);
                     break;
                 default:
-                    console.warn(`未知的 petType: ${petType}`);
             }
         });
-
-        console.log('狗狗體型選項:', this.dogSizeOptions);
-        console.log('狗狗體型 disabled 狀態:', this.dogSizeDisabled);
-        console.log('狗狗體型價格:', this.dogSizePrices);
     }
 
     /**
@@ -348,10 +306,7 @@ export class DogSinglePage implements OnInit {
             while (this.images.length < 4) {
                 this.images.push({ ...defaultImage });
             }
-
-            console.log(`已載入 ${actualImages.length} 張實際圖片，補足為 4 張`);
         } else {
-            console.warn('沒有旅館圖片，使用預設圖片');
             // 全部使用預設圖片
             this.images = [defaultImage, defaultImage, defaultImage, defaultImage];
         }
@@ -376,7 +331,6 @@ export class DogSinglePage implements OnInit {
                 }));
             },
             error: (error) => {
-                console.error('載入圖片失敗:', error);
                 // 可以設置預設圖片
                 this.setDefaultImages();
             }
@@ -494,9 +448,6 @@ export class DogSinglePage implements OnInit {
      * @returns 頭像 URL（Base64 Data URI 或預設頭像）
      */
     getUserAvatar(review: any): string {
-        console.log('getUserAvatar - review 物件:', review);
-        console.log('getUserAvatar - userAvatar:', review.userAvatar);
-
         // 檢查是否有用戶頭像（可能是陣列或單一物件）
         if (review.userAvatar) {
             let avatar;
@@ -510,19 +461,12 @@ export class DogSinglePage implements OnInit {
                 // 直接是物件
                 avatar = review.userAvatar;
             }
-
-            console.log('getUserAvatar - avatar 物件:', avatar);
-
             if (avatar && avatar.base64Data) {
-                console.log('getUserAvatar - base64Data 長度:', avatar.base64Data.length);
                 const mimeType = avatar.mimeType || 'image/jpeg';
                 const dataUri = `data:${mimeType};base64,${avatar.base64Data}`;
-                console.log('getUserAvatar - 返回 Data URI (前50字元):', dataUri.substring(0, 50));
                 return dataUri;
             }
         }
-
-        console.log('getUserAvatar - 使用預設頭像');
         // 如果沒有頭像，返回預設頭像
         return 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png';
     }
@@ -617,9 +561,6 @@ export class DogSinglePage implements OnInit {
         // 先檢查登入狀態
         this.authService.onCheckLoginStatus().subscribe({
             next: (response) => {
-                console.log('checkLoginStatus response:', response);
-                console.log('valid:', response.TRANRS?.valid);
-
                 if (response.MWHEADER.RETURNCODE === '0000' && response.TRANRS?.valid) {
                     // 已登入，繼續預訂流程（跳轉到 bookingPage）
                     this.proceedWithBooking();
@@ -648,8 +589,6 @@ export class DogSinglePage implements OnInit {
             },
             error: (error) => {
                 // 登入驗證失敗，先準備訂單數據並保存，然後跳轉到登入頁
-                console.error('checkLoginStatus error:', error);
-
                 const orderData = this.prepareOrderData();
                 if (!orderData) {
                     return;
@@ -756,10 +695,6 @@ export class DogSinglePage implements OnInit {
             checkOut: formatDate(this.searchParams.checkOut),
             rooms: selectedRooms
         };
-
-        console.log('=== 準備訂單數據 ===');
-        console.log('訂單數據:', orderData);
-
         return orderData;
     }
 
@@ -840,22 +775,12 @@ export class DogSinglePage implements OnInit {
             pageNumber: 1,
             pageSize: 10
         };
-
-        console.log('=== Single Page - 執行搜尋 ===');
-        console.log('搜尋參數:', this.searchParams);
-        console.log('API 參數:', apiParams);
-
         // 調用 HOTEL001 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('=== HOTEL001 API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     // 🔹 根據 petType 決定要導向的頁面
                     const targetRoute = apiParams.petType === 'CAT' ? '/catHotels' : '/dogHotels';
-                    console.log(`導向頁面: ${targetRoute}`);
-
                     // 成功，跳轉到旅館列表頁，並傳遞搜尋結果
                     this.router.navigate([targetRoute], {
                         state: {
@@ -873,8 +798,6 @@ export class DogSinglePage implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('=== HOTEL001 API 錯誤 ===');
-                console.error('錯誤詳情:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -899,11 +822,6 @@ export class DogSinglePage implements OnInit {
         // 從 router state 獲取傳遞過來的資料
         const navigation = this.router.getCurrentNavigation();
         const state = navigation?.extras?.state || window.history.state;
-
-        console.log('=== Hotel Single Page - 初始化 ===');
-        console.log('Query propertyId:', propertyIdFromQuery);
-        console.log('Router state:', state);
-
         if (propertyIdFromQuery) {
             // 有 propertyId，存儲並檢查是否需要重新加載數據
             this.propertyId = propertyIdFromQuery;
@@ -928,15 +846,11 @@ export class DogSinglePage implements OnInit {
                     minDate.setDate(minDate.getDate() + 1);
                     this.minCheckOutDate = minDate;
                 }
-
-                console.log('恢復搜尋參數:', this.searchParams);
             }
 
             if (state && state.hotelDetail) {
                 // 如果有從 hotel-list-page 傳遞的完整旅館資料，直接使用
                 this.hotelDetail = state.hotelDetail;
-                console.log('使用傳遞的旅館詳情:', this.hotelDetail);
-
                 // 處理旅館圖片
                 this.loadPropertyImages();
 
@@ -944,8 +858,6 @@ export class DogSinglePage implements OnInit {
                 this.processDogSizeOptions();
             } else {
                 // 沒有 hotelDetail，需要調用 API 加載
-                console.log('調用 API 加載旅館詳情');
-
                 // 使用 searchParams 中的日期和 petType，如果沒有則使用默認值
                 const checkIn = this.searchParams.checkIn || (() => {
                     const today = new Date();
@@ -980,7 +892,6 @@ export class DogSinglePage implements OnInit {
                         if (response.MWHEADER.RETURNCODE === '0000') {
                             this.hotelDetail = response.TRANRS.singleHotelDetail;
                             this.loadPropertyImages();
-                            console.log('成功加載旅館詳情:', this.hotelDetail);
                         } else {
                             this.messageService.add({
                                 severity: 'error',
@@ -990,7 +901,6 @@ export class DogSinglePage implements OnInit {
                         }
                     },
                     error: (error) => {
-                        console.error('查詢旅館詳情失敗:', error);
                         this.messageService.add({
                             severity: 'error',
                             summary: '錯誤',
@@ -1001,7 +911,6 @@ export class DogSinglePage implements OnInit {
             }
         } else {
             // 沒有 propertyId，無法顯示頁面
-            console.warn('未獲取 propertyId，請確保從旅館列表頁正確導航');
             this.messageService.add({
                 severity: 'warn',
                 summary: '提醒',

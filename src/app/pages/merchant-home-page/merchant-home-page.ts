@@ -62,18 +62,13 @@ export class MerchantHomePage implements OnInit, OnDestroy {
     this.propertyId = this.propertyStateService.getCurrentPropertyId();
 
     if (!this.propertyId) {
-      console.error('PropertyId 未設定');
       return;
     }
-
-    console.log('商家首頁取得的 propertyId:', this.propertyId);
     this.loadRooms();
 
     // 監聽 queryParams
     this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       if (params['refresh']) {
-        console.log('🔄 偵測到 refresh 參數，強制重新載入房型和圖片');
-        console.log('🔗 Refresh 時間戳:', params['refresh']);
         this.roomImages = {};
         this.loadRooms();
       }
@@ -84,8 +79,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (event.url.includes('/merchants/property/homepage')) {
-          console.log('🔄 導航回首頁，強制重新載入房型和圖片資料');
-          console.log('🔗 導航 URL:', event.url);
           this.roomImages = {};
           this.loadRooms();
         }
@@ -113,16 +106,12 @@ export class MerchantHomePage implements OnInit, OnDestroy {
 
     this.merchService.queryPropertyRooms(tranrq).subscribe({
       next: (res) => {
-        console.log('API 回應:', res);
-
         if (res.MWHEADER.RETURNCODE === '0000') {
           this.roomList = (res.TRANRS?.rooms || []).map((room: any) => ({
             ...room,
             petTypeName: this.petTypeMap[room.petTypeId],
             formattedRoomSize: this.formatRoomSize(room.roomSize)
           }));
-          console.log('房間列表載入成功', this.roomList);
-
           this.loadRoomImages();
         } else {
           this.roomList = [];
@@ -130,7 +119,6 @@ export class MerchantHomePage implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('載入房間列表失敗', err);
         this.isLoading = false;
         this.roomList = [];
       }
@@ -157,50 +145,23 @@ export class MerchantHomePage implements OnInit, OnDestroy {
    * 載入所有房型的封面圖片
    */
   private loadRoomImages(): void {
-    console.log('🖼️ 開始載入所有房型的封面圖片...');
     this.roomList.forEach(room => {
       if (room.id) {
-        console.log(`📤 發送 MEDIA-004 請求，房型 ID: ${room.id}`);
         this.mediaService.onGetMediaApi({
           MWHEADER: { MSGID: 'MEDIA-004' },
           TRANRQ: { roomId: room.id }
         }).subscribe({
           next: (res) => {
-            console.log(`📥 收到房型 ${room.id} 的圖片回應:`, res);
-
             if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias && res.TRANRS.medias.length > 0) {
-              console.log(`✅ 房型 ${room.id} 有 ${res.TRANRS.medias.length} 張圖片`);
-              console.log(`📊 原始圖片資料（未排序）:`, res.TRANRS.medias.map(m => ({
-                mediaId: m.mediaId,
-                sortOrder: m.sortOrder,
-                fileName: m.fileName
-              })));
-
               const sortedImages = res.TRANRS.medias.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
               const firstImage = res.TRANRS.medias.find(m => m.sortOrder === 1) || sortedImages[0];
               this.roomImages[room.id] = `data:image/jpeg;base64,${firstImage.base64Data}`;
-
-              console.log(`📊 排序後的圖片資料:`, sortedImages.map(m => ({
-                mediaId: m.mediaId,
-                sortOrder: m.sortOrder,
-                fileName: m.fileName
-              })));
-
-              console.log(`🎯 房型 ${room.id} 選擇的封面圖（sortOrder 最小）:`, {
-                mediaId: firstImage.mediaId,
-                sortOrder: firstImage.sortOrder,
-                fileName: firstImage.fileName
-              });
-
               this.roomImages[room.id] = `data:image/jpeg;base64,${firstImage.base64Data}`;
-              console.log(`✅ 房型 ${room.id} 的封面圖已設定`);
             } else {
-              console.warn(`⚠️ 房型 ${room.id} 沒有圖片資料`);
               this.roomImages[room.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
             }
           },
           error: (err) => {
-            console.error(`❌ 載入房型 ${room.id} 圖片失敗:`, err);
             this.roomImages[room.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
           }
         });
@@ -243,14 +204,9 @@ export class MerchantHomePage implements OnInit, OnDestroy {
    * @param room
    */
   onDetail(room: any): void {
-    console.log('點擊房型詳細資料，完整的 Room 物件:', room);
-
     if (!room || !room.id) {
       return;
     }
-
-    console.log('導航到詳細頁面，房型 ID:', room.id);
-
     this.router.navigate(['/merchants/property/roomInfo'], {
       state: {
         roomId: room.id,

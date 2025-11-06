@@ -131,12 +131,6 @@ export class MerchantPropertyEditPage {
                                     )
                                 );
 
-                                console.log('🔹 [載入] 設施配對結果:', {
-                                    原始設施數: propertyFacilities.length,
-                                    配對成功數: selectedFacilities.length,
-                                    設施: selectedFacilities.map((f: { facilityName: any; }) => f.facilityName)
-                                });
-
                                 this.propertyForm.patchValue({
                                     name: this.propertyData.name || '',
                                     businessCode: this.propertyData.businessCode || '',
@@ -156,13 +150,11 @@ export class MerchantPropertyEditPage {
                             }
                         },
                         error: (error) => {
-                            console.error('獲取資訊失敗:', error);
                             this.router.navigate(['/merchants/property/homepage']);
                         }
                     });
                 },
-                error: (error) => {
-                    console.error('獲取設施資訊失敗:', error);
+                error: () => {
                     this.router.navigate(['/merchants/property/homepage']);
                 }
             });
@@ -176,8 +168,7 @@ export class MerchantPropertyEditPage {
                         ...new Set(response.map(o => o.district))
                     ];
                 },
-                error: (error) => {
-                    console.error('獲取資訊失敗:', error);
+                error: () => {
                     this.router.navigate(['/merchants/property/homepage']);
                 }
             });
@@ -249,13 +240,6 @@ export class MerchantPropertyEditPage {
             const facilityIds = selectedFacilitiesValue.map(
                 (facility: { facilityId: any }) => facility.facilityId
             );
-
-            console.log('🔹 [MERCH-007] 送出資料:', {
-                propertyId: this.propertyId,
-                facilitiesCount: facilityIds.length,
-                facilities: facilityIds
-            });
-
             const tranrq: MERCH007Tranrq = {
                 id: this.propertyId,
                 tel: this.propertyForm.controls['tel'].value,
@@ -291,8 +275,7 @@ export class MerchantPropertyEditPage {
                         });
                     }
                 },
-                error: (err) => {
-                    console.error('API 錯誤:', err);
+                error: () => {
                     this.messageService.add({
                         severity: 'error',
                         summary: '錯誤',
@@ -302,7 +285,6 @@ export class MerchantPropertyEditPage {
             });
 
         } catch (error: any) {
-            console.error(error);
             this.messageService.add({
                 severity: 'error',
                 summary: '錯誤',
@@ -376,12 +358,9 @@ export class MerchantPropertyEditPage {
                         base64Data: media.base64Data,
                         sortOrder: media.sortOrder || 0
                     }));
-                    console.log('已載入現有圖片:', this.existingImages.length);
                 }
             },
-            error: (err) => {
-                console.error('載入現有圖片失敗', err);
-            }
+            error: () => {}
         });
     }
 

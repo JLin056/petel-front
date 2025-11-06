@@ -173,7 +173,6 @@ export class RegisterDialog {
         this.authService.onRegisterApi(payload).subscribe({
             next: (res) => {
                 if (res.MWHEADER.RETURNCODE === '0000') {
-                    console.log('註冊成功');
                     this.isLoading = false;
                     this.registerSuccess.emit(res);
                     this.onGoLogin();
@@ -185,8 +184,7 @@ export class RegisterDialog {
                     this.isLoading = false;
                 }
             },
-            error: (err) => {
-                console.log('註冊失敗');
+            error: (_err) => {
                 this.errorMessage = '發生錯誤，請稍後再試';
                 this.isLoading = false;
             }

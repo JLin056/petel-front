@@ -68,11 +68,9 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
             this.isLoggedIn = v;
             // 當登入狀態改變時，更新未讀數量和 SSE 連線
             if (v) {
-                console.log('[商家個人頁 Header] 用戶已登入，初始化通知系統');
                 this.fetchUnreadCount();
                 this.setupSSEConnection();
             } else {
-                console.log('[商家個人頁 Header] 用戶已登出，關閉通知系統');
                 this.unreadCount = 0;
                 this.notificationService.disconnectSSE();
             }
@@ -190,11 +188,9 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
         this.notificationService.getUnreadCount().subscribe({
             next: (res) => {
                 if (res.MWHEADER.RETURNCODE === '0000') {
-                    console.log('商家未讀通知數量:', res.TRANRS.unread_count);
                 }
             },
-            error: (error) => {
-                console.error('取得未讀通知數量失敗:', error);
+            error: () => {
             }
         });
     }
@@ -206,11 +202,8 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
      * 此方法只需在用戶首次登入時調用一次即可。
      */
     private setupSSEConnection() {
-        console.log('[商家個人頁 Header] 建立 SSE 即時推播連線');
-
         // 建立連線，並傳入收到通知時的回調
         this.notificationService.connectSSE((notification) => {
-            console.log('[商家個人頁 Header] 收到新通知:', notification);
 
             // 顯示瀏覽器通知
             this.showBrowserNotification(notification);
@@ -231,7 +224,6 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
     private showBrowserNotification(notification: any) {
         // 檢查瀏覽器是否支援通知
         if (!('Notification' in window)) {
-            console.log('瀏覽器不支援通知');
             return;
         }
 
