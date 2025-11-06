@@ -226,7 +226,7 @@ textarea[pInputTextarea]:focus {
     height: 28px;
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
@@ -242,8 +242,12 @@ textarea[pInputTextarea]:focus {
     cursor: not-allowed;
 }
 
-.btn-remove i {
+/* .btn-remove i {
     font-size: 14px;
+} */
+
+.image-overlay .btn-remove i {
+    font-size: 14px !important;
 }
 
 .upload-spinner {
@@ -330,7 +334,7 @@ textarea[pInputTextarea]:focus {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.drag-placeholder {
+/* .drag-placeholder {
     position: absolute;
     top: 0;
     left: 0;
@@ -339,6 +343,18 @@ textarea[pInputTextarea]:focus {
     background: rgba(151, 75, 44, 0.2);
     border: 2px dashed #974B2C;
     border-radius: 8px;
+} */
+
+/* 拖拉佔位符 - 讓目標位置更明顯 */
+.drag-placeholder {
+    width: 150px;
+    height: 150px;
+    background: rgba(151, 75, 44, 0.3);
+    border: 3px dashed #974B2C;
+    border-radius: 8px;
+    box-shadow: 0 0 0 4px rgba(151, 75, 44, 0.1);
+    animation: pulse 1s ease-in-out infinite;
+    flex-shrink: 0;  /* 防止被壓縮 */
 }
 
 .image-placeholder {
