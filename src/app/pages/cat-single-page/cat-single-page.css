@@ -754,11 +754,7 @@
 /* 標題 */
 .card-title {
     font-weight: 600;
-<<<<<<< Updated upstream
-    font-size: 1rem;
-=======
     font-size: 1.25rem;
->>>>>>> Stashed changes
     margin: 0 0 0.5rem 0;
     color: #333;
 }

@@ -146,7 +146,6 @@ export class OrderTableComponent implements OnInit {
             this.isSearching = false;
           }
         } else {
-          console.error('API 回傳錯誤:', response.MWHEADER.RETURNDESC);
           this.orderList = [];
           this.totalRecords = 0;
 
@@ -162,8 +161,7 @@ export class OrderTableComponent implements OnInit {
         }
         this.loading = false;
       },
-      error: (error) => {
-        console.error('API 呼叫失敗:', error);
+      error: () => {
         this.orderList = [];
         this.totalRecords = 0;
         this.loading = false;
@@ -243,7 +241,6 @@ export class OrderTableComponent implements OnInit {
       this.selectedOrder.NOTE = data.note;
     }
 
-    console.log('備註已更新:', data);
     // TODO: 這裡可以加入 API 呼叫來更新後端資料
   }
 }

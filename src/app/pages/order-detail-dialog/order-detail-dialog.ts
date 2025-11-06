@@ -98,8 +98,7 @@ export class OrderDetailDialog {
           });
         }
       },
-      error: (error) => {
-        console.error('更新備註失敗:', error);
+      error: (_error) => {
         this.messageService.add({
           severity: 'error',
           summary: '更新失敗',

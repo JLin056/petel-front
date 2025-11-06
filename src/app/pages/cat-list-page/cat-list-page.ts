@@ -32,7 +32,6 @@ import { priceRange } from '../../core/interfaces/priceRange.interface';
         FloatLabel,
         IftaLabelModule,
         InputNumber,
-        InputGroup,
         InputGroupAddonModule,
         Listbox,
         Rating,
@@ -273,7 +272,6 @@ export class CatListPage implements OnInit, OnDestroy {
 
         // 🔹 檢查 petType 是否改變，如果改變則導向對應的頁面
         if (this.searchParams.petType !== 'CAT') {
-            console.log(`⚠️ petType 已改變為 ${this.searchParams.petType}，導向對應頁面`);
             const targetRoute = this.searchParams.petType === 'DOG' ? '/dogHotels' : '/catHotels';
 
             // 先執行搜尋取得結果，再導頁
@@ -304,8 +302,7 @@ export class CatListPage implements OnInit, OnDestroy {
                         });
                     }
                 },
-                error: (error) => {
-                    console.error('API 錯誤:', error);
+                error: (_error) => {
                     this.messageService.add({
                         severity: 'error',
                         summary: '錯誤',
@@ -331,11 +328,6 @@ export class CatListPage implements OnInit, OnDestroy {
      * 進階篩選變更時觸發
      */
     onFilterChange() {
-        console.log('=== 進階篩選變更 ===');
-        console.log('選擇的價格範圍:', this.selectedPriceRange);
-        console.log('選擇的評價:', this.selectedRating);
-        console.log('選擇的熱門條件:', this.selectedFilters);
-
         // 重新執行搜尋
         this.performSearch();
     }
@@ -343,7 +335,6 @@ export class CatListPage implements OnInit, OnDestroy {
     performSearch() {
         // 檢查必填欄位
         if (!this.searchParams.petType) {
-            console.warn('performSearch: petType 未設置，無法執行搜尋');
             this.messageService.add({
                 severity: 'warn',
                 summary: '提醒',
@@ -379,16 +370,9 @@ export class CatListPage implements OnInit, OnDestroy {
             pageSize: this.rows
         };
 
-        console.log('=== Cat List Page - 執行搜尋 ===');
-        console.log('搜尋參數:', this.searchParams);
-        console.log('API 參數:', apiParams);
-
         // 調用 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('=== API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     this.hotels = response.TRANRS.hotels || [];
                     this.totalRecords = response.TRANRS.totalCount || 0;
@@ -396,27 +380,11 @@ export class CatListPage implements OnInit, OnDestroy {
                     // 搜尋成功後，更新顯示的城市名稱
                     this.displayCity = this.searchParams.city || '';
 
-                    // 調試：檢查圖片數據
-                    console.log('=== 旅館列表數據 ===');
-                    console.log(`找到 ${this.hotels.length} 間旅館`);
-                    this.hotels.forEach((hotel, index) => {
-                        console.log(`旅館 ${index + 1}: ${hotel.name}`);
-                        console.log(`  - 圖片數量: ${hotel.images?.length || 0}`);
-                        if (hotel.images && hotel.images.length > 0) {
-                            console.log(`  - 第一張圖片 mediaId: ${hotel.images[0].mediaId}`);
-                            console.log(`  - base64Data 長度: ${hotel.images[0].base64Data?.length || 0} 字元`);
-                            console.log(`  - mimeType: ${hotel.images[0].mimeType}`);
-                        }
-                    });
-
                     // 如果有選擇排序方式，重新排序
                     if (this.selectedSort) {
                         this.sortHotels();
                     }
-
-                    console.log(`成功：找到 ${this.totalRecords} 筆資料`);
                 } else {
-                    console.warn('API 返回錯誤:', response.MWHEADER);
                     this.messageService.add({
                         severity: 'error',
                         summary: '錯誤',
@@ -424,9 +392,7 @@ export class CatListPage implements OnInit, OnDestroy {
                     });
                 }
             },
-            error: (error) => {
-                console.error('=== API 錯誤 ===');
-                console.error('錯誤詳情:', error);
+            error: (_error) => {
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -449,12 +415,8 @@ export class CatListPage implements OnInit, OnDestroy {
      */
     onSortChange() {
         if (!this.selectedSort) {
-            console.log('未選擇排序方式');
             return;
         }
-
-        console.log('=== 排序變更 ===');
-        console.log('選擇的排序:', this.selectedSort);
 
         this.sortHotels();
     }
@@ -472,21 +434,18 @@ export class CatListPage implements OnInit, OnDestroy {
         switch (sortId) {
             case 1: // 依價位（由高到低）
                 this.hotels.sort((a, b) => b.minPrice - a.minPrice);
-                console.log('已排序：價位由高到低');
                 break;
 
             case 2: // 依價位（由低到高）
                 this.hotels.sort((a, b) => a.minPrice - b.minPrice);
-                console.log('已排序：價位由低到高');
                 break;
 
             case 3: // 依評價
                 this.hotels.sort((a, b) => b.avgRating - a.avgRating);
-                console.log('已排序：依評價');
                 break;
 
             default:
-                console.log('未知的排序選項:', sortId);
+                break;
         }
     }
 
@@ -495,9 +454,6 @@ export class CatListPage implements OnInit, OnDestroy {
      * @param propertyId 旅館 ID
      */
     navigateToDetail(propertyId: string): void {
-        console.log('=== 導航到旅館詳情頁 ===');
-        console.log('propertyId:', propertyId);
-
         // 檢查必要參數
         if (!this.searchParams.petType) {
             this.messageService.add({
@@ -516,15 +472,9 @@ export class CatListPage implements OnInit, OnDestroy {
             checkOut: this.searchParams.checkOut
         };
 
-        console.log('=== 調用 HOTEL-005 API ===');
-        console.log('API 參數:', apiParams);
-
         // 調用 HOTEL005 API
         this.hotelService.querySingleHotelDetail(apiParams).subscribe({
             next: (response) => {
-                console.log('=== HOTEL-005 API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     // 成功，導航到貓貓旅館詳情頁，使用 query parameter 傳遞 propertyId
                     this.router.navigate(['/catSingleHotel'], {
@@ -543,9 +493,7 @@ export class CatListPage implements OnInit, OnDestroy {
                     });
                 }
             },
-            error: (error) => {
-                console.error('=== HOTEL-005 API 錯誤 ===');
-                console.error('錯誤詳情:', error);
+            error: (_error) => {
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -569,17 +517,11 @@ export class CatListPage implements OnInit, OnDestroy {
             if (firstImage.base64Data) {
                 const mimeType = firstImage.mimeType || 'image/jpeg';
                 const dataUri = `data:${mimeType};base64,${firstImage.base64Data}`;
-                console.log(`[${hotel.name}] 圖片 Data URI 長度:`, dataUri.length);
                 return dataUri;
-            } else {
-                console.warn(`[${hotel.name}] 圖片物件存在但 base64Data 為空`);
             }
-        } else {
-            console.warn(`[${hotel.name}] 沒有圖片數據`);
         }
 
         // 如果沒有圖片，返回預設圖片
-        console.log(`[${hotel.name}] 使用預設圖片`);
         return 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLY0xiOMf_AsUP53E1yKP7ycbeci0jvTDqCMipsuaXZMOO3njL-xhyphenhyphenDF3S0vclWZRpA-3_nZsaxJm3y5qwoVOzz-cRtS0DYlZZGk6UAK5IJq9pgy8Bx8WIfLJXISV0OvVkpugfBVYWDYg/s800/pet_building_hotel.png';
     }
 }

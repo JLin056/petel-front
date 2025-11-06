@@ -141,7 +141,6 @@ export class AdminUserTable implements OnInit {
             this.isSearching = false;
           }
         } else {
-          console.error('API 回傳錯誤:', response.MWHEADER.RETURNDESC);
           this.memberList = [];
           this.totalRecords = 0;
 
@@ -157,8 +156,7 @@ export class AdminUserTable implements OnInit {
         }
         this.loading = false;
       },
-      error: (error) => {
-        console.error('API 呼叫失敗:', error);
+      error: () => {
         this.memberList = [];
         this.totalRecords = 0;
         this.loading = false;

@@ -49,7 +49,6 @@ export class NotificationPanel implements OnInit, OnDestroy {
             .subscribe(() => {
                 // 如果面板是開啟的，自動重新載入
                 if (this.visible && this.notifications.length > 0) {
-                    console.log('檢測到新通知，重新載入列表');
                     this.loadNotifications();
                 }
             });
@@ -89,7 +88,6 @@ export class NotificationPanel implements OnInit, OnDestroy {
                 this.loading = false;
             },
             error: (error) => {
-                console.error('載入通知失敗:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '載入失敗',
@@ -109,14 +107,8 @@ export class NotificationPanel implements OnInit, OnDestroy {
             return;
         }
 
-        console.log('=== 標記已讀 ===');
-        console.log('通知 ID:', notification.id);
-        console.log('通知標題:', notification.title);
-
         this.notificationService.markAsRead(notification.id).subscribe({
             next: (res) => {
-                console.log('標記已讀回應:', res);
-
                 if (res.MWHEADER.RETURNCODE === '0000') {
                     // 更新本地狀態
                     notification.status = 'READ';
@@ -128,9 +120,6 @@ export class NotificationPanel implements OnInit, OnDestroy {
                         detail: notification.title
                     });
                 } else {
-                    console.error('後端返回錯誤碼:', res.MWHEADER.RETURNCODE);
-                    console.error('錯誤訊息:', res.MWHEADER.RETURNDESC);
-
                     this.messageService.add({
                         severity: 'error',
                         summary: '標記失敗',
@@ -139,12 +128,6 @@ export class NotificationPanel implements OnInit, OnDestroy {
                 }
             },
             error: (error) => {
-                console.error('=== 標記已讀失敗 ===');
-                console.error('錯誤物件:', error);
-                console.error('錯誤狀態碼:', error.status);
-                console.error('錯誤訊息:', error.message);
-                console.error('錯誤詳情:', error.error);
-
                 let errorDetail = '無法標記為已讀';
 
                 if (error.status === 0) {

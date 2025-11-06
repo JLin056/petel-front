@@ -147,20 +147,11 @@ export class CatSinglePage implements OnInit {
             checkIn: this.searchParams.checkIn,
             checkOut: this.searchParams.checkOut
         };
-
-        console.log('=== 調用 HOTEL-005 API ===');
-        console.log('API 參數:', apiParams);
-
         this.hotelService.querySingleHotelDetail(apiParams).subscribe({
             next: (response) => {
-                console.log('=== HOTEL-005 API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     this.hotelDetail = response.TRANRS.singleHotelDetail;
-                    console.log('旅館詳情:', this.hotelDetail);
                 } else {
-                    console.warn('API 返回錯誤:', response.MWHEADER);
                     this.messageService.add({
                         severity: 'error',
                         summary: '錯誤',
@@ -169,8 +160,6 @@ export class CatSinglePage implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('=== HOTEL-005 API 錯誤 ===');
-                console.error('錯誤詳情:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -209,10 +198,7 @@ export class CatSinglePage implements OnInit {
             while (this.images.length < 4) {
                 this.images.push({ ...defaultImage });
             }
-
-            console.log(`已載入 ${actualImages.length} 張實際圖片，補足為 4 張`);
         } else {
-            console.warn('沒有旅館圖片，使用預設圖片');
             // 全部使用預設圖片
             this.images = [defaultImage, defaultImage, defaultImage, defaultImage];
         }
@@ -237,7 +223,6 @@ export class CatSinglePage implements OnInit {
                 }));
             },
             error: (error) => {
-                console.error('載入圖片失敗:', error);
                 // 可以設置預設圖片
                 this.setDefaultImages();
             }
@@ -355,9 +340,6 @@ export class CatSinglePage implements OnInit {
      * @returns 頭像 URL（Base64 Data URI 或預設頭像）
      */
     getUserAvatar(review: any): string {
-        console.log('getUserAvatar - review 物件:', review);
-        console.log('getUserAvatar - userAvatar:', review.userAvatar);
-
         // 檢查是否有用戶頭像（可能是陣列或單一物件）
         if (review.userAvatar) {
             let avatar;
@@ -371,19 +353,12 @@ export class CatSinglePage implements OnInit {
                 // 直接是物件
                 avatar = review.userAvatar;
             }
-
-            console.log('getUserAvatar - avatar 物件:', avatar);
-
             if (avatar && avatar.base64Data) {
-                console.log('getUserAvatar - base64Data 長度:', avatar.base64Data.length);
                 const mimeType = avatar.mimeType || 'image/jpeg';
                 const dataUri = `data:${mimeType};base64,${avatar.base64Data}`;
-                console.log('getUserAvatar - 返回 Data URI (前50字元):', dataUri.substring(0, 50));
                 return dataUri;
             }
         }
-
-        console.log('getUserAvatar - 使用預設頭像');
         // 如果沒有頭像，返回預設頭像
         return 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png';
     }
@@ -522,9 +497,6 @@ export class CatSinglePage implements OnInit {
         // 先檢查登入狀態
         this.authService.onCheckLoginStatus().subscribe({
             next: (response) => {
-                console.log('checkLoginStatus response:', response);
-                console.log('valid:', response.TRANRS?.valid);
-
                 if (response.MWHEADER.RETURNCODE === '0000' && response.TRANRS?.valid) {
                     // 已登入，繼續預訂流程（跳轉到 bookingPage）
                     this.proceedWithBooking();
@@ -553,8 +525,6 @@ export class CatSinglePage implements OnInit {
             },
             error: (error) => {
                 // 登入驗證失敗，先準備訂單數據並保存，然後跳轉到登入頁
-                console.error('checkLoginStatus error:', error);
-
                 const orderData = this.prepareOrderData();
                 if (!orderData) {
                     return;
@@ -641,10 +611,6 @@ export class CatSinglePage implements OnInit {
             checkOut: formatDate(this.searchParams.checkOut),
             rooms: selectedRooms
         };
-
-        console.log('=== 準備訂單數據 ===');
-        console.log('訂單數據:', orderData);
-
         return orderData;
     }
 
@@ -725,22 +691,12 @@ export class CatSinglePage implements OnInit {
             pageNumber: 1,
             pageSize: 10
         };
-
-        console.log('=== Single Page - 執行搜尋 ===');
-        console.log('搜尋參數:', this.searchParams);
-        console.log('API 參數:', apiParams);
-
         // 調用 HOTEL001 API
         this.hotelService.queryHotels(apiParams).subscribe({
             next: (response) => {
-                console.log('=== HOTEL001 API 回應 ===');
-                console.log('回應資料:', response);
-
                 if (response.MWHEADER.RETURNCODE === '0000') {
                     // 🔹 根據 petType 決定要導向的頁面
                     const targetRoute = apiParams.petType === 'CAT' ? '/catHotels' : '/dogHotels';
-                    console.log(`導向頁面: ${targetRoute}`);
-
                     // 成功，跳轉到旅館列表頁，並傳遞搜尋結果
                     this.router.navigate([targetRoute], {
                         state: {
@@ -758,8 +714,6 @@ export class CatSinglePage implements OnInit {
                 }
             },
             error: (error) => {
-                console.error('=== HOTEL001 API 錯誤 ===');
-                console.error('錯誤詳情:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: '錯誤',
@@ -784,11 +738,6 @@ export class CatSinglePage implements OnInit {
         // 從 router state 獲取傳遞過來的資料
         const navigation = this.router.getCurrentNavigation();
         const state = navigation?.extras?.state || window.history.state;
-
-        console.log('=== Hotel Single Page - 初始化 ===');
-        console.log('Query propertyId:', propertyIdFromQuery);
-        console.log('Router state:', state);
-
         if (propertyIdFromQuery) {
             // 有 propertyId，存儲並檢查是否需要重新加載數據
             this.propertyId = propertyIdFromQuery;
@@ -813,21 +762,15 @@ export class CatSinglePage implements OnInit {
                     minDate.setDate(minDate.getDate() + 1);
                     this.minCheckOutDate = minDate;
                 }
-
-                console.log('恢復搜尋參數:', this.searchParams);
             }
 
             if (state && state.hotelDetail) {
                 // 如果有從 hotel-list-page 傳遞的完整旅館資料，直接使用
                 this.hotelDetail = state.hotelDetail;
-                console.log('使用傳遞的旅館詳情:', this.hotelDetail);
-
                 // 處理旅館圖片
                 this.loadPropertyImages();
             } else {
                 // 沒有 hotelDetail，需要調用 API 加載
-                console.log('調用 API 加載旅館詳情');
-
                 // 使用 searchParams 中的日期和 petType，如果沒有則使用默認值
                 const checkIn = this.searchParams.checkIn || (() => {
                     const today = new Date();
@@ -862,7 +805,6 @@ export class CatSinglePage implements OnInit {
                         if (response.MWHEADER.RETURNCODE === '0000') {
                             this.hotelDetail = response.TRANRS.singleHotelDetail;
                             this.loadPropertyImages();
-                            console.log('成功加載旅館詳情:', this.hotelDetail);
                         } else {
                             this.messageService.add({
                                 severity: 'error',
@@ -872,7 +814,6 @@ export class CatSinglePage implements OnInit {
                         }
                     },
                     error: (error) => {
-                        console.error('查詢旅館詳情失敗:', error);
                         this.messageService.add({
                             severity: 'error',
                             summary: '錯誤',
@@ -883,7 +824,6 @@ export class CatSinglePage implements OnInit {
             }
         } else {
             // 沒有 propertyId，無法顯示頁面
-            console.warn('未獲取 propertyId，請確保從旅館列表頁正確導航');
             this.messageService.add({
                 severity: 'warn',
                 summary: '提醒',

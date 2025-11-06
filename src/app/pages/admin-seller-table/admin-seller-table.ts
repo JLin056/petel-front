@@ -106,21 +106,14 @@ export class AdminSellerTable implements OnInit {
     if (this.emailFilter) {
       request.TRANRQ.Email = this.emailFilter;
     }
-
-    console.log('發送 API 請求:', request);
-
     this.http.post<ADMIN002Res>('http://localhost:8080/admin/merchant/query', request)
       .subscribe({
         next: (response) => {
-          console.log('收到 API 回應:', response);
           if (response.MWHEADER.RETURNCODE === '0000') {
             this.sellerList = response.TRANRS.sellers;
             this.totalCount = response.TRANRS.totalCount;
             this.totalPages = response.TRANRS.totalPages;
             this.currentPage = response.TRANRS.currentPage;
-            console.log('賣家列表:', this.sellerList);
-            console.log('總筆數:', this.totalCount);
-
             // 如果是搜尋操作，顯示成功提示
             if (this.isSearching) {
               // this.messageService.add({
@@ -131,7 +124,6 @@ export class AdminSellerTable implements OnInit {
               this.isSearching = false;
             }
           } else {
-            console.error('API 錯誤:', response.MWHEADER.RETURNDESC);
             this.sellerList = [];
             this.totalCount = 0;
 
@@ -147,7 +139,6 @@ export class AdminSellerTable implements OnInit {
           }
         },
         error: (error) => {
-          console.error('API 呼叫失敗:', error);
           this.sellerList = [];
           this.totalCount = 0;
 
@@ -177,11 +168,9 @@ export class AdminSellerTable implements OnInit {
    * 分頁改變
    */
   onPageChange(event: any) {
-    console.log('分頁事件:', event);
     // PrimeNG 的 onPage 事件使用 first (第一筆的索引) 和 rows (每頁筆數)
     this.currentPage = (event.first / event.rows) + 1;
     this.pageSize = event.rows;
-    console.log('切換到第', this.currentPage, '頁，每頁', this.pageSize, '筆');
     this.loadSellers();
     this.loading = false;
   }
@@ -216,8 +205,6 @@ export class AdminSellerTable implements OnInit {
    * 前往該賣家的旅館列表
    */
   goToHotels(sellerId: string) {
-    console.log('前往 Seller ID 的旅館列表:', sellerId);
-
     // 找到該賣家的名稱
     const seller = this.sellerList.find(s => s.SELLER_ID === sellerId);
     if (seller) {

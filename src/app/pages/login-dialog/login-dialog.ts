@@ -135,21 +135,17 @@ export class LoginDialog {
         this.authService.onLoginApi(payload).subscribe({
             next: (response) => {
                 if (response.MWHEADER.RETURNCODE === '0000') {
-                    console.log('登入成功')
-
                     if (response.TRANRS) {
                         this.isLoading = false;
                         this.loginSuccess.emit(response);
                         this.onHideDialog();
                     }
                 } else {
-                    console.warn('登入失敗');
                     this.errorMessage = '登入失敗';
                     this.isLoading = false;
                 }
             },
-            error: (error) => {
-                 console.error('登入失敗');
+            error: (_error) => {
                 this.errorMessage = '發生錯誤，請稍後再試';
                 this.isLoading = false;
             }

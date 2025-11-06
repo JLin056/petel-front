@@ -156,15 +156,10 @@ export class HttpWithRetry {
             mergeMap((error, index) => {
               // 如果不是 401 錯誤，或重試次數超過限制，直接拋出錯誤
               if (error.status !== 401 || index >= maxRetries) {
-                // 如果是重試多次後還是 401，記錄錯誤
-                if (error.status === 401 && index >= maxRetries) {
-                  console.error(`[HttpWithRetry] 重試 ${maxRetries} 次後仍然 401，放棄重試`);
-                }
                 return throwError(() => error);
               }
 
               // 401 錯誤：延遲後重試（給 interceptor 時間刷新 token）
-              console.log(`[HttpWithRetry] 收到 401，${delayMs}ms 後重試（第 ${index + 1}/${maxRetries} 次）`);
               return timer(delayMs);
             })
           )

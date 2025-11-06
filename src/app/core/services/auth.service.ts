@@ -78,7 +78,6 @@ export class Auth {
 
         // ✅ 只在 token 刷新且確實變化時發出事件
         if (isRefresh && token && oldToken !== token) {
-            console.log('[Auth] Token 已刷新，通知訂閱者');
             this.tokenRefreshedSubject.next(token);
         }
     }

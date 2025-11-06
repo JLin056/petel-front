@@ -30,11 +30,8 @@ export class WsService {
             brokerURL: 'ws://localhost:8080/ws-native',
             reconnectDelay: 8000,
 
-            debug: (msg) => console.log('[STOMP]', msg),
-
             onConnect: () => {
                 this.connected = true;
-                console.log('WebSocket 已連線');
 
                 client.subscribe('/user/queue/chat', (msg: IMessage) => {
                     try {
@@ -49,7 +46,6 @@ export class WsService {
                         };
                         this.incoming$.next(data);
                     } catch {
-                        console.warn('[WS] 無法解析訊息：', msg.body);
                     }
                 });
 
@@ -64,18 +60,15 @@ export class WsService {
                         };
                         this.threadUpdatesSub$.next(ev);
                     } catch (e) {
-                        console.warn('[WS] 無法解析 thread-updates：', e, msg.body);
                     }
                 });
             },
 
             onStompError: (frame) => {
-                console.error('STOMP 錯誤', frame.headers['message'], frame.body);
             },
 
             onWebSocketClose: () => {
                 this.connected = false;
-                console.warn('WS 已關閉');
                 this.tryRefreshAndReconnect();
             },
         });
@@ -96,7 +89,6 @@ export class WsService {
         }
 
         if (!token) {
-            console.warn('[WS] 無法取得 access token，略過連線');
             return;
         }
 
@@ -104,14 +96,12 @@ export class WsService {
             Authorization: `Bearer ${token}`
         };
 
-        console.log('[WS] 嘗試建立連線...');
         this.client.activate();
     }
 
     /** 發送訊息 */
     sendMessage(threadId: string, content: string, type = 'TEXT'): void {
         if (!this.connected) {
-            console.warn('尚未連線，請先呼叫 connect()');
             return;
         }
         const body = JSON.stringify({ content: (content ?? '').trim(), type });
@@ -124,35 +114,28 @@ export class WsService {
             headers: { Authorization: `Bearer ${token}`},
             body
         });
-
-        console.log('已送出訊息', { threadId, body });
     }
 
     disconnect(): void {
         this.client.deactivate();
         this.connected = false;
-        console.log('[WS] 已中斷連線');
     }
 
     private async tryRefreshAndReconnect(): Promise<void> {
         if (this.reconnecting) return;
         this.reconnecting = true;
         try {
-            console.log('[WS] 嘗試 refresh token 並重新連線...');
             await firstValueFrom(
                 this.authService.onRefreshToken().pipe(catchError(() => of(null)))
             );
 
             const newToken = this.authService.getAccessToken();
             if (newToken) {
-                console.log('[WS] Refresh 成功，重新建立連線');
                 this.client = this.createClient();
                 this.client.connectHeaders = {
                     Authorization: `Bearer ${newToken}`
                 };
                 this.client.activate();
-            } else {
-                console.warn('[WS] refresh 後仍無 token，停止重連');
             }
         } finally {
             this.reconnecting = false;

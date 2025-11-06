@@ -121,7 +121,6 @@ export class AdminHotelTable implements OnInit {
             this.isSearching = false;
           }
         } else {
-          console.error('API 回傳錯誤:', response.MWHEADER.RETURNDESC);
           this.hotelList = [];
           this.totalRecords = 0;
 
@@ -137,8 +136,7 @@ export class AdminHotelTable implements OnInit {
         }
         this.loading = false;
       },
-      error: (error) => {
-        console.error('API 呼叫失敗:', error);
+      error: () => {
         this.hotelList = [];
         this.totalRecords = 0;
         this.loading = false;
@@ -188,8 +186,6 @@ export class AdminHotelTable implements OnInit {
    * 查看旅館的歷史訂單
    */
   viewHotelOrders(hotel: Hotel) {
-    console.log('查看旅館歷史訂單:', hotel.PROPERTY_ID, hotel.PROPERTY_NAME);
-
     // 導航到訂單列表頁面，並帶上 propertyName 參數
     this.router.navigate(['/admin/orderTable'], {
       queryParams: { propertyName: hotel.PROPERTY_NAME }

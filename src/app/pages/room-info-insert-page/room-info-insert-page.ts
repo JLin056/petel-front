@@ -279,7 +279,6 @@ export class RoomInfoInsertPage implements OnInit {
     }
 
     const formValue = this.roomForm.value;
-    console.log('送出資料：', formValue);
 
     try {
       let roomImages: { mediaId: string; sortOrder: number }[] = [];

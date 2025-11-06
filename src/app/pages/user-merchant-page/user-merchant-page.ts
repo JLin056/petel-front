@@ -97,14 +97,10 @@ export class UserMerchantPage implements OnInit, OnDestroy {
         if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
           const media = res.TRANRS.medias[0];
           this.user.avatarUrl = `data:${media.mimeType || 'image/jpeg'};base64,${media.base64Data}`;
-          console.log('✅ 商家頭像載入成功');
         } else {
-          console.warn('⚠️ 無法取得商家頭像，使用預設圖');
         }
       },
-      error: (err) => {
-        console.error('❌ 載入商家頭像失敗:', err);
-      }
+      error: () => {}
     });
 
     this.subscriptions.push(sub);
@@ -157,7 +153,6 @@ export class UserMerchantPage implements OnInit, OnDestroy {
             },
             error: (err) => {
                 this.isLoading = false;
-                console.error('API 錯誤:', err);
                 this.toast.add({ severity: 'error', summary: '錯誤', detail: '載入失敗，請稍後再試' });
             }
         });
@@ -206,7 +201,6 @@ export class UserMerchantPage implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        console.error('修改會員失敗', err);
         this.toast.add({ severity: 'error', summary: '錯誤', detail: '修改會員資訊失敗' });
       }
     });
@@ -238,7 +232,6 @@ export class UserMerchantPage implements OnInit, OnDestroy {
       error: (err) => {
         this.isLoadingHotels = false;
         this.hotelList = [];
-        console.error('載入旅館列表失敗:', err);
         this.toast.add({ severity: 'error', summary: '錯誤', detail: '載入旅館列表失敗' });
       }
     });
@@ -250,34 +243,22 @@ export class UserMerchantPage implements OnInit, OnDestroy {
   private loadHotelImages(): void {
     this.hotelList.forEach(property => {
       if (!property.id) return;
-
-      console.log(`🖼️ 載入旅館 ${property.name} (ID: ${property.id}) 封面圖片`);
-
       const sub = this.mediaService.onGetMediaApi({
         MWHEADER: { MSGID: 'MEDIA-004' },
         TRANRQ: { propertyId: property.id }
       }).subscribe({
         next: (res) => {
           if (res.MWHEADER.RETURNCODE === '0000' && res.TRANRS.medias?.length > 0) {
-            console.log(`📊 ${property.name} 原始圖片資料:`, res.TRANRS.medias.map((m: any) => ({
-              mediaId: m.mediaId,
-              sortOrder: m.sortOrder,
-              fileName: m.fileName
-            })));
-
             // 排序取第一張
             const sorted = res.TRANRS.medias.sort((a: any, b: any) => (a.sortOrder || 0) - (b.sortOrder || 0));
             const first = sorted[0];
 
             this.hotelImages[property.id] = `data:image/jpeg;base64,${first.base64Data}`;
-            console.log(`✅ ${property.name} 封面圖設定完成`);
           } else {
-            console.warn(`⚠️ ${property.name} 沒有圖片，使用預設圖`);
             this.hotelImages[property.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
           }
         },
         error: (err) => {
-          console.error(`❌ ${property.name} 封面圖載入失敗`, err);
           this.hotelImages[property.id] = 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Property_Image/home-2-1-lhNxO-Gd.jpg';
         }
       });
