@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BOOK001Tranrs } from '../interfaces/BOOK001Res.interface';
 import { BOOK002Tranrq } from '../interfaces/BOOK002Req.interface';
@@ -15,12 +14,13 @@ import { environment } from '../../../environment';
 import { BOOK004Req, Book004Tranrq } from '../interfaces/BOOK004Req.interface';
 import { Observable } from 'rxjs';
 import { BOOK004Res } from '../interfaces/BOOK004Res.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BookService {
-    http = inject(HttpClient);
+    http = inject(HttpWithRetry);
 
     onCancelBookingUrl = `${environment.BASE_URL}/bookings/cancel`;
 

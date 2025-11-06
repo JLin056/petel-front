@@ -1,16 +1,16 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environment';
 import { REVIEW001Req } from '../interfaces/REVIEW001Req.interface';
 import { Observable } from 'rxjs';
 import { REVIEW001Res } from '../interfaces/REVIEW001Res.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ReviewService {
-    /** 注入 HttpClient */
-    constructor(private http: HttpClient) { }
+    /** 注入 HttpWithRetry（自動重試 401） */
+    constructor(private http: HttpWithRetry) { }
 
     addReviewUrl = `${environment.BASE_URL}/review/create`;
 

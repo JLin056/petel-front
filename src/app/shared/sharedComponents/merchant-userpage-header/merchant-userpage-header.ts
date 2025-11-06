@@ -8,7 +8,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
-import { Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Auth } from '../../../core/services/auth.service';
@@ -60,14 +60,19 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
     ) {
         // 訂閱 service 的登入狀態，保持元件狀態與 Auth service 同步
         this.authService.isLoggedIn$
-        .pipe(takeUntil(this.destroy$))
+        .pipe(
+            takeUntil(this.destroy$),
+            distinctUntilChanged()  // ✅ 只在值真正改變時才觸發
+        )
         .subscribe(v => {
             this.isLoggedIn = v;
             // 當登入狀態改變時，更新未讀數量和 SSE 連線
             if (v) {
+                console.log('[商家個人頁 Header] 用戶已登入，初始化通知系統');
                 this.fetchUnreadCount();
                 this.setupSSEConnection();
             } else {
+                console.log('[商家個人頁 Header] 用戶已登出，關閉通知系統');
                 this.unreadCount = 0;
                 this.notificationService.disconnectSSE();
             }
@@ -196,13 +201,16 @@ export class MerchantUserpageHeader implements OnInit, OnDestroy {
 
     /**
      * 建立 SSE 即時推播連線
+     *
+     * 注意：Token 刷新時的重連已由 NotificationService 自動處理，
+     * 此方法只需在用戶首次登入時調用一次即可。
      */
     private setupSSEConnection() {
-        console.log('商家設定 SSE 即時推播連線');
+        console.log('[商家個人頁 Header] 建立 SSE 即時推播連線');
 
         // 建立連線，並傳入收到通知時的回調
         this.notificationService.connectSSE((notification) => {
-            console.log('商家 Header 收到新通知:', notification);
+            console.log('[商家個人頁 Header] 收到新通知:', notification);
 
             // 顯示瀏覽器通知
             this.showBrowserNotification(notification);

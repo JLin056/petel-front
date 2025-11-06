@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Mwheader, Req } from '../interfaces/Req.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 
 import { MERCH005Tranrq } from '../interfaces/MERCH005Req.interface';
@@ -40,7 +41,7 @@ import { MERCH005Tranrs } from '../interfaces/MERCH005Res.interface';
 })
 export class MerchService {
 
-    http = inject(HttpClient);
+    http = inject(HttpWithRetry);
 
     header = new HttpHeaders({
         'Content-Type': 'application/json'

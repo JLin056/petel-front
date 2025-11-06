@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environment';
 import { NOTIFY002Res } from '../interfaces/NOTIFY002Res.interface';
@@ -9,6 +9,8 @@ import { NOTIFY004Res } from '../interfaces/NOTIFY004Res.interface';
 import { NOTIFY006Req } from '../interfaces/NOTIFY006Req.interface';
 import { NOTIFY006Res } from '../interfaces/NOTIFY006Res.interface';
 import { NotificationDto } from '../interfaces/notification.interface';
+import { Auth } from './auth.service';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
     providedIn: 'root'
@@ -38,12 +40,29 @@ export class NotificationService {
     private eventSource: EventSource | null = null;
     private lastEventTime: string | null = null;
     private reconnectCount = 0;
+    private consecutiveErrorCount = 0;
+    private maxConsecutiveErrors = 3; // 連續失敗 3 次後停止重連
+    private currentToken: string | null = null; // 記錄當前使用的 token
 
     /** SSE 連線狀態 */
     private sseConnectedSubject = new BehaviorSubject<boolean>(false);
     public readonly sseConnected$ = this.sseConnectedSubject.asObservable();
 
-    constructor(private http: HttpClient) { }
+    /** 防抖機制相關變量 */
+    private reconnectTimeout: any = null;
+    private isReconnecting = false;
+    private currentNotificationCallback?: (notification: NotificationDto) => void;
+
+    constructor(
+        private http: HttpWithRetry,
+        private authService: Auth
+    ) {
+        // ✅ 訂閱 token 刷新事件，自動處理 SSE 重連
+        this.authService.tokenRefreshed$.subscribe(newToken => {
+            console.log('[SSE] 偵測到 Token 已刷新，準備重新建立 SSE 連線');
+            this.handleTokenRefresh(newToken);
+        });
+    }
 
     /**
      * NOTIFY-002: 查詢通知列表
@@ -139,15 +158,69 @@ export class NotificationService {
     connectSSE(onNotification?: (notification: NotificationDto) => void): void {
         console.log('=== 建立 SSE 連線 ===');
 
-        // 如果已有連線，先關閉
-        if (this.eventSource) {
-            console.warn('[SSE] 已存在連線，先斷開舊連線');
-            this.disconnectSSE();
+        // 保存回調函數，用於重連時使用
+        if (onNotification) {
+            this.currentNotificationCallback = onNotification;
         }
 
+        // ✅ 如果正在重連中，忽略重複請求
+        if (this.isReconnecting) {
+            console.log('[SSE] 正在重連中，忽略重複請求');
+            return;
+        }
+
+        // 取得 access token
+        const token = this.authService.getAccessToken();
+        if (!token) {
+            console.error('[SSE] ❌ 無法建立連線：未找到 access token');
+            this.sseConnectedSubject.next(false);
+            return;
+        }
+
+        // ✅ 如果已有有效連線，不重複建立
+        if (this.eventSource &&
+            this.eventSource.readyState !== EventSource.CLOSED) {
+            console.log('[SSE] 已存在有效連線，跳過重複建立');
+            return;
+        }
+
+        // 檢查連續錯誤次數
+        if (this.consecutiveErrorCount >= this.maxConsecutiveErrors) {
+            console.error(`[SSE] ❌ 連續失敗 ${this.consecutiveErrorCount} 次，停止重連。請檢查 token 是否有效或稍後再試。`);
+            this.sseConnectedSubject.next(false);
+            return;
+        }
+
+        // ✅ 如果已有連線但需要重新建立，先關閉
+        if (this.eventSource) {
+            console.warn('[SSE] 關閉舊連線');
+            this.eventSource.close();
+            this.eventSource = null;
+        }
+
+        // 正常建立連線
+        this.establishConnection(token, this.currentNotificationCallback);
+    }
+
+    /**
+     * 實際建立 SSE 連線的私有方法
+     * @param token access token
+     * @param onNotification 收到通知時的回調函數
+     */
+    private establishConnection(token: string, onNotification?: (notification: NotificationDto) => void): void {
+        console.log('[SSE] 開始建立連線...');
+
+        // 記錄當前使用的 token
+        this.currentToken = token;
+
         try {
-            // 建立新連線（注意：EventSource 不支援自訂 headers，需要透過 cookie 傳遞認證）
-            this.eventSource = new EventSource(this.subscribeUrl, {
+            // 建立新連線
+            // 注意：EventSource 不支援自訂 headers，所以將 token 作為 query parameter 傳遞
+            // 後端的 NotificationController 支援透過 ?token=xxx 進行認證
+            const urlWithToken = `${this.subscribeUrl}?token=${encodeURIComponent(token)}`;
+            console.log('[SSE] 建立連線 URL:', this.subscribeUrl);
+
+            this.eventSource = new EventSource(urlWithToken, {
                 withCredentials: true
             });
 
@@ -182,6 +255,9 @@ export class NotificationService {
 
             // 監聽連線開啟（包括首次連線和重連成功）
             this.eventSource.onopen = () => {
+                // 連線成功，重置錯誤計數
+                this.consecutiveErrorCount = 0;
+
                 if (this.reconnectCount === 0) {
                     // 首次連線
                     console.log('[SSE] ✅ 首次連線成功');
@@ -209,13 +285,22 @@ export class NotificationService {
 
             // 處理連線錯誤（瀏覽器會自動重連）
             this.eventSource.onerror = (error: Event) => {
+                // 增加連續錯誤計數
+                this.consecutiveErrorCount++;
+                console.warn(`[SSE] ⚠️ 連線錯誤（第 ${this.consecutiveErrorCount} 次）`);
+
                 if (this.eventSource?.readyState === EventSource.CLOSED) {
                     // 連線已永久關閉
                     console.error('[SSE] ❌ 連線已關閉');
                     this.sseConnectedSubject.next(false);
+                } else if (this.consecutiveErrorCount >= this.maxConsecutiveErrors) {
+                    // 連續錯誤次數過多，強制關閉連線
+                    console.error(`[SSE] ❌ 連續錯誤 ${this.consecutiveErrorCount} 次，強制關閉連線`);
+                    console.error('[SSE] 💡 可能原因：token 已過期。請重新整理頁面或重新登入。');
+                    this.disconnectSSE();
                 } else {
                     // 連線斷開，瀏覽器會自動重連（後端設定 retry: 3000）
-                    console.warn('[SSE] ⚠️ 連線斷開，3 秒後自動重連...');
+                    console.warn(`[SSE] ⚠️ 連線斷開，3 秒後自動重連...（剩餘嘗試次數：${this.maxConsecutiveErrors - this.consecutiveErrorCount}）`);
                     this.sseConnectedSubject.next(false);
                 }
             };
@@ -226,10 +311,48 @@ export class NotificationService {
     }
 
     /**
+     * 處理 Token 刷新時的 SSE 重連
+     * @param newToken 新的 access token
+     */
+    private handleTokenRefresh(newToken: string): void {
+        // 只有在 SSE 連線存在時才需要重連
+        if (!this.eventSource) {
+            console.log('[SSE] 目前無 SSE 連線，無需處理 token 刷新');
+            return;
+        }
+
+        console.log('[SSE] ⚠️ Token 已刷新，500ms 後重新建立 SSE 連線');
+        this.isReconnecting = true;
+
+        // 清除可能存在的舊 timeout
+        if (this.reconnectTimeout) {
+            clearTimeout(this.reconnectTimeout);
+        }
+
+        // 關閉舊連線
+        if (this.eventSource) {
+            this.eventSource.close();
+            this.eventSource = null;
+        }
+
+        // 延遲重連，確保舊連線完全關閉
+        this.reconnectTimeout = setTimeout(() => {
+            this.isReconnecting = false;
+            this.establishConnection(newToken, this.currentNotificationCallback);
+        }, 500);
+    }
+
+    /**
      * 關閉 SSE 連線
      */
     disconnectSSE(): void {
         console.log('[SSE] 關閉連線');
+
+        // ✅ 清除重連 timeout
+        if (this.reconnectTimeout) {
+            clearTimeout(this.reconnectTimeout);
+            this.reconnectTimeout = null;
+        }
 
         // 關閉連線
         if (this.eventSource) {
@@ -240,6 +363,9 @@ export class NotificationService {
         // 重置狀態
         this.sseConnectedSubject.next(false);
         this.reconnectCount = 0;
+        this.currentToken = null;
+        this.isReconnecting = false;  // ✅ 重置重連標誌
+        // 注意：不重置 consecutiveErrorCount，讓它在下次 connectSSE 時檢查
 
         console.log('[SSE] ✅ 連線已關閉');
     }
@@ -249,7 +375,13 @@ export class NotificationService {
      */
     resetReconnectCount(): void {
         this.reconnectCount = 0;
-        console.log('[SSE] 重連計數器已重置');
+        this.consecutiveErrorCount = 0;
+        this.isReconnecting = false;  // ✅ 重置重連標誌
+        if (this.reconnectTimeout) {
+            clearTimeout(this.reconnectTimeout);
+            this.reconnectTimeout = null;
+        }
+        console.log('[SSE] 重連計數器和錯誤計數已重置');
     }
 
     /**

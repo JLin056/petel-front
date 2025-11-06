@@ -11,7 +11,7 @@ import { Auth } from '../../../core/services/auth.service';
 import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared-confirm-dialog';
 import { MessageService } from 'primeng/api';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, filter, Subject, takeUntil } from 'rxjs';
 import { HotelService } from '../../../core/services/hotel-service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationPanel } from '../notification-panel/notification-panel';
@@ -45,6 +45,8 @@ export class Header {
     unreadCount = 0;
     /** 通知面板是否顯示 */
     notificationPanelVisible = false;
+    /** 上次記錄的 token */
+    private lastToken: string | null = null;
 
     private destroy$ = new Subject<void>();
 
@@ -69,18 +71,26 @@ export class Header {
                 filter(e => e instanceof NavigationEnd),
                 filter(() => !!this.authService.getAccessToken())
             )
-            .subscribe(() => this.onCheckLoginStatus());
+            .subscribe(() => {
+                this.onCheckLoginStatus();
+                // ✅ 移除 checkTokenAndReconnectSSE，token 刷新由 NotificationService 自動處理
+            });
 
         // 訂閱 service 的登入狀態
         this.authService.isLoggedIn$
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                takeUntil(this.destroy$),
+                distinctUntilChanged()  // ✅ 只在值真正改變時才觸發
+            )
             .subscribe(v => {
                 this.isLoggedIn = v;
                 // 當登入狀態改變時，更新未讀數量和 SSE 連線
                 if (v) {
+                    console.log('[用戶 Header] 用戶已登入，初始化通知系統');
                     this.fetchUnreadCount();
                     this.setupSSEConnection();
                 } else {
+                    console.log('[用戶 Header] 用戶已登出，關閉通知系統');
                     this.unreadCount = 0;
                     this.notificationService.disconnectSSE();
                 }
@@ -344,6 +354,9 @@ export class Header {
     private setupSSEConnection() {
         console.log('設定 SSE 即時推播連線');
 
+        // 記錄當前 token
+        this.lastToken = this.authService.getAccessToken();
+
         // 建立連線，並傳入收到通知時的回調
         this.notificationService.connectSSE((notification) => {
             console.log('Header 收到新通知:', notification);
@@ -360,6 +373,7 @@ export class Header {
             });
         });
     }
+
 
     /**
      * 顯示瀏覽器通知

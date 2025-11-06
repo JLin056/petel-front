@@ -1,7 +1,7 @@
-import { BehaviorSubject, map, Observable, of, switchMap, tap, catchError, lastValueFrom } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap, tap, catchError, lastValueFrom, Subject } from 'rxjs';
 import { AUTH002Res } from '../interfaces/AUTH002Res.interface';
 import { environment } from '../../../environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AUTH002Req } from '../interfaces/AUTH002Req.interface';
 import { AUTH001Req } from '../interfaces/AUTH001Req.interface';
@@ -15,6 +15,7 @@ import { AUTH005Res } from '../interfaces/AUTH005Res.interface';
 import { AUTH010Res } from '../interfaces/AUTH010Res.interface';
 import { AUTH006Res } from '../interfaces/AUTH006Res.interface';
 import { AUTH009Res } from '../interfaces/AUTH009Res.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
     providedIn: 'root'
@@ -30,10 +31,14 @@ export class Auth {
     private roleSubject = new BehaviorSubject<string | null>(null);
     public readonly role$ = this.roleSubject.asObservable();
 
+    /** Token 刷新事件（專門用於通知 token 已更新） */
+    private tokenRefreshedSubject = new Subject<string>();
+    public readonly tokenRefreshed$ = this.tokenRefreshedSubject.asObservable();
+
     private bootstrapped = false;
 
-    /** 注入 HttpClient */
-    constructor(private http: HttpClient) { }
+    /** 注入 HttpWithRetry（自動重試 401） */
+    constructor(private http: HttpWithRetry) { }
 
     /** 註冊 API URL */
     registerUrl = `${environment.BASE_URL}/auth/register`;
@@ -62,12 +67,20 @@ export class Auth {
     /**
      * 設定 access Token
      * @param token
+     * @param isRefresh 是否為刷新 token（用於區分登入和刷新）
      */
-    setAccessToken(token: string | null): void {
+    setAccessToken(token: string | null, isRefresh: boolean = false): void {
+        const oldToken = this.accessToken;
         this.accessToken = token;
         const loggedIn = !!token;
         this.isLoggedInSubject.next(loggedIn);
         if (!loggedIn) this.setRole(null);
+
+        // ✅ 只在 token 刷新且確實變化時發出事件
+        if (isRefresh && token && oldToken !== token) {
+            console.log('[Auth] Token 已刷新，通知訂閱者');
+            this.tokenRefreshedSubject.next(token);
+        }
     }
 
     /**
@@ -159,7 +172,10 @@ export class Auth {
         return this.http.post<AUTH010Res>(this.refreshUrl, null, {
             withCredentials: true
         })
-            .pipe(tap(res => this.setAccessToken(res?.TRANRS?.accessToken ?? null)));
+            .pipe(tap(res => {
+                // ✅ 標記為刷新 token，觸發 tokenRefreshed$ 事件
+                this.setAccessToken(res?.TRANRS?.accessToken ?? null, true);
+            }));
     }
 
     /**

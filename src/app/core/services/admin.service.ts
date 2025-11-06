@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 import { ADMIN001Req } from '../interfaces/ADMIN001Req.interface';
@@ -14,14 +14,15 @@ import { ADMIN008Req } from '../interfaces/ADMIN008Req.interface';
 import { ADMIN008Res } from '../interfaces/ADMIN008Res.interface';
 import { ADMIN006Req } from '../interfaces/ADMIN006Req.interface';
 import { ADMIN006Res } from '../interfaces/ADMIN006Res.interface';
+import { HttpWithRetry } from './http-with-retry.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
 
-  /** 注入 HttpClient */
-  constructor(private http: HttpClient) { }
+  /** 注入 HttpWithRetry（自動重試 401） */
+  constructor(private http: HttpWithRetry) { }
 
   /** 查詢旅館列表 API URL */
   queryHotelsUrl = `${environment.BASE_URL}/admin/hotels/queryStore`;

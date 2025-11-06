@@ -11,7 +11,7 @@ import { SharedConfirmDialog } from '../../../pages/shared-confirm-dialog/shared
 import { Router } from '@angular/router';
 import { Auth } from '../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, distinctUntilChanged } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationPanel } from '../notification-panel/notification-panel';
 
@@ -67,14 +67,19 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
      */
     ngOnInit() {
         this.authService.isLoggedIn$
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                takeUntil(this.destroy$),
+                distinctUntilChanged()  // ✅ 只在值真正改變時才觸發
+            )
             .subscribe(v => {
                 this.isLoggedIn = v;
                 // 當登入狀態改變時，更新未讀數量和 SSE 連線
                 if (v) {
+                    console.log('[商家 Header] 用戶已登入，初始化通知系統');
                     this.fetchUnreadCount();
                     this.setupSSEConnection();
                 } else {
+                    console.log('[商家 Header] 用戶已登出，關閉通知系統');
                     this.unreadCount = 0;
                     this.notificationService.disconnectSSE();
                 }
@@ -211,13 +216,16 @@ export class MerchantPropertyHeader implements OnInit, OnDestroy {
 
     /**
      * 建立 SSE 即時推播連線
+     *
+     * 注意：Token 刷新時的重連已由 NotificationService 自動處理，
+     * 此方法只需在用戶首次登入時調用一次即可。
      */
     private setupSSEConnection() {
-        console.log('商家旅館頁設定 SSE 即時推播連線');
+        console.log('[商家 Header] 建立 SSE 即時推播連線');
 
         // 建立連線，並傳入收到通知時的回調
         this.notificationService.connectSSE((notification) => {
-            console.log('商家旅館頁 Header 收到新通知:', notification);
+            console.log('[商家 Header] 收到新通知:', notification);
 
             // 顯示瀏覽器通知
             this.showBrowserNotification(notification);
