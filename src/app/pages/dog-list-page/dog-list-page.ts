@@ -32,7 +32,6 @@ import { priceRange } from '../../core/interfaces/priceRange.interface';
         FloatLabel,
         IftaLabelModule,
         InputNumber,
-        InputGroup,
         InputGroupAddonModule,
         Listbox,
         Rating,

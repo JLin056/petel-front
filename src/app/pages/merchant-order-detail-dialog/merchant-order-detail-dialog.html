@@ -18,7 +18,7 @@
                         <p-select [(ngModel)]="order.STATUS" [options]="selectableStatuses" optionLabel="label"
                             optionValue="value" placeholder="選擇狀態" styleClass="status-select-dialog"
                             [disabled]="order.STATUS === '已取消'"></p-select>
-                        <button class="cancel-button" (click)="onCancelClick()" [disabled]="order?.STATUS === '已取消'">
+                        <button class="cancel-button" (click)="onCancelClick()" [disabled]="order.STATUS === '已取消'">
                             取消訂單
                         </button>
                     </div>
