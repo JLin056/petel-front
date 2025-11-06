@@ -45,6 +45,8 @@ export class Header {
     unreadCount = 0;
     /** 通知面板是否顯示 */
     notificationPanelVisible = false;
+    /** 上次記錄的 token */
+    private lastToken: string | null = null;
 
     private destroy$ = new Subject<void>();
 
