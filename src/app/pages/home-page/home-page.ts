@@ -43,7 +43,7 @@ export class HomePage implements OnInit {
     bannerImages: BannerImage[] = [
         { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/PETEL+Demo+(2).jpg', alt: 'Petel 廣告圖 1' },
         { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/you-deng-zai-sha-fa-shang-de-ke-ai-xiao-rong-gou.jpg', alt: 'Petel 廣告圖 2' },
-        { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/PETEL+Demo+(4).jpg', alt: 'Petel 廣告圖 3' },
+        { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/PETEL+Demo+(5).jpg', alt: 'Petel 廣告圖 3' },
         { src: 'https://petelcathay-user.s3.us-east-1.amazonaws.com/Petel_footage/zai-shi-nei-fang-song-de-ke-ai-mao.jpg', alt: 'Petel 廣告圖 4' }
     ];
 
